@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:yunting-vsee.github.io)",
+      "WebFetch(domain:github.com)",
+      "Bash(gh api:*)",
+      "Bash(python3 -c \"import json,sys; data=json.load\\(sys.stdin\\); [print\\(t['path']\\) for t in data.get\\('tree',[]\\)]\")",
+      "Bash(gh repo:*)",
+      "Bash(gh auth:*)",
+      "Bash(echo \"---EXIT:$?\")",
+      "Bash(curl -s \"https://api.github.com/repos/yunting-vsee/Design-System-shadcdn/git/trees/main?recursive=1\")",
+      "WebFetch(domain:api.github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(dir \"D:\\\\Downloads\\\\AI Studio\\\\Design System\")",
+      "Bash(npm install:*)",
+      "Bash(npm ls:*)",
+      "Bash(node -e \"const p = require\\('./package.json'\\); console.log\\(JSON.stringify\\(p.dependencies, null, 2\\)\\)\")",
+      "Bash(npx tsc:*)",
+      "Bash(echo \"EXIT:$?\")",
+      "Bash(npx vite:*)",
+      "WebFetch(domain:react-spectrum.adobe.com)",
+      "WebFetch(domain:react-aria.adobe.com)",
+      "Bash(curl:*)"
+    ]
+  }
+}
