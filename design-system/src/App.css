@@ -82,8 +82,8 @@
 .radius-row { display: flex; gap: var(--sp-6); flex-wrap: wrap; margin-bottom: var(--sp-10); }
 .radius-demo { width: 80px; height: 80px; background: var(--brand-light); border: 2px solid var(--brand); display: flex; align-items: center; justify-content: center; font-size: var(--text-base); font-weight: 600; color: var(--brand); }
 .radius-label { font-size: var(--text-base); margin-top: 6px; color: var(--text-secondary); text-align: center; }
-.shadow-stack { display: flex; flex-wrap: wrap; gap: var(--sp-6); }
-.shadow-card { width: 80px; height: 80px; background: white; border-radius: var(--r-lg); display: flex; align-items: center; justify-content: center; font-size: var(--text-base); font-weight: 500; font-family: monospace; color: var(--text-secondary); }
+.shadow-stack { display: grid; grid-template-columns: repeat(3, 120px); gap: var(--sp-6); }
+.shadow-card { width: 120px; height: 80px; background: white; border-radius: var(--r-lg); display: flex; align-items: center; justify-content: center; font-size: var(--text-base); font-weight: 500; font-family: monospace; color: var(--text-secondary); white-space: nowrap; }
 
 /* ═══════════════════════════════════════════
    PREVIEW BOX & CARD
@@ -476,6 +476,7 @@
 .code .s { color: #FDE68A; }
 .code .f { color: #67E8F9; }
 .code .t { color: #FDA4AF; }
+
 
 /* ═══════════════════════════════════════════
    EMR PAGE — ANCHOR BAR

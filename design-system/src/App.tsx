@@ -288,6 +288,15 @@ function SubSection({ title, description, children }: {
   );
 }
 
+/* ─── Code Block helper ─── */
+function CodeBlock({ code }: { code: string }) {
+  return (
+    <div style={{ marginTop: "var(--sp-4)" }}>
+      {code && <div className="code">{code}</div>}
+    </div>
+  );
+}
+
 /* ═══════════════════════════════════════════
    FOUNDATIONS — COLORS
    ═══════════════════════════════════════════ */
@@ -455,12 +464,12 @@ function FoundationsSpacing() {
           <div className="sub-title">Border Radius</div>
           <div className="radius-row">
             {[
-              { label: "sm", val: 6 }, { label: "md", val: 8 }, { label: "lg", val: 12 },
-              { label: "xl", val: 16 }, { label: "2xl", val: 24 },
-              { label: "full", val: 9999 },
+              { label: "--r-sm", val: 6 }, { label: "--r-md", val: 8 }, { label: "--r-lg", val: 12 },
+              { label: "--r-xl", val: 16 }, { label: "--r-2xl", val: 24 },
+              { label: "--r-full", val: 9999 },
             ].map((r) => (
               <div key={r.label} style={{textAlign:"center"}}>
-                <div className="radius-demo" style={{borderRadius: r.val, width: 80, height: 80}}>{r.val === 9999 ? "∞" : r.val}</div>
+                <div className="radius-demo" style={{borderRadius: r.val, width: 80, height: 80}}>{r.val === 9999 ? "∞" : `${r.val}px`}</div>
                 <div className="radius-label">{r.label}</div>
               </div>
             ))}
@@ -469,7 +478,7 @@ function FoundationsSpacing() {
           <div className="sub-title" style={{marginTop:"var(--sp-10)"}}>Shadows</div>
           <div className="shadow-stack">
             {["xs","sm","md","lg","xl"].map((s) => (
-              <div key={s} className="shadow-card" style={{boxShadow:`var(--shadow-${s})`}}>shadow-{s}</div>
+              <div key={s} className="shadow-card" style={{boxShadow:`var(--shadow-${s})`}}>--shadow-{s}</div>
             ))}
           </div>
         </div>
@@ -525,6 +534,9 @@ function ComponentsButtons() {
           <Button className="btn btn-warning">Warning</Button>
           <Button className="btn btn-link">Link</Button>
         </div>
+        <CodeBlock
+          code={`<Button className="btn btn-primary">Primary</Button>\n<Button className="btn btn-secondary">Secondary</Button>\n<Button className="btn btn-ghost">Ghost</Button>\n<Button className="btn btn-danger">Danger</Button>\n<Button className="btn btn-danger-outline">Danger Outline</Button>\n<Button className="btn btn-info">Info</Button>\n<Button className="btn btn-warning">Warning</Button>\n<Button className="btn btn-link">Link</Button>`}
+        />
       </SubSection>
 
       <SubSection title="Sizes">
@@ -534,6 +546,9 @@ function ComponentsButtons() {
           <Button className="btn btn-primary">Default</Button>
           <Button className="btn btn-primary btn-sm">Small</Button>
         </div>
+        <CodeBlock
+          code={`<Button className="btn btn-primary btn-xl">Extra Large</Button>\n<Button className="btn btn-primary btn-lg">Large</Button>\n<Button className="btn btn-primary">Default</Button>\n<Button className="btn btn-primary btn-sm">Small</Button>`}
+        />
       </SubSection>
 
       <SubSection title="Pill Shape">
@@ -542,6 +557,9 @@ function ComponentsButtons() {
           <Button className="btn btn-secondary btn-pill">Secondary Pill</Button>
           <Button className="btn btn-ghost btn-pill">Ghost Pill</Button>
         </div>
+        <CodeBlock
+          code={`<Button className="btn btn-primary btn-pill">Primary Pill</Button>\n<Button className="btn btn-secondary btn-pill">Secondary Pill</Button>`}
+        />
       </SubSection>
 
       <SubSection title="States">
@@ -552,6 +570,9 @@ function ComponentsButtons() {
           <Button className="btn btn-primary" style={{boxShadow:"var(--shadow-focus)",outline:"2px solid var(--brand)",outlineOffset:2}}>Focus</Button>
           <Button className="btn btn-primary" isDisabled>Disabled</Button>
         </div>
+        <CodeBlock
+          code={`/* States are handled via React Aria data attributes */\n.btn[data-hovered]  { background: var(--brand-hover); }\n.btn[data-pressed]  { background: var(--brand-active); }\n.btn[data-focus-visible] { box-shadow: var(--shadow-focus); }\n.btn[data-disabled] { opacity: 0.5; cursor: not-allowed; }`}
+        />
       </SubSection>
 
       <SubSection title="Button Group">
@@ -562,6 +583,9 @@ function ComponentsButtons() {
             <Button className="btn btn-ghost">Month</Button>
           </div>
         </div>
+        <CodeBlock
+          code={`<div className="btn-group">\n  <Button className="btn btn-ghost">Today</Button>\n  <Button className="btn btn-ghost active-group">Week</Button>\n  <Button className="btn btn-ghost">Month</Button>\n</div>`}
+        />
       </SubSection>
 
       <SubSection title="With Icons" description="React Aria buttons support any child content — place icons before or after text, or use icon-only buttons.">
@@ -592,6 +616,9 @@ function ComponentsButtons() {
           <Button className="btn btn-primary"><Plus size={16} /> Default</Button>
           <Button className="btn btn-primary btn-sm"><Plus size={14} /> Small</Button>
         </div>
+        <CodeBlock
+          code={`/* Icon left */\n<Button className="btn btn-primary"><Plus size={16} /> New Patient</Button>\n\n/* Icon right */\n<Button className="btn btn-primary">Send <Send size={16} /></Button>\n\n/* Icon only */\n<Button className="btn btn-primary btn-icon"><Plus size={18} /></Button>`}
+        />
       </SubSection>
 
     </Section>
@@ -754,6 +781,9 @@ function ComponentsForms() {
           </div>
         </div>
       </div>
+      <CodeBlock
+        code={`/* Text Input */\n<TextField className="field">\n  <Label className="form-label">Email address</Label>\n  <Input className="input" placeholder="you@example.com" />\n</TextField>\n\n/* Input with error */\n<TextField isInvalid className="field">\n  <Label className="form-label">Phone <span className="req">*</span></Label>\n  <Input className="input error" />\n  <div className="form-error-text">Phone number is required</div>\n</TextField>\n\n/* Select */\n<Select className="field">\n  <Label className="form-label">Specialty</Label>\n  <Button className="input select-trigger">\n    <SelectValue />\n    <ChevronDown size={16} />\n  </Button>\n  <Popover className="select-popover">\n    <ListBox className="select-listbox">\n      <ListBoxItem className="select-option">Option</ListBoxItem>\n    </ListBox>\n  </Popover>\n</Select>\n\n/* Toggle */\n<Switch isSelected={on} onChange={setOn} className="toggle-wrap">\n  <div className={\`toggle-track \${on ? "on" : ""}\`}>\n    <div className="toggle-thumb" />\n  </div>\n  <span className="toggle-label">Label</span>\n</Switch>\n\n/* Checkbox */\n<Checkbox isSelected={checked} onChange={setChecked} className="check-item">\n  <div className={\`check-box \${checked ? "checked" : ""}\`} />\n  Label text\n</Checkbox>\n\n/* Radio Group */\n<RadioGroup defaultValue="phone" className="radio-list">\n  <Radio value="phone" className="radio-item">\n    <div className="radio-circle" /><span>Phone call</span>\n  </Radio>\n</RadioGroup>`}
+      />
 
       <SubSection title="MultiSelect" description="A combobox with tag group for selecting multiple values. Used for specialty filters, diagnosis codes, and provider assignments.">
         <div className="multiselect-wrapper">
@@ -797,6 +827,9 @@ function ComponentsForms() {
             </ComboBox>
           </div>
         </div>
+        <CodeBlock
+          code={`<div className="multiselect-wrapper">\n  <Label className="form-label">Filter by Specialty</Label>\n  <div className="multiselect-container">\n    <TagGroup onRemove={handleRemove}>\n      <TagList className="multiselect-tags">\n        <Tag className="emr-tag" textValue="Cardiology">\n          Cardiology\n          <Button slot="remove" className="tag-remove"><X size={12} /></Button>\n        </Tag>\n      </TagList>\n    </TagGroup>\n    <ComboBox menuTrigger="focus" allowsCustomValue>\n      <Input className="multiselect-input" placeholder="Add more..." />\n      <Popover className="dropdown-popover">\n        <ListBox className="dropdown-menu">\n          <ListBoxItem className="dropdown-item">Option</ListBoxItem>\n        </ListBox>\n      </Popover>\n    </ComboBox>\n  </div>\n</div>`}
+        />
       </SubSection>
     </Section>
   );
@@ -827,6 +860,9 @@ function ComponentsBadges() {
           <span className="badge badge-neutral"><span className="badge-dot" /> Draft</span>
           <span className="badge badge-brand"><span className="badge-dot" /> New</span>
         </div>
+        <CodeBlock
+          code={`<span className="badge badge-success"><span className="badge-dot" /> Active</span>\n<span className="badge badge-info"><span className="badge-dot" /> Scheduled</span>\n<span className="badge badge-warning"><span className="badge-dot" /> Pending</span>\n<span className="badge badge-danger"><span className="badge-dot" /> Overdue</span>\n<span className="badge badge-neutral"><span className="badge-dot" /> Draft</span>\n<span className="badge badge-brand"><span className="badge-dot" /> New</span>`}
+        />
       </SubSection>
 
       <SubSection title="Solid Badges">
@@ -836,6 +872,9 @@ function ComponentsBadges() {
           <span className="badge badge-solid-warning">Review</span>
           <span className="badge badge-solid-danger">Urgent</span>
         </div>
+        <CodeBlock
+          code={`<span className="badge badge-solid-success">Approved</span>\n<span className="badge badge-solid-info">Processing</span>\n<span className="badge badge-solid-warning">Review</span>\n<span className="badge badge-solid-danger">Urgent</span>`}
+        />
       </SubSection>
 
       <SubSection title="EMR Order Status" description="Clinical workflow statuses used across the EMR module.">
@@ -848,6 +887,9 @@ function ComponentsBadges() {
           <span className="status status-resulted"><span className="status-dot" /> Resulted</span>
           <span className="status status-completed"><span className="status-dot" /> Completed</span>
         </div>
+        <CodeBlock
+          code={`<span className="status status-ordered"><span className="status-dot" /> Ordered</span>\n<span className="status status-scheduled"><span className="status-dot" /> Scheduled</span>\n<span className="status status-overdue"><span className="status-dot" /> Overdue</span>\n<span className="status status-in-progress"><span className="status-dot" /> In Progress</span>\n<span className="status status-cancelled"><span className="status-dot" /> Cancelled</span>\n<span className="status status-resulted"><span className="status-dot" /> Resulted</span>\n<span className="status status-completed"><span className="status-dot" /> Completed</span>`}
+        />
       </SubSection>
 
       <SubSection title="Removable Tags">
@@ -865,6 +907,9 @@ function ComponentsBadges() {
             ))}
           </TagList>
         </TagGroup>
+        <CodeBlock
+          code={`<TagGroup selectionMode="none" onRemove={handleRemove}>\n  <Label className="form-label">Active Diagnoses</Label>\n  <TagList className="tag-list">\n    <Tag id="1" className="emr-tag" textValue="Hypertension">\n      Hypertension\n      <Button slot="remove" className="tag-remove"><X size={12} /></Button>\n    </Tag>\n  </TagList>\n</TagGroup>`}
+        />
       </SubSection>
 
       <SubSection title="Tag Variants">
@@ -876,6 +921,9 @@ function ComponentsBadges() {
           <span className="emr-tag-static emr-tag-danger"><TagIcon size={12} /> Critical</span>
           <span className="emr-tag-static emr-tag-info"><TagIcon size={12} /> Referral</span>
         </div>
+        <CodeBlock
+          code={`<span className="emr-tag-static emr-tag-default"><TagIcon size={12} /> General</span>\n<span className="emr-tag-static emr-tag-primary"><TagIcon size={12} /> Primary Care</span>\n<span className="emr-tag-static emr-tag-success"><TagIcon size={12} /> Resolved</span>\n<span className="emr-tag-static emr-tag-warning"><TagIcon size={12} /> Monitoring</span>\n<span className="emr-tag-static emr-tag-danger"><TagIcon size={12} /> Critical</span>\n<span className="emr-tag-static emr-tag-info"><TagIcon size={12} /> Referral</span>`}
+        />
       </SubSection>
     </Section>
   );
@@ -912,6 +960,9 @@ function ComponentsFeedback() {
           <div className="alert alert-warning"><span className="alert-icon"><AlertTriangle size={18} /></span><div><strong>Outstanding balance</strong><br/>This patient has an unpaid balance of $45.00.</div></div>
           <div className="alert alert-danger"><span className="alert-icon"><AlertCircle size={18} /></span><div><strong>Form submission failed</strong><br/>Please check the required fields and try again.</div></div>
         </div>
+        <CodeBlock
+          code={`<div className="alert alert-success">\n  <span className="alert-icon"><CheckCircle2 size={18} /></span>\n  <div><strong>Changes saved</strong><br/>Your patient record has been updated.</div>\n</div>\n\n/* Variants: alert-success | alert-info | alert-warning | alert-danger */`}
+        />
       </SubSection>
 
       <SubSection title="Toast Notifications">
@@ -920,6 +971,9 @@ function ComponentsFeedback() {
           <div className="toast toast-danger"><div className="toast-body"><div className="toast-title">Connection lost</div><div className="toast-msg">Please check your internet connection.</div></div><span className="toast-close"><X size={16} /></span></div>
           <div className="toast toast-info"><div className="toast-body"><div className="toast-title">New message</div><div className="toast-msg">You have 3 unread messages from patients.</div></div><span className="toast-close"><X size={16} /></span></div>
         </div>
+        <CodeBlock
+          code={`<div className="toast toast-success">\n  <div className="toast-body">\n    <div className="toast-title">Appointment confirmed</div>\n    <div className="toast-msg">Feb 26, 2026 at 10:00 AM</div>\n  </div>\n  <span className="toast-close"><X size={16} /></span>\n</div>\n\n/* Variants: toast-success | toast-danger | toast-info */`}
+        />
       </SubSection>
 
       <SubSection title="Progress Bars">
@@ -937,6 +991,9 @@ function ComponentsFeedback() {
             <div className="progress-track"><div className="progress-bar progress-bar-danger" style={{width:"90%"}} /></div>
           </div>
         </div>
+        <CodeBlock
+          code={`<div className="progress-item">\n  <div className="progress-head">\n    <span className="progress-label">Profile Complete</span>\n    <span className="progress-val">75%</span>\n  </div>\n  <div className="progress-track">\n    <div className="progress-bar progress-bar-brand" style={{ width: "75%" }} />\n  </div>\n</div>\n\n/* Bar variants: progress-bar-brand | progress-bar-info | progress-bar-danger */`}
+        />
       </SubSection>
 
       <SubSection title="Empty State" description="Placeholder content shown when a section has no data. Provides context and a call to action.">
@@ -954,6 +1011,9 @@ function ComponentsFeedback() {
             <Button className="btn btn-secondary" style={{ marginTop: "var(--sp-4)" }}>Upload Document</Button>
           </div>
         </div>
+        <CodeBlock
+          code={`<div className="empty-state">\n  <div className="empty-state-icon"><Inbox size={40} /></div>\n  <div className="empty-state-title">No Results Found</div>\n  <div className="empty-state-desc">Description text here.</div>\n  <Button className="btn btn-primary">Action</Button>\n</div>`}
+        />
       </SubSection>
 
       <SubSection title="Notifications" description="Toast-style notifications that appear in the corner. Used for system feedback — order confirmations, errors, warnings, and informational messages.">
@@ -971,6 +1031,9 @@ function ComponentsFeedback() {
             <Info size={16} /> Info
           </Button>
         </div>
+        <CodeBlock
+          code={`<div className="notification notification-success">\n  <div className="notification-icon"><CheckCircle size={18} /></div>\n  <div className="notification-content">\n    <div className="notification-title">Order Submitted</div>\n    <div className="notification-message">CBC lab order sent.</div>\n  </div>\n  <button className="notification-close"><X size={14} /></button>\n</div>\n\n/* Variants: notification-success | notification-error | notification-warning | notification-info */`}
+        />
       </SubSection>
 
       {/* Notification container */}
@@ -1017,6 +1080,9 @@ function ComponentsNavigation() {
             <div className="avatar avatar-sm">PN</div>
           </div>
         </div>
+        <CodeBlock
+          code={`<div className="navbar">\n  <div className="navbar-logo">VSee</div>\n  <div className="navbar-links">\n    <div className="navbar-link active">Dashboard</div>\n    <div className="navbar-link">Patients</div>\n    <div className="navbar-link">Schedule</div>\n  </div>\n  <div className="navbar-right">\n    <Button className="btn btn-ghost btn-sm">Help</Button>\n    <div className="avatar avatar-sm">PN</div>\n  </div>\n</div>`}
+        />
       </SubSection>
 
       <SubSection title="Tabs">
@@ -1034,6 +1100,9 @@ function ComponentsNavigation() {
             <TabPanel id="labs" className="tab-content">Lab results content</TabPanel>
           </Tabs>
         </div>
+        <CodeBlock
+          code={`<Tabs>\n  <TabList className="tabs" aria-label="Clinic tabs">\n    <Tab id="patients" className="tab-item">Patients</Tab>\n    <Tab id="visits" className="tab-item">All Visits</Tab>\n    <Tab id="docs" className="tab-item">Documents</Tab>\n  </TabList>\n  <TabPanel id="patients" className="tab-content">Content</TabPanel>\n  <TabPanel id="visits" className="tab-content">Content</TabPanel>\n</Tabs>`}
+        />
       </SubSection>
 
       <SubSection title="Breadcrumb">
@@ -1044,6 +1113,9 @@ function ComponentsNavigation() {
             <Breadcrumb><Link className="breadcrumb-current">Michelle Doe</Link></Breadcrumb>
           </Breadcrumbs>
         </div>
+        <CodeBlock
+          code={`<Breadcrumbs className="breadcrumb">\n  <Breadcrumb><Link>Dashboard</Link></Breadcrumb>\n  <Breadcrumb><Link>Patients</Link></Breadcrumb>\n  <Breadcrumb><Link className="breadcrumb-current">Michelle Doe</Link></Breadcrumb>\n</Breadcrumbs>`}
+        />
       </SubSection>
 
       <SubSection title="Pagination">
@@ -1057,6 +1129,9 @@ function ComponentsNavigation() {
             <button className="page-btn">&rarr;</button>
           </div>
         </div>
+        <CodeBlock
+          code={`<div className="pagination">\n  <button className="page-btn disabled">&larr;</button>\n  <button className="page-btn active">1</button>\n  <button className="page-btn">2</button>\n  <button className="page-btn">3</button>\n  <button className="page-btn">&rarr;</button>\n</div>`}
+        />
       </SubSection>
 
       <SubSection title="Anchor Navigation" description="In-page navigation for long scrollable content. Used in encounter notes and multi-section forms. The sticky bar at the top of this page is a live example.">
@@ -1140,6 +1215,9 @@ function ComponentsDataDisplay() {
             </div>
           </div>
         </div>
+        <CodeBlock
+          code={`<div className="panel">\n  <div className="panel-header">Patient Summary</div>\n  <div className="panel-body">\n    <div className="patient-row">\n      <div className="avatar avatar-lg">MD</div>\n      <div>\n        <div className="patient-name">Michelle Doe</div>\n        <div className="patient-meta">Female · 46 years · ID: 10042</div>\n      </div>\n    </div>\n    <div className="badge-row">\n      <span className="badge badge-success"><span className="badge-dot" /> Active</span>\n    </div>\n  </div>\n  <div className="panel-footer">\n    <Button className="btn btn-primary btn-sm">View Chart</Button>\n  </div>\n</div>`}
+        />
       </SubSection>
 
       <SubSection title="Data Table">
@@ -1171,6 +1249,9 @@ function ComponentsDataDisplay() {
             </tbody>
           </table>
         </div>
+        <CodeBlock
+          code={`<div className="panel">\n  <table className="table">\n    <thead>\n      <tr><th>Patient</th><th>Gender</th><th>Age</th><th>Status</th><th></th></tr>\n    </thead>\n    <tbody>\n      <tr>\n        <td>\n          <div className="table-patient">\n            <div className="avatar avatar-sm">MD</div>\n            <div>\n              <div className="table-patient-name">Michelle Doe</div>\n              <div className="table-patient-email">patient@vsee.com</div>\n            </div>\n          </div>\n        </td>\n        <td>Female</td>\n        <td>46</td>\n        <td><span className="badge badge-success"><span className="badge-dot" /> Active</span></td>\n        <td><Button className="btn btn-ghost btn-sm">View</Button></td>\n      </tr>\n    </tbody>\n  </table>\n</div>`}
+        />
       </SubSection>
 
       <SubSection title="Avatars">
@@ -1180,6 +1261,9 @@ function ComponentsDataDisplay() {
           <div className="avatar avatar-lg">MD</div>
           <div className="avatar avatar-xl">JS</div>
         </div>
+        <CodeBlock
+          code={`<div className="avatar avatar-sm">A</div>   /* 28px */\n<div className="avatar">PN</div>            /* 36px (default) */\n<div className="avatar avatar-lg">MD</div>  /* 48px */\n<div className="avatar avatar-xl">JS</div>  /* 64px */`}
+        />
       </SubSection>
 
       <SubSection title="Tooltips">
@@ -1193,6 +1277,9 @@ function ComponentsDataDisplay() {
             <AriaTooltip placement="top" className="tooltip-bubble">Save patient record</AriaTooltip>
           </TooltipTrigger>
         </div>
+        <CodeBlock
+          code={`<TooltipTrigger delay={300}>\n  <Button className="btn btn-ghost">Hover target</Button>\n  <AriaTooltip placement="top" className="tooltip-bubble">\n    This is a tooltip\n  </AriaTooltip>\n</TooltipTrigger>`}
+        />
       </SubSection>
 
       <SubSection title="Collapse / Accordion" description="Expandable content sections. Used throughout the patient chart to organize vitals, history, allergies, and other clinical data.">
@@ -1209,6 +1296,9 @@ function ComponentsDataDisplay() {
             </div>
           ))}
         </div>
+        <CodeBlock
+          code={`<div className="collapse-group">\n  <div className="collapse-item open">\n    <button className="collapse-trigger">\n      <span className="collapse-trigger-text">Vitals</span>\n      <ChevronUp size={16} />\n    </button>\n    <div className="collapse-content">BP: 120/80 mmHg · HR: 72 bpm</div>\n  </div>\n  <div className="collapse-item">\n    <button className="collapse-trigger">\n      <span className="collapse-trigger-text">Allergies</span>\n      <ChevronDown size={16} />\n    </button>\n  </div>\n</div>`}
+        />
       </SubSection>
     </Section>
   );
@@ -1251,6 +1341,9 @@ function ComponentsOverlays() {
             </div>
           </div>
         </div>
+        <CodeBlock
+          code={`<div className="modal-demo-bg">\n  <div className="modal-box">\n    <div className="modal-head">\n      <h3>Title</h3>\n      <button className="modal-close"><X size={20} /></button>\n    </div>\n    <div className="modal-content">\n      <p>Modal body content here.</p>\n    </div>\n    <div className="modal-actions">\n      <Button className="btn btn-ghost">Cancel</Button>\n      <Button className="btn btn-danger">Confirm</Button>\n    </div>\n  </div>\n</div>`}
+        />
       </SubSection>
 
       <SubSection title="Dropdown Menu" description="Action menus triggered by a button. Used for contextual actions on rows, cards, and toolbars.">
@@ -1307,6 +1400,9 @@ function ComponentsOverlays() {
           </MenuTrigger>
         </div>
         {dropdownMsg && <div className="emr-action-feedback"><CheckCircle2 size={14} /> {dropdownMsg}</div>}
+        <CodeBlock
+          code={`<MenuTrigger>\n  <Button className="btn btn-secondary">\n    Actions <ChevronDown size={16} />\n  </Button>\n  <Popover className="dropdown-popover">\n    <Menu className="dropdown-menu" onAction={handleAction}>\n      <MenuItem id="edit" className="dropdown-item">\n        <Edit3 size={14} /> Edit Record\n      </MenuItem>\n      <Separator className="dropdown-separator" />\n      <MenuItem id="delete" className="dropdown-item dropdown-item-danger">\n        <Trash2 size={14} /> Delete\n      </MenuItem>\n    </Menu>\n  </Popover>\n</MenuTrigger>`}
+        />
       </SubSection>
 
       <SubSection title="Drawer" description="A slide-in panel from the side of the screen. Used for detail views, editing records, and order entry without leaving the current context.">
@@ -1359,6 +1455,9 @@ function ComponentsOverlays() {
             </div>
           </div>
         )}
+        <CodeBlock
+          code={`<div className="drawer-overlay" onClick={close}>\n  <div className="drawer-panel" onClick={e => e.stopPropagation()}>\n    <div className="drawer-header">\n      <div>\n        <div className="drawer-title">Patient Details</div>\n        <div className="drawer-subtitle">Jane Doe · MRN: 00284731</div>\n      </div>\n      <button className="drawer-close" onClick={close}><X size={20} /></button>\n    </div>\n    <div className="drawer-body">\n      <div className="drawer-section-title">Demographics</div>\n      <div className="drawer-field">\n        <span className="drawer-label">Date of Birth</span>\n        <span>March 15, 1985</span>\n      </div>\n    </div>\n    <div className="drawer-footer">\n      <Button className="btn btn-secondary">Close</Button>\n      <Button className="btn btn-primary">Edit Patient</Button>\n    </div>\n  </div>\n</div>`}
+        />
       </SubSection>
     </Section>
   );

@@ -31,7 +31,10 @@
       "Bash(where node:*)",
       "Bash(node:*)",
       "Bash(cmd:*)",
-      "Bash(git:*)"
+      "Bash(git:*)",
+      "Read(//d D:/Downloads/AI Studio/**)",
+      "Bash(dir)",
+      "Bash(sed:*)"
     ]
   }
 }
