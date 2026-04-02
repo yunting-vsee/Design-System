@@ -290,8 +290,8 @@ function FoundationsColors({ copy }: { copy: (v: string) => void }) {
         <div className="swatch-row">
           <Swatch color="#0D875C" name="Success" hex="#0D875C" onClick={() => copy("#0D875C")} />
           <Swatch color="#0575AD" name="Info" hex="#0575AD" onClick={() => copy("#0575AD")} />
-          <Swatch color="#F59E0B" name="Warning" hex="#F59E0B" onClick={() => copy("#F59E0B")} />
-          <Swatch color="#EF4444" name="Danger" hex="#EF4444" onClick={() => copy("#EF4444")} />
+          <Swatch color="#D97706" name="Warning" hex="#D97706" onClick={() => copy("#D97706")} />
+          <Swatch color="#DC2626" name="Danger" hex="#DC2626" onClick={() => copy("#DC2626")} />
         </div>
         <div className="swatch-row">
           <Swatch color="#E6F5EE" name="Success Light" hex="#E6F5EE" onClick={() => copy("#E6F5EE")} />
@@ -310,7 +310,7 @@ function FoundationsColors({ copy }: { copy: (v: string) => void }) {
           <Swatch color="#6B7280" name="600" hex="#6B7280" onClick={() => copy("#6B7280")} />
         </div>
         <div className="swatch-row">
-          <Swatch color="#9CA3AF" name="500" hex="#9CA3AF" onClick={() => copy("#9CA3AF")} />
+          <Swatch color="#868E9C" name="500" hex="#868E9C" onClick={() => copy("#868E9C")} />
           <Swatch color="#D1D5DB" name="400" hex="#D1D5DB" onClick={() => copy("#D1D5DB")} />
           <Swatch color="#E5E7EB" name="300" hex="#E5E7EB" onClick={() => copy("#E5E7EB")} />
           <Swatch color="#F3F4F6" name="200" hex="#F3F4F6" onClick={() => copy("#F3F4F6")} />
@@ -333,7 +333,7 @@ function FoundationsColors({ copy }: { copy: (v: string) => void }) {
             <div className="surface-text-list">
               <div className="st-row"><div className="st-swatch" style={{background:"#111827"}} /><div><div className="st-name">Primary</div><div className="st-val">#111827 — Headings, body</div></div></div>
               <div className="st-row"><div className="st-swatch" style={{background:"#6B7280"}} /><div><div className="st-name">Secondary</div><div className="st-val">#6B7280 — Descriptions</div></div></div>
-              <div className="st-row"><div className="st-swatch" style={{background:"#9CA3AF"}} /><div><div className="st-name">Tertiary</div><div className="st-val">#9CA3AF — Placeholders</div></div></div>
+              <div className="st-row"><div className="st-swatch" style={{background:"#6F7787"}} /><div><div className="st-name">Tertiary</div><div className="st-val">#6F7787 — Placeholders</div></div></div>
               <div className="st-row"><div className="st-swatch" style={{background:"#0D875C"}} /><div><div className="st-name">Link</div><div className="st-val">#0D875C — Links, brand text</div></div></div>
             </div>
           </div>
@@ -904,13 +904,13 @@ function ComponentsDataDisplay() {
 
       <SubSection title="Tooltips">
         <div className="preview" style={{padding:"60px 24px 24px"}}>
-          <TooltipTrigger>
+          <TooltipTrigger delay={300}>
             <Button className="btn btn-ghost">Hover target</Button>
-            <AriaTooltip className="tooltip-bubble">This is a tooltip</AriaTooltip>
+            <AriaTooltip placement="top" className="tooltip-bubble">This is a tooltip</AriaTooltip>
           </TooltipTrigger>
-          <TooltipTrigger>
+          <TooltipTrigger delay={300}>
             <Button className="btn btn-primary btn-sm">Save</Button>
-            <AriaTooltip className="tooltip-bubble">Save patient record</AriaTooltip>
+            <AriaTooltip placement="top" className="tooltip-bubble">Save patient record</AriaTooltip>
           </TooltipTrigger>
         </div>
       </SubSection>
@@ -1419,7 +1419,7 @@ function EngineeringTokens() {
         <span className="p">--brand-active</span>{": "}<span className="v">#096843</span>{";  "}<span className="p">--brand-light</span>{": "}<span className="v">#E6F5EE</span>{";\n\n"}
         <span className="c">{"/* Semantic */"}</span>{"\n"}
         <span className="p">--success</span>{": "}<span className="v">#0D875C</span>{";  "}<span className="p">--info</span>{": "}<span className="v">#0575AD</span>{";\n"}
-        <span className="p">--warning</span>{": "}<span className="v">#F59E0B</span>{";  "}<span className="p">--danger</span>{": "}<span className="v">#EF4444</span>{";\n\n"}
+        <span className="p">--warning</span>{": "}<span className="v">#D97706</span>{";  "}<span className="p">--danger</span>{": "}<span className="v">#DC2626</span>{";\n\n"}
         <span className="c">{"/* Typography */"}</span>{"\n"}
         <span className="p">--font</span>{": "}<span className="v">'Legend', sans-serif</span>{";\n"}
         <span className="p">--text-base</span>{": "}<span className="v">14px</span>{";  "}<span className="c">{"/* scale: 12 → 60px */"}</span>{"\n\n"}

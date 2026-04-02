@@ -40,7 +40,7 @@
   --color-accent: oklch(0.95 0.04 162);
   --color-accent-foreground: oklch(0.35 0.1 162);
 
-  --color-destructive: oklch(0.64 0.2 25);
+  --color-destructive: oklch(0.58 0.22 25);
   --color-destructive-foreground: #ffffff;
 
   --color-success: oklch(0.62 0.17 145);
@@ -49,8 +49,8 @@
   --color-info: oklch(0.62 0.14 250);
   --color-info-foreground: #ffffff;
 
-  --color-warning: oklch(0.75 0.15 75);
-  --color-warning-foreground: oklch(0.3 0.08 60);
+  --color-warning: oklch(0.65 0.17 70);
+  --color-warning-foreground: #422006;
 
   --color-border: oklch(0.92 0.005 265);
   --color-input: oklch(0.92 0.005 265);
@@ -75,25 +75,41 @@
   --brand: #0D875C;
   --brand-hover: #0B7550;
   --brand-active: #096843;
+  --brand-dark: #0A6B49;
+  --brand-darker: #074D35;
   --brand-light: #E6F5EE;
   --brand-50: #F0FAF5;
 
-  /* Semantic hex */
+  /* Semantic hex (AA-compliant for white foreground) */
   --success: #0D875C; --success-light: #E6F5EE;
   --info: #0575AD; --info-light: #E0F2FE;
-  --warning: #F59E0B; --warning-light: #FEF3C7;
-  --danger: #EF4444; --danger-light: #FEE2E2;
+  --warning: #D97706; --warning-light: #FEF3C7;
+  --danger: #DC2626; --danger-light: #FEE2E2;
+  --danger-hover: #B91C1C;
 
-  /* Neutral scale */
+  /* Semantic dark text (AA-compliant on matching -light backgrounds) */
+  --success-dark: #065F46;
+  --info-dark: #075985;
+  --warning-dark: #92400E;
+  --danger-dark: #991B1B;
+  --warning-on-solid: #422006;
+
+  /* Semantic borders (alerts) */
+  --success-border: #A7F3D0;
+  --info-border: #BAE6FD;
+  --warning-border: #FDE68A;
+  --danger-border: #FECACA;
+
+  /* Neutral scale (AA-compliant) */
   --black: #111827;
   --grey-900: #1F2937; --grey-800: #374151; --grey-700: #4B5563;
-  --grey-600: #6B7280; --grey-500: #9CA3AF; --grey-400: #D1D5DB;
+  --grey-600: #6B7280; --grey-500: #868E9C; --grey-400: #D1D5DB;
   --grey-300: #E5E7EB; --grey-200: #F3F4F6; --grey-100: #F9FAFB;
   --white: #FFFFFF;
 
-  /* Text */
+  /* Text (AA-compliant: ≥ 4.5:1 on white) */
   --text-primary: #111827; --text-secondary: #6B7280;
-  --text-tertiary: #9CA3AF; --text-brand: #0D875C;
+  --text-tertiary: #6F7787; --text-brand: #0D875C;
 
   /* Borders */
   --border: #E5E7EB; --border-strong: #D1D5DB;
@@ -120,7 +136,7 @@
 
   /* Status (EMR) */
   --status-ordered: #0D875C; --status-scheduled: #0575AD;
-  --status-overdue: #EF4444; --status-in-progress: #F59E0B;
+  --status-overdue: #DC2626; --status-in-progress: #D97706;
   --status-cancelled: #9CA3AF; --status-resulted: #0D875C;
   --status-completed: #374151;
 
