@@ -158,17 +158,23 @@ function App() {
 
   return (
     <div className="ds-root">
-      {/* Mobile nav toggle */}
-      <button className="ds-nav-toggle" onClick={() => setNavOpen(!navOpen)}>
-        {navOpen ? <X size={22} /> : <MenuIcon size={22} />}
-      </button>
       {navOpen && <div className="ds-nav-overlay" onClick={() => setNavOpen(false)} />}
+
+      {/* Mobile nav open button (visible when sidebar is hidden) */}
+      {!navOpen && <button className="ds-nav-toggle-open" onClick={() => setNavOpen(true)}>
+        <MenuIcon size={22} />
+      </button>}
 
       {/* Sidebar */}
       <aside className={`ds-nav ${navOpen ? "open" : ""}`}>
         <div className="ds-nav-logo">
-          VSee
-          <span className="ds-nav-version">Design System</span>
+          <div>
+            VSee
+            <span className="ds-nav-version">Design System</span>
+          </div>
+          <button className="ds-nav-toggle" onClick={() => setNavOpen(!navOpen)}>
+            <X size={20} />
+          </button>
         </div>
         <nav className="ds-nav-groups">
           {NAV.map((section) => (
@@ -588,12 +594,6 @@ function ComponentsButtons() {
         </div>
       </SubSection>
 
-      <SubSection title="Block & Icon">
-        <div className="preview vertical" style={{maxWidth:400}}>
-          <Button className="btn btn-primary btn-block btn-lg">Sign In</Button>
-          <Button className="btn btn-ghost btn-block">Create Account</Button>
-        </div>
-      </SubSection>
     </Section>
   );
 }
@@ -1819,35 +1819,101 @@ function EngineeringTokens() {
         <span className="k">@import</span>{" "}<span className="s">"tailwindcss"</span>{";\n\n"}
         <span className="c">{"/* ── Tailwind v4 Theme ── */"}</span>{"\n"}
         <span className="k">@theme</span>{" {\n"}
+        {"  "}<span className="c">{"/* Fonts */"}</span>{"\n"}
+        {"  "}<span className="p">--font-sans</span>{": "}<span className="v">"Legend", "Inter", system-ui, -apple-system, sans-serif</span>{";\n"}
+        {"  "}<span className="p">--font-heading</span>{": "}<span className="v">"Legend", "Inter", system-ui, -apple-system, sans-serif</span>{";\n"}
+        {"  "}<span className="p">--font-mono</span>{": "}<span className="v">ui-monospace, "Cascadia Code", "Fira Code", Consolas, monospace</span>{";\n\n"}
+        {"  "}<span className="c">{"/* Colors */"}</span>{"\n"}
         {"  "}<span className="p">--color-primary</span>{": "}<span className="v">oklch(0.52 0.14 162)</span>{";\n"}
         {"  "}<span className="p">--color-primary-foreground</span>{": "}<span className="v">#ffffff</span>{";\n"}
         {"  "}<span className="p">--color-primary-hover</span>{": "}<span className="v">oklch(0.46 0.14 162)</span>{";\n"}
         {"  "}<span className="p">--color-background</span>{": "}<span className="v">#ffffff</span>{";\n"}
         {"  "}<span className="p">--color-foreground</span>{": "}<span className="v">oklch(0.16 0.02 265)</span>{";\n"}
+        {"  "}<span className="p">--color-secondary</span>{": "}<span className="v">oklch(0.96 0.005 265)</span>{";\n"}
+        {"  "}<span className="p">--color-secondary-foreground</span>{": "}<span className="v">oklch(0.16 0.02 265)</span>{";\n"}
+        {"  "}<span className="p">--color-muted</span>{": "}<span className="v">oklch(0.96 0.005 265)</span>{";\n"}
+        {"  "}<span className="p">--color-muted-foreground</span>{": "}<span className="v">oklch(0.52 0.01 265)</span>{";\n"}
+        {"  "}<span className="p">--color-accent</span>{": "}<span className="v">oklch(0.95 0.04 162)</span>{";\n"}
+        {"  "}<span className="p">--color-accent-foreground</span>{": "}<span className="v">oklch(0.35 0.1 162)</span>{";\n"}
         {"  "}<span className="p">--color-destructive</span>{": "}<span className="v">oklch(0.58 0.22 25)</span>{";\n"}
+        {"  "}<span className="p">--color-destructive-foreground</span>{": "}<span className="v">#ffffff</span>{";\n"}
         {"  "}<span className="p">--color-success</span>{": "}<span className="v">oklch(0.62 0.17 145)</span>{";\n"}
+        {"  "}<span className="p">--color-success-foreground</span>{": "}<span className="v">#ffffff</span>{";\n"}
         {"  "}<span className="p">--color-info</span>{": "}<span className="v">oklch(0.62 0.14 250)</span>{";\n"}
+        {"  "}<span className="p">--color-info-foreground</span>{": "}<span className="v">#ffffff</span>{";\n"}
         {"  "}<span className="p">--color-warning</span>{": "}<span className="v">oklch(0.65 0.17 70)</span>{";\n"}
+        {"  "}<span className="p">--color-warning-foreground</span>{": "}<span className="v">#422006</span>{";\n"}
+        {"  "}<span className="p">--color-border</span>{": "}<span className="v">oklch(0.92 0.005 265)</span>{";\n"}
+        {"  "}<span className="p">--color-input</span>{": "}<span className="v">oklch(0.92 0.005 265)</span>{";\n"}
+        {"  "}<span className="p">--color-ring</span>{": "}<span className="v">oklch(0.52 0.14 162)</span>{";\n"}
+        {"  "}<span className="p">--color-card</span>{": "}<span className="v">#ffffff</span>{";\n"}
+        {"  "}<span className="p">--color-card-foreground</span>{": "}<span className="v">oklch(0.16 0.02 265)</span>{";\n\n"}
+        {"  "}<span className="c">{"/* Radius */"}</span>{"\n"}
+        {"  "}<span className="p">--radius-sm</span>{": "}<span className="v">0.375rem</span>{";\n"}
+        {"  "}<span className="p">--radius-md</span>{": "}<span className="v">0.5rem</span>{";\n"}
+        {"  "}<span className="p">--radius-lg</span>{": "}<span className="v">0.75rem</span>{";\n"}
+        {"  "}<span className="p">--radius-xl</span>{": "}<span className="v">1rem</span>{";\n\n"}
+        {"  "}<span className="c">{"/* Shadows */"}</span>{"\n"}
+        {"  "}<span className="p">--shadow-sm</span>{": "}<span className="v">0 1px 2px 0 rgb(0 0 0 / 0.05)</span>{";\n"}
+        {"  "}<span className="p">--shadow-md</span>{": "}<span className="v">0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)</span>{";\n"}
+        {"  "}<span className="p">--shadow-lg</span>{": "}<span className="v">0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)</span>{";\n"}
+        {"  "}<span className="p">--shadow-xl</span>{": "}<span className="v">0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)</span>{";\n"}
         {"}\n\n"}
         <span className="c">{"/* ── CSS Custom Properties ── */"}</span>{"\n"}
         <span className="k">:root</span>{" {\n"}
         {"  "}<span className="c">{"/* Brand */"}</span>{"\n"}
-        {"  "}<span className="p">--brand</span>{": "}<span className="v">#0D875C</span>{";  "}<span className="p">--brand-hover</span>{": "}<span className="v">#0B7550</span>{";\n"}
-        {"  "}<span className="p">--brand-light</span>{": "}<span className="v">#E6F5EE</span>{"; "}<span className="p">--brand-50</span>{": "}<span className="v">#F0FAF5</span>{";\n\n"}
+        {"  "}<span className="p">--brand</span>{": "}<span className="v">#0D875C</span>{";     "}<span className="p">--brand-hover</span>{": "}<span className="v">#0B7550</span>{";\n"}
+        {"  "}<span className="p">--brand-active</span>{": "}<span className="v">#096843</span>{"; "}<span className="p">--brand-dark</span>{": "}<span className="v">#0A6B49</span>{";\n"}
+        {"  "}<span className="p">--brand-darker</span>{": "}<span className="v">#074D35</span>{";\n"}
+        {"  "}<span className="p">--brand-light</span>{": "}<span className="v">#E6F5EE</span>{";  "}<span className="p">--brand-50</span>{": "}<span className="v">#F0FAF5</span>{";\n\n"}
         {"  "}<span className="c">{"/* Semantic (AA on white) */"}</span>{"\n"}
-        {"  "}<span className="p">--success</span>{": "}<span className="v">#0D875C</span>{"; "}<span className="p">--info</span>{": "}<span className="v">#0575AD</span>{";\n"}
-        {"  "}<span className="p">--warning</span>{": "}<span className="v">#D97706</span>{"; "}<span className="p">--danger</span>{": "}<span className="v">#DC2626</span>{";\n\n"}
+        {"  "}<span className="p">--success</span>{": "}<span className="v">#0D875C</span>{";   "}<span className="p">--success-light</span>{": "}<span className="v">#E6F5EE</span>{";\n"}
+        {"  "}<span className="p">--info</span>{": "}<span className="v">#0575AD</span>{";      "}<span className="p">--info-light</span>{": "}<span className="v">#E0F2FE</span>{";\n"}
+        {"  "}<span className="p">--warning</span>{": "}<span className="v">#D97706</span>{";   "}<span className="p">--warning-light</span>{": "}<span className="v">#FEF3C7</span>{";\n"}
+        {"  "}<span className="p">--danger</span>{": "}<span className="v">#DC2626</span>{";    "}<span className="p">--danger-light</span>{": "}<span className="v">#FEE2E2</span>{";\n"}
+        {"  "}<span className="p">--danger-hover</span>{": "}<span className="v">#B91C1C</span>{";\n\n"}
+        {"  "}<span className="c">{"/* Semantic dark text (AA on matching -light bg) */"}</span>{"\n"}
+        {"  "}<span className="p">--success-dark</span>{": "}<span className="v">#065F46</span>{"; "}<span className="p">--info-dark</span>{": "}<span className="v">#075985</span>{";\n"}
+        {"  "}<span className="p">--warning-dark</span>{": "}<span className="v">#92400E</span>{"; "}<span className="p">--danger-dark</span>{": "}<span className="v">#991B1B</span>{";\n"}
+        {"  "}<span className="p">--warning-on-solid</span>{": "}<span className="v">#422006</span>{";\n\n"}
+        {"  "}<span className="c">{"/* Semantic borders (alerts) */"}</span>{"\n"}
+        {"  "}<span className="p">--success-border</span>{": "}<span className="v">#A7F3D0</span>{"; "}<span className="p">--info-border</span>{": "}<span className="v">#BAE6FD</span>{";\n"}
+        {"  "}<span className="p">--warning-border</span>{": "}<span className="v">#FDE68A</span>{"; "}<span className="p">--danger-border</span>{": "}<span className="v">#FECACA</span>{";\n\n"}
+        {"  "}<span className="c">{"/* Neutrals (AA-compliant) */"}</span>{"\n"}
+        {"  "}<span className="p">--black</span>{": "}<span className="v">#111827</span>{";\n"}
+        {"  "}<span className="p">--grey-900</span>{": "}<span className="v">#1F2937</span>{"; "}<span className="p">--grey-800</span>{": "}<span className="v">#374151</span>{"; "}<span className="p">--grey-700</span>{": "}<span className="v">#4B5563</span>{";\n"}
+        {"  "}<span className="p">--grey-600</span>{": "}<span className="v">#6B7280</span>{"; "}<span className="p">--grey-500</span>{": "}<span className="v">#868E9C</span>{"; "}<span className="p">--grey-400</span>{": "}<span className="v">#D1D5DB</span>{";\n"}
+        {"  "}<span className="p">--grey-300</span>{": "}<span className="v">#E5E7EB</span>{"; "}<span className="p">--grey-200</span>{": "}<span className="v">#F3F4F6</span>{"; "}<span className="p">--grey-100</span>{": "}<span className="v">#F9FAFB</span>{";\n"}
+        {"  "}<span className="p">--white</span>{": "}<span className="v">#FFFFFF</span>{";\n\n"}
         {"  "}<span className="c">{"/* Text (≥ 4.5:1 on white) */"}</span>{"\n"}
         {"  "}<span className="p">--text-primary</span>{": "}<span className="v">#111827</span>{"; "}<span className="p">--text-secondary</span>{": "}<span className="v">#6B7280</span>{";\n"}
         {"  "}<span className="p">--text-tertiary</span>{": "}<span className="v">#6F7787</span>{"; "}<span className="p">--text-brand</span>{": "}<span className="v">#0D875C</span>{";\n\n"}
+        {"  "}<span className="c">{"/* Borders */"}</span>{"\n"}
+        {"  "}<span className="p">--border</span>{": "}<span className="v">#E5E7EB</span>{"; "}<span className="p">--border-strong</span>{": "}<span className="v">#D1D5DB</span>{";\n\n"}
         {"  "}<span className="c">{"/* Typography */"}</span>{"\n"}
         {"  "}<span className="p">--font</span>{": "}<span className="v">'Legend', 'Inter', -apple-system, sans-serif</span>{";\n"}
-        {"  "}<span className="p">--text-xs</span>{": "}<span className="v">12px</span>{"; "}<span className="p">--text-sm</span>{": "}<span className="v">13px</span>{"; "}<span className="p">--text-base</span>{": "}<span className="v">14px</span>{"; "}<span className="p">--text-lg</span>{": "}<span className="v">16px</span>{";\n\n"}
+        {"  "}<span className="p">--mono</span>{": "}<span className="v">'SF Mono', 'Fira Code', 'Consolas', monospace</span>{";\n"}
+        {"  "}<span className="p">--text-xs</span>{": "}<span className="v">12px</span>{"; "}<span className="p">--text-sm</span>{": "}<span className="v">13px</span>{"; "}<span className="p">--text-base</span>{": "}<span className="v">14px</span>{"; "}<span className="p">--text-lg</span>{": "}<span className="v">16px</span>{";\n"}
+        {"  "}<span className="p">--text-xl</span>{": "}<span className="v">18px</span>{"; "}<span className="p">--text-2xl</span>{": "}<span className="v">20px</span>{"; "}<span className="p">--text-3xl</span>{": "}<span className="v">24px</span>{"; "}<span className="p">--text-4xl</span>{": "}<span className="v">30px</span>{";\n"}
+        {"  "}<span className="p">--text-5xl</span>{": "}<span className="v">36px</span>{"; "}<span className="p">--text-6xl</span>{": "}<span className="v">48px</span>{"; "}<span className="p">--text-7xl</span>{": "}<span className="v">60px</span>{";\n\n"}
         {"  "}<span className="c">{"/* Spacing (4px base) */"}</span>{"\n"}
-        {"  "}<span className="p">--sp-1</span>{": "}<span className="v">4px</span>{"; "}<span className="p">--sp-2</span>{": "}<span className="v">8px</span>{"; "}<span className="p">--sp-3</span>{": "}<span className="v">12px</span>{"; "}<span className="p">--sp-4</span>{": "}<span className="v">16px</span>{";\n"}
-        {"  "}<span className="p">--sp-6</span>{": "}<span className="v">24px</span>{"; "}<span className="p">--sp-8</span>{": "}<span className="v">32px</span>{"; "}<span className="p">--sp-12</span>{": "}<span className="v">48px</span>{"; "}<span className="p">--sp-16</span>{": "}<span className="v">64px</span>{";\n\n"}
+        {"  "}<span className="p">--sp-1</span>{": "}<span className="v">4px</span>{";  "}<span className="p">--sp-2</span>{": "}<span className="v">8px</span>{";  "}<span className="p">--sp-3</span>{": "}<span className="v">12px</span>{"; "}<span className="p">--sp-4</span>{": "}<span className="v">16px</span>{";\n"}
+        {"  "}<span className="p">--sp-5</span>{": "}<span className="v">20px</span>{"; "}<span className="p">--sp-6</span>{": "}<span className="v">24px</span>{"; "}<span className="p">--sp-8</span>{": "}<span className="v">32px</span>{"; "}<span className="p">--sp-10</span>{": "}<span className="v">40px</span>{";\n"}
+        {"  "}<span className="p">--sp-12</span>{": "}<span className="v">48px</span>{"; "}<span className="p">--sp-16</span>{": "}<span className="v">64px</span>{"; "}<span className="p">--sp-20</span>{": "}<span className="v">80px</span>{"; "}<span className="p">--sp-24</span>{": "}<span className="v">96px</span>{";\n\n"}
         {"  "}<span className="c">{"/* Radius */"}</span>{"\n"}
-        {"  "}<span className="p">--r-sm</span>{": "}<span className="v">6px</span>{"; "}<span className="p">--r-md</span>{": "}<span className="v">8px</span>{"; "}<span className="p">--r-lg</span>{": "}<span className="v">12px</span>{"; "}<span className="p">--r-full</span>{": "}<span className="v">9999px</span>{";\n"}
+        {"  "}<span className="p">--r-sm</span>{": "}<span className="v">6px</span>{"; "}<span className="p">--r-md</span>{": "}<span className="v">8px</span>{"; "}<span className="p">--r-lg</span>{": "}<span className="v">12px</span>{"; "}<span className="p">--r-xl</span>{": "}<span className="v">16px</span>{";\n"}
+        {"  "}<span className="p">--r-2xl</span>{": "}<span className="v">24px</span>{"; "}<span className="p">--r-full</span>{": "}<span className="v">9999px</span>{";\n\n"}
+        {"  "}<span className="c">{"/* Shadows */"}</span>{"\n"}
+        {"  "}<span className="p">--shadow-xs</span>{": "}<span className="v">0 1px 2px rgba(0,0,0,0.05)</span>{";\n"}
+        {"  "}<span className="p">--shadow-focus</span>{": "}<span className="v">0 0 0 3px rgba(13,135,92,0.15)</span>{";\n\n"}
+        {"  "}<span className="c">{"/* Status (EMR) */"}</span>{"\n"}
+        {"  "}<span className="p">--status-ordered</span>{": "}<span className="v">#0D875C</span>{";     "}<span className="p">--status-scheduled</span>{": "}<span className="v">#0575AD</span>{";\n"}
+        {"  "}<span className="p">--status-overdue</span>{": "}<span className="v">#DC2626</span>{";     "}<span className="p">--status-in-progress</span>{": "}<span className="v">#D97706</span>{";\n"}
+        {"  "}<span className="p">--status-cancelled</span>{": "}<span className="v">#9CA3AF</span>{";   "}<span className="p">--status-resulted</span>{": "}<span className="v">#0D875C</span>{";\n"}
+        {"  "}<span className="p">--status-completed</span>{": "}<span className="v">#374151</span>{";\n\n"}
+        {"  "}<span className="c">{"/* Transitions */"}</span>{"\n"}
+        {"  "}<span className="p">--ease</span>{": "}<span className="v">cubic-bezier(0.4, 0, 0.2, 1)</span>{";\n"}
+        {"  "}<span className="p">--t-fast</span>{": "}<span className="v">150ms var(--ease)</span>{"; "}<span className="p">--t-base</span>{": "}<span className="v">200ms var(--ease)</span>{"; "}<span className="p">--t-slow</span>{": "}<span className="v">300ms var(--ease)</span>{";\n"}
         {"}"}
       </div>
     </Section>
