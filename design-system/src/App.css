@@ -422,8 +422,8 @@
 /* ═══════════════════════════════════════════
    PATTERNS — LAYOUTS
    ═══════════════════════════════════════════ */
-.sidebar-layout { display: flex; border: 1px solid var(--border); border-radius: var(--r-xl); overflow: hidden; background: white; height: 300px; }
-.sidebar-panel { width: 260px; border-right: 1px solid var(--border); background: var(--grey-100); }
+.sidebar-layout { display: flex; border: 1px solid var(--border); border-radius: var(--r-xl); overflow: hidden; background: white; min-height: 300px; }
+.sidebar-panel { width: 200px; min-width: 200px; border-right: 1px solid var(--border); background: var(--grey-100); }
 .sidebar-heading { padding: var(--sp-4) var(--sp-4) var(--sp-3); font-weight: 700; font-size: var(--text-sm); color: var(--text-primary); }
 .sidebar-menu-item { display: flex; align-items: center; gap: var(--sp-3); padding: var(--sp-3) var(--sp-4); font-size: var(--text-sm); font-weight: 500; color: var(--text-secondary); cursor: pointer; transition: all var(--t-fast); }
 .sidebar-menu-item:hover { background: var(--grey-200); color: var(--text-primary); }

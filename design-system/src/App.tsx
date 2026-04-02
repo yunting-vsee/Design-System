@@ -1409,6 +1409,66 @@ function PatternsEMR() {
    PATTERNS — LAYOUTS
    ═══════════════════════════════════════════ */
 function PatternsLayouts() {
+  const sidebarPages: Record<string, { title: string; content: React.ReactNode }> = {
+    Dashboard: {
+      title: "Dashboard",
+      content: (
+        <>
+          <p style={{color:"var(--text-secondary)", marginBottom:"var(--sp-4)"}}>Welcome back, Dr. Chen. Here's your overview for today.</p>
+          <div style={{display:"grid", gridTemplateColumns:"repeat(3, 1fr)", gap:"var(--sp-3)"}}>
+            {[{label:"Patients Today",val:"12"},{label:"Pending Orders",val:"5"},{label:"Messages",val:"3"}].map(s=>(
+              <div key={s.label} style={{background:"var(--grey-100)",borderRadius:"var(--r-md)",padding:"var(--sp-4)",textAlign:"center"}}>
+                <div style={{fontSize:"var(--text-2xl)",fontWeight:700,color:"var(--brand)"}}>{s.val}</div>
+                <div style={{fontSize:"var(--text-sm)",color:"var(--text-secondary)"}}>{s.label}</div>
+              </div>
+            ))}
+          </div>
+        </>
+      ),
+    },
+    Patients: {
+      title: "Patients",
+      content: (
+        <div style={{display:"flex",flexDirection:"column",gap:"var(--sp-3)"}}>
+          {[{name:"Michelle Doe",id:"10042",status:"Active"},{name:"John Smith",id:"10089",status:"Pending"},{name:"Alice Wong",id:"10115",status:"Inactive"}].map(p=>(
+            <div key={p.id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"var(--sp-3)",background:"var(--grey-100)",borderRadius:"var(--r-md)"}}>
+              <div><div style={{fontWeight:600}}>{p.name}</div><div style={{fontSize:"var(--text-sm)",color:"var(--text-tertiary)"}}>ID: {p.id}</div></div>
+              <span className={`badge ${p.status==="Active"?"badge-success":p.status==="Pending"?"badge-warning":"badge-neutral"}`}><span className="badge-dot" /> {p.status}</span>
+            </div>
+          ))}
+        </div>
+      ),
+    },
+    Appointments: {
+      title: "Appointments",
+      content: (
+        <div style={{display:"flex",flexDirection:"column",gap:"var(--sp-3)"}}>
+          {[{time:"9:00 AM",patient:"Michelle Doe",type:"Follow-up"},{time:"10:30 AM",patient:"John Smith",type:"New Patient"},{time:"2:00 PM",patient:"Alice Wong",type:"Telemedicine"}].map(a=>(
+            <div key={a.time} style={{display:"flex",gap:"var(--sp-4)",alignItems:"center",padding:"var(--sp-3)",background:"var(--grey-100)",borderRadius:"var(--r-md)"}}>
+              <div style={{fontWeight:600,color:"var(--brand)",minWidth:70}}>{a.time}</div>
+              <div><div style={{fontWeight:600}}>{a.patient}</div><div style={{fontSize:"var(--text-sm)",color:"var(--text-tertiary)"}}>{a.type}</div></div>
+            </div>
+          ))}
+        </div>
+      ),
+    },
+    Messages: {
+      title: "Messages",
+      content: <p style={{color:"var(--text-secondary)"}}>You have 3 unread messages from patients. Check your inbox for the latest updates.</p>,
+    },
+    "Lab Results": {
+      title: "Lab Results",
+      content: <p style={{color:"var(--text-secondary)"}}>2 new lab results are ready for review. Click a result to view the full report.</p>,
+    },
+    Settings: {
+      title: "Settings",
+      content: <p style={{color:"var(--text-secondary)"}}>Manage your profile, notification preferences, and clinic configuration.</p>,
+    },
+  };
+
+  const [activePage, setActivePage] = useState("Dashboard");
+  const page = sidebarPages[activePage];
+
   return (
     <Section id="layouts" label="Patterns" title="Layouts"
       description="Common layout patterns used across the VSee Clinic application.">
@@ -1417,13 +1477,13 @@ function PatternsLayouts() {
         <div className="sidebar-layout">
           <div className="sidebar-panel">
             <div className="sidebar-heading">Menu</div>
-            {["Dashboard","Patients","Appointments","Messages","Lab Results","Settings"].map((item, i) => (
-              <div key={item} className={`sidebar-menu-item ${i === 0 ? "active" : ""}`}>{item}</div>
+            {Object.keys(sidebarPages).map((item) => (
+              <div key={item} className={`sidebar-menu-item ${activePage === item ? "active" : ""}`} onClick={() => setActivePage(item)}>{item}</div>
             ))}
           </div>
           <div className="sidebar-content">
-            <div style={{fontSize:20,fontWeight:700,marginBottom:"var(--sp-4)"}}>Dashboard</div>
-            <div style={{color:"var(--text-secondary)"}}>Main content area with sidebar navigation pattern. Used across most admin and clinician views.</div>
+            <div style={{fontSize:20,fontWeight:700,marginBottom:"var(--sp-4)"}}>{page.title}</div>
+            {page.content}
           </div>
         </div>
       </SubSection>
@@ -1456,25 +1516,36 @@ function PatternsTheming() {
       </div>
 
       <div className="sub-title" style={{marginTop:"var(--sp-8)"}}>How to Override</div>
-      <div className="sub-desc">Add a <code className="code-inline">[data-theme]</code> attribute to the <code className="code-inline">{"<html>"}</code> element. Override both the Tailwind <code className="code-inline">@theme</code> values and the <code className="code-inline">:root</code> CSS custom properties.</div>
+      <div className="sub-desc">Add a <code className="code-inline">[data-theme]</code> attribute to the <code className="code-inline">{"<html>"}</code> element. Override both the Tailwind <code className="code-inline">@theme</code> values (oklch) and the <code className="code-inline">:root</code> CSS custom properties (hex).</div>
       <div className="code">
-        <span className="c">{"/* theme-blue-health.css — tenant override */"}</span>{"\n\n"}
-        <span className="c">{"/* 1. Override Tailwind v4 theme tokens */"}</span>{"\n"}
+        <span className="c">{"/* theme-blue-variant.css — tenant override */"}</span>{"\n\n"}
+        <span className="c">{"/* 1. Override Tailwind v4 theme tokens (oklch format) */"}</span>{"\n"}
         <span className="k">@theme</span>{" {\n"}
-        {"  "}<span className="p">--color-primary</span>{": "}<span className="v">#2563EB</span>{";\n"}
-        {"  "}<span className="p">--color-primary-hover</span>{": "}<span className="v">#1D4ED8</span>{";\n"}
-        {"  "}<span className="p">--color-ring</span>{": "}<span className="v">#2563EB</span>{";\n"}
+        {"  "}<span className="c">{"/* Primary brand */"}</span>{"\n"}
+        {"  "}<span className="p">--color-primary</span>{": "}<span className="v">oklch(0.55 0.2 264)</span>{";"}<span className="c">{"           /* #2563EB */"}</span>{"\n"}
+        {"  "}<span className="p">--color-primary-foreground</span>{": "}<span className="v">#ffffff</span>{";\n"}
+        {"  "}<span className="p">--color-primary-hover</span>{": "}<span className="v">oklch(0.49 0.2 264)</span>{";"}<span className="c">{"     /* #1D4ED8 */"}</span>{"\n\n"}
+        {"  "}<span className="c">{"/* Accent (brand-tinted) */"}</span>{"\n"}
+        {"  "}<span className="p">--color-accent</span>{": "}<span className="v">oklch(0.95 0.04 264)</span>{";"}<span className="c">{"        /* light blue tint */"}</span>{"\n"}
+        {"  "}<span className="p">--color-accent-foreground</span>{": "}<span className="v">oklch(0.4 0.15 264)</span>{";\n\n"}
+        {"  "}<span className="c">{"/* Focus ring */"}</span>{"\n"}
+        {"  "}<span className="p">--color-ring</span>{": "}<span className="v">oklch(0.55 0.2 264)</span>{";\n"}
         {"}\n\n"}
-        <span className="c">{"/* 2. Override :root CSS custom properties */"}</span>{"\n"}
-        {"[data-theme="}<span className="s">"blue-health"</span>{"] {\n"}
-        {"  "}<span className="p">--brand</span>{": "}<span className="v">#2563EB</span>{";  "}<span className="p">--brand-hover</span>{": "}<span className="v">#1D4ED8</span>{";\n"}
-        {"  "}<span className="p">--brand-active</span>{": "}<span className="v">#1E40AF</span>{"; "}<span className="p">--brand-dark</span>{": "}<span className="v">#1E40AF</span>{";\n"}
-        {"  "}<span className="p">--brand-light</span>{": "}<span className="v">#EFF6FF</span>{"; "}<span className="p">--brand-50</span>{": "}<span className="v">#F0F6FF</span>{";\n"}
+        <span className="c">{"/* 2. Override :root CSS custom properties (hex format) */"}</span>{"\n"}
+        {"[data-theme="}<span className="s">"blue-variant"</span>{"] {\n"}
+        {"  "}<span className="c">{"/* Brand scale */"}</span>{"\n"}
+        {"  "}<span className="p">--brand</span>{": "}<span className="v">#2563EB</span>{";       "}<span className="p">--brand-hover</span>{": "}<span className="v">#1D4ED8</span>{";\n"}
+        {"  "}<span className="p">--brand-active</span>{": "}<span className="v">#1E40AF</span>{";  "}<span className="p">--brand-dark</span>{": "}<span className="v">#1E3A8A</span>{";\n"}
+        {"  "}<span className="p">--brand-darker</span>{": "}<span className="v">#172554</span>{";\n"}
+        {"  "}<span className="p">--brand-light</span>{": "}<span className="v">#DBEAFE</span>{";  "}<span className="p">--brand-50</span>{": "}<span className="v">#EFF6FF</span>{";\n\n"}
+        {"  "}<span className="c">{"/* Text & focus */"}</span>{"\n"}
         {"  "}<span className="p">--text-brand</span>{": "}<span className="v">#2563EB</span>{";\n"}
-        {"  "}<span className="p">--shadow-focus</span>{": "}<span className="v">0 0 0 3px rgba(37, 99, 235, 0.15)</span>{";\n"}
+        {"  "}<span className="p">--shadow-focus</span>{": "}<span className="v">0 0 0 3px rgba(37, 99, 235, 0.15)</span>{";\n\n"}
+        {"  "}<span className="c">{"/* Status (if brand = success, remap ordered/resulted) */"}</span>{"\n"}
+        {"  "}<span className="p">--status-ordered</span>{": "}<span className="v">#2563EB</span>{"; "}<span className="p">--status-resulted</span>{": "}<span className="v">#2563EB</span>{";\n"}
         {"}\n\n"}
         <span className="c">{"/* 3. Apply in HTML */"}</span>{"\n"}
-        <span className="t">{"<html"}</span>{" "}<span className="p">data-theme</span>{"="}<span className="s">"blue-health"</span><span className="t">{">"}</span>
+        <span className="t">{"<html"}</span>{" "}<span className="p">data-theme</span>{"="}<span className="s">"blue-variant"</span><span className="t">{">"}</span>
       </div>
     </Section>
   );
