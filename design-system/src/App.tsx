@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import {
   Button,
   TextField,
@@ -11,16 +11,7 @@ import {
   TabList,
   TabPanel,
   Tabs,
-  ProgressBar,
-  Table,
-  TableHeader,
-  TableBody,
-  Row,
-  Cell,
-  Column,
-  Separator,
   Form,
-  NumberField,
   Group,
   Select,
   SelectValue,
@@ -33,11 +24,6 @@ import {
   Breadcrumbs,
   Breadcrumb,
   Link,
-  Dialog,
-  DialogTrigger,
-  Modal,
-  ModalOverlay,
-  Heading,
   TooltipTrigger,
   Tooltip as AriaTooltip,
 } from "react-aria-components";
@@ -50,26 +36,11 @@ import {
   ChevronRight,
   X,
   Search,
-  User,
-  Heart,
-  Thermometer,
-  Activity,
   FileText,
   Palette,
-  Code2,
   LayoutGrid,
   Layers,
   Settings,
-  Minus,
-  Plus,
-  MessageSquare,
-  Calendar,
-  BarChart3,
-  Home,
-  Users,
-  Mail,
-  FlaskConical,
-  HelpCircle,
 } from "lucide-react";
 import "./App.css";
 
@@ -565,7 +536,7 @@ function ComponentsForms() {
             <Select className="field">
               <Label className="form-label">Specialty</Label>
               <Button className="input select-trigger">
-                <SelectValue placeholder="Select a specialty..." />
+                <SelectValue>{({isPlaceholder, selectedText}) => isPlaceholder ? "Select a specialty..." : selectedText}</SelectValue>
                 <ChevronDown size={16} className="select-chevron" />
               </Button>
               <Popover className="select-popover">
@@ -1325,7 +1296,7 @@ export function PatientIntakePage() {
                     <Select className="field" selectedKey={insurance || undefined} onSelectionChange={(k) => setInsurance(k as string)}>
                       <Label className="form-label">Insurance Provider</Label>
                       <Button className="input select-trigger">
-                        <SelectValue placeholder="Select provider…" />
+                        <SelectValue>{({isPlaceholder, selectedText}) => isPlaceholder ? "Select provider…" : selectedText}</SelectValue>
                         <ChevronDown size={16} className="select-chevron" />
                       </Button>
                       <Popover className="select-popover">
