@@ -117,7 +117,7 @@
   box-sizing: border-box;
 }
 .btn[data-focus-visible] { box-shadow: var(--shadow-focus); outline: 2px solid var(--brand); outline-offset: 2px; }
-.btn[data-disabled], .btn.disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
+.btn[data-disabled], .btn.disabled { background: var(--grey-200); color: var(--grey-600); border-color: var(--grey-300); cursor: not-allowed; pointer-events: none; }
 
 .btn-primary { background: var(--brand); color: white; }
 .btn-primary[data-hovered] { background: var(--brand-hover); box-shadow: var(--shadow-sm); }
@@ -189,6 +189,7 @@
 .input:hover { border-color: var(--grey-500); }
 .input:focus, .input[data-focused] { border-color: var(--brand); box-shadow: var(--shadow-focus); }
 .input::placeholder { color: var(--text-tertiary); }
+.input[disabled], .input[data-disabled] { background: var(--grey-200); opacity: 0.5; cursor: not-allowed; }
 .input.error { border-color: var(--danger); }
 .input.error:focus { box-shadow: 0 0 0 3px rgba(239,68,68,0.15); }
 .input-lg { height: 48px; font-size: var(--text-lg); padding: 0 var(--sp-4); border-radius: var(--r-lg); }
@@ -341,10 +342,10 @@
 
 /* Pagination */
 .pagination { display: flex; align-items: center; gap: var(--sp-1); }
-.page-btn { display: flex; align-items: center; justify-content: center; min-width: 36px; height: 36px; padding: 0 var(--sp-2); font-size: var(--text-sm); font-weight: 500; color: var(--text-secondary); background: white; border: 1px solid var(--border); border-radius: var(--r-md); cursor: pointer; transition: all var(--t-fast); font-family: var(--font); }
-.page-btn:hover { background: var(--grey-100); color: var(--text-primary); }
-.page-btn.active { background: var(--brand); color: white; border-color: var(--brand); }
-.page-btn.disabled { opacity: 0.4; pointer-events: none; }
+.page-btn { display: flex; align-items: center; justify-content: center; min-width: 28px; height: 28px; padding: 0 var(--sp-1); font-size: var(--text-sm); font-weight: 500; color: var(--text-secondary); background: transparent; border: none; border-radius: var(--r-md); cursor: pointer; transition: all var(--t-fast); font-family: var(--font); }
+.page-btn:hover { background: var(--grey-200); color: var(--text-primary); }
+.page-btn.active { background: var(--brand); color: white; font-weight: 600; }
+.page-btn.disabled { color: var(--grey-400); cursor: not-allowed; pointer-events: none; }
 
 /* ═══════════════════════════════════════════
    DATA DISPLAY

@@ -748,7 +748,8 @@ function ComponentsForms() {
           <div className="sub-title" style={{marginTop:"var(--sp-6)"}}>Disabled State</div>
           <div className="form-group">
             <TextField isDisabled className="field">
-              <Input className="input" defaultValue="Read-only value" style={{opacity:0.5,cursor:"not-allowed"}} />
+              <Label className="form-label">Disabled field</Label>
+              <Input className="input" defaultValue="Read-only value" />
             </TextField>
           </div>
         </div>
@@ -1864,14 +1865,12 @@ function PatternsFormio() {
 
       {/* ── Install ── */}
       <SubSection title="Install">
-        <div className="card">
-          <div className="code">
+        <div className="code">
 {`# Install Form.io React renderer + core library
 npm install @formio/react formiojs
 
 # React Aria components (already included in this project)
 npm install react-aria-components`}
-          </div>
         </div>
       </SubSection>
     </Section>
