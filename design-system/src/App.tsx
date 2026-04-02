@@ -26,6 +26,21 @@ import {
   Link,
   TooltipTrigger,
   Tooltip as AriaTooltip,
+  DialogTrigger,
+  Dialog,
+  Modal,
+  ModalOverlay,
+  Heading,
+  TagGroup,
+  TagList,
+  Tag,
+  ComboBox,
+  Header,
+  Section as AriaSection,
+  Separator,
+  Menu,
+  MenuItem,
+  MenuTrigger,
 } from "react-aria-components";
 import {
   AlertCircle,
@@ -34,6 +49,7 @@ import {
   AlertTriangle,
   ChevronDown,
   ChevronRight,
+  ChevronUp,
   X,
   Search,
   FileText,
@@ -41,6 +57,19 @@ import {
   LayoutGrid,
   Layers,
   Settings,
+  Monitor,
+  MoreHorizontal,
+  Edit3,
+  Trash2,
+  Copy,
+  ExternalLink,
+  Archive,
+  Bell,
+  CheckCircle,
+  XCircle,
+  Inbox,
+  Tag as TagIcon,
+  Filter,
 } from "lucide-react";
 import "./App.css";
 
@@ -96,15 +125,22 @@ const NAV = [
     icon: <Settings size={14} />,
     items: [{ label: "Design Tokens", id: "tokens" }],
   },
+  {
+    group: "Pages",
+    icon: <Monitor size={14} />,
+    items: [{ label: "EMR Page", id: "__emr_page__" }],
+  },
 ];
 
 function App() {
   const [activeSection, setActiveSection] = useState("colors");
+  const [currentPage, setCurrentPage] = useState<"design-system" | "emr">("design-system");
   const toast = useCopyToast();
 
   /* scroll-based active nav tracking */
   useEffect(() => {
-    const ids = NAV.flatMap((g) => g.items.map((i) => i.id));
+    if (currentPage !== "design-system") return;
+    const ids = NAV.flatMap((g) => g.items.map((i) => i.id)).filter(id => id !== "__emr_page__");
     const onScroll = () => {
       let current = ids[0];
       for (const id of ids) {
@@ -115,9 +151,23 @@ function App() {
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [currentPage]);
 
   const scrollTo = (id: string) => {
+    if (id === "__emr_page__") {
+      setCurrentPage("emr");
+      setActiveSection(id);
+      window.scrollTo({ top: 0 });
+      return;
+    }
+    if (currentPage !== "design-system") {
+      setCurrentPage("design-system");
+      setTimeout(() => {
+        setActiveSection(id);
+        document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+      }, 50);
+      return;
+    }
     setActiveSection(id);
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   };
@@ -128,7 +178,7 @@ function App() {
       <aside className="ds-nav">
         <div className="ds-nav-logo">
           VSee
-          <span className="ds-nav-version">Design System v4.0</span>
+          <span className="ds-nav-version">Design System</span>
         </div>
         <nav className="ds-nav-groups">
           {NAV.map((section) => (
@@ -153,6 +203,10 @@ function App() {
 
       {/* Main */}
       <div className="ds-main">
+        {currentPage === "emr" ? (
+          <EMRPage />
+        ) : (
+        <>
         {/* Hero */}
         <div className="hero">
           <div className="hero-badge">React Aria + Tailwind — 2026</div>
@@ -181,6 +235,8 @@ function App() {
         <PatternsTheming />
         <PatternsFormio />
         <EngineeringTokens />
+        </>
+        )}
 
         {/* Footer */}
         <div className="ds-footer">
@@ -1086,67 +1142,65 @@ function PatternsFormio() {
         <p className="sub-desc">
           The server returns a JSON schema like this. The <code className="code-inline">type</code> field maps to the registered custom component.
         </p>
-        <div className="card">
-          <div className="code">
-{`// Returned by GET /form/patient-intake (Form.io API)
-{
-  "title": "Patient Intake Form",
-  "components": [
-    {
-      "type":        "ariaTextfield",    // ← custom component key
-      "key":         "firstName",
-      "label":       "First Name",
-      "placeholder": "Jane",
-      "validate":    { "required": true }
-    },
-    {
-      "type":        "ariaTextfield",
-      "key":         "lastName",
-      "label":       "Last Name",
-      "placeholder": "Doe",
-      "validate":    { "required": true }
-    },
-    {
-      "type":        "ariaTextfield",
-      "inputType":   "date",
-      "key":         "dob",
-      "label":       "Date of Birth",
-      "validate":    { "required": true }
-    },
-    {
-      "type":        "ariaSelect",       // ← custom Select
-      "key":         "insurance",
-      "label":       "Insurance Provider",
-      "data": {
-        "values": [
-          { "label": "Aetna",            "value": "aetna"    },
-          { "label": "BlueCross",        "value": "bluecross" },
-          { "label": "Cigna",            "value": "cigna"    },
-          { "label": "UnitedHealthcare", "value": "uhc"      }
-        ]
-      }
-    },
-    {
-      "type":        "ariaTextarea",     // ← custom Textarea
-      "key":         "reasonForVisit",
-      "label":       "Reason for Visit",
-      "placeholder": "Describe your symptoms...",
-      "rows":        3
-    },
-    {
-      "type":        "ariaCheckbox",     // ← custom Checkbox
-      "key":         "hipaaConsent",
-      "label":       "I have read and agree to the HIPAA Privacy Notice",
-      "validate":    { "required": true }
-    },
-    {
-      "type":        "ariaButton",
-      "action":      "submit",
-      "label":       "Submit Intake Form"
-    }
-  ]
-}`}
-          </div>
+        <div className="code">
+          <span className="c">{"// Returned by GET /form/patient-intake (Form.io API)"}</span>{"\n"}
+          {"{\n"}
+          {"  "}<span className="p">"title"</span>{": "}<span className="s">"Patient Intake Form"</span>{",\n"}
+          {"  "}<span className="p">"components"</span>{": [\n"}
+          {"    {\n"}
+          {"      "}<span className="p">"type"</span>{":        "}<span className="s">"ariaTextfield"</span>{",    "}<span className="c">{"// ← custom component key"}</span>{"\n"}
+          {"      "}<span className="p">"key"</span>{":         "}<span className="s">"firstName"</span>{",\n"}
+          {"      "}<span className="p">"label"</span>{":       "}<span className="s">"First Name"</span>{",\n"}
+          {"      "}<span className="p">"placeholder"</span>{": "}<span className="s">"Jane"</span>{",\n"}
+          {"      "}<span className="p">"validate"</span>{":    { "}<span className="p">"required"</span>{": "}<span className="v">true</span>{" }\n"}
+          {"    },\n"}
+          {"    {\n"}
+          {"      "}<span className="p">"type"</span>{":        "}<span className="s">"ariaTextfield"</span>{",\n"}
+          {"      "}<span className="p">"key"</span>{":         "}<span className="s">"lastName"</span>{",\n"}
+          {"      "}<span className="p">"label"</span>{":       "}<span className="s">"Last Name"</span>{",\n"}
+          {"      "}<span className="p">"placeholder"</span>{": "}<span className="s">"Doe"</span>{",\n"}
+          {"      "}<span className="p">"validate"</span>{":    { "}<span className="p">"required"</span>{": "}<span className="v">true</span>{" }\n"}
+          {"    },\n"}
+          {"    {\n"}
+          {"      "}<span className="p">"type"</span>{":        "}<span className="s">"ariaTextfield"</span>{",\n"}
+          {"      "}<span className="p">"inputType"</span>{":   "}<span className="s">"date"</span>{",\n"}
+          {"      "}<span className="p">"key"</span>{":         "}<span className="s">"dob"</span>{",\n"}
+          {"      "}<span className="p">"label"</span>{":       "}<span className="s">"Date of Birth"</span>{",\n"}
+          {"      "}<span className="p">"validate"</span>{":    { "}<span className="p">"required"</span>{": "}<span className="v">true</span>{" }\n"}
+          {"    },\n"}
+          {"    {\n"}
+          {"      "}<span className="p">"type"</span>{":        "}<span className="s">"ariaSelect"</span>{",       "}<span className="c">{"// ← custom Select"}</span>{"\n"}
+          {"      "}<span className="p">"key"</span>{":         "}<span className="s">"insurance"</span>{",\n"}
+          {"      "}<span className="p">"label"</span>{":       "}<span className="s">"Insurance Provider"</span>{",\n"}
+          {"      "}<span className="p">"data"</span>{": {\n"}
+          {"        "}<span className="p">"values"</span>{": [\n"}
+          {"          { "}<span className="p">"label"</span>{": "}<span className="s">"Aetna"</span>{",            "}<span className="p">"value"</span>{": "}<span className="s">"aetna"</span>{"    },\n"}
+          {"          { "}<span className="p">"label"</span>{": "}<span className="s">"BlueCross"</span>{",        "}<span className="p">"value"</span>{": "}<span className="s">"bluecross"</span>{" },\n"}
+          {"          { "}<span className="p">"label"</span>{": "}<span className="s">"Cigna"</span>{",            "}<span className="p">"value"</span>{": "}<span className="s">"cigna"</span>{"    },\n"}
+          {"          { "}<span className="p">"label"</span>{": "}<span className="s">"UnitedHealthcare"</span>{", "}<span className="p">"value"</span>{": "}<span className="s">"uhc"</span>{"      }\n"}
+          {"        ]\n"}
+          {"      }\n"}
+          {"    },\n"}
+          {"    {\n"}
+          {"      "}<span className="p">"type"</span>{":        "}<span className="s">"ariaTextarea"</span>{",     "}<span className="c">{"// ← custom Textarea"}</span>{"\n"}
+          {"      "}<span className="p">"key"</span>{":         "}<span className="s">"reasonForVisit"</span>{",\n"}
+          {"      "}<span className="p">"label"</span>{":       "}<span className="s">"Reason for Visit"</span>{",\n"}
+          {"      "}<span className="p">"placeholder"</span>{": "}<span className="s">"Describe your symptoms..."</span>{",\n"}
+          {"      "}<span className="p">"rows"</span>{":        "}<span className="v">3</span>{"\n"}
+          {"    },\n"}
+          {"    {\n"}
+          {"      "}<span className="p">"type"</span>{":        "}<span className="s">"ariaCheckbox"</span>{",     "}<span className="c">{"// ← custom Checkbox"}</span>{"\n"}
+          {"      "}<span className="p">"key"</span>{":         "}<span className="s">"hipaaConsent"</span>{",\n"}
+          {"      "}<span className="p">"label"</span>{":       "}<span className="s">"I have read and agree to the HIPAA Privacy Notice"</span>{",\n"}
+          {"      "}<span className="p">"validate"</span>{":    { "}<span className="p">"required"</span>{": "}<span className="v">true</span>{" }\n"}
+          {"    },\n"}
+          {"    {\n"}
+          {"      "}<span className="p">"type"</span>{":        "}<span className="s">"ariaButton"</span>{",\n"}
+          {"      "}<span className="p">"action"</span>{":      "}<span className="s">"submit"</span>{",\n"}
+          {"      "}<span className="p">"label"</span>{":       "}<span className="s">"Submit Intake Form"</span>{"\n"}
+          {"    }\n"}
+          {"  ]\n"}
+          {"}"}
         </div>
       </SubSection>
 
@@ -1155,90 +1209,79 @@ function PatternsFormio() {
         <p className="sub-desc">
           Each Form.io component type is mapped to a React component. The <code className="code-inline">component</code> object carries the schema properties; <code className="code-inline">onChange</code> updates the submission data.
         </p>
-        <div className="card">
-          <div className="code">
-{`// src/formio/aria-components.tsx
-import { TextField, Input, Label, TextArea, Checkbox, Button, Text }
-  from "react-aria-components"
-
-// ariaTextfield → React Aria <TextField> + <Input>
-export function AriaTextfield({ component, value, onChange, error }) {
-  return (
-    <TextField
-      value={value ?? ""}
-      onChange={onChange}
-      isInvalid={!!error}
-      isRequired={component.validate?.required}
-    >
-      <Label>
-        {component.label}
-        {component.validate?.required && (
-          <span style={{ color: "var(--danger)", marginLeft: 2 }}>*</span>
-        )}
-      </Label>
-      <Input
-        type={component.inputType ?? "text"}
-        placeholder={component.placeholder}
-      />
-      {error && (
-        <Text slot="errorMessage">{error}</Text>
-      )}
-    </TextField>
-  )
-}
-
-// ariaCheckbox → React Aria <Checkbox>
-export function AriaCheckbox({ component, value, onChange, error }) {
-  return (
-    <Checkbox
-      isSelected={!!value}
-      onChange={(checked) => onChange(!!checked)}
-      isInvalid={!!error}
-    >
-      {component.label}
-    </Checkbox>
-  )
-}
-
-// Register all custom components
-export const customComponents = {
-  ariaTextfield: AriaTextfield,
-  ariaTextarea:  AriaTextarea,
-  ariaSelect:    AriaSelect,
-  ariaCheckbox:  AriaCheckbox,
-  ariaButton:    AriaButton,
-}`}
-          </div>
+        <div className="code">
+          <span className="c">{"// src/formio/aria-components.tsx"}</span>{"\n"}
+          <span className="k">import</span>{" { "}<span className="f">TextField</span>{", "}<span className="f">Input</span>{", "}<span className="f">Label</span>{", "}<span className="f">TextArea</span>{", "}<span className="f">Checkbox</span>{", "}<span className="f">Button</span>{", "}<span className="f">Text</span>{" }\n"}
+          {"  "}<span className="k">from</span>{" "}<span className="s">"react-aria-components"</span>{"\n\n"}
+          <span className="c">{"// ariaTextfield → React Aria <TextField> + <Input>"}</span>{"\n"}
+          <span className="k">export function</span>{" "}<span className="f">AriaTextfield</span>{"({ component, value, onChange, error }) {\n"}
+          {"  "}<span className="k">return</span>{" (\n"}
+          {"    "}<span className="t">{"<TextField"}</span>{"\n"}
+          {"      "}<span className="p">value</span>{"={value ?? "}<span className="s">""</span>{"}\n"}
+          {"      "}<span className="p">onChange</span>{"={onChange}\n"}
+          {"      "}<span className="p">isInvalid</span>{"={!!error}\n"}
+          {"      "}<span className="p">isRequired</span>{"={component.validate?.required}\n"}
+          {"    "}<span className="t">{">"}</span>{"\n"}
+          {"      "}<span className="t">{"<Label>"}</span>{"\n"}
+          {"        {component.label}\n"}
+          {"        {component.validate?.required && (\n"}
+          {"          "}<span className="t">{"<span"}</span>{" "}<span className="p">style</span>{"={{ color: "}<span className="s">"var(--danger)"</span>{", marginLeft: "}<span className="v">2</span>{" }}"}<span className="t">{">"}</span>{"*"}<span className="t">{"</span>"}</span>{"\n"}
+          {"        )}\n"}
+          {"      "}<span className="t">{"</Label>"}</span>{"\n"}
+          {"      "}<span className="t">{"<Input"}</span>{"\n"}
+          {"        "}<span className="p">type</span>{"={component.inputType ?? "}<span className="s">"text"</span>{"}\n"}
+          {"        "}<span className="p">placeholder</span>{"={component.placeholder}\n"}
+          {"      "}<span className="t">{"/>"}</span>{"\n"}
+          {"      {error && (\n"}
+          {"        "}<span className="t">{"<Text"}</span>{" "}<span className="p">slot</span>{"="}<span className="s">"errorMessage"</span><span className="t">{">"}</span>{"{error}"}<span className="t">{"</Text>"}</span>{"\n"}
+          {"      )}\n"}
+          {"    "}<span className="t">{"</TextField>"}</span>{"\n"}
+          {"  )\n"}
+          {"}\n\n"}
+          <span className="c">{"// ariaCheckbox → React Aria <Checkbox>"}</span>{"\n"}
+          <span className="k">export function</span>{" "}<span className="f">AriaCheckbox</span>{"({ component, value, onChange, error }) {\n"}
+          {"  "}<span className="k">return</span>{" (\n"}
+          {"    "}<span className="t">{"<Checkbox"}</span>{"\n"}
+          {"      "}<span className="p">isSelected</span>{"={!!value}\n"}
+          {"      "}<span className="p">onChange</span>{"={(checked) => onChange(!!checked)}\n"}
+          {"      "}<span className="p">isInvalid</span>{"={!!error}\n"}
+          {"    "}<span className="t">{">"}</span>{"\n"}
+          {"      {component.label}\n"}
+          {"    "}<span className="t">{"</Checkbox>"}</span>{"\n"}
+          {"  )\n"}
+          {"}\n\n"}
+          <span className="c">{"// Register all custom components"}</span>{"\n"}
+          <span className="k">export const</span>{" "}<span className="f">customComponents</span>{" = {\n"}
+          {"  "}<span className="p">ariaTextfield</span>{": "}<span className="f">AriaTextfield</span>{",\n"}
+          {"  "}<span className="p">ariaTextarea</span>{":  "}<span className="f">AriaTextarea</span>{",\n"}
+          {"  "}<span className="p">ariaSelect</span>{":    "}<span className="f">AriaSelect</span>{",\n"}
+          {"  "}<span className="p">ariaCheckbox</span>{":  "}<span className="f">AriaCheckbox</span>{",\n"}
+          {"  "}<span className="p">ariaButton</span>{":    "}<span className="f">AriaButton</span>{",\n"}
+          {"}"}
         </div>
       </SubSection>
 
       {/* ── Wiring ── */}
       <SubSection title="Wiring it Together">
-        <div className="card">
-          <div className="code">
-{`// src/pages/PatientIntake.tsx
-import { Form } from "@formio/react"
-import { customComponents } from "@/formio/aria-components"
-
-export function PatientIntakePage() {
-  const handleSubmit = (submission: { data: Record<string, unknown> }) => {
-    console.log("Form.io submission →", submission.data)
-    // POST to your backend or Form.io submission endpoint
-  }
-
-  return (
-    <Form
-      // Fetch schema from Form.io server by form path
-      src="https://your-project.form.io/patient-intake"
-
-      // Inject React Aria as the renderer for each component type
-      options={{ components: customComponents }}
-
-      onSubmit={handleSubmit}
-    />
-  )
-}`}
-          </div>
+        <div className="code">
+          <span className="c">{"// src/pages/PatientIntake.tsx"}</span>{"\n"}
+          <span className="k">import</span>{" { "}<span className="f">Form</span>{" } "}<span className="k">from</span>{" "}<span className="s">"@formio/react"</span>{"\n"}
+          <span className="k">import</span>{" { "}<span className="f">customComponents</span>{" } "}<span className="k">from</span>{" "}<span className="s">"@/formio/aria-components"</span>{"\n\n"}
+          <span className="k">export function</span>{" "}<span className="f">PatientIntakePage</span>{"() {\n"}
+          {"  "}<span className="k">const</span>{" "}<span className="f">handleSubmit</span>{" = (submission: { data: Record<string, unknown> }) => {\n"}
+          {"    console."}<span className="f">log</span>{"("}<span className="s">"Form.io submission →"</span>{", submission.data)\n"}
+          {"    "}<span className="c">{"// POST to your backend or Form.io submission endpoint"}</span>{"\n"}
+          {"  }\n\n"}
+          {"  "}<span className="k">return</span>{" (\n"}
+          {"    "}<span className="t">{"<Form"}</span>{"\n"}
+          {"      "}<span className="c">{"// Fetch schema from Form.io server by form path"}</span>{"\n"}
+          {"      "}<span className="p">src</span>{"="}<span className="s">"https://your-project.form.io/patient-intake"</span>{"\n\n"}
+          {"      "}<span className="c">{"// Inject React Aria as the renderer for each component type"}</span>{"\n"}
+          {"      "}<span className="p">options</span>{"={{ components: customComponents }}\n\n"}
+          {"      "}<span className="p">onSubmit</span>{"={handleSubmit}\n"}
+          {"    "}<span className="t">{"/>"}</span>{"\n"}
+          {"  )\n"}
+          {"}"}
         </div>
       </SubSection>
 
@@ -1400,6 +1443,478 @@ function EngineeringTokens() {
         <span className="p">--r-sm</span>{": "}<span className="v">6px</span>{"; "}<span className="p">--r-md</span>{": "}<span className="v">8px</span>{"; "}<span className="p">--r-lg</span>{": "}<span className="v">12px</span>{"; "}<span className="p">--r-full</span>{": "}<span className="v">9999px</span>{";"}
       </div>
     </Section>
+  );
+}
+
+/* ═══════════════════════════════════════════
+   EMR PAGE
+   ═══════════════════════════════════════════ */
+function EMRPage() {
+  /* ── Dropdown state ── */
+  const [dropdownMsg, setDropdownMsg] = useState("");
+
+  /* ── Drawer state ── */
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  /* ── Collapse state ── */
+  const [openPanels, setOpenPanels] = useState<Set<string>>(new Set(["vitals"]));
+  const togglePanel = (id: string) => {
+    setOpenPanels(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  };
+
+  /* ── Tag state ── */
+  const [tags, setTags] = useState([
+    { id: "1", name: "Hypertension" },
+    { id: "2", name: "Diabetes Type 2" },
+    { id: "3", name: "Asthma" },
+    { id: "4", name: "Allergies" },
+    { id: "5", name: "COPD" },
+  ]);
+
+  /* ── MultiSelect state ── */
+  const allSpecialties = [
+    "Cardiology", "Dermatology", "Endocrinology", "Gastroenterology",
+    "Neurology", "Oncology", "Orthopedics", "Pediatrics",
+    "Psychiatry", "Pulmonology", "Radiology", "Urology",
+  ];
+  const [selectedSpecialties, setSelectedSpecialties] = useState<string[]>(["Cardiology", "Neurology"]);
+  const [comboValue, setComboValue] = useState("");
+  const filteredSpecialties = allSpecialties.filter(
+    s => !selectedSpecialties.includes(s) && s.toLowerCase().includes(comboValue.toLowerCase())
+  );
+
+  /* ── Notification state ── */
+  const [notifications, setNotifications] = useState<Array<{
+    id: number; type: "success" | "error" | "info" | "warning"; title: string; message: string;
+  }>>([]);
+  let notifCounter = 0;
+  const addNotification = (type: "success" | "error" | "info" | "warning", title: string, message: string) => {
+    const id = ++notifCounter + Date.now();
+    setNotifications(prev => [...prev, { id, type, title, message }]);
+    setTimeout(() => {
+      setNotifications(prev => prev.filter(n => n.id !== id));
+    }, 4000);
+  };
+  const removeNotification = (id: number) => {
+    setNotifications(prev => prev.filter(n => n.id !== id));
+  };
+
+  /* ── Anchor nav state ── */
+  const [activeAnchor, setActiveAnchor] = useState("emr-dropdown");
+  useEffect(() => {
+    const ids = ["emr-dropdown", "emr-drawer", "emr-collapse", "emr-tags", "emr-multiselect", "emr-empty", "emr-divider", "emr-anchor", "emr-notification"];
+    const onScroll = () => {
+      let current = ids[0];
+      for (const id of ids) {
+        const el = document.getElementById(id);
+        if (el && window.scrollY >= el.offsetTop - 140) current = id;
+      }
+      setActiveAnchor(current);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const collapseData = [
+    { id: "vitals", title: "Vitals", content: "BP: 120/80 mmHg · HR: 72 bpm · Temp: 98.6°F · SpO₂: 98% · RR: 16/min · Weight: 165 lbs" },
+    { id: "allergies", title: "Allergies", content: "Penicillin (Rash) · Sulfa drugs (Anaphylaxis) · Latex (Contact dermatitis)" },
+    { id: "medications", title: "Current Medications", content: "Lisinopril 10mg daily · Metformin 500mg BID · Albuterol inhaler PRN · Atorvastatin 20mg daily" },
+    { id: "history", title: "Medical History", content: "Type 2 Diabetes (2019) · Hypertension (2020) · Asthma (childhood) · Appendectomy (2015)" },
+  ];
+
+  return (
+    <>
+      {/* EMR Page Hero */}
+      <div className="hero" style={{ padding: "var(--sp-16) var(--sp-16)" }}>
+        <div className="hero-badge">EMR Components</div>
+        <h1 style={{ fontSize: "48px" }}>EMR Page</h1>
+        <p>Additional components identified from the ASPR DT platform — Dropdown, Drawer, Collapse, Tags, MultiSelect, Empty State, Divider, Anchor Nav, and Notifications.</p>
+      </div>
+
+      {/* Anchor navigation bar */}
+      <div className="emr-anchor-bar">
+        {[
+          { id: "emr-dropdown", label: "Dropdown" },
+          { id: "emr-drawer", label: "Drawer" },
+          { id: "emr-collapse", label: "Collapse" },
+          { id: "emr-tags", label: "Tags" },
+          { id: "emr-multiselect", label: "MultiSelect" },
+          { id: "emr-empty", label: "Empty State" },
+          { id: "emr-divider", label: "Divider" },
+          { id: "emr-anchor", label: "Anchor Nav" },
+          { id: "emr-notification", label: "Notification" },
+        ].map(a => (
+          <a
+            key={a.id}
+            href={`#${a.id}`}
+            className={`emr-anchor-link ${activeAnchor === a.id ? "active" : ""}`}
+            onClick={(e) => { e.preventDefault(); setActiveAnchor(a.id); document.getElementById(a.id)?.scrollIntoView({ behavior: "smooth" }); }}
+          >
+            {a.label}
+          </a>
+        ))}
+      </div>
+
+      {/* ── Dropdown ── */}
+      <section id="emr-dropdown" className="ds-section">
+        <div className="section-label">Components</div>
+        <div className="section-title">Dropdown Menu</div>
+        <div className="section-desc">Action menus triggered by a button. Used for contextual actions on rows, cards, and toolbars throughout the EMR.</div>
+
+        <SubSection title="Basic Dropdown">
+          <div style={{ display: "flex", gap: "var(--sp-4)", flexWrap: "wrap", alignItems: "flex-start" }}>
+            <MenuTrigger>
+              <Button className="btn btn-secondary">
+                Actions <ChevronDown size={16} />
+              </Button>
+              <Popover className="dropdown-popover">
+                <Menu className="dropdown-menu" onAction={(key) => setDropdownMsg(`Action: ${key}`)}>
+                  <MenuItem id="edit" className="dropdown-item"><Edit3 size={14} /> Edit Record</MenuItem>
+                  <MenuItem id="copy" className="dropdown-item"><Copy size={14} /> Duplicate</MenuItem>
+                  <MenuItem id="export" className="dropdown-item"><ExternalLink size={14} /> Export PDF</MenuItem>
+                  <MenuItem id="archive" className="dropdown-item"><Archive size={14} /> Archive</MenuItem>
+                  <Separator className="dropdown-separator" />
+                  <MenuItem id="delete" className="dropdown-item dropdown-item-danger"><Trash2 size={14} /> Delete</MenuItem>
+                </Menu>
+              </Popover>
+            </MenuTrigger>
+
+            <MenuTrigger>
+              <Button className="btn btn-ghost btn-icon">
+                <MoreHorizontal size={18} />
+              </Button>
+              <Popover className="dropdown-popover">
+                <Menu className="dropdown-menu" onAction={(key) => setDropdownMsg(`Action: ${key}`)}>
+                  <MenuItem id="view" className="dropdown-item">View Details</MenuItem>
+                  <MenuItem id="assign" className="dropdown-item">Assign Provider</MenuItem>
+                  <MenuItem id="flag" className="dropdown-item">Flag for Review</MenuItem>
+                </Menu>
+              </Popover>
+            </MenuTrigger>
+
+            <MenuTrigger>
+              <Button className="btn btn-primary">
+                New Order <ChevronDown size={16} />
+              </Button>
+              <Popover className="dropdown-popover">
+                <Menu className="dropdown-menu" onAction={(key) => setDropdownMsg(`Action: ${key}`)}>
+                  <AriaSection>
+                    <Header className="dropdown-header">Lab Orders</Header>
+                    <MenuItem id="cbc" className="dropdown-item">Complete Blood Count</MenuItem>
+                    <MenuItem id="bmp" className="dropdown-item">Basic Metabolic Panel</MenuItem>
+                    <MenuItem id="lipid" className="dropdown-item">Lipid Panel</MenuItem>
+                  </AriaSection>
+                  <Separator className="dropdown-separator" />
+                  <AriaSection>
+                    <Header className="dropdown-header">Imaging</Header>
+                    <MenuItem id="xray" className="dropdown-item">X-Ray</MenuItem>
+                    <MenuItem id="mri" className="dropdown-item">MRI</MenuItem>
+                  </AriaSection>
+                </Menu>
+              </Popover>
+            </MenuTrigger>
+          </div>
+          {dropdownMsg && <div className="emr-action-feedback"><CheckCircle2 size={14} /> {dropdownMsg}</div>}
+        </SubSection>
+      </section>
+
+      {/* ── Drawer ── */}
+      <section id="emr-drawer" className="ds-section">
+        <div className="section-label">Components</div>
+        <div className="section-title">Drawer</div>
+        <div className="section-desc">A slide-in panel from the side of the screen. Used for detail views, editing records, and order entry without leaving the current context.</div>
+
+        <SubSection title="Side Drawer">
+          <Button className="btn btn-primary" onPress={() => setDrawerOpen(true)}>
+            Open Patient Details
+          </Button>
+
+          {drawerOpen && (
+            <div className="drawer-overlay" onClick={() => setDrawerOpen(false)}>
+              <div className="drawer-panel" onClick={e => e.stopPropagation()}>
+                <div className="drawer-header">
+                  <div>
+                    <div className="drawer-title">Patient Details</div>
+                    <div className="drawer-subtitle">Jane Doe · MRN: 00284731</div>
+                  </div>
+                  <button className="drawer-close" onClick={() => setDrawerOpen(false)}><X size={20} /></button>
+                </div>
+                <div className="drawer-body">
+                  <div className="drawer-section-title">Demographics</div>
+                  <div className="drawer-field"><span className="drawer-label">Date of Birth</span><span>March 15, 1985</span></div>
+                  <div className="drawer-field"><span className="drawer-label">Gender</span><span>Female</span></div>
+                  <div className="drawer-field"><span className="drawer-label">Phone</span><span>(555) 234-5678</span></div>
+                  <div className="drawer-field"><span className="drawer-label">Email</span><span>jane.doe@email.com</span></div>
+
+                  <div className="emr-divider" />
+
+                  <div className="drawer-section-title">Insurance</div>
+                  <div className="drawer-field"><span className="drawer-label">Provider</span><span>BlueCross BlueShield</span></div>
+                  <div className="drawer-field"><span className="drawer-label">Plan ID</span><span>BCB-9928371</span></div>
+                  <div className="drawer-field"><span className="drawer-label">Group</span><span>GRP-44210</span></div>
+
+                  <div className="emr-divider" />
+
+                  <div className="drawer-section-title">Recent Encounters</div>
+                  <div className="drawer-encounter">
+                    <div className="drawer-encounter-date">Mar 28, 2026</div>
+                    <div className="drawer-encounter-type">Telemedicine — Follow-up</div>
+                    <div className="drawer-encounter-provider">Dr. Sarah Chen</div>
+                  </div>
+                  <div className="drawer-encounter">
+                    <div className="drawer-encounter-date">Feb 10, 2026</div>
+                    <div className="drawer-encounter-type">In-Person — Annual Physical</div>
+                    <div className="drawer-encounter-provider">Dr. Michael Park</div>
+                  </div>
+                </div>
+                <div className="drawer-footer">
+                  <Button className="btn btn-secondary" onPress={() => setDrawerOpen(false)}>Close</Button>
+                  <Button className="btn btn-primary">Edit Patient</Button>
+                </div>
+              </div>
+            </div>
+          )}
+        </SubSection>
+      </section>
+
+      {/* ── Collapse / Accordion ── */}
+      <section id="emr-collapse" className="ds-section">
+        <div className="section-label">Components</div>
+        <div className="section-title">Collapse / Accordion</div>
+        <div className="section-desc">Expandable content sections. Used throughout the patient chart to organize vitals, history, allergies, and other clinical data.</div>
+
+        <SubSection title="Patient Chart Accordion">
+          <div className="collapse-group">
+            {collapseData.map(item => (
+              <div key={item.id} className={`collapse-item ${openPanels.has(item.id) ? "open" : ""}`}>
+                <button className="collapse-trigger" onClick={() => togglePanel(item.id)}>
+                  <span className="collapse-trigger-text">{item.title}</span>
+                  {openPanels.has(item.id) ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                </button>
+                {openPanels.has(item.id) && (
+                  <div className="collapse-content">{item.content}</div>
+                )}
+              </div>
+            ))}
+          </div>
+        </SubSection>
+      </section>
+
+      {/* ── Tags ── */}
+      <section id="emr-tags" className="ds-section">
+        <div className="section-label">Components</div>
+        <div className="section-title">Tags</div>
+        <div className="section-desc">Removable labels used for diagnoses, filters, and categories. Supports keyboard navigation and removal.</div>
+
+        <SubSection title="Removable Tags">
+          <TagGroup
+            selectionMode="none"
+            onRemove={(keys) => setTags(prev => prev.filter(t => !keys.has(t.id)))}
+          >
+            <Label className="form-label">Active Diagnoses</Label>
+            <TagList className="tag-list">
+              {tags.map(tag => (
+                <Tag key={tag.id} id={tag.id} className="emr-tag" textValue={tag.name}>
+                  {tag.name}
+                  <Button slot="remove" className="tag-remove"><X size={12} /></Button>
+                </Tag>
+              ))}
+            </TagList>
+          </TagGroup>
+        </SubSection>
+
+        <SubSection title="Tag Variants">
+          <div style={{ display: "flex", gap: "var(--sp-2)", flexWrap: "wrap" }}>
+            <span className="emr-tag-static emr-tag-default"><TagIcon size={12} /> General</span>
+            <span className="emr-tag-static emr-tag-primary"><TagIcon size={12} /> Primary Care</span>
+            <span className="emr-tag-static emr-tag-success"><TagIcon size={12} /> Resolved</span>
+            <span className="emr-tag-static emr-tag-warning"><TagIcon size={12} /> Monitoring</span>
+            <span className="emr-tag-static emr-tag-danger"><TagIcon size={12} /> Critical</span>
+            <span className="emr-tag-static emr-tag-info"><TagIcon size={12} /> Referral</span>
+          </div>
+        </SubSection>
+      </section>
+
+      {/* ── MultiSelect ── */}
+      <section id="emr-multiselect" className="ds-section">
+        <div className="section-label">Components</div>
+        <div className="section-title">MultiSelect</div>
+        <div className="section-desc">A combobox with tag group for selecting multiple values. Used for specialty filters, diagnosis codes, and provider assignments.</div>
+
+        <SubSection title="Specialty Filter">
+          <div className="multiselect-wrapper">
+            <Label className="form-label">Filter by Specialty</Label>
+            <div className="multiselect-container">
+              <TagGroup onRemove={(keys) => setSelectedSpecialties(prev => prev.filter(s => !keys.has(s)))}>
+                <TagList className="multiselect-tags">
+                  {selectedSpecialties.map(s => (
+                    <Tag key={s} id={s} className="emr-tag" textValue={s}>
+                      {s}
+                      <Button slot="remove" className="tag-remove"><X size={12} /></Button>
+                    </Tag>
+                  ))}
+                </TagList>
+              </TagGroup>
+              <ComboBox
+                inputValue={comboValue}
+                onInputChange={setComboValue}
+                onSelectionChange={(key) => {
+                  if (key && !selectedSpecialties.includes(String(key))) {
+                    setSelectedSpecialties(prev => [...prev, String(key)]);
+                  }
+                  setComboValue("");
+                }}
+                menuTrigger="focus"
+                allowsCustomValue
+              >
+                <Input className="multiselect-input" placeholder={selectedSpecialties.length ? "Add more..." : "Search specialties..."} />
+                <Popover className="dropdown-popover">
+                  <ListBox className="dropdown-menu">
+                    {filteredSpecialties.map(s => (
+                      <ListBoxItem key={s} id={s} className="dropdown-item">{s}</ListBoxItem>
+                    ))}
+                    {filteredSpecialties.length === 0 && (
+                      <ListBoxItem id="__empty" className="dropdown-item" style={{ color: "var(--text-tertiary)", fontStyle: "italic" }}>
+                        No matches found
+                      </ListBoxItem>
+                    )}
+                  </ListBox>
+                </Popover>
+              </ComboBox>
+            </div>
+          </div>
+        </SubSection>
+      </section>
+
+      {/* ── Empty State ── */}
+      <section id="emr-empty" className="ds-section">
+        <div className="section-label">Components</div>
+        <div className="section-title">Empty State</div>
+        <div className="section-desc">Placeholder content shown when a section has no data. Provides context and a call to action.</div>
+
+        <SubSection title="Variants">
+          <div className="grid g2" style={{ gap: "var(--sp-6)" }}>
+            <div className="empty-state">
+              <div className="empty-state-icon"><Inbox size={40} /></div>
+              <div className="empty-state-title">No Results Found</div>
+              <div className="empty-state-desc">There are no lab results for this patient yet. Results will appear here once ordered labs have been processed.</div>
+              <Button className="btn btn-primary" style={{ marginTop: "var(--sp-4)" }}>Order Lab Test</Button>
+            </div>
+
+            <div className="empty-state">
+              <div className="empty-state-icon"><FileText size={40} /></div>
+              <div className="empty-state-title">No Documents</div>
+              <div className="empty-state-desc">This patient has no uploaded documents. Upload clinical documents, consent forms, or imaging reports.</div>
+              <Button className="btn btn-secondary" style={{ marginTop: "var(--sp-4)" }}>Upload Document</Button>
+            </div>
+          </div>
+        </SubSection>
+      </section>
+
+      {/* ── Divider ── */}
+      <section id="emr-divider" className="ds-section">
+        <div className="section-label">Components</div>
+        <div className="section-title">Divider</div>
+        <div className="section-desc">Horizontal and vertical separators used to visually group content within cards, panels, and forms.</div>
+
+        <SubSection title="Horizontal Dividers">
+          <div className="preview-box">
+            <div style={{ fontWeight: 600 }}>Patient Information</div>
+            <div className="emr-divider" />
+            <div style={{ display: "flex", gap: "var(--sp-8)" }}>
+              <span>Name: Jane Doe</span>
+              <span>DOB: 03/15/1985</span>
+              <span>MRN: 00284731</span>
+            </div>
+            <div className="emr-divider emr-divider-dashed" />
+            <div style={{ display: "flex", gap: "var(--sp-8)" }}>
+              <span>Provider: Dr. Sarah Chen</span>
+              <span>Dept: Internal Medicine</span>
+            </div>
+            <div className="emr-divider emr-divider-thick" />
+            <div style={{ color: "var(--text-tertiary)" }}>End of section</div>
+          </div>
+        </SubSection>
+
+        <SubSection title="Divider with Label">
+          <div className="preview-box">
+            <div>Content above</div>
+            <div className="emr-divider-label"><span>OR</span></div>
+            <div>Content below</div>
+          </div>
+        </SubSection>
+      </section>
+
+      {/* ── Anchor Nav ── */}
+      <section id="emr-anchor" className="ds-section">
+        <div className="section-label">Components</div>
+        <div className="section-title">Anchor Navigation</div>
+        <div className="section-desc">In-page navigation for long scrollable content. Used in encounter notes and multi-section forms. The sticky bar at the top of this page is a live example.</div>
+
+        <SubSection title="Example">
+          <div className="preview-box">
+            <p>The anchor navigation bar fixed at the top of this EMR Page is a live demo of this component. It highlights the current section as you scroll and supports click-to-jump.</p>
+            <div style={{ marginTop: "var(--sp-4)" }}>
+              <div className="code">
+                <span className="c">{"// Anchor navigation — sticky bar with scroll tracking"}</span>{"\n"}
+                <span className="t">{"<div"}</span>{" "}<span className="p">className</span>{"="}<span className="s">"emr-anchor-bar"</span><span className="t">{">"}</span>{"\n"}
+                {"  "}<span className="t">{"<a"}</span>{" "}<span className="p">href</span>{"="}<span className="s">"#section-id"</span>{" "}<span className="p">className</span>{"="}<span className="s">"emr-anchor-link active"</span><span className="t">{">"}</span>{"\n"}
+                {"    Section Name\n"}
+                {"  "}<span className="t">{"</a>"}</span>{"\n"}
+                <span className="t">{"</div>"}</span>
+              </div>
+            </div>
+          </div>
+        </SubSection>
+      </section>
+
+      {/* ── Notification ── */}
+      <section id="emr-notification" className="ds-section">
+        <div className="section-label">Components</div>
+        <div className="section-title">Notification</div>
+        <div className="section-desc">Toast-style notifications that appear in the corner. Used for system feedback — order confirmations, errors, warnings, and informational messages.</div>
+
+        <SubSection title="Trigger Notifications">
+          <div style={{ display: "flex", gap: "var(--sp-3)", flexWrap: "wrap" }}>
+            <Button className="btn btn-primary" onPress={() => addNotification("success", "Order Submitted", "CBC lab order has been sent to the lab successfully.")}>
+              <CheckCircle size={16} /> Success
+            </Button>
+            <Button className="btn btn-danger" onPress={() => addNotification("error", "Submission Failed", "Unable to submit order. Please check the connection and try again.")}>
+              <XCircle size={16} /> Error
+            </Button>
+            <Button className="btn btn-warning" onPress={() => addNotification("warning", "Session Expiring", "Your session will expire in 5 minutes. Save your work.")}>
+              <AlertTriangle size={16} /> Warning
+            </Button>
+            <Button className="btn btn-info" onPress={() => addNotification("info", "New Message", "Dr. Chen has sent a message regarding patient Jane Doe.")}>
+              <Info size={16} /> Info
+            </Button>
+          </div>
+        </SubSection>
+      </section>
+
+      {/* Notification container */}
+      <div className="notification-container">
+        {notifications.map(n => (
+          <div key={n.id} className={`notification notification-${n.type}`}>
+            <div className="notification-icon">
+              {n.type === "success" && <CheckCircle size={18} />}
+              {n.type === "error" && <XCircle size={18} />}
+              {n.type === "warning" && <AlertTriangle size={18} />}
+              {n.type === "info" && <Info size={18} />}
+            </div>
+            <div className="notification-content">
+              <div className="notification-title">{n.title}</div>
+              <div className="notification-message">{n.message}</div>
+            </div>
+            <button className="notification-close" onClick={() => removeNotification(n.id)}><X size={14} /></button>
+          </div>
+        ))}
+      </div>
+    </>
   );
 }
 

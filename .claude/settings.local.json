@@ -20,7 +20,17 @@
       "Bash(npx vite:*)",
       "WebFetch(domain:react-spectrum.adobe.com)",
       "WebFetch(domain:react-aria.adobe.com)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(npm run:*)",
+      "Bash(echo \"EXIT CODE: $?\")",
+      "Bash(echo \"---EXIT:$?---\")",
+      "Bash(printf hello:*)",
+      "Bash(python3:*)",
+      "Bash(where python:*)",
+      "Bash(where python3:*)",
+      "Bash(where node:*)",
+      "Bash(node:*)",
+      "Bash(cmd:*)"
     ]
   }
 }

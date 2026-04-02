@@ -1,0 +1,60 @@
+===============================================================================================
+#   Component                              FG       BG    Ratio    Req  Result
+===============================================================================================
+1   Anchor bar                        #6B7280  #FFFFFF     4.83    4.5  PASS
+2   Anchor active                     #0D875C  #F0FAF5     4.25    4.5  ** FAIL **
+3   Dropdown item                     #111827  #FFFFFF    17.74    4.5  PASS
+4   Dropdown item danger              #DC2626  #FFFFFF     4.83    4.5  PASS
+5   Dropdown item danger focused      #DC2626  #FEE2E2     3.95    4.5  ** FAIL **
+6   Dropdown header                   #6F7787  #FFFFFF     4.50    4.5  PASS
+7   Action feedback                   #0D875C  #E6F5EE     4.02    4.5  ** FAIL **
+8   Drawer subtitle                   #6B7280  #FFFFFF     4.83    4.5  PASS
+9   Drawer label                      #6F7787  #FFFFFF     4.50    4.5  PASS
+10  Drawer encounter provider         #6F7787  #FFFFFF     4.50    4.5  PASS
+11  Collapse content                  #6B7280  #FFFFFF     4.83    4.5  PASS
+12  Tag (removable)                   #0D875C  #F0FAF5     4.25    4.5  ** FAIL **
+13  Tag default                       #6B7280  #F9FAFB     4.63    4.5  PASS
+14  Tag primary                       #0D875C  #F0FAF5     4.25    4.5  ** FAIL **
+15  Tag success                       #0D875C  #E6F5EE     4.02    4.5  ** FAIL **
+16  Tag warning                       #D97706  #FEF3C7     2.86    4.5  ** FAIL **
+17  Tag danger                        #DC2626  #FEE2E2     3.95    4.5  ** FAIL **
+18  Tag info                          #0575AD  #DBEAFE     4.14    4.5  ** FAIL **
+20  Divider label                     #6F7787  #FFFFFF     4.50    4.5  PASS
+21  Notification title                #111827  #FFFFFF    17.74    4.5  PASS
+22  Notification message              #6B7280  #FFFFFF     4.83    4.5  PASS
+23  Footer                            #6F7787  #FFFFFF     4.50    4.5  PASS
+19  Empty state icon (50% opacity)    #B7BBC3  #FFFFFF     1.92    3.0  ** FAIL **  (40px icon, 3:1 threshold)
+===============================================================================================
+
+=== FAILURES: 10 items ===
+
+  # 2 Anchor active
+       #0D875C on #F0FAF5  =>  4.25:1  (needs 4.5:1, short by 0.25)
+
+  # 5 Dropdown item danger focused
+       #DC2626 on #FEE2E2  =>  3.95:1  (needs 4.5:1, short by 0.55)
+
+  # 7 Action feedback
+       #0D875C on #E6F5EE  =>  4.02:1  (needs 4.5:1, short by 0.48)
+
+  #12 Tag (removable)
+       #0D875C on #F0FAF5  =>  4.25:1  (needs 4.5:1, short by 0.25)
+
+  #14 Tag primary
+       #0D875C on #F0FAF5  =>  4.25:1  (needs 4.5:1, short by 0.25)
+
+  #15 Tag success
+       #0D875C on #E6F5EE  =>  4.02:1  (needs 4.5:1, short by 0.48)
+
+  #16 Tag warning
+       #D97706 on #FEF3C7  =>  2.86:1  (needs 4.5:1, short by 1.64)
+
+  #17 Tag danger
+       #DC2626 on #FEE2E2  =>  3.95:1  (needs 4.5:1, short by 0.55)
+
+  #18 Tag info
+       #0575AD on #DBEAFE  =>  4.14:1  (needs 4.5:1, short by 0.36)
+
+  #19 Empty state icon (50% opacity)
+       #B7BBC3 on #FFFFFF  =>  1.92:1  (needs 3.0:1, short by 1.08)
+
