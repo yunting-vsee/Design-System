@@ -74,7 +74,6 @@ import {
   CheckCircle,
   XCircle,
   Inbox,
-  Tag as TagIcon,
   Menu as MenuIcon,
   Plus,
   Download,
@@ -1180,10 +1179,9 @@ function ComponentsBadges() {
           <span className="badge badge-warning"><span className="badge-dot" /> Pending</span>
           <span className="badge badge-danger"><span className="badge-dot" /> Overdue</span>
           <span className="badge badge-neutral"><span className="badge-dot" /> Draft</span>
-          <span className="badge badge-brand"><span className="badge-dot" /> New</span>
         </div>
         <CodeBlock
-          code={`<span className="badge badge-success"><span className="badge-dot" /> Active</span>\n<span className="badge badge-info"><span className="badge-dot" /> Scheduled</span>\n<span className="badge badge-warning"><span className="badge-dot" /> Pending</span>\n<span className="badge badge-danger"><span className="badge-dot" /> Overdue</span>\n<span className="badge badge-neutral"><span className="badge-dot" /> Draft</span>\n<span className="badge badge-brand"><span className="badge-dot" /> New</span>`}
+          code={`<span className="badge badge-success"><span className="badge-dot" /> Active</span>\n<span className="badge badge-info"><span className="badge-dot" /> Scheduled</span>\n<span className="badge badge-warning"><span className="badge-dot" /> Pending</span>\n<span className="badge badge-danger"><span className="badge-dot" /> Overdue</span>\n<span className="badge badge-neutral"><span className="badge-dot" /> Draft</span>`}
         />
       </SubSection>
 
@@ -1193,24 +1191,10 @@ function ComponentsBadges() {
           <span className="badge badge-solid-info">Processing</span>
           <span className="badge badge-solid-warning">Review</span>
           <span className="badge badge-solid-danger">Urgent</span>
+          <span className="badge badge-solid-neutral">Default</span>
         </div>
         <CodeBlock
-          code={`<span className="badge badge-solid-success">Approved</span>\n<span className="badge badge-solid-info">Processing</span>\n<span className="badge badge-solid-warning">Review</span>\n<span className="badge badge-solid-danger">Urgent</span>`}
-        />
-      </SubSection>
-
-      <SubSection title="EMR Order Status" description="Clinical workflow statuses used across the EMR module.">
-        <div className="preview">
-          <span className="status status-ordered"><span className="status-dot" /> Ordered</span>
-          <span className="status status-scheduled"><span className="status-dot" /> Scheduled</span>
-          <span className="status status-overdue"><span className="status-dot" /> Overdue</span>
-          <span className="status status-in-progress"><span className="status-dot" /> In Progress</span>
-          <span className="status status-cancelled"><span className="status-dot" /> Cancelled</span>
-          <span className="status status-resulted"><span className="status-dot" /> Resulted</span>
-          <span className="status status-completed"><span className="status-dot" /> Completed</span>
-        </div>
-        <CodeBlock
-          code={`<span className="status status-ordered"><span className="status-dot" /> Ordered</span>\n<span className="status status-scheduled"><span className="status-dot" /> Scheduled</span>\n<span className="status status-overdue"><span className="status-dot" /> Overdue</span>\n<span className="status status-in-progress"><span className="status-dot" /> In Progress</span>\n<span className="status status-cancelled"><span className="status-dot" /> Cancelled</span>\n<span className="status status-resulted"><span className="status-dot" /> Resulted</span>\n<span className="status status-completed"><span className="status-dot" /> Completed</span>`}
+          code={`<span className="badge badge-solid-success">Approved</span>\n<span className="badge badge-solid-info">Processing</span>\n<span className="badge badge-solid-warning">Review</span>\n<span className="badge badge-solid-danger">Urgent</span>\n<span className="badge badge-solid-neutral">Default</span>`}
         />
       </SubSection>
 
@@ -1234,19 +1218,6 @@ function ComponentsBadges() {
         />
       </SubSection>
 
-      <SubSection title="Tag Variants">
-        <div style={{ display: "flex", gap: "var(--sp-2)", flexWrap: "wrap" }}>
-          <span className="tag-static tag-default"><TagIcon size={12} /> General</span>
-          <span className="tag-static tag-primary"><TagIcon size={12} /> Primary Care</span>
-          <span className="tag-static tag-success"><TagIcon size={12} /> Resolved</span>
-          <span className="tag-static tag-warning"><TagIcon size={12} /> Monitoring</span>
-          <span className="tag-static tag-danger"><TagIcon size={12} /> Critical</span>
-          <span className="tag-static tag-info"><TagIcon size={12} /> Referral</span>
-        </div>
-        <CodeBlock
-          code={`<span className="tag-static tag-default"><TagIcon size={12} /> General</span>\n<span className="tag-static tag-primary"><TagIcon size={12} /> Primary Care</span>\n<span className="tag-static tag-success"><TagIcon size={12} /> Resolved</span>\n<span className="tag-static tag-warning"><TagIcon size={12} /> Monitoring</span>\n<span className="tag-static tag-danger"><TagIcon size={12} /> Critical</span>\n<span className="tag-static tag-info"><TagIcon size={12} /> Referral</span>`}
-        />
-      </SubSection>
     </Section>
   );
 }
