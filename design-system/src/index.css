@@ -83,8 +83,8 @@
 
   /* Semantic hex (AA-compliant for white foreground) */
   --success: #0D875C; --success-light: #E6F5EE;
-  --info: #0575AD; --info-light: #E0F2FE;
-  --warning: #D97706; --warning-light: #FEF3C7;
+  --info: #196CD2; --info-light: #E0F2FE;
+  --warning: #FFCB5A; --warning-light: #FEF3C7;
   --danger: #DC2626; --danger-light: #FEE2E2;
   --danger-hover: #B91C1C;
 
@@ -93,7 +93,7 @@
   --info-dark: #075985;
   --warning-dark: #92400E;
   --danger-dark: #991B1B;
-  --warning-on-solid: #422006;
+  --warning-on-solid: #2D1806;
 
   /* Semantic borders (alerts) */
   --success-border: #A7F3D0;

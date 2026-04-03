@@ -71,6 +71,7 @@ import {
   Pencil,
   Calendar,
   Upload,
+  Loader2,
 } from "lucide-react";
 import "./App.css";
 
@@ -213,7 +214,7 @@ function App() {
         </div>
 
         {/* Anchor navigation bar */}
-        <div className="emr-anchor-bar">
+        <div className="anchor-bar">
           {NAV.map(g => {
             const firstId = g.items[0].id;
             const isActive = g.items.some(i => i.id === activeSection);
@@ -221,7 +222,7 @@ function App() {
               <a
                 key={g.group}
                 href={`#${firstId}`}
-                className={`emr-anchor-link ${isActive ? "active" : ""}`}
+                className={`anchor-link ${isActive ? "active" : ""}`}
                 onClick={(e) => { e.preventDefault(); scrollTo(firstId); }}
               >
                 {g.group}
@@ -488,30 +489,74 @@ function FoundationsSpacing() {
       <SubSection title="Dividers" description="Horizontal separators used to visually group content within cards, panels, and forms.">
         <div className="preview-box">
           <div style={{ fontWeight: 600 }}>Patient Information</div>
-          <div className="emr-divider" />
+          <div className="divider" />
           <div style={{ display: "flex", gap: "var(--sp-8)" }}>
             <span>Name: Jane Doe</span>
             <span>DOB: 03/15/1985</span>
             <span>MRN: 00284731</span>
           </div>
-          <div className="emr-divider emr-divider-dashed" />
+          <div className="divider divider-dashed" />
           <div style={{ display: "flex", gap: "var(--sp-8)" }}>
             <span>Provider: Dr. Sarah Chen</span>
             <span>Dept: Internal Medicine</span>
           </div>
-          <div className="emr-divider emr-divider-thick" />
+          <div className="divider divider-thick" />
           <div style={{ color: "var(--text-tertiary)" }}>End of section</div>
         </div>
         <div style={{ marginTop: "var(--sp-6)" }}>
           <div className="sub-title">Divider with Label</div>
           <div className="preview-box">
             <div>Content above</div>
-            <div className="emr-divider-label"><span>OR</span></div>
+            <div className="divider-label"><span>OR</span></div>
             <div>Content below</div>
           </div>
         </div>
       </SubSection>
     </Section>
+  );
+}
+
+function ToggleDemo() {
+  const [switchOn, setSwitchOn] = useState(true);
+  const [labeledSwitch, setLabeledSwitch] = useState(true);
+  return (
+    <div className="preview">
+      <div className="toggle-list">
+        <Switch isSelected={switchOn} onChange={setSwitchOn} className="toggle-wrap">
+          <div className={`toggle-track ${switchOn ? "on" : ""}`}>
+            <div className="toggle-thumb" />
+          </div>
+          <span className="toggle-label">Notifications</span>
+        </Switch>
+        <Switch isSelected={labeledSwitch} onChange={setLabeledSwitch} className="toggle-wrap">
+          <div className={`toggle-track-labeled ${labeledSwitch ? "on" : ""}`}>
+            <span className="toggle-text toggle-text-on">On</span>
+            <span className="toggle-text toggle-text-off">Off</span>
+            <div className="toggle-thumb-labeled" />
+          </div>
+          <span className="toggle-label">Auto-save</span>
+        </Switch>
+        <Switch isSelected={false} isDisabled className="toggle-wrap">
+          <div className="toggle-track">
+            <div className="toggle-thumb" />
+          </div>
+          <span className="toggle-label">Unavailable</span>
+        </Switch>
+      </div>
+    </div>
+  );
+}
+
+function ButtonGroupDemo({ labels, defaultActive }: { labels: string[]; defaultActive: string }) {
+  const [active, setActive] = useState(defaultActive);
+  return (
+    <div className="preview">
+      <div className="btn-group">
+        {labels.map(label => (
+          <Button key={label} className={`btn ${active === label ? "active-group" : ""}`} onPress={() => setActive(label)}>{label}</Button>
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -576,15 +621,28 @@ function ComponentsButtons() {
       </SubSection>
 
       <SubSection title="Button Group">
+        <ButtonGroupDemo labels={["Today", "Week", "Month"]} defaultActive="Week" />
+        <CodeBlock
+          code={`const [active, setActive] = useState("Week");\n\n<div className="btn-group">\n  {["Today", "Week", "Month"].map(label => (\n    <Button\n      key={label}\n      className={\`btn \${active === label ? "active-group" : ""}\`}\n      onPress={() => setActive(label)}\n    >{label}</Button>\n  ))}\n</div>`}
+        />
+      </SubSection>
+
+      <SubSection title="Loading">
         <div className="preview">
-          <div className="btn-group">
-            <Button className="btn btn-ghost">Today</Button>
-            <Button className="btn btn-ghost active-group">Week</Button>
-            <Button className="btn btn-ghost">Month</Button>
-          </div>
+          <Button className="btn btn-primary btn-loading" isDisabled><Loader2 size={16} className="btn-spinner" /> Saving...</Button>
+          <Button className="btn btn-secondary btn-loading" isDisabled><Loader2 size={16} className="btn-spinner" /> Loading...</Button>
+          <Button className="btn btn-ghost btn-loading" isDisabled><Loader2 size={16} className="btn-spinner" /> Please wait</Button>
+          <Button className="btn btn-danger btn-loading" isDisabled><Loader2 size={16} className="btn-spinner" /> Deleting...</Button>
         </div>
         <CodeBlock
-          code={`<div className="btn-group">\n  <Button className="btn btn-ghost">Today</Button>\n  <Button className="btn btn-ghost active-group">Week</Button>\n  <Button className="btn btn-ghost">Month</Button>\n</div>`}
+          code={`<Button className="btn btn-primary btn-loading" isDisabled>\n  <Loader2 size={16} className="btn-spinner" /> Saving...\n</Button>`}
+        />
+      </SubSection>
+
+      <SubSection title="Toggles">
+        <ToggleDemo />
+        <CodeBlock
+          code={`/* Default toggle */\n<Switch isSelected={on} onChange={setOn} className="toggle-wrap">\n  <div className={\`toggle-track \${on ? "on" : ""}\`}>\n    <div className="toggle-thumb" />\n  </div>\n  <span className="toggle-label">Notifications</span>\n</Switch>\n\n/* Labeled toggle (On/Off) */\n<Switch isSelected={on} onChange={setOn} className="toggle-wrap">\n  <div className={\`toggle-track-labeled \${on ? "on" : ""}\`}>\n    <span className="toggle-text toggle-text-on">On</span>\n    <span className="toggle-text toggle-text-off">Off</span>\n    <div className="toggle-thumb-labeled" />\n  </div>\n  <span className="toggle-label">Auto-save</span>\n</Switch>\n\n/* Disabled toggle */\n<Switch isSelected={false} isDisabled className="toggle-wrap">\n  <div className="toggle-track">\n    <div className="toggle-thumb" />\n  </div>\n  <span className="toggle-label">Unavailable</span>\n</Switch>`}
         />
       </SubSection>
 
@@ -629,8 +687,6 @@ function ComponentsButtons() {
    COMPONENTS — FORM ELEMENTS
    ═══════════════════════════════════════════ */
 function ComponentsForms() {
-  const [switchOn, setSwitchOn] = useState(true);
-  const [switchOff, setSwitchOff] = useState(false);
   const [check1, setCheck1] = useState(true);
   const [check2, setCheck2] = useState(false);
 
@@ -649,7 +705,7 @@ function ComponentsForms() {
   return (
     <Section id="forms" label="Components" title="Form Elements"
       description="Clean, accessible form controls with clear focus states and error handling.">
-      <div className="grid g2" style={{gap:"var(--sp-8)"}}>
+      <div className="grid g2 form-grid">
         {/* Text Inputs */}
         <div className="card">
           <div className="sub-title">Text Inputs</div>
@@ -709,21 +765,46 @@ function ComponentsForms() {
               <TextArea className="input textarea" rows={3} placeholder="Add clinical notes..." />
             </TextField>
           </div>
-          <div style={{marginTop:"var(--sp-6)"}}>
-            <div className="sub-title">Toggles</div>
-            <div className="toggle-list">
-              <Switch isSelected={switchOn} onChange={setSwitchOn} className="toggle-wrap">
-                <div className={`toggle-track ${switchOn ? "on" : ""}`}>
-                  <div className="toggle-thumb" />
-                </div>
-                <span className="toggle-label">Notifications enabled</span>
-              </Switch>
-              <Switch isSelected={switchOff} onChange={setSwitchOff} className="toggle-wrap">
-                <div className={`toggle-track ${switchOff ? "on" : ""}`}>
-                  <div className="toggle-thumb" />
-                </div>
-                <span className="toggle-label">Dark mode</span>
-              </Switch>
+          <div className="sub-title" style={{marginTop:"var(--sp-6)"}}>MultiSelect</div>
+          <div className="multiselect-wrapper">
+            <Label className="form-label">Filter by Specialty</Label>
+            <div className="multiselect-container">
+              <TagGroup onRemove={(keys) => setSelectedSpecialties(prev => prev.filter(s => !keys.has(s)))}>
+                <TagList className="multiselect-tags">
+                  {selectedSpecialties.map(s => (
+                    <Tag key={s} id={s} className="chip" textValue={s}>
+                      {s}
+                      <Button slot="remove" className="tag-remove"><X size={12} /></Button>
+                    </Tag>
+                  ))}
+                </TagList>
+              </TagGroup>
+              <ComboBox
+                inputValue={comboValue}
+                onInputChange={setComboValue}
+                onSelectionChange={(key) => {
+                  if (key && !selectedSpecialties.includes(String(key))) {
+                    setSelectedSpecialties(prev => [...prev, String(key)]);
+                  }
+                  setComboValue("");
+                }}
+                menuTrigger="focus"
+                allowsCustomValue
+              >
+                <Input className="multiselect-input" placeholder={selectedSpecialties.length ? "Add more..." : "Search specialties..."} />
+                <Popover className="dropdown-popover">
+                  <ListBox className="dropdown-menu">
+                    {filteredSpecialties.map(s => (
+                      <ListBoxItem key={s} id={s} className="dropdown-item">{s}</ListBoxItem>
+                    ))}
+                    {filteredSpecialties.length === 0 && (
+                      <ListBoxItem id="__empty" className="dropdown-item" style={{ color: "var(--text-tertiary)", fontStyle: "italic" }}>
+                        No matches found
+                      </ListBoxItem>
+                    )}
+                  </ListBox>
+                </Popover>
+              </ComboBox>
             </div>
           </div>
         </div>
@@ -780,57 +861,11 @@ function ComponentsForms() {
             </TextField>
           </div>
         </div>
+
       </div>
       <CodeBlock
-        code={`/* Text Input */\n<TextField className="field">\n  <Label className="form-label">Email address</Label>\n  <Input className="input" placeholder="you@example.com" />\n</TextField>\n\n/* Input with error */\n<TextField isInvalid className="field">\n  <Label className="form-label">Phone <span className="req">*</span></Label>\n  <Input className="input error" />\n  <div className="form-error-text">Phone number is required</div>\n</TextField>\n\n/* Select */\n<Select className="field">\n  <Label className="form-label">Specialty</Label>\n  <Button className="input select-trigger">\n    <SelectValue />\n    <ChevronDown size={16} />\n  </Button>\n  <Popover className="select-popover">\n    <ListBox className="select-listbox">\n      <ListBoxItem className="select-option">Option</ListBoxItem>\n    </ListBox>\n  </Popover>\n</Select>\n\n/* Toggle */\n<Switch isSelected={on} onChange={setOn} className="toggle-wrap">\n  <div className={\`toggle-track \${on ? "on" : ""}\`}>\n    <div className="toggle-thumb" />\n  </div>\n  <span className="toggle-label">Label</span>\n</Switch>\n\n/* Checkbox */\n<Checkbox isSelected={checked} onChange={setChecked} className="check-item">\n  <div className={\`check-box \${checked ? "checked" : ""}\`} />\n  Label text\n</Checkbox>\n\n/* Radio Group */\n<RadioGroup defaultValue="phone" className="radio-list">\n  <Radio value="phone" className="radio-item">\n    <div className="radio-circle" /><span>Phone call</span>\n  </Radio>\n</RadioGroup>`}
+        code={`/* Text Input */\n<TextField className="field">\n  <Label className="form-label">Email address</Label>\n  <Input className="input" placeholder="you@example.com" />\n</TextField>\n\n/* Input with error */\n<TextField isInvalid className="field">\n  <Label className="form-label">Phone <span className="req">*</span></Label>\n  <Input className="input error" />\n  <div className="form-error-text">Phone number is required</div>\n</TextField>\n\n/* Select */\n<Select className="field">\n  <Label className="form-label">Specialty</Label>\n  <Button className="input select-trigger">\n    <SelectValue />\n    <ChevronDown size={16} />\n  </Button>\n  <Popover className="select-popover">\n    <ListBox className="select-listbox">\n      <ListBoxItem className="select-option">Option</ListBoxItem>\n    </ListBox>\n  </Popover>\n</Select>\n\n/* MultiSelect */\n<div className="multiselect-wrapper">\n  <Label className="form-label">Filter by Specialty</Label>\n  <div className="multiselect-container">\n    <TagGroup onRemove={handleRemove}>\n      <TagList className="multiselect-tags">\n        <Tag className="chip" textValue="Cardiology">\n          Cardiology\n          <Button slot="remove" className="tag-remove"><X size={12} /></Button>\n        </Tag>\n      </TagList>\n    </TagGroup>\n    <ComboBox menuTrigger="focus" allowsCustomValue>\n      <Input className="multiselect-input" placeholder="Add more..." />\n      <Popover className="dropdown-popover">\n        <ListBox className="dropdown-menu">\n          <ListBoxItem className="dropdown-item">Option</ListBoxItem>\n        </ListBox>\n      </Popover>\n    </ComboBox>\n  </div>\n</div>\n\n/* Checkbox */\n<Checkbox isSelected={checked} onChange={setChecked} className="check-item">\n  <div className={\`check-box \${checked ? "checked" : ""}\`} />\n  Label text\n</Checkbox>\n\n/* Radio Group */\n<RadioGroup defaultValue="phone" className="radio-list">\n  <Radio value="phone" className="radio-item">\n    <div className="radio-circle" /><span>Phone call</span>\n  </Radio>\n</RadioGroup>`}
       />
-
-      <SubSection title="MultiSelect" description="A combobox with tag group for selecting multiple values. Used for specialty filters, diagnosis codes, and provider assignments.">
-        <div className="multiselect-wrapper">
-          <Label className="form-label">Filter by Specialty</Label>
-          <div className="multiselect-container">
-            <TagGroup onRemove={(keys) => setSelectedSpecialties(prev => prev.filter(s => !keys.has(s)))}>
-              <TagList className="multiselect-tags">
-                {selectedSpecialties.map(s => (
-                  <Tag key={s} id={s} className="emr-tag" textValue={s}>
-                    {s}
-                    <Button slot="remove" className="tag-remove"><X size={12} /></Button>
-                  </Tag>
-                ))}
-              </TagList>
-            </TagGroup>
-            <ComboBox
-              inputValue={comboValue}
-              onInputChange={setComboValue}
-              onSelectionChange={(key) => {
-                if (key && !selectedSpecialties.includes(String(key))) {
-                  setSelectedSpecialties(prev => [...prev, String(key)]);
-                }
-                setComboValue("");
-              }}
-              menuTrigger="focus"
-              allowsCustomValue
-            >
-              <Input className="multiselect-input" placeholder={selectedSpecialties.length ? "Add more..." : "Search specialties..."} />
-              <Popover className="dropdown-popover">
-                <ListBox className="dropdown-menu">
-                  {filteredSpecialties.map(s => (
-                    <ListBoxItem key={s} id={s} className="dropdown-item">{s}</ListBoxItem>
-                  ))}
-                  {filteredSpecialties.length === 0 && (
-                    <ListBoxItem id="__empty" className="dropdown-item" style={{ color: "var(--text-tertiary)", fontStyle: "italic" }}>
-                      No matches found
-                    </ListBoxItem>
-                  )}
-                </ListBox>
-              </Popover>
-            </ComboBox>
-          </div>
-        </div>
-        <CodeBlock
-          code={`<div className="multiselect-wrapper">\n  <Label className="form-label">Filter by Specialty</Label>\n  <div className="multiselect-container">\n    <TagGroup onRemove={handleRemove}>\n      <TagList className="multiselect-tags">\n        <Tag className="emr-tag" textValue="Cardiology">\n          Cardiology\n          <Button slot="remove" className="tag-remove"><X size={12} /></Button>\n        </Tag>\n      </TagList>\n    </TagGroup>\n    <ComboBox menuTrigger="focus" allowsCustomValue>\n      <Input className="multiselect-input" placeholder="Add more..." />\n      <Popover className="dropdown-popover">\n        <ListBox className="dropdown-menu">\n          <ListBoxItem className="dropdown-item">Option</ListBoxItem>\n        </ListBox>\n      </Popover>\n    </ComboBox>\n  </div>\n</div>`}
-        />
-      </SubSection>
     </Section>
   );
 }
@@ -900,7 +935,7 @@ function ComponentsBadges() {
           <Label className="form-label">Active Diagnoses</Label>
           <TagList className="tag-list">
             {tags.map(tag => (
-              <Tag key={tag.id} id={tag.id} className="emr-tag" textValue={tag.name}>
+              <Tag key={tag.id} id={tag.id} className="chip" textValue={tag.name}>
                 {tag.name}
                 <Button slot="remove" className="tag-remove"><X size={12} /></Button>
               </Tag>
@@ -908,21 +943,21 @@ function ComponentsBadges() {
           </TagList>
         </TagGroup>
         <CodeBlock
-          code={`<TagGroup selectionMode="none" onRemove={handleRemove}>\n  <Label className="form-label">Active Diagnoses</Label>\n  <TagList className="tag-list">\n    <Tag id="1" className="emr-tag" textValue="Hypertension">\n      Hypertension\n      <Button slot="remove" className="tag-remove"><X size={12} /></Button>\n    </Tag>\n  </TagList>\n</TagGroup>`}
+          code={`<TagGroup selectionMode="none" onRemove={handleRemove}>\n  <Label className="form-label">Active Diagnoses</Label>\n  <TagList className="tag-list">\n    <Tag id="1" className="chip" textValue="Hypertension">\n      Hypertension\n      <Button slot="remove" className="tag-remove"><X size={12} /></Button>\n    </Tag>\n  </TagList>\n</TagGroup>`}
         />
       </SubSection>
 
       <SubSection title="Tag Variants">
         <div style={{ display: "flex", gap: "var(--sp-2)", flexWrap: "wrap" }}>
-          <span className="emr-tag-static emr-tag-default"><TagIcon size={12} /> General</span>
-          <span className="emr-tag-static emr-tag-primary"><TagIcon size={12} /> Primary Care</span>
-          <span className="emr-tag-static emr-tag-success"><TagIcon size={12} /> Resolved</span>
-          <span className="emr-tag-static emr-tag-warning"><TagIcon size={12} /> Monitoring</span>
-          <span className="emr-tag-static emr-tag-danger"><TagIcon size={12} /> Critical</span>
-          <span className="emr-tag-static emr-tag-info"><TagIcon size={12} /> Referral</span>
+          <span className="tag-static tag-default"><TagIcon size={12} /> General</span>
+          <span className="tag-static tag-primary"><TagIcon size={12} /> Primary Care</span>
+          <span className="tag-static tag-success"><TagIcon size={12} /> Resolved</span>
+          <span className="tag-static tag-warning"><TagIcon size={12} /> Monitoring</span>
+          <span className="tag-static tag-danger"><TagIcon size={12} /> Critical</span>
+          <span className="tag-static tag-info"><TagIcon size={12} /> Referral</span>
         </div>
         <CodeBlock
-          code={`<span className="emr-tag-static emr-tag-default"><TagIcon size={12} /> General</span>\n<span className="emr-tag-static emr-tag-primary"><TagIcon size={12} /> Primary Care</span>\n<span className="emr-tag-static emr-tag-success"><TagIcon size={12} /> Resolved</span>\n<span className="emr-tag-static emr-tag-warning"><TagIcon size={12} /> Monitoring</span>\n<span className="emr-tag-static emr-tag-danger"><TagIcon size={12} /> Critical</span>\n<span className="emr-tag-static emr-tag-info"><TagIcon size={12} /> Referral</span>`}
+          code={`<span className="tag-static tag-default"><TagIcon size={12} /> General</span>\n<span className="tag-static tag-primary"><TagIcon size={12} /> Primary Care</span>\n<span className="tag-static tag-success"><TagIcon size={12} /> Resolved</span>\n<span className="tag-static tag-warning"><TagIcon size={12} /> Monitoring</span>\n<span className="tag-static tag-danger"><TagIcon size={12} /> Critical</span>\n<span className="tag-static tag-info"><TagIcon size={12} /> Referral</span>`}
         />
       </SubSection>
     </Section>
@@ -1140,8 +1175,8 @@ function ComponentsNavigation() {
           <div style={{ marginTop: "var(--sp-4)" }}>
             <div className="code">
               <span className="c">{"// Anchor navigation — sticky bar with scroll tracking"}</span>{"\n"}
-              <span className="t">{"<div"}</span>{" "}<span className="p">className</span>{"="}<span className="s">"emr-anchor-bar"</span><span className="t">{">"}</span>{"\n"}
-              {"  "}<span className="t">{"<a"}</span>{" "}<span className="p">href</span>{"="}<span className="s">"#section-id"</span>{" "}<span className="p">className</span>{"="}<span className="s">"emr-anchor-link active"</span><span className="t">{">"}</span>{"\n"}
+              <span className="t">{"<div"}</span>{" "}<span className="p">className</span>{"="}<span className="s">"anchor-bar"</span><span className="t">{">"}</span>{"\n"}
+              {"  "}<span className="t">{"<a"}</span>{" "}<span className="p">href</span>{"="}<span className="s">"#section-id"</span>{" "}<span className="p">className</span>{"="}<span className="s">"anchor-link active"</span><span className="t">{">"}</span>{"\n"}
               {"    Section Name\n"}
               {"  "}<span className="t">{"</a>"}</span>{"\n"}
               <span className="t">{"</div>"}</span>
@@ -1399,7 +1434,7 @@ function ComponentsOverlays() {
             </Popover>
           </MenuTrigger>
         </div>
-        {dropdownMsg && <div className="emr-action-feedback"><CheckCircle2 size={14} /> {dropdownMsg}</div>}
+        {dropdownMsg && <div className="action-feedback"><CheckCircle2 size={14} /> {dropdownMsg}</div>}
         <CodeBlock
           code={`<MenuTrigger>\n  <Button className="btn btn-secondary">\n    Actions <ChevronDown size={16} />\n  </Button>\n  <Popover className="dropdown-popover">\n    <Menu className="dropdown-menu" onAction={handleAction}>\n      <MenuItem id="edit" className="dropdown-item">\n        <Edit3 size={14} /> Edit Record\n      </MenuItem>\n      <Separator className="dropdown-separator" />\n      <MenuItem id="delete" className="dropdown-item dropdown-item-danger">\n        <Trash2 size={14} /> Delete\n      </MenuItem>\n    </Menu>\n  </Popover>\n</MenuTrigger>`}
         />
@@ -1427,14 +1462,14 @@ function ComponentsOverlays() {
                 <div className="drawer-field"><span className="drawer-label">Phone</span><span>(555) 234-5678</span></div>
                 <div className="drawer-field"><span className="drawer-label">Email</span><span>jane.doe@email.com</span></div>
 
-                <div className="emr-divider" />
+                <div className="divider" />
 
                 <div className="drawer-section-title">Insurance</div>
                 <div className="drawer-field"><span className="drawer-label">Provider</span><span>BlueCross BlueShield</span></div>
                 <div className="drawer-field"><span className="drawer-label">Plan ID</span><span>BCB-9928371</span></div>
                 <div className="drawer-field"><span className="drawer-label">Group</span><span>GRP-44210</span></div>
 
-                <div className="emr-divider" />
+                <div className="divider" />
 
                 <div className="drawer-section-title">Recent Encounters</div>
                 <div className="drawer-encounter">
