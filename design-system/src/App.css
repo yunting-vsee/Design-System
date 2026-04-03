@@ -244,10 +244,6 @@
 .date-segment { padding: 1px 2px; border-radius: 2px; outline: none; caret-color: transparent; }
 .date-segment[data-focused] { background: var(--brand); color: white; }
 .date-segment[data-placeholder] { color: var(--text-tertiary); }
-.date-picker-btn { position: absolute; right: 1px; top: 1px; bottom: 1px; width: 38px; display: flex; align-items: center; justify-content: center; background: transparent; border: none; border-left: 1px solid var(--border); border-radius: 0 var(--r-md) var(--r-md) 0; color: var(--text-secondary); cursor: pointer; outline: none; transition: all var(--t-fast); }
-.date-picker-btn[data-hovered] { background: var(--grey-100); color: var(--text-primary); }
-.date-picker-btn[data-focus-visible] { box-shadow: var(--shadow-focus); }
-.date-picker-icon { position: absolute; right: 1px; top: 1px; bottom: 1px; width: 38px; display: flex; align-items: center; justify-content: center; color: var(--text-tertiary); border-left: 1px solid var(--border); border-radius: 0 var(--r-md) var(--r-md) 0; pointer-events: none; }
 .date-popover { background: white; border: 1px solid var(--border); border-radius: var(--r-lg); box-shadow: var(--shadow-lg); padding: var(--sp-4); z-index: 50; }
 .date-popover[data-entering] { animation: dropdown-in var(--t-fast) ease-out; }
 .date-popover[data-exiting] { animation: dropdown-out var(--t-fast) ease-in; }
@@ -273,7 +269,7 @@
 .input-icon-left { position: absolute; left: 12px; color: var(--grey-500); z-index: 1; pointer-events: none; }
 .input-with-icon-right { padding-right: 42px !important; }
 .input-with-icon-both { padding-left: 38px !important; padding-right: 42px !important; }
-.input-icon-btn { position: absolute; right: 1px; top: 1px; bottom: 1px; width: 40px; display: flex; align-items: center; justify-content: center; background: transparent; border: none; border-left: 1px solid var(--border); border-radius: 0 var(--r-md) var(--r-md) 0; color: var(--text-secondary); cursor: pointer; outline: none; transition: all var(--t-fast); }
+.input-icon-btn { position: absolute; right: 1px; top: 1px; bottom: 1px; width: 40px; display: flex; align-items: center; justify-content: center; background: transparent; border: none; border-radius: 0 var(--r-md) var(--r-md) 0; color: var(--text-secondary); cursor: pointer; outline: none; transition: all var(--t-fast); }
 .input-icon-btn[data-hovered] { background: var(--grey-100); color: var(--text-primary); }
 .input-icon-btn[data-pressed] { background: var(--grey-200); }
 .input-icon-btn[data-focus-visible] { box-shadow: var(--shadow-focus); }
@@ -568,7 +564,7 @@ input::-webkit-credentials-auto-fill-button { display: none; }
 .dropdown-popover { background: white; border: 1px solid var(--border); border-radius: var(--r-lg); box-shadow: var(--shadow-lg); padding: var(--sp-1); min-width: 200px; z-index: 50; outline: none; }
 .dropdown-popover[data-entering] { animation: fadeIn 150ms ease; }
 .dropdown-popover[data-exiting] { animation: fadeOut 100ms ease; }
-.dropdown-menu { outline: none; }
+.dropdown-menu { outline: none; max-height: 50vh; overflow-y: auto; }
 .dropdown-item { display: flex; align-items: center; gap: var(--sp-2); padding: 8px var(--sp-3); font-size: var(--text-base); color: var(--text-primary); border-radius: var(--r-md); cursor: pointer; outline: none; transition: background var(--t-fast); }
 .dropdown-item[data-focused] { background: var(--grey-100); }
 .dropdown-item[data-pressed] { background: var(--grey-200); }
@@ -630,10 +626,10 @@ input::-webkit-credentials-auto-fill-button { display: none; }
    EMR PAGE — MULTISELECT
    ═══════════════════════════════════════════ */
 .multiselect-wrapper { max-width: 480px; }
-.multiselect-container { border: 1px solid var(--border); border-radius: var(--r-md); padding: 4px 6px; display: flex; flex-wrap: wrap; gap: 4px; align-items: center; background: white; transition: border-color var(--t-fast); min-height: 40px; box-sizing: border-box; }
+.multiselect-container { border: 1px solid var(--border-strong); border-radius: var(--r-md); padding: 4px 6px; display: flex; flex-wrap: wrap; gap: 4px; align-items: center; background: white; transition: border-color var(--t-fast); min-height: 40px; box-sizing: border-box; position: relative; padding-right: 40px; }
 .multiselect-container:focus-within { border-color: var(--brand); box-shadow: var(--shadow-focus); }
 .multiselect-tags { display: flex; flex-wrap: wrap; gap: var(--sp-1); }
-.multiselect-input { border: none; outline: none; font-family: var(--font); font-size: var(--text-base); flex: 1; min-width: 120px; padding: 2px var(--sp-2); height: 30px; background: transparent; }
+.multiselect-input { border: none; outline: none; font-family: var(--font); font-size: var(--text-base); flex: 1; min-width: 80px; padding: 2px var(--sp-2); height: 30px; background: transparent; }
 
 /* ═══════════════════════════════════════════
    EMR PAGE — EMPTY STATE

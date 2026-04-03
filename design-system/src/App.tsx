@@ -124,7 +124,7 @@ const NAV = [
       { label: "Badges, Tags & Status", id: "badges" },
       { label: "Feedback & Notifications", id: "feedback" },
       { label: "Navigation", id: "navigation" },
-      { label: "Data Display", id: "data" },
+      { label: "Others", id: "data" },
       { label: "Overlays", id: "overlay" },
     ],
   },
@@ -132,7 +132,7 @@ const NAV = [
     group: "Patterns",
     icon: <Layers size={14} />,
     items: [
-      { label: "EMR Patterns", id: "emr" },
+      // { label: "EMR Patterns", id: "emr" },
       { label: "Layouts", id: "layouts" },
     ],
   },
@@ -255,9 +255,9 @@ function App() {
         <ComponentsBadges />
         <ComponentsFeedback />
         <ComponentsNavigation />
-        <ComponentsDataDisplay />
+        <ComponentsOthers />
         <ComponentsOverlays />
-        <PatternsEMR />
+        {/* <PatternsEMR /> */}
         <PatternsLayouts />
         <EngineeringTokens />
         <PatternsTheming />
@@ -914,10 +914,12 @@ function ComponentsForms() {
           <div className="form-group">
             <SearchField className="field">
               <Label className="form-label">Search</Label>
-              <Group className="search-input-wrap">
-                <Search size={16} className="search-icon" />
-                <Input className="input search-input" placeholder="Search patients..." />
-              </Group>
+              <div className="input-icon-wrap">
+                <Input className="input input-with-icon-right" placeholder="Search patients..." />
+                <Button className="input-icon-btn">
+                  <Search size={16} />
+                </Button>
+              </div>
             </SearchField>
           </div>
         </div>
@@ -928,10 +930,14 @@ function ComponentsForms() {
           <div className="form-group">
             <Select className="field">
               <Label className="form-label">Specialty</Label>
-              <Button className="input select-trigger">
-                <SelectValue>{({isPlaceholder, selectedText}) => isPlaceholder ? "Select a specialty..." : selectedText}</SelectValue>
-                <ChevronDown size={16} className="select-chevron" />
-              </Button>
+              <div className="input-icon-wrap">
+                <Button className="input select-trigger input-with-icon-right">
+                  <SelectValue>{({isPlaceholder, selectedText}) => isPlaceholder ? "Select a specialty..." : selectedText}</SelectValue>
+                </Button>
+                <Button className="input-icon-btn">
+                  <ChevronDown size={16} />
+                </Button>
+              </div>
               <Popover className="select-popover">
                 <ListBox className="select-listbox">
                   <ListBoxItem id="internal" className="select-option">Internal Medicine</ListBoxItem>
@@ -964,6 +970,7 @@ function ComponentsForms() {
               <ComboBox
                 inputValue={comboValue}
                 onInputChange={setComboValue}
+                selectedKey={null}
                 onSelectionChange={(key) => {
                   if (key && !selectedSpecialties.includes(String(key))) {
                     setSelectedSpecialties(prev => [...prev, String(key)]);
@@ -987,6 +994,9 @@ function ComponentsForms() {
                   </ListBox>
                 </Popover>
               </ComboBox>
+              <Button className="input-icon-btn" onPress={() => { const input = document.querySelector('.multiselect-input') as HTMLInputElement; input?.focus(); }}>
+                <Plus size={16} />
+              </Button>
             </div>
           </div>
         </div>
@@ -1068,7 +1078,7 @@ function ComponentsForms() {
                   <DateInput className="input date-input">
                     {(segment) => <DateSegment segment={segment} className="date-segment" />}
                   </DateInput>
-                  <Button className="date-picker-btn"><Calendar size={16} /></Button>
+                  <Button className="input-icon-btn"><Calendar size={16} /></Button>
                 </Group>
                 <Popover className="date-popover">
                   <Dialog className="date-dialog">
@@ -1099,7 +1109,7 @@ function ComponentsForms() {
                   <DateInput className="input date-input">
                     {(segment) => <DateSegment segment={segment} className="date-segment" />}
                   </DateInput>
-                  <div className="date-picker-icon"><Clock size={16} /></div>
+                  <div className="input-icon-btn" style={{pointerEvents:"none"}}><Clock size={16} /></div>
                 </Group>
               </TimeField>
             </div>
@@ -1111,7 +1121,7 @@ function ComponentsForms() {
                   <DateInput className="input date-input">
                     {(segment) => <DateSegment segment={segment} className="date-segment" />}
                   </DateInput>
-                  <Button className="date-picker-btn"><Calendar size={16} /></Button>
+                  <Button className="input-icon-btn"><Calendar size={16} /></Button>
                 </Group>
                 <Popover className="date-popover">
                   <Dialog className="date-dialog">
@@ -1149,7 +1159,7 @@ function ComponentsForms() {
           </div>
         </div>
         <CodeBlock
-          code={`/* Phone — with Country Code */\n<div className="phone-input-group">\n  <Select defaultSelectedKey="+1" className="phone-country-select">\n    <Button className="phone-country-btn">\n      <SelectValue /><ChevronDown size={14} />\n    </Button>\n    <Popover className="select-popover">\n      <ListBox className="select-listbox">\n        <ListBoxItem id="+1">US +1</ListBoxItem>\n      </ListBox>\n    </Popover>\n  </Select>\n  <TextField className="field" style={{flex: 1}}>\n    <Input className="input phone-input" placeholder="(555) 123-4567" />\n  </TextField>\n</div>\n\n/* Phone — with Country Code & Ext. */\n<div className="phone-input-group">\n  <Select defaultSelectedKey="+1" className="phone-country-select">\n    ...\n  </Select>\n  <TextField className="field" style={{flex: 1}}>\n    <Input className="input phone-input-middle" placeholder="(555) 123-4567" />\n  </TextField>\n  <div className="phone-ext">\n    <span className="phone-ext-label">Ext.</span>\n    <TextField className="field" style={{width: 80}}>\n      <Input className="input phone-ext-input" placeholder="0000" />\n    </TextField>\n  </div>\n</div>\n\n/* Phone — Simple */\n<TextField className="field">\n  <Input className="input" placeholder="(555) 123-4567" />\n</TextField>\n\n/* Date Picker */\n<DatePicker className="field">\n  <Label className="form-label">Appointment Date</Label>\n  <Group className="date-input-group">\n    <DateInput className="input date-input">\n      {(segment) => <DateSegment segment={segment} />}\n    </DateInput>\n    <Button className="date-picker-btn"><Calendar size={16} /></Button>\n  </Group>\n  <Popover className="date-popover">\n    <Dialog><Calendar>...</Calendar></Dialog>\n  </Popover>\n</DatePicker>\n\n/* Time Picker */\n<TimeField className="field">\n  <Label className="form-label">Appointment Time</Label>\n  <Group className="date-input-group">\n    <DateInput className="input date-input">\n      {(segment) => <DateSegment segment={segment} />}\n    </DateInput>\n    <div className="date-picker-icon"><Clock size={16} /></div>\n  </Group>\n</TimeField>\n\n/* Date & Time Picker */\n<DatePicker granularity="minute" className="field">\n  <Label className="form-label">Appointment Date & Time</Label>\n  <Group className="date-input-group">\n    <DateInput className="input date-input">\n      {(segment) => <DateSegment segment={segment} />}\n    </DateInput>\n    <Button className="date-picker-btn"><Calendar size={16} /></Button>\n  </Group>\n  <Popover className="date-popover">\n    <Dialog><Calendar>...</Calendar></Dialog>\n  </Popover>\n</DatePicker>\n\n/* Input with Copy Action */\n<div className="input-icon-wrap">\n  <Input className="input input-with-icon-right" readOnly />\n  <Button className="input-icon-btn"><Copy size={16} /></Button>\n</div>\n\n/* Input with External Link */\n<div className="input-icon-wrap">\n  <Input className="input input-with-icon-right" />\n  <Button className="input-icon-btn"><ExternalLink size={16} /></Button>\n</div>\n\n/* Login Form */\n<Form className="login-form">\n  <TextField className="field">\n    <Label className="form-label">Email</Label>\n    <Input className="input" placeholder="you@example.com" />\n  </TextField>\n  <TextField className="field">\n    <Label className="form-label">Password</Label>\n    <div className="input-icon-wrap">\n      <Input className="input input-with-icon-right" type="password" />\n      <Button className="input-icon-btn"><Eye size={16} /></Button>\n    </div>\n  </TextField>\n  <Checkbox className="check-item">Remember me</Checkbox>\n  <Button className="btn btn-primary btn-block">Sign In</Button>\n</Form>`}
+          code={`/* Phone — with Country Code */\n<div className="phone-input-group">\n  <Select defaultSelectedKey="+1" className="phone-country-select">\n    <Button className="phone-country-btn">\n      <SelectValue /><ChevronDown size={14} />\n    </Button>\n    <Popover className="select-popover">\n      <ListBox className="select-listbox">\n        <ListBoxItem id="+1">US +1</ListBoxItem>\n      </ListBox>\n    </Popover>\n  </Select>\n  <TextField className="field" style={{flex: 1}}>\n    <Input className="input phone-input" placeholder="(555) 123-4567" />\n  </TextField>\n</div>\n\n/* Phone — with Country Code & Ext. */\n<div className="phone-input-group">\n  <Select defaultSelectedKey="+1" className="phone-country-select">\n    ...\n  </Select>\n  <TextField className="field" style={{flex: 1}}>\n    <Input className="input phone-input-middle" placeholder="(555) 123-4567" />\n  </TextField>\n  <div className="phone-ext">\n    <span className="phone-ext-label">Ext.</span>\n    <TextField className="field" style={{width: 80}}>\n      <Input className="input phone-ext-input" placeholder="0000" />\n    </TextField>\n  </div>\n</div>\n\n/* Phone — Simple */\n<TextField className="field">\n  <Input className="input" placeholder="(555) 123-4567" />\n</TextField>\n\n/* Date Picker */\n<DatePicker className="field">\n  <Label className="form-label">Appointment Date</Label>\n  <Group className="date-input-group">\n    <DateInput className="input date-input">\n      {(segment) => <DateSegment segment={segment} />}\n    </DateInput>\n    <Button className="input-icon-btn"><Calendar size={16} /></Button>\n  </Group>\n  <Popover className="date-popover">\n    <Dialog><Calendar>...</Calendar></Dialog>\n  </Popover>\n</DatePicker>\n\n/* Time Picker */\n<TimeField className="field">\n  <Label className="form-label">Appointment Time</Label>\n  <Group className="date-input-group">\n    <DateInput className="input date-input">\n      {(segment) => <DateSegment segment={segment} />}\n    </DateInput>\n    <div className="input-icon-btn" style={{pointerEvents:"none"}}><Clock size={16} /></div>\n  </Group>\n</TimeField>\n\n/* Date & Time Picker */\n<DatePicker granularity="minute" className="field">\n  <Label className="form-label">Appointment Date & Time</Label>\n  <Group className="date-input-group">\n    <DateInput className="input date-input">\n      {(segment) => <DateSegment segment={segment} />}\n    </DateInput>\n    <Button className="input-icon-btn"><Calendar size={16} /></Button>\n  </Group>\n  <Popover className="date-popover">\n    <Dialog><Calendar>...</Calendar></Dialog>\n  </Popover>\n</DatePicker>\n\n/* Input with Copy Action */\n<div className="input-icon-wrap">\n  <Input className="input input-with-icon-right" readOnly />\n  <Button className="input-icon-btn"><Copy size={16} /></Button>\n</div>\n\n/* Input with External Link */\n<div className="input-icon-wrap">\n  <Input className="input input-with-icon-right" />\n  <Button className="input-icon-btn"><ExternalLink size={16} /></Button>\n</div>\n\n/* Login Form */\n<Form className="login-form">\n  <TextField className="field">\n    <Label className="form-label">Email</Label>\n    <Input className="input" placeholder="you@example.com" />\n  </TextField>\n  <TextField className="field">\n    <Label className="form-label">Password</Label>\n    <div className="input-icon-wrap">\n      <Input className="input input-with-icon-right" type="password" />\n      <Button className="input-icon-btn"><Eye size={16} /></Button>\n    </div>\n  </TextField>\n  <Checkbox className="check-item">Remember me</Checkbox>\n  <Button className="btn btn-primary btn-block">Sign In</Button>\n</Form>`}
         />
       </SubSection>
     </Section>
@@ -1266,26 +1276,6 @@ function ComponentsFeedback() {
         </div>
         <CodeBlock
           code={`<div className="toast toast-success">\n  <div className="toast-body">\n    <div className="toast-title">Appointment confirmed</div>\n    <div className="toast-msg">Feb 26, 2026 at 10:00 AM</div>\n  </div>\n  <span className="toast-close"><X size={16} /></span>\n</div>\n\n/* Variants: toast-success | toast-danger | toast-info */`}
-        />
-      </SubSection>
-
-      <SubSection title="Progress Bars">
-        <div className="card" style={{maxWidth:500}}>
-          <div className="progress-item">
-            <div className="progress-head"><span className="progress-label">Profile Complete</span><span className="progress-val">75%</span></div>
-            <div className="progress-track"><div className="progress-bar progress-bar-brand" style={{width:"75%"}} /></div>
-          </div>
-          <div className="progress-item">
-            <div className="progress-head"><span className="progress-label">Upload Progress</span><span className="progress-val">45%</span></div>
-            <div className="progress-track"><div className="progress-bar progress-bar-info" style={{width:"45%"}} /></div>
-          </div>
-          <div className="progress-item">
-            <div className="progress-head"><span className="progress-label">Storage Used</span><span className="progress-val">90%</span></div>
-            <div className="progress-track"><div className="progress-bar progress-bar-danger" style={{width:"90%"}} /></div>
-          </div>
-        </div>
-        <CodeBlock
-          code={`<div className="progress-item">\n  <div className="progress-head">\n    <span className="progress-label">Profile Complete</span>\n    <span className="progress-val">75%</span>\n  </div>\n  <div className="progress-track">\n    <div className="progress-bar progress-bar-brand" style={{ width: "75%" }} />\n  </div>\n</div>\n\n/* Bar variants: progress-bar-brand | progress-bar-info | progress-bar-danger */`}
         />
       </SubSection>
 
@@ -1447,9 +1437,9 @@ function ComponentsNavigation() {
 }
 
 /* ═══════════════════════════════════════════
-   COMPONENTS — DATA DISPLAY
+   COMPONENTS — OTHERS
    ═══════════════════════════════════════════ */
-function ComponentsDataDisplay() {
+function ComponentsOthers() {
   const [openPanels, setOpenPanels] = useState<Set<string>>(new Set(["vitals"]));
   const togglePanel = (id: string) => {
     setOpenPanels(prev => {
@@ -1466,10 +1456,10 @@ function ComponentsDataDisplay() {
   ];
 
   return (
-    <Section id="data" label="Components" title="Data Display"
+    <Section id="data" label="Components" title="Others"
       description="Cards, tables, avatars, tooltips, and collapsible sections for displaying structured content.">
 
-      <SubSection title="Patient Card">
+      {/* <SubSection title="Patient Card">
         <div className="grid g2" style={{gap:"var(--sp-4)"}}>
           <div className="panel">
             <div className="panel-header">Patient Summary</div>
@@ -1511,9 +1501,9 @@ function ComponentsDataDisplay() {
         <CodeBlock
           code={`<div className="panel">\n  <div className="panel-header">Patient Summary</div>\n  <div className="panel-body">\n    <div className="patient-row">\n      <div className="avatar avatar-lg">MD</div>\n      <div>\n        <div className="patient-name">Michelle Doe</div>\n        <div className="patient-meta">Female · 46 years · ID: 10042</div>\n      </div>\n    </div>\n    <div className="badge-row">\n      <span className="badge badge-success"><span className="badge-dot" /> Active</span>\n    </div>\n  </div>\n  <div className="panel-footer">\n    <Button className="btn btn-primary btn-sm">View Chart</Button>\n  </div>\n</div>`}
         />
-      </SubSection>
+      </SubSection> */}
 
-      <SubSection title="Data Table">
+      {/* <SubSection title="Data Table">
         <div className="panel">
           <table className="table">
             <thead>
@@ -1544,6 +1534,26 @@ function ComponentsDataDisplay() {
         </div>
         <CodeBlock
           code={`<div className="panel">\n  <table className="table">\n    <thead>\n      <tr><th>Patient</th><th>Gender</th><th>Age</th><th>Status</th><th></th></tr>\n    </thead>\n    <tbody>\n      <tr>\n        <td>\n          <div className="table-patient">\n            <div className="avatar avatar-sm">MD</div>\n            <div>\n              <div className="table-patient-name">Michelle Doe</div>\n              <div className="table-patient-email">patient@vsee.com</div>\n            </div>\n          </div>\n        </td>\n        <td>Female</td>\n        <td>46</td>\n        <td><span className="badge badge-success"><span className="badge-dot" /> Active</span></td>\n        <td><Button className="btn btn-ghost btn-sm">View</Button></td>\n      </tr>\n    </tbody>\n  </table>\n</div>`}
+        />
+      </SubSection> */}
+
+      <SubSection title="Progress Bars">
+        <div className="card" style={{maxWidth:500}}>
+          <div className="progress-item">
+            <div className="progress-head"><span className="progress-label">Profile Complete</span><span className="progress-val">75%</span></div>
+            <div className="progress-track"><div className="progress-bar progress-bar-brand" style={{width:"75%"}} /></div>
+          </div>
+          <div className="progress-item">
+            <div className="progress-head"><span className="progress-label">Upload Progress</span><span className="progress-val">45%</span></div>
+            <div className="progress-track"><div className="progress-bar progress-bar-info" style={{width:"45%"}} /></div>
+          </div>
+          <div className="progress-item">
+            <div className="progress-head"><span className="progress-label">Storage Used</span><span className="progress-val">90%</span></div>
+            <div className="progress-track"><div className="progress-bar progress-bar-danger" style={{width:"90%"}} /></div>
+          </div>
+        </div>
+        <CodeBlock
+          code={`<div className="progress-item">\n  <div className="progress-head">\n    <span className="progress-label">Profile Complete</span>\n    <span className="progress-val">75%</span>\n  </div>\n  <div className="progress-track">\n    <div className="progress-bar progress-bar-brand" style={{ width: "75%" }} />\n  </div>\n</div>\n\n/* Bar variants: progress-bar-brand | progress-bar-info | progress-bar-danger */`}
         />
       </SubSection>
 
@@ -1767,7 +1777,7 @@ function ComponentsOverlays() {
 /* ═══════════════════════════════════════════
    PATTERNS — EMR
    ═══════════════════════════════════════════ */
-function PatternsEMR() {
+/*function PatternsEMR() {
   return (
     <Section id="emr" label="Patterns" title="EMR Patterns"
       description="Clinical workflow patterns specific to the VSee EMR platform — order management, patient charts, and medical records.">
@@ -1805,7 +1815,7 @@ function PatternsEMR() {
     </Section>
   );
 }
-
+*/
 /* ═══════════════════════════════════════════
    PATTERNS — LAYOUTS
    ═══════════════════════════════════════════ */

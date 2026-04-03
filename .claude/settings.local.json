@@ -34,7 +34,9 @@
       "Bash(git:*)",
       "Read(//d D:/Downloads/AI Studio/**)",
       "Bash(dir)",
-      "Bash(sed:*)"
+      "Bash(sed:*)",
+      "Bash(claude mcp:*)",
+      "Bash(echo \"EXIT: $?\")"
     ]
   }
 }
