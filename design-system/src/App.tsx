@@ -36,7 +36,20 @@ import {
   Menu,
   MenuItem,
   MenuTrigger,
+  DatePicker,
+  DateInput,
+  DateSegment,
+  Calendar as AriaCalendar,
+  CalendarGrid,
+  CalendarGridBody,
+  CalendarGridHeader,
+  CalendarHeaderCell,
+  CalendarCell,
+  Heading,
+  Dialog,
+  TimeField,
 } from "react-aria-components";
+import { today, getLocalTimeZone, Time, CalendarDateTime } from "@internationalized/date";
 import {
   AlertCircle,
   CheckCircle2,
@@ -72,6 +85,13 @@ import {
   Calendar,
   Upload,
   Loader2,
+  Phone,
+  ChevronLeft,
+  Eye,
+  EyeOff,
+  Lock,
+  Link2,
+  Clock,
 } from "lucide-react";
 import "./App.css";
 
@@ -291,9 +311,14 @@ function SubSection({ title, description, children }: {
 
 /* ─── Code Block helper ─── */
 function CodeBlock({ code }: { code: string }) {
+  const [open, setOpen] = useState(false);
   return (
     <div style={{ marginTop: "var(--sp-4)" }}>
-      {code && <div className="code">{code}</div>}
+      <button className="code-toggle" onClick={() => setOpen(!open)}>
+        <ChevronRight size={14} className={`code-toggle-icon ${open ? "open" : ""}`} />
+        {open ? "Hide code" : "Show code"}
+      </button>
+      {open && code && <div className="code">{code}</div>}
     </div>
   );
 }
@@ -683,6 +708,167 @@ function ComponentsButtons() {
   );
 }
 
+const COUNTRIES = [
+  { id: "+1", flag: "🇺🇸", code: "+1", label: "US" },
+  { id: "+44", flag: "🇬🇧", code: "+44", label: "UK" },
+  { id: "+81", flag: "🇯🇵", code: "+81", label: "JP" },
+  { id: "+86", flag: "🇨🇳", code: "+86", label: "CN" },
+  { id: "+91", flag: "🇮🇳", code: "+91", label: "IN" },
+  { id: "+61", flag: "🇦🇺", code: "+61", label: "AU" },
+  { id: "+49", flag: "🇩🇪", code: "+49", label: "DE" },
+  { id: "+33", flag: "🇫🇷", code: "+33", label: "FR" },
+  { id: "+886", flag: "🇹🇼", code: "+886", label: "TW" },
+  { id: "+82", flag: "🇰🇷", code: "+82", label: "KR" },
+];
+
+function formatPhone(value: string) {
+  const digits = value.replace(/\D/g, "").slice(0, 10);
+  if (digits.length <= 3) return digits;
+  if (digits.length <= 6) return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
+  return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+}
+
+function PhoneInputDemo() {
+  const [phone1, setPhone1] = useState("");
+  const [phone2, setPhone2] = useState("");
+  const [ext, setExt] = useState("");
+  const [phone3, setPhone3] = useState("");
+  return (
+    <>
+      {/* Country code only */}
+      <div className="form-group">
+        <Label className="form-label">With Country Code</Label>
+        <div className="phone-input-group">
+          <Select defaultSelectedKey="+1" className="phone-country-select">
+            <Button className="phone-country-btn">
+              <SelectValue />
+              <ChevronDown size={14} />
+            </Button>
+            <Popover className="select-popover">
+              <ListBox className="select-listbox">
+                {COUNTRIES.map(c => (
+                  <ListBoxItem key={c.id} id={c.id} className="select-option" textValue={`${c.label} ${c.code}`}>
+                    {c.label} {c.code}
+                  </ListBoxItem>
+                ))}
+              </ListBox>
+            </Popover>
+          </Select>
+          <TextField className="field" style={{flex: 1}} value={phone1} onChange={(v) => setPhone1(formatPhone(v))}>
+            <Input className="input phone-input" placeholder="(555) 123-4567" />
+          </TextField>
+        </div>
+      </div>
+
+      {/* Country code + Ext */}
+      <div className="form-group">
+        <Label className="form-label">With Country Code & Ext.</Label>
+        <div className="phone-input-group">
+          <Select defaultSelectedKey="+1" className="phone-country-select">
+            <Button className="phone-country-btn">
+              <SelectValue />
+              <ChevronDown size={14} />
+            </Button>
+            <Popover className="select-popover">
+              <ListBox className="select-listbox">
+                {COUNTRIES.map(c => (
+                  <ListBoxItem key={c.id} id={c.id} className="select-option" textValue={`${c.label} ${c.code}`}>
+                    {c.label} {c.code}
+                  </ListBoxItem>
+                ))}
+              </ListBox>
+            </Popover>
+          </Select>
+          <TextField className="field" style={{flex: 1}} value={phone2} onChange={(v) => setPhone2(formatPhone(v))}>
+            <Input className="input phone-input-middle" placeholder="(555) 123-4567" />
+          </TextField>
+          <div className="phone-ext">
+            <span className="phone-ext-label">Ext.</span>
+            <TextField className="field" style={{width: 80}} value={ext} onChange={(v) => setExt(v.replace(/\D/g, "").slice(0, 6))}>
+              <Input className="input phone-ext-input" placeholder="0000" />
+            </TextField>
+          </div>
+        </div>
+      </div>
+
+      {/* Simple — no country, no ext */}
+      <div className="form-group">
+        <Label className="form-label">Simple</Label>
+        <TextField className="field" value={phone3} onChange={(v) => setPhone3(formatPhone(v))}>
+          <Input className="input" placeholder="(555) 123-4567" />
+        </TextField>
+      </div>
+    </>
+  );
+}
+
+function InputWithIconDemo() {
+  const [url, setUrl] = useState("https://vsee.com");
+  const [copied, setCopied] = useState(false);
+  return (
+    <>
+      <div className="form-group">
+        <TextField className="field" defaultValue="REF-2026-04-0382">
+          <Label className="form-label">Reference Code</Label>
+          <div className="input-icon-wrap">
+            <Input className="input input-with-icon-right" readOnly />
+            <Button className="input-icon-btn" onPress={() => { navigator.clipboard.writeText("REF-2026-04-0382"); setCopied(true); setTimeout(() => setCopied(false), 1500); }}>
+              {copied ? <CheckCircle size={16} /> : <Copy size={16} />}
+            </Button>
+          </div>
+        </TextField>
+      </div>
+      <div className="form-group">
+        <TextField className="field" value={url} onChange={setUrl}>
+          <Label className="form-label">Website URL</Label>
+          <div className="input-icon-wrap">
+            <Input className="input input-with-icon-right" placeholder="https://example.com" />
+            <Button className="input-icon-btn" onPress={() => { if (url) window.open(url, "_blank"); }}>
+              <ExternalLink size={16} />
+            </Button>
+          </div>
+        </TextField>
+      </div>
+    </>
+  );
+}
+
+function LoginDemo() {
+  const [showPw, setShowPw] = useState(false);
+  const [remember, setRemember] = useState(false);
+  return (
+    <Form className="login-form">
+      <div className="form-group">
+        <TextField className="field">
+          <Label className="form-label">Email</Label>
+          <Input className="input" placeholder="you@example.com" />
+        </TextField>
+      </div>
+      <div className="form-group">
+        <TextField className="field">
+          <Label className="form-label">Password</Label>
+          <div className="input-icon-wrap">
+            <Input className="input input-with-icon-right" type={showPw ? "text" : "password"} placeholder="Enter password" />
+            <Button className="input-icon-btn" onPress={() => setShowPw(!showPw)}>
+              {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
+            </Button>
+          </div>
+        </TextField>
+      </div>
+      <div className="login-options">
+        <Checkbox isSelected={remember} onChange={setRemember} className="check-item">
+          <div className={`check-box ${remember ? "checked" : ""}`}>
+            {remember && <svg viewBox="0 0 14 14" fill="none" className="check-svg"><path d="M3 7l3 3 5-6" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" /></svg>}
+          </div>
+          Remember me
+        </Checkbox>
+        <Link className="login-forgot">Forgot password?</Link>
+      </div>
+      <Button className="btn btn-primary btn-block">Sign In</Button>
+    </Form>
+  );
+}
+
 /* ═══════════════════════════════════════════
    COMPONENTS — FORM ELEMENTS
    ═══════════════════════════════════════════ */
@@ -724,9 +910,9 @@ function ComponentsForms() {
           </div>
           <div className="form-group">
             <TextField isInvalid className="field">
-              <Label className="form-label">Phone <span className="req">*</span></Label>
+              <Label className="form-label">Full Name <span className="req">*</span></Label>
               <Input className="input error" defaultValue="" />
-              <div className="form-error-text">Phone number is required</div>
+              <div className="form-error-text">Full name is required</div>
             </TextField>
           </div>
           <div className="form-group">
@@ -864,8 +1050,112 @@ function ComponentsForms() {
 
       </div>
       <CodeBlock
-        code={`/* Text Input */\n<TextField className="field">\n  <Label className="form-label">Email address</Label>\n  <Input className="input" placeholder="you@example.com" />\n</TextField>\n\n/* Input with error */\n<TextField isInvalid className="field">\n  <Label className="form-label">Phone <span className="req">*</span></Label>\n  <Input className="input error" />\n  <div className="form-error-text">Phone number is required</div>\n</TextField>\n\n/* Select */\n<Select className="field">\n  <Label className="form-label">Specialty</Label>\n  <Button className="input select-trigger">\n    <SelectValue />\n    <ChevronDown size={16} />\n  </Button>\n  <Popover className="select-popover">\n    <ListBox className="select-listbox">\n      <ListBoxItem className="select-option">Option</ListBoxItem>\n    </ListBox>\n  </Popover>\n</Select>\n\n/* MultiSelect */\n<div className="multiselect-wrapper">\n  <Label className="form-label">Filter by Specialty</Label>\n  <div className="multiselect-container">\n    <TagGroup onRemove={handleRemove}>\n      <TagList className="multiselect-tags">\n        <Tag className="chip" textValue="Cardiology">\n          Cardiology\n          <Button slot="remove" className="tag-remove"><X size={12} /></Button>\n        </Tag>\n      </TagList>\n    </TagGroup>\n    <ComboBox menuTrigger="focus" allowsCustomValue>\n      <Input className="multiselect-input" placeholder="Add more..." />\n      <Popover className="dropdown-popover">\n        <ListBox className="dropdown-menu">\n          <ListBoxItem className="dropdown-item">Option</ListBoxItem>\n        </ListBox>\n      </Popover>\n    </ComboBox>\n  </div>\n</div>\n\n/* Checkbox */\n<Checkbox isSelected={checked} onChange={setChecked} className="check-item">\n  <div className={\`check-box \${checked ? "checked" : ""}\`} />\n  Label text\n</Checkbox>\n\n/* Radio Group */\n<RadioGroup defaultValue="phone" className="radio-list">\n  <Radio value="phone" className="radio-item">\n    <div className="radio-circle" /><span>Phone call</span>\n  </Radio>\n</RadioGroup>`}
+        code={`/* Text Input */\n<TextField className="field">\n  <Label className="form-label">Email address</Label>\n  <Input className="input" placeholder="you@example.com" />\n</TextField>\n\n/* Input with error */\n<TextField isInvalid className="field">\n  <Label className="form-label">Full Name <span className="req">*</span></Label>\n  <Input className="input error" />\n  <div className="form-error-text">Full name is required</div>\n</TextField>\n\n/* Select */\n<Select className="field">\n  <Label className="form-label">Specialty</Label>\n  <Button className="input select-trigger">\n    <SelectValue />\n    <ChevronDown size={16} />\n  </Button>\n  <Popover className="select-popover">\n    <ListBox className="select-listbox">\n      <ListBoxItem className="select-option">Option</ListBoxItem>\n    </ListBox>\n  </Popover>\n</Select>\n\n/* MultiSelect */\n<div className="multiselect-wrapper">\n  <Label className="form-label">Filter by Specialty</Label>\n  <div className="multiselect-container">\n    <TagGroup onRemove={handleRemove}>\n      <TagList className="multiselect-tags">\n        <Tag className="chip" textValue="Cardiology">\n          Cardiology\n          <Button slot="remove" className="tag-remove"><X size={12} /></Button>\n        </Tag>\n      </TagList>\n    </TagGroup>\n    <ComboBox menuTrigger="focus" allowsCustomValue>\n      <Input className="multiselect-input" placeholder="Add more..." />\n      <Popover className="dropdown-popover">\n        <ListBox className="dropdown-menu">\n          <ListBoxItem className="dropdown-item">Option</ListBoxItem>\n        </ListBox>\n      </Popover>\n    </ComboBox>\n  </div>\n</div>\n\n/* Checkbox */\n<Checkbox isSelected={checked} onChange={setChecked} className="check-item">\n  <div className={\`check-box \${checked ? "checked" : ""}\`} />\n  Label text\n</Checkbox>\n\n/* Radio Group */\n<RadioGroup defaultValue="phone" className="radio-list">\n  <Radio value="phone" className="radio-item">\n    <div className="radio-circle" /><span>Phone call</span>\n  </Radio>\n</RadioGroup>`}
       />
+
+      <div style={{marginTop:"var(--sp-16)"}} />
+      <SubSection title="Advanced Inputs" description="Specialized form controls for phone numbers, dates, and inputs with action icons.">
+        <div className="grid g2 form-grid">
+          {/* Phone Input */}
+          <div className="card">
+            <div className="sub-title">Phone Number</div>
+            <PhoneInputDemo />
+          </div>
+
+          {/* Date Picker */}
+          <div className="card">
+            <div className="sub-title">Date Picker</div>
+            <div className="form-group">
+              <DatePicker defaultValue={today(getLocalTimeZone())} className="field">
+                <Label className="form-label">Appointment Date</Label>
+                <Group className="date-input-group">
+                  <DateInput className="input date-input">
+                    {(segment) => <DateSegment segment={segment} className="date-segment" />}
+                  </DateInput>
+                  <Button className="date-picker-btn"><Calendar size={16} /></Button>
+                </Group>
+                <Popover className="date-popover">
+                  <Dialog className="date-dialog">
+                    <AriaCalendar className="calendar">
+                      <header className="calendar-header">
+                        <Button slot="previous" className="calendar-nav-btn"><ChevronLeft size={16} /></Button>
+                        <Heading className="calendar-heading" />
+                        <Button slot="next" className="calendar-nav-btn"><ChevronRight size={16} /></Button>
+                      </header>
+                      <CalendarGrid className="calendar-grid">
+                        <CalendarGridHeader>
+                          {(day) => <CalendarHeaderCell className="calendar-header-cell">{day}</CalendarHeaderCell>}
+                        </CalendarGridHeader>
+                        <CalendarGridBody>
+                          {(date) => <CalendarCell date={date} className="calendar-cell" />}
+                        </CalendarGridBody>
+                      </CalendarGrid>
+                    </AriaCalendar>
+                  </Dialog>
+                </Popover>
+              </DatePicker>
+            </div>
+
+            <div className="form-group">
+              <TimeField defaultValue={new Time(9, 0)} className="field">
+                <Label className="form-label">Appointment Time</Label>
+                <Group className="date-input-group">
+                  <DateInput className="input date-input">
+                    {(segment) => <DateSegment segment={segment} className="date-segment" />}
+                  </DateInput>
+                  <div className="date-picker-icon"><Clock size={16} /></div>
+                </Group>
+              </TimeField>
+            </div>
+
+            <div className="form-group">
+              <DatePicker defaultValue={new CalendarDateTime(2026, 4, 3, 9, 0)} granularity="minute" className="field">
+                <Label className="form-label">Appointment Date & Time</Label>
+                <Group className="date-input-group">
+                  <DateInput className="input date-input">
+                    {(segment) => <DateSegment segment={segment} className="date-segment" />}
+                  </DateInput>
+                  <Button className="date-picker-btn"><Calendar size={16} /></Button>
+                </Group>
+                <Popover className="date-popover">
+                  <Dialog className="date-dialog">
+                    <AriaCalendar className="calendar">
+                      <header className="calendar-header">
+                        <Button slot="previous" className="calendar-nav-btn"><ChevronLeft size={16} /></Button>
+                        <Heading className="calendar-heading" />
+                        <Button slot="next" className="calendar-nav-btn"><ChevronRight size={16} /></Button>
+                      </header>
+                      <CalendarGrid className="calendar-grid">
+                        <CalendarGridHeader>
+                          {(day) => <CalendarHeaderCell className="calendar-header-cell">{day}</CalendarHeaderCell>}
+                        </CalendarGridHeader>
+                        <CalendarGridBody>
+                          {(date) => <CalendarCell date={date} className="calendar-cell" />}
+                        </CalendarGridBody>
+                      </CalendarGrid>
+                    </AriaCalendar>
+                  </Dialog>
+                </Popover>
+              </DatePicker>
+            </div>
+          </div>
+
+          {/* Input with Action Icon */}
+          <div className="card">
+            <div className="sub-title">Input with Action Icon</div>
+            <InputWithIconDemo />
+          </div>
+
+          {/* Login */}
+          <div className="card">
+            <div className="sub-title">Login Form</div>
+            <LoginDemo />
+          </div>
+        </div>
+        <CodeBlock
+          code={`/* Phone — with Country Code */\n<div className="phone-input-group">\n  <Select defaultSelectedKey="+1" className="phone-country-select">\n    <Button className="phone-country-btn">\n      <SelectValue /><ChevronDown size={14} />\n    </Button>\n    <Popover className="select-popover">\n      <ListBox className="select-listbox">\n        <ListBoxItem id="+1">US +1</ListBoxItem>\n      </ListBox>\n    </Popover>\n  </Select>\n  <TextField className="field" style={{flex: 1}}>\n    <Input className="input phone-input" placeholder="(555) 123-4567" />\n  </TextField>\n</div>\n\n/* Phone — with Country Code & Ext. */\n<div className="phone-input-group">\n  <Select defaultSelectedKey="+1" className="phone-country-select">\n    ...\n  </Select>\n  <TextField className="field" style={{flex: 1}}>\n    <Input className="input phone-input-middle" placeholder="(555) 123-4567" />\n  </TextField>\n  <div className="phone-ext">\n    <span className="phone-ext-label">Ext.</span>\n    <TextField className="field" style={{width: 80}}>\n      <Input className="input phone-ext-input" placeholder="0000" />\n    </TextField>\n  </div>\n</div>\n\n/* Phone — Simple */\n<TextField className="field">\n  <Input className="input" placeholder="(555) 123-4567" />\n</TextField>\n\n/* Date Picker */\n<DatePicker className="field">\n  <Label className="form-label">Appointment Date</Label>\n  <Group className="date-input-group">\n    <DateInput className="input date-input">\n      {(segment) => <DateSegment segment={segment} />}\n    </DateInput>\n    <Button className="date-picker-btn"><Calendar size={16} /></Button>\n  </Group>\n  <Popover className="date-popover">\n    <Dialog><Calendar>...</Calendar></Dialog>\n  </Popover>\n</DatePicker>\n\n/* Time Picker */\n<TimeField className="field">\n  <Label className="form-label">Appointment Time</Label>\n  <Group className="date-input-group">\n    <DateInput className="input date-input">\n      {(segment) => <DateSegment segment={segment} />}\n    </DateInput>\n    <div className="date-picker-icon"><Clock size={16} /></div>\n  </Group>\n</TimeField>\n\n/* Date & Time Picker */\n<DatePicker granularity="minute" className="field">\n  <Label className="form-label">Appointment Date & Time</Label>\n  <Group className="date-input-group">\n    <DateInput className="input date-input">\n      {(segment) => <DateSegment segment={segment} />}\n    </DateInput>\n    <Button className="date-picker-btn"><Calendar size={16} /></Button>\n  </Group>\n  <Popover className="date-popover">\n    <Dialog><Calendar>...</Calendar></Dialog>\n  </Popover>\n</DatePicker>\n\n/* Input with Copy Action */\n<div className="input-icon-wrap">\n  <Input className="input input-with-icon-right" readOnly />\n  <Button className="input-icon-btn"><Copy size={16} /></Button>\n</div>\n\n/* Input with External Link */\n<div className="input-icon-wrap">\n  <Input className="input input-with-icon-right" />\n  <Button className="input-icon-btn"><ExternalLink size={16} /></Button>\n</div>\n\n/* Login Form */\n<Form className="login-form">\n  <TextField className="field">\n    <Label className="form-label">Email</Label>\n    <Input className="input" placeholder="you@example.com" />\n  </TextField>\n  <TextField className="field">\n    <Label className="form-label">Password</Label>\n    <div className="input-icon-wrap">\n      <Input className="input input-with-icon-right" type="password" />\n      <Button className="input-icon-btn"><Eye size={16} /></Button>\n    </div>\n  </TextField>\n  <Checkbox className="check-item">Remember me</Checkbox>\n  <Button className="btn btn-primary btn-block">Sign In</Button>\n</Form>`}
+        />
+      </SubSection>
     </Section>
   );
 }
@@ -1143,13 +1433,13 @@ function ComponentsNavigation() {
       <SubSection title="Breadcrumb">
         <div className="card">
           <Breadcrumbs className="breadcrumb">
-            <Breadcrumb><Link>Dashboard</Link></Breadcrumb>
-            <Breadcrumb><Link>Patients</Link></Breadcrumb>
+            <Breadcrumb><Link>Dashboard</Link><span className="breadcrumb-sep"> &gt; </span></Breadcrumb>
+            <Breadcrumb><Link>Patients</Link><span className="breadcrumb-sep"> &gt; </span></Breadcrumb>
             <Breadcrumb><Link className="breadcrumb-current">Michelle Doe</Link></Breadcrumb>
           </Breadcrumbs>
         </div>
         <CodeBlock
-          code={`<Breadcrumbs className="breadcrumb">\n  <Breadcrumb><Link>Dashboard</Link></Breadcrumb>\n  <Breadcrumb><Link>Patients</Link></Breadcrumb>\n  <Breadcrumb><Link className="breadcrumb-current">Michelle Doe</Link></Breadcrumb>\n</Breadcrumbs>`}
+          code={`<Breadcrumbs className="breadcrumb">\n  <Breadcrumb>\n    <Link>Dashboard</Link>\n    <span className="breadcrumb-sep"> > </span>\n  </Breadcrumb>\n  <Breadcrumb>\n    <Link>Patients</Link>\n    <span className="breadcrumb-sep"> > </span>\n  </Breadcrumb>\n  <Breadcrumb>\n    <Link className="breadcrumb-current">Michelle Doe</Link>\n  </Breadcrumb>\n</Breadcrumbs>`}
         />
       </SubSection>
 
@@ -1355,19 +1645,27 @@ function ComponentsOverlays() {
           <div className="modal-box">
             <div className="modal-head">
               <h3>Cancel Appointment</h3>
-              <button className="modal-close"><X size={20} /></button>
+              <Button className="modal-close"><X size={20} /></Button>
             </div>
             <div className="modal-content">
               <p style={{color:"var(--text-secondary)",marginBottom:"var(--sp-4)"}}>
                 Are you sure you want to cancel this appointment with <strong>Dr. Sarah Chen</strong> on Feb 26, 2026?
               </p>
               <div className="form-group">
-                <label className="form-label">Reason for cancellation</label>
-                <select className="input native-select">
-                  <option>Select a reason...</option>
-                  <option>Schedule conflict</option>
-                  <option>Feeling better</option>
-                </select>
+                <Select className="field">
+                  <Label className="form-label">Reason for cancellation</Label>
+                  <Button className="input select-trigger">
+                    <SelectValue>{({isPlaceholder, selectedText}) => isPlaceholder ? "Select a reason..." : selectedText}</SelectValue>
+                    <ChevronDown size={16} className="select-chevron" />
+                  </Button>
+                  <Popover className="select-popover">
+                    <ListBox className="select-listbox">
+                      <ListBoxItem id="conflict" className="select-option">Schedule conflict</ListBoxItem>
+                      <ListBoxItem id="better" className="select-option">Feeling better</ListBoxItem>
+                      <ListBoxItem id="other" className="select-option">Other</ListBoxItem>
+                    </ListBox>
+                  </Popover>
+                </Select>
               </div>
             </div>
             <div className="modal-actions">
@@ -1377,7 +1675,7 @@ function ComponentsOverlays() {
           </div>
         </div>
         <CodeBlock
-          code={`<div className="modal-demo-bg">\n  <div className="modal-box">\n    <div className="modal-head">\n      <h3>Title</h3>\n      <button className="modal-close"><X size={20} /></button>\n    </div>\n    <div className="modal-content">\n      <p>Modal body content here.</p>\n    </div>\n    <div className="modal-actions">\n      <Button className="btn btn-ghost">Cancel</Button>\n      <Button className="btn btn-danger">Confirm</Button>\n    </div>\n  </div>\n</div>`}
+          code={`<div className="modal-demo-bg">\n  <div className="modal-box">\n    <div className="modal-head">\n      <h3>Title</h3>\n      <Button className="modal-close"><X size={20} /></Button>\n    </div>\n    <div className="modal-content">\n      <Select className="field">\n        <Label className="form-label">Reason</Label>\n        <Button className="input select-trigger">\n          <SelectValue />\n          <ChevronDown size={16} />\n        </Button>\n        <Popover className="select-popover">\n          <ListBox className="select-listbox">\n            <ListBoxItem className="select-option">Option</ListBoxItem>\n          </ListBox>\n        </Popover>\n      </Select>\n    </div>\n    <div className="modal-actions">\n      <Button className="btn btn-ghost">Cancel</Button>\n      <Button className="btn btn-danger">Confirm</Button>\n    </div>\n  </div>\n</div>`}
         />
       </SubSection>
 
