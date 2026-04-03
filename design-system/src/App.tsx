@@ -85,12 +85,9 @@ import {
   Calendar,
   Upload,
   Loader2,
-  Phone,
   ChevronLeft,
   Eye,
   EyeOff,
-  Lock,
-  Link2,
   Clock,
 } from "lucide-react";
 import "./App.css";
