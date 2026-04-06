@@ -124,8 +124,9 @@ const NAV = [
       { label: "Badges, Tags & Status", id: "badges" },
       { label: "Feedback & Notifications", id: "feedback" },
       { label: "Navigation", id: "navigation" },
-      { label: "Others", id: "data" },
+      { label: "Dropdowns", id: "dropdowns" },
       { label: "Overlays", id: "overlay" },
+      { label: "Others", id: "data" },
     ],
   },
   {
@@ -150,7 +151,17 @@ const NAV = [
 function App() {
   const [activeSection, setActiveSection] = useState("colors");
   const [navOpen, setNavOpen] = useState(false);
+  const [brandTheme, setBrandTheme] = useState("");
   const toast = useCopyToast();
+
+  /* apply brand theme to root element */
+  useEffect(() => {
+    if (brandTheme) {
+      document.documentElement.setAttribute("data-theme", brandTheme);
+    } else {
+      document.documentElement.removeAttribute("data-theme");
+    }
+  }, [brandTheme]);
 
   /* scroll-based active nav tracking */
   useEffect(() => {
@@ -192,6 +203,14 @@ function App() {
           <button className="ds-nav-toggle" onClick={() => setNavOpen(!navOpen)}>
             <X size={20} />
           </button>
+        </div>
+        <div className="ds-theme-switcher">
+          <div className="ds-theme-label">Brand Color</div>
+          <div className="ds-theme-options">
+            <button className={`ds-theme-dot ds-theme-green ${brandTheme === "" ? "active" : ""}`} onClick={() => setBrandTheme("")} title="Green (Default)" />
+            <button className={`ds-theme-dot ds-theme-blue ${brandTheme === "blue" ? "active" : ""}`} onClick={() => setBrandTheme("blue")} title="Ocean Blue" />
+            <button className={`ds-theme-dot ds-theme-purple ${brandTheme === "purple" ? "active" : ""}`} onClick={() => setBrandTheme("purple")} title="Royal Purple" />
+          </div>
         </div>
         <nav className="ds-nav-groups">
           {NAV.map((section) => (
@@ -255,12 +274,13 @@ function App() {
         <ComponentsBadges />
         <ComponentsFeedback />
         <ComponentsNavigation />
-        <ComponentsOthers />
+        <ComponentsDropdowns />
         <ComponentsOverlays />
+        <ComponentsOthers />
         {/* <PatternsEMR /> */}
         <PatternsLayouts />
         <EngineeringTokens />
-        <PatternsTheming />
+        <PatternsTheming brandTheme={brandTheme} setBrandTheme={setBrandTheme} />
         <PatternsFormio />
 
         {/* Footer */}
@@ -344,11 +364,11 @@ function FoundationsColors({ copy }: { copy: (v: string) => void }) {
 
       <SubSection title="Brand" description="The primary brand scale — from light tints to deep active states.">
         <div className="swatch-row">
-          <Swatch large color="#F0FAF5" name="Brand 50" hex="#F0FAF5" token="--brand-50" onClick={() => copy("#F0FAF5")} />
-          <Swatch large color="#E6F5EE" name="Brand Light" hex="#E6F5EE" token="--brand-light" onClick={() => copy("#E6F5EE")} />
-          <Swatch large color="#0D875C" name="Brand" hex="#0D875C" token="--brand" onClick={() => copy("#0D875C")} />
-          <Swatch large color="#0B7550" name="Hover" hex="#0B7550" token="--brand-hover" onClick={() => copy("#0B7550")} />
-          <Swatch large color="#096843" name="Active" hex="#096843" token="--brand-active" onClick={() => copy("#096843")} />
+          <Swatch large color="var(--brand-50)" name="Brand 50" hex="--brand-50" token="--brand-50" onClick={() => copy("var(--brand-50)")} />
+          <Swatch large color="var(--brand-light)" name="Brand Light" hex="--brand-light" token="--brand-light" onClick={() => copy("var(--brand-light)")} />
+          <Swatch large color="var(--brand)" name="Brand" hex="--brand" token="--brand" onClick={() => copy("var(--brand)")} />
+          <Swatch large color="var(--brand-hover)" name="Hover" hex="--brand-hover" token="--brand-hover" onClick={() => copy("var(--brand-hover)")} />
+          <Swatch large color="var(--brand-active)" name="Active" hex="--brand-active" token="--brand-active" onClick={() => copy("var(--brand-active)")} />
         </div>
       </SubSection>
 
@@ -507,7 +527,7 @@ function FoundationsSpacing() {
       </div>
 
       <div style={{marginTop:"var(--sp-8)"}} />
-      <SubSection title="Dividers" description="Horizontal separators used to visually group content within cards, panels, and forms.">
+      {/* <SubSection title="Dividers" description="Horizontal separators used to visually group content within cards, panels, and forms.">
         <div className="preview-box">
           <div style={{ fontWeight: 600 }}>Patient Information</div>
           <div className="divider" />
@@ -532,7 +552,7 @@ function FoundationsSpacing() {
             <div>Content below</div>
           </div>
         </div>
-      </SubSection>
+      </SubSection> */}
     </Section>
   );
 }
@@ -556,6 +576,12 @@ function ToggleDemo() {
             <div className="toggle-thumb-labeled" />
           </div>
           <span className="toggle-label">Auto-save</span>
+        </Switch>
+        <Switch isSelected={true} isDisabled className="toggle-wrap">
+          <div className="toggle-track on">
+            <div className="toggle-thumb" />
+          </div>
+          <span className="toggle-label">Always On</span>
         </Switch>
         <Switch isSelected={false} isDisabled className="toggle-wrap">
           <div className="toggle-track">
@@ -780,7 +806,7 @@ function PhoneInputDemo() {
           </TextField>
           <div className="phone-ext">
             <span className="phone-ext-label">Ext.</span>
-            <TextField className="field" style={{width: 80}} value={ext} onChange={(v) => setExt(v.replace(/\D/g, "").slice(0, 6))}>
+            <TextField className="field" style={{width: 40}} value={ext} onChange={(v) => setExt(v.replace(/\D/g, "").slice(0, 6))}>
               <Input className="input phone-ext-input" placeholder="0000" />
             </TextField>
           </div>
@@ -930,14 +956,10 @@ function ComponentsForms() {
           <div className="form-group">
             <Select className="field">
               <Label className="form-label">Specialty</Label>
-              <div className="input-icon-wrap">
-                <Button className="input select-trigger input-with-icon-right">
-                  <SelectValue>{({isPlaceholder, selectedText}) => isPlaceholder ? "Select a specialty..." : selectedText}</SelectValue>
-                </Button>
-                <Button className="input-icon-btn">
-                  <ChevronDown size={16} />
-                </Button>
-              </div>
+              <Button className="input select-trigger">
+                <SelectValue>{({isPlaceholder, selectedText}) => isPlaceholder ? "Select a specialty..." : selectedText}</SelectValue>
+                <ChevronDown size={16} className="select-chevron" />
+              </Button>
               <Popover className="select-popover">
                 <ListBox className="select-listbox">
                   <ListBoxItem id="internal" className="select-option">Internal Medicine</ListBoxItem>
@@ -1437,6 +1459,101 @@ function ComponentsNavigation() {
 }
 
 /* ═══════════════════════════════════════════
+   COMPONENTS — DROPDOWNS
+   ═══════════════════════════════════════════ */
+function ComponentsDropdowns() {
+  const [actionMsg, setActionMsg] = useState("");
+
+  return (
+    <Section id="dropdowns" label="Components" title="Dropdowns"
+      description="Dropdown menus, select lists, and action menus. All dropdowns are capped at 1/3 screen height and scroll when content overflows.">
+
+      <SubSection title="Select Dropdown" description="Standard select input with a scrollable list of options.">
+        <div style={{ display: "flex", gap: "var(--sp-4)", flexWrap: "wrap", alignItems: "flex-start" }}>
+          <Select className="field" style={{ minWidth: 200 }}>
+            <Label className="form-label">Country</Label>
+            <Button className="input select-trigger">
+              <SelectValue>{({isPlaceholder, selectedText}) => isPlaceholder ? "Select a country..." : selectedText}</SelectValue>
+              <ChevronDown size={16} className="select-chevron" />
+            </Button>
+            <Popover className="select-popover">
+              <ListBox className="select-listbox">
+                {["United States", "Canada", "United Kingdom", "Germany", "France", "Australia", "Japan", "Brazil", "India", "Mexico", "South Korea", "Netherlands", "Sweden", "Norway", "Denmark", "Finland", "Spain", "Italy", "Portugal", "Switzerland"].map((c) => (
+                  <ListBoxItem key={c} className="select-option" id={c}>{c}</ListBoxItem>
+                ))}
+              </ListBox>
+            </Popover>
+          </Select>
+
+        </div>
+        <CodeBlock
+          code={`<Select className="field">\n  <Label className="form-label">Country</Label>\n  <Button className="input select-trigger">\n    <SelectValue>\n      {({isPlaceholder, selectedText}) =>\n        isPlaceholder ? "Select a country..." : selectedText}\n    </SelectValue>\n    <ChevronDown size={16} className="select-chevron" />\n  </Button>\n  <Popover className="select-popover">\n    <ListBox className="select-listbox">\n      <ListBoxItem className="select-option" id="us">United States</ListBoxItem>\n      <ListBoxItem className="select-option" id="ca">Canada</ListBoxItem>\n    </ListBox>\n  </Popover>\n</Select>`}
+        />
+      </SubSection>
+
+      <SubSection title="Dropdown Button" description="Action menus triggered by a button. Used for contextual actions on rows, cards, and toolbars.">
+        <div style={{ display: "flex", gap: "var(--sp-4)", flexWrap: "wrap", alignItems: "flex-start" }}>
+          <MenuTrigger>
+            <Button className="btn btn-secondary">
+              Actions <ChevronDown size={16} />
+            </Button>
+            <Popover className="dropdown-popover">
+              <Menu className="dropdown-menu" onAction={(key) => setActionMsg(`Action: ${key}`)}>
+                <MenuItem id="edit" className="dropdown-item"><Edit3 size={14} /> Edit Record</MenuItem>
+                <MenuItem id="copy" className="dropdown-item"><Copy size={14} /> Duplicate</MenuItem>
+                <MenuItem id="export" className="dropdown-item"><ExternalLink size={14} /> Export PDF</MenuItem>
+                <MenuItem id="archive" className="dropdown-item"><Archive size={14} /> Archive</MenuItem>
+                <Separator className="dropdown-separator" />
+                <MenuItem id="delete" className="dropdown-item dropdown-item-danger"><Trash2 size={14} /> Delete</MenuItem>
+              </Menu>
+            </Popover>
+          </MenuTrigger>
+
+          <MenuTrigger>
+            <Button className="btn btn-ghost btn-icon">
+              <MoreHorizontal size={18} />
+            </Button>
+            <Popover className="dropdown-popover">
+              <Menu className="dropdown-menu" onAction={(key) => setActionMsg(`Action: ${key}`)}>
+                <MenuItem id="view" className="dropdown-item">View Details</MenuItem>
+                <MenuItem id="assign" className="dropdown-item">Assign Provider</MenuItem>
+                <MenuItem id="flag" className="dropdown-item">Flag for Review</MenuItem>
+              </Menu>
+            </Popover>
+          </MenuTrigger>
+
+          <MenuTrigger>
+            <Button className="btn btn-primary">
+              New Order <ChevronDown size={16} />
+            </Button>
+            <Popover className="dropdown-popover">
+              <Menu className="dropdown-menu" onAction={(key) => setActionMsg(`Action: ${key}`)}>
+                <AriaSection>
+                  <Header className="dropdown-header">Lab Orders</Header>
+                  <MenuItem id="cbc" className="dropdown-item">Complete Blood Count</MenuItem>
+                  <MenuItem id="bmp" className="dropdown-item">Basic Metabolic Panel</MenuItem>
+                  <MenuItem id="lipid" className="dropdown-item">Lipid Panel</MenuItem>
+                </AriaSection>
+                <Separator className="dropdown-separator" />
+                <AriaSection>
+                  <Header className="dropdown-header">Imaging</Header>
+                  <MenuItem id="xray" className="dropdown-item">X-Ray</MenuItem>
+                  <MenuItem id="mri" className="dropdown-item">MRI</MenuItem>
+                </AriaSection>
+              </Menu>
+            </Popover>
+          </MenuTrigger>
+        </div>
+        {actionMsg && <div className="action-feedback"><CheckCircle2 size={14} /> {actionMsg}</div>}
+        <CodeBlock
+          code={`<MenuTrigger>\n  <Button className="btn btn-secondary">\n    Actions <ChevronDown size={16} />\n  </Button>\n  <Popover className="dropdown-popover">\n    <Menu className="dropdown-menu" onAction={handleAction}>\n      <MenuItem id="edit" className="dropdown-item">\n        <Edit3 size={14} /> Edit Record\n      </MenuItem>\n      <Separator className="dropdown-separator" />\n      <MenuItem id="delete" className="dropdown-item dropdown-item-danger">\n        <Trash2 size={14} /> Delete\n      </MenuItem>\n    </Menu>\n  </Popover>\n</MenuTrigger>`}
+        />
+      </SubSection>
+    </Section>
+  );
+}
+
+/* ═══════════════════════════════════════════
    COMPONENTS — OTHERS
    ═══════════════════════════════════════════ */
 function ComponentsOthers() {
@@ -1449,7 +1566,7 @@ function ComponentsOthers() {
     });
   };
   const collapseData = [
-    { id: "vitals", title: "Vitals", content: "BP: 120/80 mmHg · HR: 72 bpm · Temp: 98.6°F · SpO₂: 98% · RR: 16/min · Weight: 165 lbs" },
+    { id: "vitals", title: "Vitals", content: <><div>BP: 120/80 mmHg · HR: 72 bpm · Temp: 98.6°F · SpO₂: 98% · RR: 16/min · Weight: 165 lbs</div><div>BP: 111/70 mmHg · HR: 82 bpm · Temp: 88.6°F · SpO₂: 98% · RR: 13/min · Weight: 85 lbs</div><div>BP: 90/67 mmHg · HR: 68 bpm · Temp: 95.1°F · SpO₂: 99% · RR: 17/min · Weight: 105 lbs</div></> },
     { id: "allergies", title: "Allergies", content: "Penicillin (Rash) · Sulfa drugs (Anaphylaxis) · Latex (Contact dermatitis)" },
     { id: "medications", title: "Current Medications", content: "Lisinopril 10mg daily · Metformin 500mg BID · Albuterol inhaler PRN · Atorvastatin 20mg daily" },
     { id: "history", title: "Medical History", content: "Type 2 Diabetes (2019) · Hypertension (2020) · Asthma (childhood) · Appendectomy (2015)" },
@@ -1569,23 +1686,7 @@ function ComponentsOthers() {
         />
       </SubSection>
 
-      <SubSection title="Tooltips">
-        <div className="preview" style={{padding:"60px 24px 24px"}}>
-          <TooltipTrigger delay={300}>
-            <Button className="btn btn-ghost">Hover target</Button>
-            <AriaTooltip placement="top" className="tooltip-bubble">This is a tooltip</AriaTooltip>
-          </TooltipTrigger>
-          <TooltipTrigger delay={300}>
-            <Button className="btn btn-primary btn-sm">Save</Button>
-            <AriaTooltip placement="top" className="tooltip-bubble">Save patient record</AriaTooltip>
-          </TooltipTrigger>
-        </div>
-        <CodeBlock
-          code={`<TooltipTrigger delay={300}>\n  <Button className="btn btn-ghost">Hover target</Button>\n  <AriaTooltip placement="top" className="tooltip-bubble">\n    This is a tooltip\n  </AriaTooltip>\n</TooltipTrigger>`}
-        />
-      </SubSection>
-
-      <SubSection title="Collapse / Accordion" description="Expandable content sections. Used throughout the patient chart to organize vitals, history, allergies, and other clinical data.">
+      {/* <SubSection title="Collapse / Accordion" description="Expandable content sections. Used throughout the patient chart to organize vitals, history, allergies, and other clinical data.">
         <div className="collapse-group">
           {collapseData.map(item => (
             <div key={item.id} className={`collapse-item ${openPanels.has(item.id) ? "open" : ""}`}>
@@ -1602,7 +1703,7 @@ function ComponentsOthers() {
         <CodeBlock
           code={`<div className="collapse-group">\n  <div className="collapse-item open">\n    <button className="collapse-trigger">\n      <span className="collapse-trigger-text">Vitals</span>\n      <ChevronUp size={16} />\n    </button>\n    <div className="collapse-content">BP: 120/80 mmHg · HR: 72 bpm</div>\n  </div>\n  <div className="collapse-item">\n    <button className="collapse-trigger">\n      <span className="collapse-trigger-text">Allergies</span>\n      <ChevronDown size={16} />\n    </button>\n  </div>\n</div>`}
         />
-      </SubSection>
+      </SubSection> */}
     </Section>
   );
 }
@@ -1611,12 +1712,11 @@ function ComponentsOthers() {
    COMPONENTS — OVERLAYS
    ═══════════════════════════════════════════ */
 function ComponentsOverlays() {
-  const [dropdownMsg, setDropdownMsg] = useState("");
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   return (
     <Section id="overlay" label="Components" title="Overlays"
-      description="Modals, dialogs, dropdowns, and drawer patterns for focused interactions.">
+      description="Modals, tooltips, and drawer patterns for focused interactions.">
 
       <SubSection title="Modal / Dialog">
         <div className="modal-demo-bg">
@@ -1652,67 +1752,21 @@ function ComponentsOverlays() {
             </div>
           </div>
         </div>
-        <CodeBlock
-          code={`<div className="modal-demo-bg">\n  <div className="modal-box">\n    <div className="modal-head">\n      <h3>Title</h3>\n      <Button className="modal-close"><X size={20} /></Button>\n    </div>\n    <div className="modal-content">\n      <Select className="field">\n        <Label className="form-label">Reason</Label>\n        <Button className="input select-trigger">\n          <SelectValue />\n          <ChevronDown size={16} />\n        </Button>\n        <Popover className="select-popover">\n          <ListBox className="select-listbox">\n            <ListBoxItem className="select-option">Option</ListBoxItem>\n          </ListBox>\n        </Popover>\n      </Select>\n    </div>\n    <div className="modal-actions">\n      <Button className="btn btn-ghost">Cancel</Button>\n      <Button className="btn btn-danger">Confirm</Button>\n    </div>\n  </div>\n</div>`}
-        />
       </SubSection>
 
-      <SubSection title="Dropdown Menu" description="Action menus triggered by a button. Used for contextual actions on rows, cards, and toolbars.">
-        <div style={{ display: "flex", gap: "var(--sp-4)", flexWrap: "wrap", alignItems: "flex-start" }}>
-          <MenuTrigger>
-            <Button className="btn btn-secondary">
-              Actions <ChevronDown size={16} />
-            </Button>
-            <Popover className="dropdown-popover">
-              <Menu className="dropdown-menu" onAction={(key) => setDropdownMsg(`Action: ${key}`)}>
-                <MenuItem id="edit" className="dropdown-item"><Edit3 size={14} /> Edit Record</MenuItem>
-                <MenuItem id="copy" className="dropdown-item"><Copy size={14} /> Duplicate</MenuItem>
-                <MenuItem id="export" className="dropdown-item"><ExternalLink size={14} /> Export PDF</MenuItem>
-                <MenuItem id="archive" className="dropdown-item"><Archive size={14} /> Archive</MenuItem>
-                <Separator className="dropdown-separator" />
-                <MenuItem id="delete" className="dropdown-item dropdown-item-danger"><Trash2 size={14} /> Delete</MenuItem>
-              </Menu>
-            </Popover>
-          </MenuTrigger>
-
-          <MenuTrigger>
-            <Button className="btn btn-ghost btn-icon">
-              <MoreHorizontal size={18} />
-            </Button>
-            <Popover className="dropdown-popover">
-              <Menu className="dropdown-menu" onAction={(key) => setDropdownMsg(`Action: ${key}`)}>
-                <MenuItem id="view" className="dropdown-item">View Details</MenuItem>
-                <MenuItem id="assign" className="dropdown-item">Assign Provider</MenuItem>
-                <MenuItem id="flag" className="dropdown-item">Flag for Review</MenuItem>
-              </Menu>
-            </Popover>
-          </MenuTrigger>
-
-          <MenuTrigger>
-            <Button className="btn btn-primary">
-              New Order <ChevronDown size={16} />
-            </Button>
-            <Popover className="dropdown-popover">
-              <Menu className="dropdown-menu" onAction={(key) => setDropdownMsg(`Action: ${key}`)}>
-                <AriaSection>
-                  <Header className="dropdown-header">Lab Orders</Header>
-                  <MenuItem id="cbc" className="dropdown-item">Complete Blood Count</MenuItem>
-                  <MenuItem id="bmp" className="dropdown-item">Basic Metabolic Panel</MenuItem>
-                  <MenuItem id="lipid" className="dropdown-item">Lipid Panel</MenuItem>
-                </AriaSection>
-                <Separator className="dropdown-separator" />
-                <AriaSection>
-                  <Header className="dropdown-header">Imaging</Header>
-                  <MenuItem id="xray" className="dropdown-item">X-Ray</MenuItem>
-                  <MenuItem id="mri" className="dropdown-item">MRI</MenuItem>
-                </AriaSection>
-              </Menu>
-            </Popover>
-          </MenuTrigger>
+      <SubSection title="Tooltips">
+        <div className="preview" style={{padding:"60px 24px 24px"}}>
+          <TooltipTrigger delay={300}>
+            <Button className="btn btn-ghost">Hover target</Button>
+            <AriaTooltip placement="top" className="tooltip-bubble">This is a tooltip</AriaTooltip>
+          </TooltipTrigger>
+          <TooltipTrigger delay={300}>
+            <Button className="btn btn-primary btn-sm">Save</Button>
+            <AriaTooltip placement="top" className="tooltip-bubble">Save patient record</AriaTooltip>
+          </TooltipTrigger>
         </div>
-        {dropdownMsg && <div className="action-feedback"><CheckCircle2 size={14} /> {dropdownMsg}</div>}
         <CodeBlock
-          code={`<MenuTrigger>\n  <Button className="btn btn-secondary">\n    Actions <ChevronDown size={16} />\n  </Button>\n  <Popover className="dropdown-popover">\n    <Menu className="dropdown-menu" onAction={handleAction}>\n      <MenuItem id="edit" className="dropdown-item">\n        <Edit3 size={14} /> Edit Record\n      </MenuItem>\n      <Separator className="dropdown-separator" />\n      <MenuItem id="delete" className="dropdown-item dropdown-item-danger">\n        <Trash2 size={14} /> Delete\n      </MenuItem>\n    </Menu>\n  </Popover>\n</MenuTrigger>`}
+          code={`<TooltipTrigger delay={300}>\n  <Button className="btn btn-ghost">Hover target</Button>\n  <AriaTooltip placement="top" className="tooltip-bubble">\n    This is a tooltip\n  </AriaTooltip>\n</TooltipTrigger>`}
         />
       </SubSection>
 
@@ -1905,18 +1959,18 @@ function PatternsLayouts() {
 /* ═══════════════════════════════════════════
    PATTERNS — WHITE-LABEL THEMING
    ═══════════════════════════════════════════ */
-function PatternsTheming() {
+function PatternsTheming({ brandTheme, setBrandTheme }: { brandTheme: string; setBrandTheme: (t: string) => void }) {
   return (
     <Section id="theming" label="Engineering" title="White-Label Theming"
-      description={`VSee supports white-label customization per tenant. Override CSS variables via [data-theme] attributes.`}>
+      description={`VSee supports white-label customization per tenant. Override CSS variables via [data-theme] attributes. Click a card below to switch the theme live.`}>
 
       <div className="grid g3" style={{gap:"var(--sp-4)"}}>
         {[
-          { name: "VSee Default", color: "#0D875C" },
-          { name: "Blue Variant", color: "#2563EB" },
-          { name: "Purple Variant", color: "#7C3AED" },
+          { name: "VSee Default", color: "#0D875C", theme: "" },
+          { name: "Ocean Blue", color: "#0891B2", theme: "blue" },
+          { name: "Royal Purple", color: "#7C3AED", theme: "purple" },
         ].map((t) => (
-          <div key={t.name} className="theme-card">
+          <div key={t.name} className={`theme-card ${brandTheme === t.theme ? "theme-card-active" : ""}`} style={{cursor:"pointer"}} onClick={() => setBrandTheme(t.theme)}>
             <div className="theme-card-header"><div className="theme-card-dot" style={{background:t.color}} /> {t.name}</div>
             <div className="theme-card-body">
               <button className="theme-btn-primary" style={{background:t.color}}>Primary</button>
@@ -1926,37 +1980,43 @@ function PatternsTheming() {
         ))}
       </div>
 
-      <div className="sub-title" style={{marginTop:"var(--sp-8)"}}>How to Override</div>
-      <div className="sub-desc">Add a <code className="code-inline">[data-theme]</code> attribute to the <code className="code-inline">{"<html>"}</code> element. Override both the Tailwind <code className="code-inline">@theme</code> values (oklch) and the <code className="code-inline">:root</code> CSS custom properties (hex).</div>
+      <div className="sub-title" style={{marginTop:"var(--sp-8)"}}>How to Switch Themes</div>
+      <div className="sub-desc">Add a <code className="code-inline">data-theme</code> attribute to the <code className="code-inline">{"<html>"}</code> element. The attribute overrides all <code className="code-inline">--brand-*</code> CSS variables globally.</div>
       <div className="code">
-        <span className="c">{"/* theme-blue-variant.css — tenant override */"}</span>{"\n\n"}
-        <span className="c">{"/* 1. Override Tailwind v4 theme tokens (oklch format) */"}</span>{"\n"}
-        <span className="k">@theme</span>{" {\n"}
-        {"  "}<span className="c">{"/* Primary brand */"}</span>{"\n"}
-        {"  "}<span className="p">--color-primary</span>{": "}<span className="v">oklch(0.55 0.2 264)</span>{";"}<span className="c">{"           /* #2563EB */"}</span>{"\n"}
-        {"  "}<span className="p">--color-primary-foreground</span>{": "}<span className="v">#ffffff</span>{";\n"}
-        {"  "}<span className="p">--color-primary-hover</span>{": "}<span className="v">oklch(0.49 0.2 264)</span>{";"}<span className="c">{"     /* #1D4ED8 */"}</span>{"\n\n"}
-        {"  "}<span className="c">{"/* Accent (brand-tinted) */"}</span>{"\n"}
-        {"  "}<span className="p">--color-accent</span>{": "}<span className="v">oklch(0.95 0.04 264)</span>{";"}<span className="c">{"        /* light blue tint */"}</span>{"\n"}
-        {"  "}<span className="p">--color-accent-foreground</span>{": "}<span className="v">oklch(0.4 0.15 264)</span>{";\n\n"}
-        {"  "}<span className="c">{"/* Focus ring */"}</span>{"\n"}
-        {"  "}<span className="p">--color-ring</span>{": "}<span className="v">oklch(0.55 0.2 264)</span>{";\n"}
-        {"}\n\n"}
-        <span className="c">{"/* 2. Override :root CSS custom properties (hex format) */"}</span>{"\n"}
-        {"[data-theme="}<span className="s">"blue-variant"</span>{"] {\n"}
-        {"  "}<span className="c">{"/* Brand scale */"}</span>{"\n"}
-        {"  "}<span className="p">--brand</span>{": "}<span className="v">#2563EB</span>{";       "}<span className="p">--brand-hover</span>{": "}<span className="v">#1D4ED8</span>{";\n"}
-        {"  "}<span className="p">--brand-active</span>{": "}<span className="v">#1E40AF</span>{";  "}<span className="p">--brand-dark</span>{": "}<span className="v">#1E3A8A</span>{";\n"}
-        {"  "}<span className="p">--brand-darker</span>{": "}<span className="v">#172554</span>{";\n"}
-        {"  "}<span className="p">--brand-light</span>{": "}<span className="v">#DBEAFE</span>{";  "}<span className="p">--brand-50</span>{": "}<span className="v">#EFF6FF</span>{";\n\n"}
-        {"  "}<span className="c">{"/* Text & focus */"}</span>{"\n"}
-        {"  "}<span className="p">--text-brand</span>{": "}<span className="v">#2563EB</span>{";\n"}
-        {"  "}<span className="p">--shadow-focus</span>{": "}<span className="v">0 0 0 3px rgba(37, 99, 235, 0.15)</span>{";\n\n"}
-        {"  "}<span className="c">{"/* Status (if brand = success, remap ordered/resulted) */"}</span>{"\n"}
-        {"  "}<span className="p">--status-ordered</span>{": "}<span className="v">#2563EB</span>{"; "}<span className="p">--status-resulted</span>{": "}<span className="v">#2563EB</span>{";\n"}
-        {"}\n\n"}
-        <span className="c">{"/* 3. Apply in HTML */"}</span>{"\n"}
-        <span className="t">{"<html"}</span>{" "}<span className="p">data-theme</span>{"="}<span className="s">"blue-variant"</span><span className="t">{">"}</span>
+        <span className="c">{"/* 1. In HTML — set the attribute */"}</span>{"\n"}
+        <span className="t">{"<html"}</span>{" "}<span className="p">data-theme</span>{"="}<span className="s">"blue"</span><span className="t">{">"}</span>{"   "}<span className="c">{"/* Ocean Blue */"}</span>{"\n"}
+        <span className="t">{"<html"}</span>{" "}<span className="p">data-theme</span>{"="}<span className="s">"purple"</span><span className="t">{">"}</span>{" "}<span className="c">{"/* Royal Purple */"}</span>{"\n"}
+        <span className="t">{"<html>"}</span>{"                  "}<span className="c">{"/* Default Green (no attribute) */"}</span>{"\n\n"}
+
+        <span className="c">{"/* 2. In JavaScript — switch dynamically */"}</span>{"\n"}
+        <span className="c">{"// Set theme"}</span>{"\n"}
+        {"document.documentElement."}<span className="p">setAttribute</span>{"("}<span className="s">"data-theme"</span>{", "}<span className="s">"blue"</span>{");\n\n"}
+        <span className="c">{"// Reset to default"}</span>{"\n"}
+        {"document.documentElement."}<span className="p">removeAttribute</span>{"("}<span className="s">"data-theme"</span>{");\n\n"}
+
+        <span className="c">{"/* 3. In React — with state */"}</span>{"\n"}
+        <span className="k">{"const"}</span>{" [theme, setTheme] = "}<span className="p">{"useState"}</span>{'("");\n\n'}
+        <span className="p">{"useEffect"}</span>{"(() => {\n"}
+        {"  "}<span className="k">{"if"}</span>{" (theme) {\n"}
+        {"    document.documentElement."}<span className="p">setAttribute</span>{"("}<span className="s">"data-theme"</span>{", theme);\n"}
+        {"  } "}<span className="k">{"else"}</span>{" {\n"}
+        {"    document.documentElement."}<span className="p">removeAttribute</span>{"("}<span className="s">"data-theme"</span>{");\n"}
+        {"  }\n"}
+        {"}, [theme]);\n"}
+      </div>
+
+      <div className="sub-title" style={{marginTop:"var(--sp-8)"}}>Creating a Custom Theme</div>
+      <div className="sub-desc">Define a new <code className="code-inline">[data-theme]</code> block with all 7 brand variables:</div>
+      <div className="code">
+        <span className="k">{"[data-theme=\"your-brand\"]"}</span>{" {\n"}
+        {"  "}<span className="p">--brand</span>{": "}<span className="v">#______</span>{";        "}<span className="c">{"/* Main brand color */"}</span>{"\n"}
+        {"  "}<span className="p">--brand-hover</span>{": "}<span className="v">#______</span>{";  "}<span className="c">{"/* Slightly darker for hover */"}</span>{"\n"}
+        {"  "}<span className="p">--brand-active</span>{": "}<span className="v">#______</span>{"; "}<span className="c">{"/* Darker for pressed/active */"}</span>{"\n"}
+        {"  "}<span className="p">--brand-dark</span>{": "}<span className="v">#______</span>{";   "}<span className="c">{"/* Dark variant (gradients) */"}</span>{"\n"}
+        {"  "}<span className="p">--brand-darker</span>{": "}<span className="v">#______</span>{"; "}<span className="c">{"/* Darkest variant (gradients) */"}</span>{"\n"}
+        {"  "}<span className="p">--brand-light</span>{": "}<span className="v">#______</span>{";  "}<span className="c">{"/* Light tint background */"}</span>{"\n"}
+        {"  "}<span className="p">--brand-50</span>{": "}<span className="v">#______</span>{";     "}<span className="c">{"/* Very light tint background */"}</span>{"\n"}
+        {"}"}
       </div>
     </Section>
   );
@@ -2345,7 +2405,23 @@ function EngineeringTokens() {
         {"  "}<span className="p">--brand</span>{": "}<span className="v">#0D875C</span>{";     "}<span className="p">--brand-hover</span>{": "}<span className="v">#0B7550</span>{";\n"}
         {"  "}<span className="p">--brand-active</span>{": "}<span className="v">#096843</span>{"; "}<span className="p">--brand-dark</span>{": "}<span className="v">#0A6B49</span>{";\n"}
         {"  "}<span className="p">--brand-darker</span>{": "}<span className="v">#074D35</span>{";\n"}
-        {"  "}<span className="p">--brand-light</span>{": "}<span className="v">#E6F5EE</span>{";  "}<span className="p">--brand-50</span>{": "}<span className="v">#F0FAF5</span>{";\n\n"}
+        {"  "}<span className="p">--brand-light</span>{": "}<span className="v">#E6F5EE</span>{";  "}<span className="p">--brand-50</span>{": "}<span className="v">#F0FAF5</span>{";\n"}
+        {"}\n\n"}
+        <span className="c">{"/* ── Brand theme: Ocean Blue ── */"}</span>{"\n"}
+        <span className="k">{"[data-theme=\"blue\"]"}</span>{" {\n"}
+        {"  "}<span className="p">--brand</span>{": "}<span className="v">#0891B2</span>{";     "}<span className="p">--brand-hover</span>{": "}<span className="v">#0E7490</span>{";\n"}
+        {"  "}<span className="p">--brand-active</span>{": "}<span className="v">#155E75</span>{"; "}<span className="p">--brand-dark</span>{": "}<span className="v">#0E7490</span>{";\n"}
+        {"  "}<span className="p">--brand-darker</span>{": "}<span className="v">#164E63</span>{";\n"}
+        {"  "}<span className="p">--brand-light</span>{": "}<span className="v">#E0F7FA</span>{";  "}<span className="p">--brand-50</span>{": "}<span className="v">#ECFEFF</span>{";\n"}
+        {"}\n\n"}
+        <span className="c">{"/* ── Brand theme: Royal Purple ── */"}</span>{"\n"}
+        <span className="k">{"[data-theme=\"purple\"]"}</span>{" {\n"}
+        {"  "}<span className="p">--brand</span>{": "}<span className="v">#7C3AED</span>{";     "}<span className="p">--brand-hover</span>{": "}<span className="v">#6D31D6</span>{";\n"}
+        {"  "}<span className="p">--brand-active</span>{": "}<span className="v">#5E28BF</span>{"; "}<span className="p">--brand-dark</span>{": "}<span className="v">#6332C4</span>{";\n"}
+        {"  "}<span className="p">--brand-darker</span>{": "}<span className="v">#47248C</span>{";\n"}
+        {"  "}<span className="p">--brand-light</span>{": "}<span className="v">#EDE9FE</span>{";  "}<span className="p">--brand-50</span>{": "}<span className="v">#F5F3FF</span>{";\n"}
+        {"}\n\n"}
+        <span className="k">:root</span>{" {\n"}
         {"  "}<span className="c">{"/* Semantic (AA on white) */"}</span>{"\n"}
         {"  "}<span className="p">--success</span>{": "}<span className="v">#0D875C</span>{";   "}<span className="p">--success-light</span>{": "}<span className="v">#E6F5EE</span>{";\n"}
         {"  "}<span className="p">--info</span>{": "}<span className="v">#0575AD</span>{";      "}<span className="p">--info-light</span>{": "}<span className="v">#E0F2FE</span>{";\n"}

@@ -80,7 +80,31 @@
   --brand-darker: #074D35;
   --brand-light: #E6F5EE;
   --brand-50: #F0FAF5;
+}
 
+/* ── Brand theme: Ocean Blue ── */
+[data-theme="blue"] {
+  --brand: #0891B2;
+  --brand-hover: #0E7490;
+  --brand-active: #155E75;
+  --brand-dark: #0E7490;
+  --brand-darker: #164E63;
+  --brand-light: #E0F7FA;
+  --brand-50: #ECFEFF;
+}
+
+/* ── Brand theme: Royal Purple ── */
+[data-theme="purple"] {
+  --brand: #7C3AED;
+  --brand-hover: #6D31D6;
+  --brand-active: #5E28BF;
+  --brand-dark: #6332C4;
+  --brand-darker: #47248C;
+  --brand-light: #EDE9FE;
+  --brand-50: #F5F3FF;
+}
+
+:root {
   /* Semantic hex (AA-compliant for white foreground) */
   --success: #0D875C; --success-light: #E6F5EE;
   --info: #196CD2; --info-light: #E0F2FE;
@@ -103,9 +127,9 @@
 
   /* Neutral scale (AA-compliant) */
   --black: #111827;
-  --grey-900: #1F2937; --grey-800: #374151; --grey-700: #4B5563;
-  --grey-600: #6B7280; --grey-500: #868E9C; --grey-400: #D1D5DB;
-  --grey-300: #E5E7EB; --grey-200: #F3F4F6; --grey-100: #F9FAFB;
+  --grey-900: #4B5563; --grey-800: #6B7280; --grey-700: #9CA3AF;
+  --grey-600: #B0B7C3; --grey-500: #C9CED6; --grey-400: #E8EAED;
+  --grey-300: #F1F2F4; --grey-200: #F8F9FA; --grey-100: #FCFCFD;
   --white: #FFFFFF;
 
   /* Text (AA-compliant: ≥ 4.5:1 on white) */
