@@ -445,10 +445,10 @@ function FoundationsTypography() {
           { label: "H3", meta: "24px / 700", style: { fontSize: 24, fontWeight: 700, letterSpacing: "-0.3px", lineHeight: 1.2 }, text: "Subsection" },
           { label: "H4", meta: "20px / 600", style: { fontSize: 20, fontWeight: 600, lineHeight: 1.3 }, text: "Card title" },
           { label: "H5", meta: "16px / 600", style: { fontSize: 16, fontWeight: 600, lineHeight: 1.4 }, text: "Label heading" },
-          { label: "Body LG", meta: "16px / 400", style: { fontSize: 16, lineHeight: 1.6, color: "var(--grey-600)" }, text: "Body text for longer-form content and introductory paragraphs." },
+          { label: "Body LG", meta: "16px / 400", style: { fontSize: 16, lineHeight: 1.6 }, text: "Body text for longer-form content and introductory paragraphs." },
           { label: "Body", meta: "14px / 400", style: { fontSize: 14, lineHeight: 1.5 }, text: "Standard body text used throughout the application." },
-          { label: "Caption", meta: "13px / 500", style: { fontSize: 13, fontWeight: 500, color: "var(--grey-600)" }, text: "Helper text, timestamps, and metadata" },
-          { label: "Overline", meta: "12px / 700", style: { fontSize: 12, fontWeight: 700, textTransform: "uppercase" as const, letterSpacing: "1px", color: "var(--grey-500)" }, text: "Section Label" },
+          { label: "Caption", meta: "13px / 500", style: { fontSize: 13, fontWeight: 500 }, text: "Helper text, timestamps, and metadata" },
+          { label: "Overline", meta: "12px / 700", style: { fontSize: 12, fontWeight: 700, textTransform: "uppercase" as const, letterSpacing: "1px" }, text: "Section Label" },
         ].map((t) => (
           <div key={t.label} className="type-row">
             <div className="type-meta">
@@ -806,7 +806,7 @@ function PhoneInputDemo() {
           </TextField>
           <div className="phone-ext">
             <span className="phone-ext-label">Ext.</span>
-            <TextField className="field" style={{width: 44}} value={ext} onChange={(v) => setExt(v.replace(/\D/g, "").slice(0, 6))}>
+            <TextField className="field" style={{width: 40}} value={ext} onChange={(v) => setExt(v.replace(/\D/g, "").slice(0, 6))}>
               <Input className="input phone-ext-input" placeholder="0000" />
             </TextField>
           </div>
