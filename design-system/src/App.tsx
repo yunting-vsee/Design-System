@@ -57,7 +57,7 @@ import {
   AlertTriangle,
   ChevronDown,
   ChevronRight,
-  ChevronUp,
+  // ChevronUp, // commented out: Collapse / Accordion is commented out
   X,
   Search,
   FileText,
@@ -1557,20 +1557,21 @@ function ComponentsDropdowns() {
    COMPONENTS — OTHERS
    ═══════════════════════════════════════════ */
 function ComponentsOthers() {
-  const [openPanels, setOpenPanels] = useState<Set<string>>(new Set(["vitals"]));
-  const togglePanel = (id: string) => {
-    setOpenPanels(prev => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id); else next.add(id);
-      return next;
-    });
-  };
-  const collapseData = [
-    { id: "vitals", title: "Vitals", content: <><div>BP: 120/80 mmHg · HR: 72 bpm · Temp: 98.6°F · SpO₂: 98% · RR: 16/min · Weight: 165 lbs</div><div>BP: 111/70 mmHg · HR: 82 bpm · Temp: 88.6°F · SpO₂: 98% · RR: 13/min · Weight: 85 lbs</div><div>BP: 90/67 mmHg · HR: 68 bpm · Temp: 95.1°F · SpO₂: 99% · RR: 17/min · Weight: 105 lbs</div></> },
-    { id: "allergies", title: "Allergies", content: "Penicillin (Rash) · Sulfa drugs (Anaphylaxis) · Latex (Contact dermatitis)" },
-    { id: "medications", title: "Current Medications", content: "Lisinopril 10mg daily · Metformin 500mg BID · Albuterol inhaler PRN · Atorvastatin 20mg daily" },
-    { id: "history", title: "Medical History", content: "Type 2 Diabetes (2019) · Hypertension (2020) · Asthma (childhood) · Appendectomy (2015)" },
-  ];
+  // commented out: Collapse / Accordion is commented out
+  // const [openPanels, setOpenPanels] = useState<Set<string>>(new Set(["vitals"]));
+  // const togglePanel = (id: string) => {
+  //   setOpenPanels(prev => {
+  //     const next = new Set(prev);
+  //     if (next.has(id)) next.delete(id); else next.add(id);
+  //     return next;
+  //   });
+  // };
+  // const collapseData = [
+  //   { id: "vitals", title: "Vitals", content: <><div>BP: 120/80 mmHg · HR: 72 bpm · Temp: 98.6°F · SpO₂: 98% · RR: 16/min · Weight: 165 lbs</div><div>BP: 111/70 mmHg · HR: 82 bpm · Temp: 88.6°F · SpO₂: 98% · RR: 13/min · Weight: 85 lbs</div><div>BP: 90/67 mmHg · HR: 68 bpm · Temp: 95.1°F · SpO₂: 99% · RR: 17/min · Weight: 105 lbs</div></> },
+  //   { id: "allergies", title: "Allergies", content: "Penicillin (Rash) · Sulfa drugs (Anaphylaxis) · Latex (Contact dermatitis)" },
+  //   { id: "medications", title: "Current Medications", content: "Lisinopril 10mg daily · Metformin 500mg BID · Albuterol inhaler PRN · Atorvastatin 20mg daily" },
+  //   { id: "history", title: "Medical History", content: "Type 2 Diabetes (2019) · Hypertension (2020) · Asthma (childhood) · Appendectomy (2015)" },
+  // ];
 
   return (
     <Section id="data" label="Components" title="Others"
