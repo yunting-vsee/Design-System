@@ -806,7 +806,7 @@ function PhoneInputDemo() {
           </TextField>
           <div className="phone-ext">
             <span className="phone-ext-label">Ext.</span>
-            <TextField className="field" style={{width: 40}} value={ext} onChange={(v) => setExt(v.replace(/\D/g, "").slice(0, 6))}>
+            <TextField className="field" style={{width: 44}} value={ext} onChange={(v) => setExt(v.replace(/\D/g, "").slice(0, 6))}>
               <Input className="input phone-ext-input" placeholder="0000" />
             </TextField>
           </div>
