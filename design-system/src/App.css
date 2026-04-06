@@ -11,7 +11,7 @@
 .ds-nav-group-title { display: flex; align-items: center; gap: 6px; font-size: var(--text-base); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-tertiary); padding: 0 var(--sp-3); margin-bottom: var(--sp-1); }
 .ds-nav-link { display: block; width: 100%; text-align: left; padding: 7px var(--sp-3); font-size: var(--text-base); font-weight: 500; color: var(--text-secondary); border-radius: var(--r-md); border: none; background: none; cursor: pointer; font-family: var(--font); transition: all var(--t-fast); }
 .ds-nav-link:hover { color: var(--text-primary); background: var(--grey-200); }
-.ds-nav-link.active { color: var(--success-dark); background: var(--success-light); font-weight: 600; }
+.ds-nav-link.active { color: var(--brand-dark); background: var(--brand-light); font-weight: 600; }
 
 /* Theme switcher */
 .ds-theme-switcher { padding: var(--sp-4) var(--sp-6); border-bottom: 1px solid var(--border); }
@@ -226,7 +226,7 @@
 @keyframes pop-out { from { opacity:1; transform:translateY(0); } to { opacity:0; transform:translateY(-4px); } }
 .select-listbox { outline: none; padding: 0; max-height: 33vh; overflow-y: auto; }
 .select-option { font-size: var(--text-base); padding: var(--sp-2) var(--sp-3); border-radius: var(--r-md); cursor: pointer; outline: none; transition: background var(--t-fast); }
-.select-option[data-focused] { background: var(--success-light); color: var(--success-dark); }
+.select-option[data-focused] { background: var(--brand-light); color: var(--brand-dark); }
 .select-option[data-selected] { background: var(--brand); color: white; }
 .native-select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%236B7280' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 36px; }
 
@@ -347,7 +347,7 @@ input::-webkit-credentials-auto-fill-button { display: none; }
 .badge-danger .badge-dot { background: var(--danger-dark); }
 .badge-neutral { background: var(--grey-400); color: var(--grey-900); }
 .badge-neutral .badge-dot { background: var(--grey-900); }
-.badge-brand { background: var(--brand-light); color: var(--success-dark); }
+.badge-brand { background: var(--brand-light); color: var(--brand-dark); }
 .badge-brand .badge-dot { background: var(--brand); }
 .badge-solid-neutral { background: var(--grey-800); color: white; }
 .badge-solid-brand { background: var(--brand); color: white; }
@@ -402,7 +402,7 @@ input::-webkit-credentials-auto-fill-button { display: none; }
 .navbar-links { display: flex; gap: var(--sp-1); }
 .navbar-link { padding: 8px 14px; font-size: var(--text-sm); font-weight: 500; color: var(--text-secondary); border-radius: var(--r-md); transition: all var(--t-fast); cursor: pointer; }
 .navbar-link:hover { color: var(--text-primary); background: var(--grey-100); }
-.navbar-link.active { color: var(--success-dark); background: var(--success-light); font-weight: 600; }
+.navbar-link.active { color: var(--brand-dark); background: var(--brand-light); font-weight: 600; }
 .navbar-right { margin-left: auto; display: flex; align-items: center; gap: var(--sp-3); }
 
 /* Tabs — React Aria Tabs */
@@ -455,7 +455,7 @@ input::-webkit-credentials-auto-fill-button { display: none; }
 .table-patient-email { font-size: var(--text-xs); color: var(--text-tertiary); }
 
 /* Avatar */
-.avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--success-light); display: flex; align-items: center; justify-content: center; font-size: var(--text-base); font-weight: 700; color: var(--success-dark); flex-shrink: 0; }
+.avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--brand-light); display: flex; align-items: center; justify-content: center; font-size: var(--text-base); font-weight: 700; color: var(--brand-dark); flex-shrink: 0; }
 .avatar-sm { width: 32px; height: 32px; font-size: var(--text-xs); }
 .avatar-lg { width: 56px; height: 56px; font-size: var(--text-xl); }
 .avatar-xl { width: 80px; height: 80px; font-size: var(--text-3xl); }
@@ -508,7 +508,7 @@ input::-webkit-credentials-auto-fill-button { display: none; }
 .sidebar-heading { padding: var(--sp-4) var(--sp-4) var(--sp-3); font-weight: 700; font-size: var(--text-sm); color: var(--text-primary); }
 .sidebar-menu-item { display: flex; align-items: center; gap: var(--sp-3); padding: var(--sp-3) var(--sp-4); font-size: var(--text-sm); font-weight: 500; color: var(--text-secondary); cursor: pointer; transition: all var(--t-fast); }
 .sidebar-menu-item:hover { background: var(--grey-200); color: var(--text-primary); }
-.sidebar-menu-item.active { background: var(--success-light); color: var(--success-dark); font-weight: 600; border-right: 3px solid var(--success-dark); }
+.sidebar-menu-item.active { background: var(--brand-light); color: var(--brand-dark); font-weight: 600; border-right: 3px solid var(--brand-dark); }
 .sidebar-content { flex: 1; padding: var(--sp-6); }
 
 /* ═══════════════════════════════════════════
@@ -570,7 +570,7 @@ input::-webkit-credentials-auto-fill-button { display: none; }
 .anchor-bar { position: sticky; top: 0; z-index: 15; display: flex; gap: var(--sp-1); padding: var(--sp-3) var(--sp-6); background: white; border-bottom: 1px solid var(--border); overflow-x: auto; }
 .anchor-link { padding: 6px 14px; font-size: var(--text-base); font-weight: 500; color: var(--text-secondary); border-radius: var(--r-full); text-decoration: none; white-space: nowrap; transition: all var(--t-fast); }
 .anchor-link:hover { color: var(--text-primary); background: var(--grey-100); }
-.anchor-link.active { color: var(--success-dark); background: var(--success-light); font-weight: 600; }
+.anchor-link.active { color: var(--brand-dark); background: var(--brand-light); font-weight: 600; }
 
 /* ═══════════════════════════════════════════
    EMR PAGE — DROPDOWN
@@ -580,13 +580,13 @@ input::-webkit-credentials-auto-fill-button { display: none; }
 .dropdown-popover[data-exiting] { animation: fadeOut 100ms ease; }
 .dropdown-menu { outline: none; max-height: 33vh; overflow-y: auto; }
 .dropdown-item { display: flex; align-items: center; gap: var(--sp-2); padding: 8px var(--sp-3); font-size: var(--text-base); color: var(--text-primary); border-radius: var(--r-md); cursor: pointer; outline: none; transition: background var(--t-fast); }
-.dropdown-item[data-focused] { background: var(--success-light); color: var(--success-dark); }
+.dropdown-item[data-focused] { background: var(--brand-light); color: var(--brand-dark); }
 .dropdown-item[data-pressed] { background: var(--grey-200); }
 .dropdown-item-danger { color: var(--danger); }
 .dropdown-item-danger[data-focused] { background: var(--danger-light); }
 .dropdown-separator { height: 1px; background: var(--border); margin: var(--sp-1) 0; }
 .dropdown-header { padding: 6px var(--sp-3); font-size: var(--text-base); font-weight: 700; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.5px; }
-.action-feedback { margin-top: var(--sp-3); padding: var(--sp-2) var(--sp-3); display: inline-flex; align-items: center; gap: var(--sp-2); font-size: var(--text-base); color: var(--success-dark); background: var(--success-light); border-radius: var(--r-md); }
+.action-feedback { margin-top: var(--sp-3); padding: var(--sp-2) var(--sp-3); display: inline-flex; align-items: center; gap: var(--sp-2); font-size: var(--text-base); color: var(--brand-dark); background: var(--brand-light); border-radius: var(--r-md); }
 
 /* ═══════════════════════════════════════════
    EMR PAGE — DRAWER
