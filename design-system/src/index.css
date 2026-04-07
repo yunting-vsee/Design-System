@@ -136,6 +136,10 @@
   --text-primary: #111827; --text-secondary: #6B7280;
   --text-tertiary: #6F7787; --text-brand: #0D875C;
 
+  /* Link */
+  --link: var(--brand);
+  --link-hover: var(--brand-hover);
+
   /* Borders */
   --border: #E5E7EB; --border-strong: #D1D5DB;
 
@@ -186,6 +190,16 @@ html {
 
 body {
   margin: 0;
+}
+
+a {
+  color: var(--link);
+  text-decoration: none;
+  transition: color var(--t-fast);
+}
+
+a:hover {
+  color: var(--link-hover);
 }
 
 /* ── React Aria focus styles ── */

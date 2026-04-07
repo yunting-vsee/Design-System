@@ -69,7 +69,8 @@
 .swatch-large .swatch-color { height: 100px; }
 
 .surface-text-list { display: flex; flex-direction: column; gap: var(--sp-3); }
-.st-row { display: flex; align-items: center; gap: var(--sp-3); }
+.st-row { display: flex; align-items: center; gap: var(--sp-3); cursor: pointer; border-radius: var(--r-sm); padding: 4px 6px; margin: -4px -6px; transition: background var(--t-fast); }
+.st-row:hover { background: var(--grey-300); }
 .st-swatch { width: 40px; height: 40px; border-radius: var(--r-md); flex-shrink: 0; }
 .st-name { font-weight: 600; font-size: var(--text-base); }
 .st-val { font-size: var(--text-base); color: var(--text-tertiary); font-family: var(--mono); }
@@ -309,6 +310,8 @@ input::-webkit-credentials-auto-fill-button { display: none; }
 .radio-circle { width: 18px; height: 18px; border: 1.5px solid var(--border-strong); border-radius: 50%; flex-shrink: 0; transition: all var(--t-fast); }
 .radio-item[data-selected] .radio-circle { border-color: var(--brand); border-width: 5px; }
 .radio-item[data-focus-visible] .radio-circle { box-shadow: var(--shadow-focus); }
+.radio-item[data-disabled] { opacity: 0.5; cursor: not-allowed; }
+.radio-item[data-disabled] .radio-circle { border-color: var(--grey-500); background: var(--grey-300); }
 
 /* Toggle — React Aria Switch */
 .toggle-list { display: flex; gap: var(--sp-8); }

@@ -342,8 +342,8 @@ function CodeBlock({ code }: { code: string }) {
 /* ═══════════════════════════════════════════
    FOUNDATIONS — COLORS
    ═══════════════════════════════════════════ */
-function Swatch({ color, name, hex, token, large, onClick }: {
-  color: string; name: string; hex: string; token?: string; large?: boolean; onClick: () => void;
+function Swatch({ color, name, hex, large, onClick }: {
+  color: string; name: string; hex: string; large?: boolean; onClick: () => void;
 }) {
   return (
     <div className={`swatch ${large ? "swatch-large" : ""}`} onClick={onClick}>
@@ -351,7 +351,6 @@ function Swatch({ color, name, hex, token, large, onClick }: {
       <div className="swatch-info">
         <div className="swatch-name">{name}</div>
         <div className="swatch-hex">{hex}</div>
-        {token && <div className="swatch-token">{token}</div>}
       </div>
     </div>
   );
@@ -364,43 +363,43 @@ function FoundationsColors({ copy }: { copy: (v: string) => void }) {
 
       <SubSection title="Brand" description="The primary brand scale — from light tints to deep active states.">
         <div className="swatch-row">
-          <Swatch large color="var(--brand-50)" name="Brand 50" hex="--brand-50" token="--brand-50" onClick={() => copy("var(--brand-50)")} />
-          <Swatch large color="var(--brand-light)" name="Brand Light" hex="--brand-light" token="--brand-light" onClick={() => copy("var(--brand-light)")} />
-          <Swatch large color="var(--brand)" name="Brand" hex="--brand" token="--brand" onClick={() => copy("var(--brand)")} />
-          <Swatch large color="var(--brand-hover)" name="Hover" hex="--brand-hover" token="--brand-hover" onClick={() => copy("var(--brand-hover)")} />
-          <Swatch large color="var(--brand-active)" name="Active" hex="--brand-active" token="--brand-active" onClick={() => copy("var(--brand-active)")} />
+          <Swatch large color="var(--brand-50)" name="--brand-50" hex="#F0FAF5" onClick={() => copy("var(--brand-50)")} />
+          <Swatch large color="var(--brand-light)" name="--brand-light" hex="#E6F5EE" onClick={() => copy("var(--brand-light)")} />
+          <Swatch large color="var(--brand)" name="--brand" hex="#0D875C" onClick={() => copy("var(--brand)")} />
+          <Swatch large color="var(--brand-hover)" name="--brand-hover" hex="#0B7550" onClick={() => copy("var(--brand-hover)")} />
+          <Swatch large color="var(--brand-active)" name="--brand-active" hex="#096843" onClick={() => copy("var(--brand-active)")} />
         </div>
       </SubSection>
 
       <SubSection title="Semantic" description="Communicating meaning — success, information, warning, and danger states.">
         <div className="swatch-row">
-          <Swatch color="#0D875C" name="Success" hex="#0D875C" onClick={() => copy("#0D875C")} />
-          <Swatch color="#0575AD" name="Info" hex="#0575AD" onClick={() => copy("#0575AD")} />
-          <Swatch color="#D97706" name="Warning" hex="#D97706" onClick={() => copy("#D97706")} />
-          <Swatch color="#DC2626" name="Danger" hex="#DC2626" onClick={() => copy("#DC2626")} />
+          <Swatch color="var(--success)" name="--success" hex="#0D875C" onClick={() => copy("var(--success)")} />
+          <Swatch color="var(--info)" name="--info" hex="#196CD2" onClick={() => copy("var(--info)")} />
+          <Swatch color="var(--warning)" name="--warning" hex="#FFCB5A" onClick={() => copy("var(--warning)")} />
+          <Swatch color="var(--danger)" name="--danger" hex="#DC2626" onClick={() => copy("var(--danger)")} />
         </div>
         <div className="swatch-row">
-          <Swatch color="#E6F5EE" name="Success Light" hex="#E6F5EE" onClick={() => copy("#E6F5EE")} />
-          <Swatch color="#E0F2FE" name="Info Light" hex="#E0F2FE" onClick={() => copy("#E0F2FE")} />
-          <Swatch color="#FEF3C7" name="Warning Light" hex="#FEF3C7" onClick={() => copy("#FEF3C7")} />
-          <Swatch color="#FEE2E2" name="Danger Light" hex="#FEE2E2" onClick={() => copy("#FEE2E2")} />
+          <Swatch color="var(--success-light)" name="--success-light" hex="#E6F5EE" onClick={() => copy("var(--success-light)")} />
+          <Swatch color="var(--info-light)" name="--info-light" hex="#E0F2FE" onClick={() => copy("var(--info-light)")} />
+          <Swatch color="var(--warning-light)" name="--warning-light" hex="#FEF3C7" onClick={() => copy("var(--warning-light)")} />
+          <Swatch color="var(--danger-light)" name="--danger-light" hex="#FEE2E2" onClick={() => copy("var(--danger-light)")} />
         </div>
       </SubSection>
 
       <SubSection title="Neutrals">
         <div className="swatch-row">
-          <Swatch color="#111827" name="Black" hex="#111827" onClick={() => copy("#111827")} />
-          <Swatch color="#1F2937" name="900" hex="#1F2937" onClick={() => copy("#1F2937")} />
-          <Swatch color="#374151" name="800" hex="#374151" onClick={() => copy("#374151")} />
-          <Swatch color="#4B5563" name="700" hex="#4B5563" onClick={() => copy("#4B5563")} />
-          <Swatch color="#6B7280" name="600" hex="#6B7280" onClick={() => copy("#6B7280")} />
+          <Swatch color="var(--black)" name="--black" hex="#111827" onClick={() => copy("var(--black)")} />
+          <Swatch color="var(--grey-900)" name="--grey-900" hex="#4B5563" onClick={() => copy("var(--grey-900)")} />
+          <Swatch color="var(--grey-800)" name="--grey-800" hex="#6B7280" onClick={() => copy("var(--grey-800)")} />
+          <Swatch color="var(--grey-700)" name="--grey-700" hex="#9CA3AF" onClick={() => copy("var(--grey-700)")} />
+          <Swatch color="var(--grey-600)" name="--grey-600" hex="#B0B7C3" onClick={() => copy("var(--grey-600)")} />
         </div>
         <div className="swatch-row">
-          <Swatch color="#868E9C" name="500" hex="#868E9C" onClick={() => copy("#868E9C")} />
-          <Swatch color="#D1D5DB" name="400" hex="#D1D5DB" onClick={() => copy("#D1D5DB")} />
-          <Swatch color="#E5E7EB" name="300" hex="#E5E7EB" onClick={() => copy("#E5E7EB")} />
-          <Swatch color="#F3F4F6" name="200" hex="#F3F4F6" onClick={() => copy("#F3F4F6")} />
-          <Swatch color="#F9FAFB" name="100" hex="#F9FAFB" onClick={() => copy("#F9FAFB")} />
+          <Swatch color="var(--grey-500)" name="--grey-500" hex="#C9CED6" onClick={() => copy("var(--grey-500)")} />
+          <Swatch color="var(--grey-400)" name="--grey-400" hex="#E8EAED" onClick={() => copy("var(--grey-400)")} />
+          <Swatch color="var(--grey-300)" name="--grey-300" hex="#F1F2F4" onClick={() => copy("var(--grey-300)")} />
+          <Swatch color="var(--grey-200)" name="--grey-200" hex="#F8F9FA" onClick={() => copy("var(--grey-200)")} />
+          <Swatch color="var(--grey-100)" name="--grey-100" hex="#FCFCFD" onClick={() => copy("var(--grey-100)")} />
         </div>
       </SubSection>
 
@@ -409,18 +408,18 @@ function FoundationsColors({ copy }: { copy: (v: string) => void }) {
           <div className="card">
             <div className="card-inner-title">Surfaces</div>
             <div className="surface-text-list">
-              <div className="st-row"><div className="st-swatch" style={{background:"#FFFFFF",border:"1px solid #E5E7EB"}} /><div><div className="st-name">Page</div><div className="st-val">#FFFFFF</div></div></div>
-              <div className="st-row"><div className="st-swatch" style={{background:"#F9FAFB",border:"1px solid #E5E7EB"}} /><div><div className="st-name">Subtle</div><div className="st-val">#F9FAFB</div></div></div>
-              <div className="st-row"><div className="st-swatch" style={{background:"#F3F4F6",border:"1px solid #E5E7EB"}} /><div><div className="st-name">Muted</div><div className="st-val">#F3F4F6</div></div></div>
+              <div className="st-row" onClick={() => copy("var(--white)")}><div className="st-swatch" style={{background:"var(--white)",border:"1px solid var(--border)"}} /><div><div className="st-name">--white</div><div className="st-val">#FFFFFF</div></div></div>
+              <div className="st-row" onClick={() => copy("var(--grey-200)")}><div className="st-swatch" style={{background:"var(--grey-200)",border:"1px solid var(--border)"}} /><div><div className="st-name">--grey-200</div><div className="st-val">#F8F9FA</div></div></div>
+              <div className="st-row" onClick={() => copy("var(--grey-300)")}><div className="st-swatch" style={{background:"var(--grey-300)",border:"1px solid var(--border)"}} /><div><div className="st-name">--grey-300</div><div className="st-val">#F1F2F4</div></div></div>
             </div>
           </div>
           <div className="card">
             <div className="card-inner-title">Text Colors</div>
             <div className="surface-text-list">
-              <div className="st-row"><div className="st-swatch" style={{background:"#111827"}} /><div><div className="st-name">Primary</div><div className="st-val">#111827 — Headings, body</div></div></div>
-              <div className="st-row"><div className="st-swatch" style={{background:"#6B7280"}} /><div><div className="st-name">Secondary</div><div className="st-val">#6B7280 — Descriptions</div></div></div>
-              <div className="st-row"><div className="st-swatch" style={{background:"#6F7787"}} /><div><div className="st-name">Tertiary</div><div className="st-val">#6F7787 — Placeholders</div></div></div>
-              <div className="st-row"><div className="st-swatch" style={{background:"#0D875C"}} /><div><div className="st-name">Link</div><div className="st-val">#0D875C — Links, brand text</div></div></div>
+              <div className="st-row" onClick={() => copy("var(--text-primary)")}><div className="st-swatch" style={{background:"var(--text-primary)"}} /><div><div className="st-name">--text-primary</div><div className="st-val">#111827</div></div></div>
+              <div className="st-row" onClick={() => copy("var(--text-secondary)")}><div className="st-swatch" style={{background:"var(--text-secondary)"}} /><div><div className="st-name">--text-secondary</div><div className="st-val">#6B7280</div></div></div>
+              <div className="st-row" onClick={() => copy("var(--text-tertiary)")}><div className="st-swatch" style={{background:"var(--text-tertiary)"}} /><div><div className="st-name">--text-tertiary</div><div className="st-val">#6F7787</div></div></div>
+              <div className="st-row" onClick={() => copy("var(--link)")}><div className="st-swatch" style={{background:"var(--link)"}} /><div><div className="st-name">--link</div><div className="st-val">#0D875C</div></div></div>
             </div>
           </div>
         </div>
@@ -650,7 +649,7 @@ function ComponentsButtons() {
           <Button className="btn btn-ghost btn-pill">Ghost Pill</Button>
         </div>
         <CodeBlock
-          code={`<Button className="btn btn-primary btn-pill">Primary Pill</Button>\n<Button className="btn btn-secondary btn-pill">Secondary Pill</Button>`}
+          code={`<Button className="btn btn-primary btn-pill">Primary Pill</Button>\n<Button className="btn btn-secondary btn-pill">Secondary Pill</Button>\n<Button className="btn btn-ghost btn-pill">Ghost Pill</Button>`}
         />
       </SubSection>
 
@@ -1052,7 +1051,7 @@ function ComponentsForms() {
             <Radio value="video" className="radio-item">
               <div className="radio-circle" /><span>Video call</span>
             </Radio>
-            <Radio value="person" className="radio-item">
+            <Radio value="person" className="radio-item" isDisabled>
               <div className="radio-circle" /><span>In-person</span>
             </Radio>
           </RadioGroup>
@@ -1078,7 +1077,7 @@ function ComponentsForms() {
 
       </div>
       <CodeBlock
-        code={`/* Text Input */\n<TextField className="field">\n  <Label className="form-label">Email address</Label>\n  <Input className="input" placeholder="you@example.com" />\n</TextField>\n\n/* Input with error */\n<TextField isInvalid className="field">\n  <Label className="form-label">Full Name <span className="req">*</span></Label>\n  <Input className="input error" />\n  <div className="form-error-text">Full name is required</div>\n</TextField>\n\n/* Select */\n<Select className="field">\n  <Label className="form-label">Specialty</Label>\n  <Button className="input select-trigger">\n    <SelectValue />\n    <ChevronDown size={16} />\n  </Button>\n  <Popover className="select-popover">\n    <ListBox className="select-listbox">\n      <ListBoxItem className="select-option">Option</ListBoxItem>\n    </ListBox>\n  </Popover>\n</Select>\n\n/* MultiSelect */\n<div className="multiselect-wrapper">\n  <Label className="form-label">Filter by Specialty</Label>\n  <div className="multiselect-container">\n    <TagGroup onRemove={handleRemove}>\n      <TagList className="multiselect-tags">\n        <Tag className="chip" textValue="Cardiology">\n          Cardiology\n          <Button slot="remove" className="tag-remove"><X size={12} /></Button>\n        </Tag>\n      </TagList>\n    </TagGroup>\n    <ComboBox menuTrigger="focus" allowsCustomValue>\n      <Input className="multiselect-input" placeholder="Add more..." />\n      <Popover className="dropdown-popover">\n        <ListBox className="dropdown-menu">\n          <ListBoxItem className="dropdown-item">Option</ListBoxItem>\n        </ListBox>\n      </Popover>\n    </ComboBox>\n  </div>\n</div>\n\n/* Checkbox */\n<Checkbox isSelected={checked} onChange={setChecked} className="check-item">\n  <div className={\`check-box \${checked ? "checked" : ""}\`} />\n  Label text\n</Checkbox>\n\n/* Radio Group */\n<RadioGroup defaultValue="phone" className="radio-list">\n  <Radio value="phone" className="radio-item">\n    <div className="radio-circle" /><span>Phone call</span>\n  </Radio>\n</RadioGroup>`}
+        code={`/* Text Input */\n<TextField className="field">\n  <Label className="form-label">Email address</Label>\n  <Input className="input" placeholder="you@example.com" />\n</TextField>\n\n/* Input with error */\n<TextField isInvalid className="field">\n  <Label className="form-label">Full Name <span className="req">*</span></Label>\n  <Input className="input error" />\n  <div className="form-error-text">Full name is required</div>\n</TextField>\n\n/* Select */\n<Select className="field">\n  <Label className="form-label">Specialty</Label>\n  <Button className="input select-trigger">\n    <SelectValue />\n    <ChevronDown size={16} />\n  </Button>\n  <Popover className="select-popover">\n    <ListBox className="select-listbox">\n      <ListBoxItem className="select-option">Option</ListBoxItem>\n    </ListBox>\n  </Popover>\n</Select>\n\n/* MultiSelect */\n<div className="multiselect-wrapper">\n  <Label className="form-label">Filter by Specialty</Label>\n  <div className="multiselect-container">\n    <TagGroup onRemove={handleRemove}>\n      <TagList className="multiselect-tags">\n        <Tag className="chip" textValue="Cardiology">\n          Cardiology\n          <Button slot="remove" className="tag-remove"><X size={12} /></Button>\n        </Tag>\n      </TagList>\n    </TagGroup>\n    <ComboBox menuTrigger="focus" allowsCustomValue>\n      <Input className="multiselect-input" placeholder="Add more..." />\n      <Popover className="dropdown-popover">\n        <ListBox className="dropdown-menu">\n          <ListBoxItem className="dropdown-item">Option</ListBoxItem>\n        </ListBox>\n      </Popover>\n    </ComboBox>\n  </div>\n</div>\n\n/* Checkbox */\n<Checkbox isSelected={checked} onChange={setChecked} className="check-item">\n  <div className={\`check-box \${checked ? "checked" : ""}\`} />\n  Label text\n</Checkbox>\n\n/* Radio Group */\n<RadioGroup defaultValue="phone" className="radio-list">\n  <Radio value="phone" className="radio-item">\n    <div className="radio-circle" /><span>Phone call</span>\n  </Radio>\n  <Radio value="video" className="radio-item">\n    <div className="radio-circle" /><span>Video call</span>\n  </Radio>\n  <Radio value="person" className="radio-item" isDisabled>\n    <div className="radio-circle" /><span>In-person</span>\n  </Radio>\n</RadioGroup>`}
       />
 
       <div style={{marginTop:"var(--sp-16)"}} />
@@ -1181,7 +1180,7 @@ function ComponentsForms() {
           </div>
         </div>
         <CodeBlock
-          code={`/* Phone — with Country Code */\n<div className="phone-input-group">\n  <Select defaultSelectedKey="+1" className="phone-country-select">\n    <Button className="phone-country-btn">\n      <SelectValue /><ChevronDown size={14} />\n    </Button>\n    <Popover className="select-popover">\n      <ListBox className="select-listbox">\n        <ListBoxItem id="+1">US +1</ListBoxItem>\n      </ListBox>\n    </Popover>\n  </Select>\n  <TextField className="field" style={{flex: 1}}>\n    <Input className="input phone-input" placeholder="(555) 123-4567" />\n  </TextField>\n</div>\n\n/* Phone — with Country Code & Ext. */\n<div className="phone-input-group">\n  <Select defaultSelectedKey="+1" className="phone-country-select">\n    ...\n  </Select>\n  <TextField className="field" style={{flex: 1}}>\n    <Input className="input phone-input-middle" placeholder="(555) 123-4567" />\n  </TextField>\n  <div className="phone-ext">\n    <span className="phone-ext-label">Ext.</span>\n    <TextField className="field" style={{width: 80}}>\n      <Input className="input phone-ext-input" placeholder="0000" />\n    </TextField>\n  </div>\n</div>\n\n/* Phone — Simple */\n<TextField className="field">\n  <Input className="input" placeholder="(555) 123-4567" />\n</TextField>\n\n/* Date Picker */\n<DatePicker className="field">\n  <Label className="form-label">Appointment Date</Label>\n  <Group className="date-input-group">\n    <DateInput className="input date-input">\n      {(segment) => <DateSegment segment={segment} />}\n    </DateInput>\n    <Button className="input-icon-btn"><Calendar size={16} /></Button>\n  </Group>\n  <Popover className="date-popover">\n    <Dialog><Calendar>...</Calendar></Dialog>\n  </Popover>\n</DatePicker>\n\n/* Time Picker */\n<TimeField className="field">\n  <Label className="form-label">Appointment Time</Label>\n  <Group className="date-input-group">\n    <DateInput className="input date-input">\n      {(segment) => <DateSegment segment={segment} />}\n    </DateInput>\n    <div className="input-icon-btn" style={{pointerEvents:"none"}}><Clock size={16} /></div>\n  </Group>\n</TimeField>\n\n/* Date & Time Picker */\n<DatePicker granularity="minute" className="field">\n  <Label className="form-label">Appointment Date & Time</Label>\n  <Group className="date-input-group">\n    <DateInput className="input date-input">\n      {(segment) => <DateSegment segment={segment} />}\n    </DateInput>\n    <Button className="input-icon-btn"><Calendar size={16} /></Button>\n  </Group>\n  <Popover className="date-popover">\n    <Dialog><Calendar>...</Calendar></Dialog>\n  </Popover>\n</DatePicker>\n\n/* Input with Copy Action */\n<div className="input-icon-wrap">\n  <Input className="input input-with-icon-right" readOnly />\n  <Button className="input-icon-btn"><Copy size={16} /></Button>\n</div>\n\n/* Input with External Link */\n<div className="input-icon-wrap">\n  <Input className="input input-with-icon-right" />\n  <Button className="input-icon-btn"><ExternalLink size={16} /></Button>\n</div>\n\n/* Login Form */\n<Form className="login-form">\n  <TextField className="field">\n    <Label className="form-label">Email</Label>\n    <Input className="input" placeholder="you@example.com" />\n  </TextField>\n  <TextField className="field">\n    <Label className="form-label">Password</Label>\n    <div className="input-icon-wrap">\n      <Input className="input input-with-icon-right" type="password" />\n      <Button className="input-icon-btn"><Eye size={16} /></Button>\n    </div>\n  </TextField>\n  <Checkbox className="check-item">Remember me</Checkbox>\n  <Button className="btn btn-primary btn-block">Sign In</Button>\n</Form>`}
+          code={`/* Phone — with Country Code */\n<div className="phone-input-group">\n  <Select defaultSelectedKey="+1" className="phone-country-select">\n    <Button className="phone-country-btn">\n      <SelectValue /><ChevronDown size={14} />\n    </Button>\n    <Popover className="select-popover">\n      <ListBox className="select-listbox">\n        <ListBoxItem id="+1">US +1</ListBoxItem>\n      </ListBox>\n    </Popover>\n  </Select>\n  <TextField className="field" style={{flex: 1}}>\n    <Input className="input phone-input" placeholder="(555) 123-4567" />\n  </TextField>\n</div>\n\n/* Phone — with Country Code & Ext. */\n<div className="phone-input-group">\n  <Select defaultSelectedKey="+1" className="phone-country-select">\n    ...\n  </Select>\n  <TextField className="field" style={{flex: 1}}>\n    <Input className="input phone-input-middle" placeholder="(555) 123-4567" />\n  </TextField>\n  <div className="phone-ext">\n    <span className="phone-ext-label">Ext.</span>\n    <TextField className="field" style={{width: 40}}>\n      <Input className="input phone-ext-input" placeholder="0000" />\n    </TextField>\n  </div>\n</div>\n\n/* Phone — Simple */\n<TextField className="field">\n  <Input className="input" placeholder="(555) 123-4567" />\n</TextField>\n\n/* Date Picker */\n<DatePicker className="field">\n  <Label className="form-label">Appointment Date</Label>\n  <Group className="date-input-group">\n    <DateInput className="input date-input">\n      {(segment) => <DateSegment segment={segment} />}\n    </DateInput>\n    <Button className="input-icon-btn"><Calendar size={16} /></Button>\n  </Group>\n  <Popover className="date-popover">\n    <Dialog><Calendar>...</Calendar></Dialog>\n  </Popover>\n</DatePicker>\n\n/* Time Picker */\n<TimeField className="field">\n  <Label className="form-label">Appointment Time</Label>\n  <Group className="date-input-group">\n    <DateInput className="input date-input">\n      {(segment) => <DateSegment segment={segment} />}\n    </DateInput>\n    <div className="input-icon-btn" style={{pointerEvents:"none"}}><Clock size={16} /></div>\n  </Group>\n</TimeField>\n\n/* Date & Time Picker */\n<DatePicker granularity="minute" className="field">\n  <Label className="form-label">Appointment Date & Time</Label>\n  <Group className="date-input-group">\n    <DateInput className="input date-input">\n      {(segment) => <DateSegment segment={segment} />}\n    </DateInput>\n    <Button className="input-icon-btn"><Calendar size={16} /></Button>\n  </Group>\n  <Popover className="date-popover">\n    <Dialog><Calendar>...</Calendar></Dialog>\n  </Popover>\n</DatePicker>\n\n/* Input with Copy Action */\n<div className="input-icon-wrap">\n  <Input className="input input-with-icon-right" readOnly />\n  <Button className="input-icon-btn"><Copy size={16} /></Button>\n</div>\n\n/* Input with External Link */\n<div className="input-icon-wrap">\n  <Input className="input input-with-icon-right" />\n  <Button className="input-icon-btn"><ExternalLink size={16} /></Button>\n</div>\n\n/* Login Form */\n<Form className="login-form">\n  <TextField className="field">\n    <Label className="form-label">Email</Label>\n    <Input className="input" placeholder="you@example.com" />\n  </TextField>\n  <TextField className="field">\n    <Label className="form-label">Password</Label>\n    <div className="input-icon-wrap">\n      <Input className="input input-with-icon-right" type="password" />\n      <Button className="input-icon-btn"><Eye size={16} /></Button>\n    </div>\n  </TextField>\n  <Checkbox className="check-item">Remember me</Checkbox>\n  <Button className="btn btn-primary btn-block">Sign In</Button>\n</Form>`}
         />
       </SubSection>
     </Section>
@@ -1386,7 +1385,7 @@ function ComponentsNavigation() {
           </div>
         </div>
         <CodeBlock
-          code={`<div className="navbar">\n  <div className="navbar-logo">VSee</div>\n  <div className="navbar-links">\n    <div className="navbar-link active">Dashboard</div>\n    <div className="navbar-link">Patients</div>\n    <div className="navbar-link">Schedule</div>\n  </div>\n  <div className="navbar-right">\n    <Button className="btn btn-ghost btn-sm">Help</Button>\n    <div className="avatar avatar-sm">PN</div>\n  </div>\n</div>`}
+          code={`<div className="navbar">\n  <div className="navbar-logo">VSee</div>\n  <div className="navbar-links">\n    <div className="navbar-link active">Dashboard</div>\n    <div className="navbar-link">Patients</div>\n    <div className="navbar-link">Schedule</div>\n    <div className="navbar-link">Messages</div>\n  </div>\n  <div className="navbar-right">\n    <Button className="btn btn-ghost btn-sm">Help</Button>\n    <div className="avatar avatar-sm">PN</div>\n  </div>\n</div>`}
         />
       </SubSection>
 
@@ -1406,7 +1405,7 @@ function ComponentsNavigation() {
           </Tabs>
         </div>
         <CodeBlock
-          code={`<Tabs>\n  <TabList className="tabs" aria-label="Clinic tabs">\n    <Tab id="patients" className="tab-item">Patients</Tab>\n    <Tab id="visits" className="tab-item">All Visits</Tab>\n    <Tab id="docs" className="tab-item">Documents</Tab>\n  </TabList>\n  <TabPanel id="patients" className="tab-content">Content</TabPanel>\n  <TabPanel id="visits" className="tab-content">Content</TabPanel>\n</Tabs>`}
+          code={`<Tabs>\n  <TabList className="tabs" aria-label="Clinic tabs">\n    <Tab id="patients" className="tab-item">Patients</Tab>\n    <Tab id="visits" className="tab-item">All Visits</Tab>\n    <Tab id="docs" className="tab-item">Documents</Tab>\n    <Tab id="labs" className="tab-item">Lab Results</Tab>\n  </TabList>\n  <TabPanel id="patients" className="tab-content">Content</TabPanel>\n  <TabPanel id="visits" className="tab-content">Content</TabPanel>\n  <TabPanel id="docs" className="tab-content">Content</TabPanel>\n  <TabPanel id="labs" className="tab-content">Content</TabPanel>\n</Tabs>`}
         />
       </SubSection>
 
@@ -1435,7 +1434,7 @@ function ComponentsNavigation() {
           </div>
         </div>
         <CodeBlock
-          code={`<div className="pagination">\n  <button className="page-btn disabled">&larr;</button>\n  <button className="page-btn active">1</button>\n  <button className="page-btn">2</button>\n  <button className="page-btn">3</button>\n  <button className="page-btn">&rarr;</button>\n</div>`}
+          code={`<div className="pagination">\n  <button className="page-btn disabled">&larr;</button>\n  <button className="page-btn active">1</button>\n  <button className="page-btn">2</button>\n  <button className="page-btn">3</button>\n  <button className="page-btn">4</button>\n  <button className="page-btn">&rarr;</button>\n</div>`}
         />
       </SubSection>
 
