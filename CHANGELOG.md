@@ -3,6 +3,11 @@
 All notable changes to this project are documented in this file, detailing commits from the initial project setup to the current release.
 
 - Apr 7
+  - style: update toggle button off-state color and unify track styles
+  - Change toggle-track off-state from --grey-400 to --grey-700 to match toggle-track-labeled (Auto-save) off-state color
+  - Add dark mode override for both toggle off states using --grey-500 for better contrast on dark backgrounds
+
+- Apr 7
   - feat: add dark mode with toggle switcher and elevated surface system
   - Add dark mode toggle (Sun/Moon switcher) in sidebar
   - Add [data-mode="dark"] CSS variables in index.css that invert
