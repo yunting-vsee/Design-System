@@ -88,6 +88,8 @@ import {
   Eye,
   EyeOff,
   Clock,
+  Sun,
+  Moon,
 } from "lucide-react";
 import "./App.css";
 
@@ -152,6 +154,7 @@ function App() {
   const [activeSection, setActiveSection] = useState("colors");
   const [navOpen, setNavOpen] = useState(false);
   const [brandTheme, setBrandTheme] = useState("");
+  const [darkMode, setDarkMode] = useState(false);
   const toast = useCopyToast();
 
   /* apply brand theme to root element */
@@ -162,6 +165,15 @@ function App() {
       document.documentElement.removeAttribute("data-theme");
     }
   }, [brandTheme]);
+
+  /* apply dark mode to root element */
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.setAttribute("data-mode", "dark");
+    } else {
+      document.documentElement.removeAttribute("data-mode");
+    }
+  }, [darkMode]);
 
   /* scroll-based active nav tracking */
   useEffect(() => {
@@ -211,6 +223,14 @@ function App() {
             <button className={`ds-theme-dot ds-theme-blue ${brandTheme === "blue" ? "active" : ""}`} onClick={() => setBrandTheme("blue")} title="Ocean Blue" />
             <button className={`ds-theme-dot ds-theme-purple ${brandTheme === "purple" ? "active" : ""}`} onClick={() => setBrandTheme("purple")} title="Royal Purple" />
           </div>
+          <div className="ds-theme-label" style={{marginTop:"var(--sp-3)"}}>Mode</div>
+          <button className="ds-mode-switch" onClick={() => setDarkMode(!darkMode)} title={darkMode ? "Switch to Light" : "Switch to Dark"}>
+            <Sun size={12} className="ds-mode-icon ds-mode-icon-light" />
+            <span className={`ds-mode-track ${darkMode ? "on" : ""}`}>
+              <span className="ds-mode-thumb" />
+            </span>
+            <Moon size={12} className="ds-mode-icon ds-mode-icon-dark" />
+          </button>
         </div>
         <nav className="ds-nav-groups">
           {NAV.map((section) => (
@@ -1962,7 +1982,7 @@ function PatternsLayouts() {
 function PatternsTheming({ brandTheme, setBrandTheme }: { brandTheme: string; setBrandTheme: (t: string) => void }) {
   return (
     <Section id="theming" label="Engineering" title="White-Label Theming"
-      description={`VSee supports white-label customization per tenant. Override CSS variables via [data-theme] attributes. Click a card below to switch the theme live.`}>
+      description={`VSee supports white-label customization per tenant. Override CSS variables via [data-theme] for brand colors and [data-mode="dark"] for dark mode. Click a card below to switch the theme live, or toggle dark mode in the sidebar.`}>
 
       <div className="grid g3" style={{gap:"var(--sp-4)"}}>
         {[
@@ -2003,6 +2023,23 @@ function PatternsTheming({ brandTheme, setBrandTheme }: { brandTheme: string; se
         {"    document.documentElement."}<span className="p">removeAttribute</span>{"("}<span className="s">"data-theme"</span>{");\n"}
         {"  }\n"}
         {"}, [theme]);\n"}
+      </div>
+
+      <div className="sub-title" style={{marginTop:"var(--sp-8)"}}>Dark Mode</div>
+      <div className="sub-desc">Toggle dark mode by setting <code className="code-inline">data-mode="dark"</code> on the <code className="code-inline">{"<html>"}</code> element. Dark mode works independently of brand themes — combine both attributes for branded dark UIs.</div>
+      <div className="code">
+        <span className="c">{"/* 1. In HTML */"}</span>{"\n"}
+        <span className="t">{"<html"}</span>{" "}<span className="p">data-mode</span>{"="}<span className="s">"dark"</span><span className="t">{">"}</span>{"                 "}<span className="c">{"/* Dark mode */"}</span>{"\n"}
+        <span className="t">{"<html"}</span>{" "}<span className="p">data-mode</span>{"="}<span className="s">"dark"</span>{" "}<span className="p">data-theme</span>{"="}<span className="s">"blue"</span><span className="t">{">"}</span>{" "}<span className="c">{"/* Dark + Ocean Blue */"}</span>{"\n\n"}
+        <span className="c">{"/* 2. In React */"}</span>{"\n"}
+        <span className="k">{"const"}</span>{" [darkMode, setDarkMode] = "}<span className="p">{"useState"}</span>{"(false);\n\n"}
+        <span className="p">{"useEffect"}</span>{"(() => {\n"}
+        {"  "}<span className="k">{"if"}</span>{" (darkMode) {\n"}
+        {"    document.documentElement."}<span className="p">setAttribute</span>{"("}<span className="s">"data-mode"</span>{", "}<span className="s">"dark"</span>{");\n"}
+        {"  } "}<span className="k">{"else"}</span>{" {\n"}
+        {"    document.documentElement."}<span className="p">removeAttribute</span>{"("}<span className="s">"data-mode"</span>{");\n"}
+        {"  }\n"}
+        {"}, [darkMode]);\n"}
       </div>
 
       <div className="sub-title" style={{marginTop:"var(--sp-8)"}}>Creating a Custom Theme</div>
@@ -2353,7 +2390,7 @@ npm install react-aria-components`}
 function EngineeringTokens() {
   return (
     <Section id="tokens" label="Engineering" title="Design Tokens"
-      description="Copy the :root block into your global CSS. Available as CSS custom properties, Tokens Studio JSON, and Figma Variables.">
+      description="Copy the :root block into your global CSS. Tokens support light and dark mode via [data-mode] attributes. Available as CSS custom properties, Tokens Studio JSON, and Figma Variables.">
       <div className="code">
         <span className="c">{"/* index.css — VSee Clinic Design Tokens */"}</span>{"\n\n"}
         <span className="k">@import</span>{" "}<span className="s">"tailwindcss"</span>{";\n\n"}
