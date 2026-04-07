@@ -287,7 +287,7 @@ function App() {
         <div className="ds-footer">
           <div className="ds-footer-logo">VSee</div>
           <div className="ds-footer-sub">Design System v4.0 · 2026</div>
-          <div className="ds-footer-meta">Legend · 4px grid · WCAG AA · White-label ready</div>
+          <div className="ds-footer-meta">Plus Jakarta Sans · 4px grid · WCAG AA · White-label ready</div>
         </div>
       </div>
 
@@ -434,7 +434,7 @@ function FoundationsColors({ copy }: { copy: (v: string) => void }) {
 function FoundationsTypography() {
   return (
     <Section id="typography" label="Foundation" title="Typography"
-      description="Legend is our system font — clean, legible, and optimized for UI. The type scale uses a harmonious progression from 12px to 60px.">
+      description="Plus Jakarta Sans is our system font — clean, legible, and optimized for UI. The type scale uses a harmonious progression from 12px to 60px.">
 
       <div className="card" style={{marginBottom:"var(--sp-8)"}}>
         {[
@@ -2360,8 +2360,8 @@ function EngineeringTokens() {
         <span className="c">{"/* ── Tailwind v4 Theme ── */"}</span>{"\n"}
         <span className="k">@theme</span>{" {\n"}
         {"  "}<span className="c">{"/* Fonts */"}</span>{"\n"}
-        {"  "}<span className="p">--font-sans</span>{": "}<span className="v">"Legend", "Inter", system-ui, -apple-system, sans-serif</span>{";\n"}
-        {"  "}<span className="p">--font-heading</span>{": "}<span className="v">"Legend", "Inter", system-ui, -apple-system, sans-serif</span>{";\n"}
+        {"  "}<span className="p">--font-sans</span>{": "}<span className="v">"Plus Jakarta Sans", "Inter", system-ui, -apple-system, sans-serif</span>{";\n"}
+        {"  "}<span className="p">--font-heading</span>{": "}<span className="v">"Plus Jakarta Sans", "Inter", system-ui, -apple-system, sans-serif</span>{";\n"}
         {"  "}<span className="p">--font-mono</span>{": "}<span className="v">ui-monospace, "Cascadia Code", "Fira Code", Consolas, monospace</span>{";\n\n"}
         {"  "}<span className="c">{"/* Colors */"}</span>{"\n"}
         {"  "}<span className="p">--color-primary</span>{": "}<span className="v">oklch(0.52 0.14 162)</span>{";\n"}
@@ -2447,7 +2447,7 @@ function EngineeringTokens() {
         {"  "}<span className="c">{"/* Borders */"}</span>{"\n"}
         {"  "}<span className="p">--border</span>{": "}<span className="v">#E5E7EB</span>{"; "}<span className="p">--border-strong</span>{": "}<span className="v">#D1D5DB</span>{";\n\n"}
         {"  "}<span className="c">{"/* Typography */"}</span>{"\n"}
-        {"  "}<span className="p">--font</span>{": "}<span className="v">'Legend', 'Inter', -apple-system, sans-serif</span>{";\n"}
+        {"  "}<span className="p">--font</span>{": "}<span className="v">'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif</span>{";\n"}
         {"  "}<span className="p">--mono</span>{": "}<span className="v">'SF Mono', 'Fira Code', 'Consolas', monospace</span>{";\n"}
         {"  "}<span className="p">--text-xs</span>{": "}<span className="v">12px</span>{"; "}<span className="p">--text-sm</span>{": "}<span className="v">13px</span>{"; "}<span className="p">--text-base</span>{": "}<span className="v">14px</span>{"; "}<span className="p">--text-lg</span>{": "}<span className="v">16px</span>{";\n"}
         {"  "}<span className="p">--text-xl</span>{": "}<span className="v">18px</span>{"; "}<span className="p">--text-2xl</span>{": "}<span className="v">20px</span>{"; "}<span className="p">--text-3xl</span>{": "}<span className="v">24px</span>{"; "}<span className="p">--text-4xl</span>{": "}<span className="v">30px</span>{";\n"}

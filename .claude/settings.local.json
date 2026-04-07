@@ -41,7 +41,10 @@
       "mcp__claude_ai_Figma__create_new_file",
       "mcp__claude_ai_Figma__use_figma",
       "mcp__claude_ai_Slack__slack_read_thread",
-      "mcp__claude_ai_Slack__slack_send_message"
+      "mcp__claude_ai_Slack__slack_send_message",
+      "Bash(chmod +x:*)",
+      "Bash(rm -f rebase-plan.txt rebase-editor.sh)",
+      "Bash(rm -f /d/tmp/git-output.txt /d/tmp/rebase-check.txt /d/tmp/rebase-output.txt /d/tmp/rebase-output2.txt /d/tmp/stash-output.txt /d/tmp/final-log.txt /d/tmp/stash-pop.txt)"
     ]
   }
 }

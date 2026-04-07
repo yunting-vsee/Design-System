@@ -1,18 +1,18 @@
 @import "tailwindcss";
 
-/* ── Legend Font ── */
+/* ── Plus Jakarta Sans Font ── */
 @font-face {
-  font-family: "Legend";
-  src: url("/fonts/Legend-Regular.woff2") format("woff2"),
-       url("/fonts/Legend-Regular.woff") format("woff");
+  font-family: "Plus Jakarta Sans";
+  src: url("/fonts/Plus Jakarta Sans-Regular.woff2") format("woff2"),
+       url("/fonts/Plus Jakarta Sans-Regular.woff") format("woff");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
-  font-family: "Legend";
-  src: url("/fonts/Legend-Bold.woff2") format("woff2"),
-       url("/fonts/Legend-Bold.woff") format("woff");
+  font-family: "Plus Jakarta Sans";
+  src: url("/fonts/Plus Jakarta Sans-Bold.woff2") format("woff2"),
+       url("/fonts/Plus Jakarta Sans-Bold.woff") format("woff");
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -20,8 +20,8 @@
 
 /* ── Tailwind v4 Theme ── */
 @theme {
-  --font-sans: "Legend", "Inter", system-ui, -apple-system, sans-serif;
-  --font-heading: "Legend", "Inter", system-ui, -apple-system, sans-serif;
+  --font-sans: "Plus Jakarta Sans", "Inter", system-ui, -apple-system, sans-serif;
+  --font-heading: "Plus Jakarta Sans", "Inter", system-ui, -apple-system, sans-serif;
   --font-mono: ui-monospace, "Cascadia Code", "Fira Code", Consolas, monospace;
 
   --color-primary: oklch(0.52 0.14 162);
@@ -144,7 +144,7 @@
   --border: #E5E7EB; --border-strong: #D1D5DB;
 
   /* Typography scale */
-  --font: 'Legend', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --mono: 'SF Mono', 'Fira Code', 'Consolas', monospace;
   --text-xs: 12px; --text-sm: 13px; --text-base: 14px; --text-lg: 16px;
   --text-xl: 18px; --text-2xl: 20px; --text-3xl: 24px; --text-4xl: 30px;
