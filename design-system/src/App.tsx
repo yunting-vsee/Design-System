@@ -48,6 +48,7 @@ import {
   Heading,
   Dialog,
   TimeField,
+  NumberField,
 } from "react-aria-components";
 import { today, getLocalTimeZone, Time, CalendarDateTime } from "@internationalized/date";
 import {
@@ -57,7 +58,8 @@ import {
   AlertTriangle,
   ChevronDown,
   ChevronRight,
-  // ChevronUp, // commented out: Collapse / Accordion is commented out
+  ChevronUp,
+  Minus,
   X,
   Search,
   FileText,
@@ -306,7 +308,7 @@ function App() {
         {/* Footer */}
         <div className="ds-footer">
           <div className="ds-footer-logo">VSee</div>
-          <div className="ds-footer-sub">Design System v4.0 · 2026</div>
+          <div className="ds-footer-sub">Design System · 2026</div>
           <div className="ds-footer-meta">Plus Jakarta Sans · 4px grid · WCAG AA · White-label ready</div>
         </div>
       </div>
@@ -530,7 +532,7 @@ function FoundationsSpacing() {
               { label: "--r-full", val: 9999 },
             ].map((r) => (
               <div key={r.label} style={{textAlign:"center"}}>
-                <div className="radius-demo" style={{borderRadius: r.val, width: 80, height: 80}}>{r.val === 9999 ? "∞" : `${r.val}px`}</div>
+                <div className="radius-preview" style={{borderRadius: r.val, width: 80, height: 80}}>{r.val === 9999 ? "∞" : `${r.val}px`}</div>
                 <div className="radius-label">{r.label}</div>
               </div>
             ))}
@@ -576,7 +578,7 @@ function FoundationsSpacing() {
   );
 }
 
-function ToggleDemo() {
+function Toggle() {
   const [switchOn, setSwitchOn] = useState(true);
   const [labeledSwitch, setLabeledSwitch] = useState(true);
   return (
@@ -613,7 +615,7 @@ function ToggleDemo() {
   );
 }
 
-function ButtonGroupDemo({ labels, defaultActive }: { labels: string[]; defaultActive: string }) {
+function ButtonGroup({ labels, defaultActive }: { labels: string[]; defaultActive: string }) {
   const [active, setActive] = useState(defaultActive);
   return (
     <div className="preview">
@@ -687,7 +689,7 @@ function ComponentsButtons() {
       </SubSection>
 
       <SubSection title="Button Group">
-        <ButtonGroupDemo labels={["Today", "Week", "Month"]} defaultActive="Week" />
+        <ButtonGroup labels={["Today", "Week", "Month"]} defaultActive="Week" />
         <CodeBlock
           code={`const [active, setActive] = useState("Week");\n\n<div className="btn-group">\n  {["Today", "Week", "Month"].map(label => (\n    <Button\n      key={label}\n      className={\`btn \${active === label ? "active-group" : ""}\`}\n      onPress={() => setActive(label)}\n    >{label}</Button>\n  ))}\n</div>`}
         />
@@ -706,7 +708,7 @@ function ComponentsButtons() {
       </SubSection>
 
       <SubSection title="Toggles">
-        <ToggleDemo />
+        <Toggle />
         <CodeBlock
           code={`/* Default toggle */\n<Switch isSelected={on} onChange={setOn} className="toggle-wrap">\n  <div className={\`toggle-track \${on ? "on" : ""}\`}>\n    <div className="toggle-thumb" />\n  </div>\n  <span className="toggle-label">Notifications</span>\n</Switch>\n\n/* Labeled toggle (On/Off) */\n<Switch isSelected={on} onChange={setOn} className="toggle-wrap">\n  <div className={\`toggle-track-labeled \${on ? "on" : ""}\`}>\n    <span className="toggle-text toggle-text-on">On</span>\n    <span className="toggle-text toggle-text-off">Off</span>\n    <div className="toggle-thumb-labeled" />\n  </div>\n  <span className="toggle-label">Auto-save</span>\n</Switch>\n\n/* Disabled toggle */\n<Switch isSelected={false} isDisabled className="toggle-wrap">\n  <div className="toggle-track">\n    <div className="toggle-thumb" />\n  </div>\n  <span className="toggle-label">Unavailable</span>\n</Switch>`}
         />
@@ -769,7 +771,7 @@ function formatPhone(value: string) {
   return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
 }
 
-function PhoneInputDemo() {
+function PhoneInput() {
   const [phone1, setPhone1] = useState("");
   const [phone2, setPhone2] = useState("");
   const [ext, setExt] = useState("");
@@ -825,7 +827,7 @@ function PhoneInputDemo() {
           </TextField>
           <div className="phone-ext">
             <span className="phone-ext-label">Ext.</span>
-            <TextField className="field" style={{width: 40}} value={ext} onChange={(v) => setExt(v.replace(/\D/g, "").slice(0, 6))}>
+            <TextField className="field" style={{width: 46}} value={ext} onChange={(v) => setExt(v.replace(/\D/g, "").slice(0, 6))}>
               <Input className="input phone-ext-input" placeholder="0000" />
             </TextField>
           </div>
@@ -843,7 +845,7 @@ function PhoneInputDemo() {
   );
 }
 
-function InputWithIconDemo() {
+function InputWithIcon() {
   const [url, setUrl] = useState("https://vsee.com");
   const [copied, setCopied] = useState(false);
   return (
@@ -874,7 +876,64 @@ function InputWithIconDemo() {
   );
 }
 
-function LoginDemo() {
+function UnitInputs() {
+  return (
+    <>
+      {/* Static unit */}
+      <div className="form-group">
+        <TextField className="field">
+          <Label className="form-label">Dosage</Label>
+          <div className="input-icon-wrap">
+            <Input className="input input-with-icon-right" placeholder="0" />
+            <div className="input-icon-btn" style={{pointerEvents:"none"}}>
+              <span className="input-unit-label">ml</span>
+            </div>
+          </div>
+        </TextField>
+      </div>
+
+      {/* Dropdown unit */}
+      <div className="form-group">
+        <TextField className="field">
+          <Label className="form-label">Weight</Label>
+          <div className="input-icon-wrap">
+            <Input className="input input-with-icon-right" placeholder="0" />
+            <Select defaultSelectedKey="kg" className="input-unit-select">
+              <Button className="input-icon-btn input-unit-select-btn">
+                <SelectValue />
+                <ChevronDown size={12} />
+              </Button>
+              <Popover className="select-popover">
+                <ListBox className="select-listbox">
+                  <ListBoxItem id="kg" className="select-option">kg</ListBoxItem>
+                  <ListBoxItem id="lb" className="select-option">lb</ListBoxItem>
+                </ListBox>
+              </Popover>
+            </Select>
+          </div>
+        </TextField>
+      </div>
+
+      {/* Number stepper */}
+      <div className="form-group">
+        <NumberField defaultValue={5} minValue={0} maxValue={10} className="field">
+          <Label className="form-label">Quantity</Label>
+          <Group className="input-icon-wrap">
+            <Input className="input input-with-icon-right stepper-input" />
+            <div className="input-icon-btn stepper-btns">
+              <Button slot="decrement" className="stepper-half">&minus;</Button>
+              <div className="stepper-divider" />
+              <Button slot="increment" className="stepper-half">+</Button>
+            </div>
+          </Group>
+        </NumberField>
+      </div>
+
+    </>
+  );
+}
+
+function Login() {
   const [showPw, setShowPw] = useState(false);
   const [remember, setRemember] = useState(false);
   return (
@@ -1089,8 +1148,8 @@ function ComponentsForms() {
           <div className="sub-title" style={{marginTop:"var(--sp-6)"}}>Disabled State</div>
           <div className="form-group">
             <TextField isDisabled className="field">
-              <Label className="form-label">Disabled field</Label>
-              <Input className="input" defaultValue="Read-only value" />
+              <Label className="form-label">Disabled Field</Label>
+              <Input className="input" defaultValue="Read-only value" placeholder="Read-only value" />
             </TextField>
           </div>
         </div>
@@ -1106,7 +1165,7 @@ function ComponentsForms() {
           {/* Phone Input */}
           <div className="card">
             <div className="sub-title">Phone Number</div>
-            <PhoneInputDemo />
+            <PhoneInput />
           </div>
 
           {/* Date Picker */}
@@ -1190,13 +1249,130 @@ function ComponentsForms() {
           {/* Input with Action Icon */}
           <div className="card">
             <div className="sub-title">Input with Action Icon</div>
-            <InputWithIconDemo />
+            <InputWithIcon />
+          </div>
+
+          {/* Unit & Number Inputs */}
+          <div className="card">
+            <div className="sub-title">Input with Unit</div>
+            <UnitInputs />
           </div>
 
           {/* Login */}
           <div className="card">
             <div className="sub-title">Login Form</div>
-            <LoginDemo />
+            <Login />
+          </div>
+
+          {/* Inline Inputs */}
+          <div className="card">
+            <div className="sub-title">Inline Inputs</div>
+            <p className="inline-input-text">
+              Dispense
+              <TextField className="field-inline" defaultValue="30">
+                <Input className="input input-inline input-inline-center" style={{width:"36px"}}/>
+              </TextField>
+              tablets, take
+              <NumberField defaultValue={2} minValue={1} maxValue={10} className="field-inline">
+                <Input className="input input-inline input-inline-center"  style={{width:"36px"}}/>
+              </NumberField>
+              times per day for
+              <TextField className="field-inline" defaultValue="7">
+                              <Input className="input input-inline input-inline-center"  style={{width:"36px"}}/>
+              </TextField>
+              days.
+            </p>
+            <div className="inline-input-row" style={{marginTop:"var(--sp-4)"}}>
+              <span className="inline-input-label">Fluids Given</span>
+              <TextField className="field-inline" defaultValue="250" style={{width:"100px"}}>
+                <div className="input-icon-wrap input-icon-wrap-inline">
+                  <Input className="input input-inline input-with-icon-right-inline" />
+                  <Select defaultSelectedKey="cc" className="input-unit-select">
+                    <Button className="input-icon-btn input-unit-select-btn input-unit-select-btn-inline input-icon-btn-inline">
+                      <SelectValue />
+                      <ChevronDown size={10} />
+                    </Button>
+                    <Popover className="select-popover">
+                      <ListBox className="select-listbox">
+                        <ListBoxItem id="cc" className="select-option">cc</ListBoxItem>
+                        <ListBoxItem id="ml" className="select-option">ml</ListBoxItem>
+                      </ListBox>
+                    </Popover>
+                  </Select>
+                </div>
+              </TextField>
+            </div>
+            <div className="inline-input-row" style={{marginTop:"var(--sp-4)"}}>
+              <span className="inline-input-label">Dosage</span>
+              <TextField className="field-inline" defaultValue="500" style={{width:"100px"}}>
+                <div className="input-icon-wrap input-icon-wrap-inline">
+                  <Input className="input input-inline input-with-icon-right-inline" />
+                  <div className="input-icon-btn input-icon-btn-inline" style={{pointerEvents:"none"}}>
+                    <span className="input-unit-label">mg</span>
+                  </div>
+                </div>
+              </TextField>
+            </div>
+            <div className="inline-input-row" style={{marginTop:"var(--sp-4)"}}>
+              <span className="inline-input-label">Quantity</span>
+              <NumberField defaultValue={5} minValue={0} maxValue={99} className="field-inline" style={{width:"100px"}}>
+                <Group className="input-icon-wrap input-icon-wrap-inline">
+                  <Input className="input input-inline input-with-icon-right-inline stepper-input" />
+                  <div className="input-icon-btn input-icon-btn-inline stepper-btns">
+                    <Button slot="decrement" className="stepper-half">&minus;</Button>
+                    <div className="stepper-divider" />
+                    <Button slot="increment" className="stepper-half">+</Button>
+                  </div>
+                </Group>
+              </NumberField>
+            </div>
+            <div className="inline-input-row" style={{marginTop:"var(--sp-4)"}}>
+              <span className="inline-input-label">Date of Service</span>
+              <DatePicker defaultValue={today(getLocalTimeZone())} className="field-inline">
+                <Group className="date-input-group">
+                  <DateInput className="input input-inline date-input">
+                    {(segment) => <DateSegment segment={segment} className="date-segment" />}
+                  </DateInput>
+                  <Button className="input-icon-btn input-icon-btn-inline"><Calendar size={12} /></Button>
+                </Group>
+                <Popover className="date-popover">
+                  <Dialog className="date-dialog">
+                    <AriaCalendar className="calendar">
+                      <header className="calendar-header">
+                        <Button slot="previous" className="calendar-nav-btn"><ChevronLeft size={16} /></Button>
+                        <Heading className="calendar-heading" />
+                        <Button slot="next" className="calendar-nav-btn"><ChevronRight size={16} /></Button>
+                      </header>
+                      <CalendarGrid className="calendar-grid">
+                        <CalendarGridHeader>
+                          {(day) => <CalendarHeaderCell className="calendar-header-cell">{day}</CalendarHeaderCell>}
+                        </CalendarGridHeader>
+                        <CalendarGridBody>
+                          {(date) => <CalendarCell date={date} className="calendar-cell" />}
+                        </CalendarGridBody>
+                      </CalendarGrid>
+                    </AriaCalendar>
+                  </Dialog>
+                </Popover>
+              </DatePicker>
+            </div>
+            <div className="inline-input-row" style={{marginTop:"var(--sp-4)"}}>
+              <span className="inline-input-label">Facility</span>
+              <Select defaultSelectedKey="mercy" className="field-inline">
+                <Button className="input input-inline select-trigger" style={{width:"250px"}}>
+                  <SelectValue />
+                  <ChevronDown size={12} className="select-chevron" />
+                </Button>
+                <Popover className="select-popover">
+                  <ListBox className="select-listbox">
+                    <ListBoxItem id="mercy" className="select-option">Mercy General Hospital</ListBoxItem>
+                    <ListBoxItem id="stlukes" className="select-option">St. Luke's Medical Center</ListBoxItem>
+                    <ListBoxItem id="cedar" className="select-option">Cedar Valley Community Hospital</ListBoxItem>
+                    <ListBoxItem id="riverside" className="select-option">Riverside Health System</ListBoxItem>
+                  </ListBox>
+                </Popover>
+              </Select>
+            </div>
           </div>
         </div>
         <CodeBlock
@@ -1310,7 +1486,7 @@ function ComponentsFeedback() {
       </SubSection>
 
       <SubSection title="Toast Notifications">
-        <div className="toast-demo">
+        <div className="toast-stack">
           <div className="toast toast-success"><div className="toast-body"><div className="toast-title">Appointment confirmed</div><div className="toast-msg">Feb 26, 2026 at 10:00 AM with Dr. Chen</div></div><span className="toast-close"><X size={16} /></span></div>
           <div className="toast toast-danger"><div className="toast-body"><div className="toast-title">Connection lost</div><div className="toast-msg">Please check your internet connection.</div></div><span className="toast-close"><X size={16} /></span></div>
           <div className="toast toast-info"><div className="toast-body"><div className="toast-title">New message</div><div className="toast-msg">You have 3 unread messages from patients.</div></div><span className="toast-close"><X size={16} /></span></div>
@@ -1739,7 +1915,7 @@ function ComponentsOverlays() {
       description="Modals, tooltips, and drawer patterns for focused interactions.">
 
       <SubSection title="Modal / Dialog">
-        <div className="modal-demo-bg">
+        <div className="modal-backdrop-preview">
           <div className="modal-box">
             <div className="modal-head">
               <h3>Cancel Appointment</h3>

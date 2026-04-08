@@ -3,6 +3,40 @@
 All notable changes to this project are documented in this file, detailing commits from the initial project setup to the current release.
 
 - Apr 7
+  - feat: expand form components with units, steppers, and inline patterns
+  General Configuration
+   - .claude/settings.local.json: Added Bash(echo "exit: $?") to the list of allowed commands.
+   - CHANGELOG.md: Updated with a new entry for April 7th regarding the addition of a placeholder for disabled input fields.
+
+  Design System Improvements
+  Foundations & Tokens
+   - index.css: Introduced a new border-radius token --r-xs: 4px.
+   - App.css:
+     - Renamed .radius-demo to .radius-preview for better naming consistency.
+     - Increased the opacity of disabled input fields (.input[disabled]) from 0.5 to 0.7 for better readability.
+
+  New Components & Features
+   - Unit & Number Inputs: Added a new UnitInputs component that demonstrates:
+     - Inputs with static units (e.g., "ml").
+     - Inputs with dropdown unit selection (e.g., "kg/lb").
+     - Number stepper functionality using NumberField.
+   - Inline Inputs: Implemented a comprehensive "Inline Inputs" section in the forms demo, showing how inputs, selects, and date pickers can be
+     used within text sentences or compact rows.
+   - Add a placeholder for the disabled input field
+
+  Code Refactoring & Cleanup
+   - Component Renaming: Refactored several "Demo" components to standard names for a cleaner structure:
+     - ToggleDemo ¡÷ Toggle
+     - ButtonGroupDemo ¡÷ ButtonGroup
+     - PhoneInputDemo ¡÷ PhoneInput
+     - InputWithIconDemo ¡÷ InputWithIcon
+     - LoginDemo ¡÷ Login
+   - UI Enhancements:
+     - Added a placeholder to the disabled field in the Forms section.
+  Technical Changes
+   - Imports: Added NumberField, ChevronUp, and Minus to the react-aria-components and lucide-react imports in App.tsx.
+
+- Apr 7
   - style: update toggle button off-state color and unify track styles
   - Change toggle-track off-state from --grey-400 to --grey-700 to match toggle-track-labeled (Auto-save) off-state color
   - Add dark mode override for both toggle off states using --grey-500 for better contrast on dark backgrounds
