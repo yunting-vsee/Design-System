@@ -58,8 +58,6 @@ import {
   AlertTriangle,
   ChevronDown,
   ChevronRight,
-  ChevronUp,
-  Minus,
   X,
   Search,
   FileText,
