@@ -1,6 +1,10 @@
 ﻿# Changelog
 
 - Apr 8
+  - Add dropdown unit example to Input with Unit code block
+  - Fix unequal card widths in form grid by adding min-width: 0 to .card
+
+- Apr 8
   Foundations — Typography
 
   - Added --r-xs (4px) square to Border Radius display                                                                                               - Moved Shadows next to Spacing (right column), moved Border Radius below Spacing (full width)                                                     - Renamed all typography size tokens from generic (--text-xs, --text-sm, --text-base, etc.) to semantic names (--text-overline-size,
