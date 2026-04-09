@@ -1,5 +1,11 @@
 ﻿# Changelog
 
+Apr 9
+  Font System
+  - Consolidated --font and --font-sans into a single --font-sans variable, removing the redundant --font declaration from :root and updating all 16 references across App.css and index.c
+  UI Fixes
+  - Changed .payment-label color from --text-tertiary to --text-primary for better readability
+
 - Apr 8
   - Add dropdown unit example to Input with Unit code block
   - Fix unequal card widths in form grid by adding min-width: 0 to .card

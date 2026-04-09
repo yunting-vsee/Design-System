@@ -144,7 +144,6 @@
   --border: #E5E7EB; --border-strong: #D1D5DB;
 
   /* Typography scale */
-  --font: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --mono: 'SF Mono', 'Fira Code', 'Consolas', monospace;
   --text-overline-size: 12px; --text-caption-size: 13px; --text-body-size: 14px;
   --text-h5-size: 16px; --text-body-lg-size: 16px; --text-subtitle-size: 18px;
@@ -192,7 +191,7 @@
 }
 
 html {
-  font-family: var(--font);
+  font-family: var(--font-sans);
   font-size: var(--text-body-size);
   line-height: 1.5;
   color: var(--text-primary);
