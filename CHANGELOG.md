@@ -1,10 +1,67 @@
-# Changelog
+ï»¿# Changelog
 
-All notable changes to this project are documented in this file, detailing commits from the initial project setup to the current release.
+- Apr 8
+  Foundations â€” Typography
+
+  - Added --r-xs (4px) square to Border Radius display                                                                                               - Moved Shadows next to Spacing (right column), moved Border Radius below Spacing (full width)                                                     - Renamed all typography size tokens from generic (--text-xs, --text-sm, --text-base, etc.) to semantic names (--text-overline-size,
+  --text-caption-size, --text-body-size, --text-h5-size, --text-h4-size, --text-h3-size, --text-h2-size, --text-h1-size, --text-display-size)
+  - Added --text-body-lg-size (16px) as separate token from --text-h5-size
+  - Added --text-subtitle-size (18px) for subtitles/modal headers
+  - Created utility classes: .text-display, .text-h1, .text-h2, .text-h3, .text-h4, .text-h5, .text-body-lg, .text-body, .text-caption,
+  .text-overline â€” each bundles font-size, font-weight, line-height, and letter-spacing
+  - Typography section now displays class names (e.g. .text-h1) and font sizes (e.g. 48px) as labels
+  - Added --sp-32: 128px spacing token
+  - Added "Date Format" subsection showing US format (MMM D, YYYY at h:mm A) with live current time and code example
+
+  Foundations â€” Colors (Dark Mode)
+
+  - Fixed --brand-dark for non-green themes in dark mode:
+    - Blue theme: #67E8F9
+    - Purple theme: #C4B5FD
+
+  Components â€” Form Elements
+
+  - Restructured form section layout: removed grid g2 form-grid wrappers
+  - Row 1: Text Inputs + Select & Textarea (side by side) with dedicated CodeBlock
+  - Row 2: Checkboxes & Radios + Large & Disabled (side by side) with dedicated CodeBlock
+
+  Components â€” Advanced Inputs
+
+  - Restructured into rows of 2 cards, each with its own CodeBlock:
+    - Row 1: Phone Number + Date Picker
+    - Row 2: Input with Action Icon + Input with Unit
+    - Row 3: Payment Input + Login Form
+    - Row 4: Inline Inputs (existing)
+
+  Components â€” Payment Input (new)
+
+  - Created reusable PaymentInput component with props:
+    - cardPlaceholder, expiryPlaceholder, cvvPlaceholder
+    - onCardChange, onExpiryChange, onCvvChange (all optional)
+  - Card number row: credit card icon + "Card" label + auto-formatted input (groups of 4)
+  - Card number masking: digits 5â€“12 show as â€¢ when blurred, visible when focused
+  - Expiry row: calendar icon + "Expiry" label + auto-formatted MM / YY input
+  - CVV row: lock icon + "CVV" label + type="password" input (max 3 digits)
+  - Stripe-like single bordered box with --r-md radius matching other inputs
+
+  Components â€” Signature Pad (new)
+
+  - Created reusable SignaturePad component with props:
+    - onSign(dataUrl, timestamp), onClear
+    - placeholder, width, height, strokeWidth, strokeColor (all optional)
+  - Canvas-based drawing with mouse and touch support
+  - 2x canvas resolution for crisp lines
+  - Quadratic curve interpolation for smooth strokes
+  - States: empty (pencil icon + placeholder), drawing (Clear + Confirm buttons), signed (locked with timestamp)
+  - Clear button inside the box (top-right) with X icon + "Clear" text
+  - Confirm button on the right, timestamp on the left
+  - Once confirmed, signature is locked â€” no editing or clearing
+  - onSign returns PNG data URL and Date object
+  - SignaturePadDemo wrapper for design system page with pre-signed example
+  - Fixed footer min-height: 28px to prevent layout shift
 
 - Apr 7
-  - feat: expand form components with units, steppers, and inline patterns
-  General Configuration
+  - feat: expand form components with units, steppers, and inline patterns General Configuration
    - .claude/settings.local.json: Added Bash(echo "exit: $?") to the list of allowed commands.
    - CHANGELOG.md: Updated with a new entry for April 7th regarding the addition of a placeholder for disabled input fields.
 
@@ -26,11 +83,11 @@ All notable changes to this project are documented in this file, detailing commi
 
   Code Refactoring & Cleanup
    - Component Renaming: Refactored several "Demo" components to standard names for a cleaner structure:
-     - ToggleDemo ¡÷ Toggle
-     - ButtonGroupDemo ¡÷ ButtonGroup
-     - PhoneInputDemo ¡÷ PhoneInput
-     - InputWithIconDemo ¡÷ InputWithIcon
-     - LoginDemo ¡÷ Login
+     - ToggleDemo â†’ Toggle
+     - ButtonGroupDemo â†’ ButtonGroup
+     - PhoneInputDemo â†’ PhoneInput
+     - InputWithIconDemo â†’ InputWithIcon
+     - LoginDemo â†’ Login
    - UI Enhancements:
      - Added a placeholder to the disabled field in the Forms section.
   Technical Changes
@@ -48,7 +105,7 @@ All notable changes to this project are documented in this file, detailing commi
     neutral scale, text, border, and semantic color tokens
   - Override -dark tokens (success, info, warning, danger, brand) to
     light values for readable contrast on dark backgrounds
-  - Increase shadow opacity (0.3¡V0.4) for visibility on dark surfaces
+  - Increase shadow opacity (0.3â€“0.4) for visibility on dark surfaces
   - Add --surface-elevated token for cards, modals, popovers, drawers,
     toasts, dropdowns, and notifications
   - Pin light-mode colors for btn-warning, badge-solid-warning,

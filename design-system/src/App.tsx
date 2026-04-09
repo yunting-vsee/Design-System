@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import {
   Button,
   TextField,
@@ -90,6 +90,8 @@ import {
   Clock,
   Sun,
   Moon,
+  CreditCard,
+  Lock,
 } from "lucide-react";
 import "./App.css";
 
@@ -458,23 +460,23 @@ function FoundationsTypography() {
 
       <div className="card" style={{marginBottom:"var(--sp-8)"}}>
         {[
-          { label: "Display", meta: "60px / 800", style: { fontSize: 60, fontWeight: 800, letterSpacing: "-2px", lineHeight: 1.05 }, text: "Design for health" },
-          { label: "H1", meta: "48px / 800", style: { fontSize: 48, fontWeight: 800, letterSpacing: "-1.5px", lineHeight: 1.1 }, text: "Page title" },
-          { label: "H2", meta: "36px / 700", style: { fontSize: 36, fontWeight: 700, letterSpacing: "-0.5px", lineHeight: 1.15 }, text: "Section heading" },
-          { label: "H3", meta: "24px / 700", style: { fontSize: 24, fontWeight: 700, letterSpacing: "-0.3px", lineHeight: 1.2 }, text: "Subsection" },
-          { label: "H4", meta: "20px / 600", style: { fontSize: 20, fontWeight: 600, lineHeight: 1.3 }, text: "Card title" },
-          { label: "H5", meta: "16px / 600", style: { fontSize: 16, fontWeight: 600, lineHeight: 1.4 }, text: "Label heading" },
-          { label: "Body LG", meta: "16px / 400", style: { fontSize: 16, lineHeight: 1.6 }, text: "Body text for longer-form content and introductory paragraphs." },
-          { label: "Body", meta: "14px / 400", style: { fontSize: 14, lineHeight: 1.5 }, text: "Standard body text used throughout the application." },
-          { label: "Caption", meta: "13px / 500", style: { fontSize: 13, fontWeight: 500 }, text: "Helper text, timestamps, and metadata" },
-          { label: "Overline", meta: "12px / 700", style: { fontSize: 12, fontWeight: 700, textTransform: "uppercase" as const, letterSpacing: "1px" }, text: "Section Label" },
+          { cls: "text-display", size: "60px", text: "Design for health" },
+          { cls: "text-h1", size: "48px", text: "Page title" },
+          { cls: "text-h2", size: "36px", text: "Section heading" },
+          { cls: "text-h3", size: "24px", text: "Subsection" },
+          { cls: "text-h4", size: "20px", text: "Card title" },
+          { cls: "text-h5", size: "16px", text: "Label heading" },
+          { cls: "text-body-lg", size: "16px", text: "Body text for longer-form content and introductory paragraphs." },
+          { cls: "text-body", size: "14px", text: "Standard body text used throughout the application." },
+          { cls: "text-caption", size: "13px", text: "Helper text, timestamps, and metadata" },
+          { cls: "text-overline", size: "12px", text: "Section Label" },
         ].map((t) => (
-          <div key={t.label} className="type-row">
+          <div key={t.cls} className="type-row">
             <div className="type-meta">
-              <div className="type-meta-label">{t.label}</div>
-              <div className="type-meta-value">{t.meta}</div>
+              <div className="type-meta-label">.{t.cls}</div>
+              <div className="type-meta-value">{t.size}</div>
             </div>
-            <div className="type-preview" style={t.style}>{t.text}</div>
+            <div className={`type-preview ${t.cls}`}>{t.text}</div>
           </div>
         ))}
       </div>
@@ -492,6 +494,21 @@ function FoundationsTypography() {
           ))}
         </div>
       </SubSection>
+
+      <SubSection title="Date Format">
+        <div className="card" style={{padding:"var(--sp-4) var(--sp-6)"}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+            <div>
+              <div className="text-caption" style={{color:"var(--text-tertiary)",marginBottom:"var(--sp-1)"}}>US Format</div>
+              <div className="text-body" style={{fontWeight:600}}>{new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })} at {new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}</div>
+            </div>
+            <code style={{fontSize:"var(--text-caption-size)",color:"var(--text-tertiary)",background:"var(--grey-100)",padding:"var(--sp-1) var(--sp-2)",borderRadius:"var(--r-sm)"}}>MMM D, YYYY at h:mm A</code>
+          </div>
+        </div>
+        <CodeBlock
+          code={`/* US Date Format */\nconst formatDate = (date: Date) =>\n  date.toLocaleDateString("en-US", {\n    month: "short", day: "numeric", year: "numeric"\n  }) + " at " + date.toLocaleTimeString("en-US", {\n    hour: "numeric", minute: "2-digit"\n  });\n\n// Output: "Apr 8, 2026 at 8:35 PM"`}
+        />
+      </SubSection>
     </Section>
   );
 }
@@ -504,7 +521,7 @@ function FoundationsSpacing() {
     { token: "--sp-1", px: 4 }, { token: "--sp-2", px: 8 }, { token: "--sp-3", px: 12 },
     { token: "--sp-4", px: 16 }, { token: "--sp-6", px: 24 }, { token: "--sp-8", px: 32 },
     { token: "--sp-10", px: 40 }, { token: "--sp-12", px: 48 }, { token: "--sp-16", px: 64 },
-    { token: "--sp-24", px: 96 },
+    { token: "--sp-24", px: 96 }, { token: "--sp-32", px: 128 },
   ];
 
   return (
@@ -522,26 +539,28 @@ function FoundationsSpacing() {
           ))}
         </div>
         <div>
-          <div className="sub-title">Border Radius</div>
-          <div className="radius-row">
-            {[
-              { label: "--r-sm", val: 6 }, { label: "--r-md", val: 8 }, { label: "--r-lg", val: 12 },
-              { label: "--r-xl", val: 16 }, { label: "--r-2xl", val: 24 },
-              { label: "--r-full", val: 9999 },
-            ].map((r) => (
-              <div key={r.label} style={{textAlign:"center"}}>
-                <div className="radius-preview" style={{borderRadius: r.val, width: 80, height: 80}}>{r.val === 9999 ? "∞" : `${r.val}px`}</div>
-                <div className="radius-label">{r.label}</div>
-              </div>
-            ))}
-          </div>
-
-          <div className="sub-title" style={{marginTop:"var(--sp-10)"}}>Shadows</div>
+          <div className="sub-title">Shadows</div>
           <div className="shadow-stack">
             {["xs","sm","md","lg","xl"].map((s) => (
               <div key={s} className="shadow-card" style={{boxShadow:`var(--shadow-${s})`}}>--shadow-{s}</div>
             ))}
           </div>
+        </div>
+      </div>
+
+      <div style={{marginTop:"var(--sp-10)"}}>
+        <div className="sub-title">Border Radius</div>
+        <div className="radius-row">
+          {[
+            { label: "--r-xs", val: 4 }, { label: "--r-sm", val: 6 }, { label: "--r-md", val: 8 }, { label: "--r-lg", val: 12 },
+            { label: "--r-xl", val: 16 }, { label: "--r-2xl", val: 24 },
+            { label: "--r-full", val: 9999 },
+          ].map((r) => (
+            <div key={r.label} style={{textAlign:"center"}}>
+              <div className="radius-preview" style={{borderRadius: r.val, width: 80, height: 80}}>{r.val === 9999 ? "∞" : `${r.val}px`}</div>
+              <div className="radius-label">{r.label}</div>
+            </div>
+          ))}
         </div>
       </div>
 
@@ -843,6 +862,85 @@ function PhoneInput() {
   );
 }
 
+/* ── Payment Input (reusable) ── */
+function PaymentInput({
+  onCardChange,
+  onExpiryChange,
+  onCvvChange,
+  cardPlaceholder = "1234 5678 9012 3456",
+  expiryPlaceholder = "MM / YY",
+  cvvPlaceholder = "123",
+}: {
+  onCardChange?: (value: string) => void;
+  onExpiryChange?: (value: string) => void;
+  onCvvChange?: (value: string) => void;
+  cardPlaceholder?: string;
+  expiryPlaceholder?: string;
+  cvvPlaceholder?: string;
+}) {
+  const formatCard = (val: string) => {
+    const digits = val.replace(/\D/g, "").slice(0, 16);
+    return digits.replace(/(\d{4})(?=\d)/g, "$1 ");
+  };
+  const maskCard = (val: string) => {
+    const digits = val.replace(/\D/g, "");
+    const masked = digits.split("").map((d, i) => i >= 4 && i < 12 ? "\u2022" : d).join("");
+    return masked.replace(/(.{4})(?=.)/g, "$1 ");
+  };
+  const formatExpiry = (val: string) => {
+    const digits = val.replace(/\D/g, "").slice(0, 4);
+    if (digits.length > 2) return digits.slice(0, 2) + " / " + digits.slice(2);
+    return digits;
+  };
+  const [card, setCard] = useState("");
+  const [cardFocused, setCardFocused] = useState(false);
+  const [expiry, setExpiry] = useState("");
+  const [cvv, setCvv] = useState("");
+
+  return (
+    <div className="payment-input">
+      <div className="payment-row payment-card-row">
+        <CreditCard size={16} className="payment-icon" />
+        <label className="payment-label" style={{paddingLeft:"var(--sp-2)"}}>Card #</label>
+        <input
+          className="payment-field payment-card"
+          placeholder={cardPlaceholder}
+          value={cardFocused ? card : maskCard(card)}
+          onFocus={() => setCardFocused(true)}
+          onBlur={() => setCardFocused(false)}
+          onChange={(e) => { const v = formatCard(e.target.value); setCard(v); onCardChange?.(v); }}
+        />
+      </div>
+      <div className="payment-row payment-detail-row">
+        <div className="payment-detail-col">
+          <Calendar size={16} className="payment-icon" />
+          <label className="payment-label" style={{paddingLeft:"var(--sp-2)"}}>Expiry</label>
+          <input
+            className="payment-field payment-expiry"
+            placeholder={expiryPlaceholder}
+            value={expiry}
+            onChange={(e) => { const v = formatExpiry(e.target.value); setExpiry(v); onExpiryChange?.(v); }}
+          />
+        </div>
+        <div className="payment-divider" />
+        <div className="payment-detail-col">
+          <Lock size={16} className="payment-icon" />
+          <label className="payment-label" style={{paddingLeft:"var(--sp-2)"}}>CVV</label>
+          <input
+            type="password"
+            inputMode="numeric"
+            maxLength={3}
+            className="payment-field payment-cvv"
+            placeholder={cvvPlaceholder}
+            value={cvv}
+            onChange={(e) => { const v = e.target.value.replace(/\D/g, "").slice(0, 3); setCvv(v); onCvvChange?.(v); }}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function InputWithIcon() {
   const [url, setUrl] = useState("https://vsee.com");
   const [copied, setCopied] = useState(false);
@@ -967,6 +1065,183 @@ function Login() {
   );
 }
 
+/* ── Signature Pad (reusable) ── */
+function SignaturePad({
+  onSign,
+  onClear,
+  placeholder = "Sign here",
+  width = 500,
+  height = 160,
+  strokeWidth = 4,
+  strokeColor,
+}: {
+  onSign?: (dataUrl: string, timestamp: Date) => void;
+  onClear?: () => void;
+  placeholder?: string;
+  width?: number;
+  height?: number;
+  strokeWidth?: number;
+  strokeColor?: string;
+}) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const points = useRef<{ x: number; y: number }[]>([]);
+  const [drawing, setDrawing] = useState(false);
+  const [hasStrokes, setHasStrokes] = useState(false);
+  const [signed, setSigned] = useState(false);
+  const [signedAt, setSignedAt] = useState<string | null>(null);
+
+  const getPos = useCallback((e: React.MouseEvent | React.TouchEvent) => {
+    const canvas = canvasRef.current!;
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    if ("touches" in e) {
+      return { x: (e.touches[0].clientX - rect.left) * scaleX, y: (e.touches[0].clientY - rect.top) * scaleY };
+    }
+    return { x: e.nativeEvent.offsetX * scaleX, y: e.nativeEvent.offsetY * scaleY };
+  }, []);
+
+  const getStrokeColor = useCallback(() => {
+    if (strokeColor) return strokeColor;
+    return getComputedStyle(canvasRef.current!).getPropertyValue("--text-primary").trim() || "#111827";
+  }, [strokeColor]);
+
+  const startDraw = useCallback((e: React.MouseEvent | React.TouchEvent) => {
+    if (signed) return;
+    const pos = getPos(e);
+    points.current = [pos];
+    setDrawing(true);
+    setHasStrokes(true);
+  }, [signed, getPos]);
+
+  const draw = useCallback((e: React.MouseEvent | React.TouchEvent) => {
+    if (!drawing) return;
+    const ctx = canvasRef.current?.getContext("2d");
+    if (!ctx) return;
+    const pos = getPos(e);
+    points.current.push(pos);
+    const pts = points.current;
+    if (pts.length < 3) return;
+    ctx.lineWidth = strokeWidth;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.strokeStyle = getStrokeColor();
+    ctx.beginPath();
+    const prev = pts[pts.length - 3];
+    const cp = pts[pts.length - 2];
+    const curr = pts[pts.length - 1];
+    ctx.moveTo(prev.x, prev.y);
+    ctx.quadraticCurveTo(cp.x, cp.y, (cp.x + curr.x) / 2, (cp.y + curr.y) / 2);
+    ctx.stroke();
+  }, [drawing, getPos, strokeWidth, getStrokeColor]);
+
+  const endDraw = useCallback(() => { setDrawing(false); points.current = []; }, []);
+
+  const clear = useCallback(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    canvas.getContext("2d")?.clearRect(0, 0, canvas.width, canvas.height);
+    setHasStrokes(false);
+    setSigned(false);
+    setSignedAt(null);
+    onClear?.();
+  }, [onClear]);
+
+  const confirm = useCallback(() => {
+    if (!hasStrokes) return;
+    const now = new Date();
+    const label = now.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) + " at " + now.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+    setSignedAt(label);
+    setSigned(true);
+    onSign?.(canvasRef.current!.toDataURL("image/png"), now);
+  }, [hasStrokes, onSign]);
+
+  return (
+    <>
+      <div
+        className={`signature-pad${signed ? " signed" : ""}`}
+        onMouseDown={startDraw}
+        onMouseMove={draw}
+        onMouseUp={endDraw}
+        onMouseLeave={endDraw}
+        onTouchStart={startDraw}
+        onTouchMove={draw}
+        onTouchEnd={endDraw}
+      >
+        {!hasStrokes && (
+          <div className="signature-placeholder">
+            <Pencil size={24} />
+            <span>{placeholder}</span>
+          </div>
+        )}
+        <canvas ref={canvasRef} width={width * 2} height={height * 2} className="signature-canvas" />
+        {hasStrokes && !signed && <button className="signature-clear" onClick={clear}><X size={14} /> Clear</button>}
+      </div>
+      <div className="signature-footer">
+        {signedAt ? <span className="signature-timestamp">Signed {signedAt}</span> : <span />}
+        {hasStrokes && !signed ? <button className="signature-confirm" onClick={confirm}>Confirm</button> : <span />}
+      </div>
+    </>
+  );
+}
+
+/* ── Signature Pad Demo (for design system page) ── */
+function SignaturePadDemo({ label, preSigned }: { label: string; preSigned?: boolean }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    if (!preSigned) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    ctx.lineWidth = 2.5;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.strokeStyle = "#111827";
+    ctx.beginPath();
+    ctx.moveTo(80, 40); ctx.quadraticCurveTo(80, 90, 60, 100);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(85, 70); ctx.quadraticCurveTo(100, 40, 120, 70);
+    ctx.quadraticCurveTo(135, 95, 155, 65);
+    ctx.quadraticCurveTo(170, 40, 185, 70);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(215, 40); ctx.lineTo(215, 100);
+    ctx.moveTo(215, 40); ctx.quadraticCurveTo(270, 45, 270, 70);
+    ctx.quadraticCurveTo(270, 95, 215, 100);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(280, 55); ctx.quadraticCurveTo(280, 95, 300, 95);
+    ctx.quadraticCurveTo(320, 95, 310, 55);
+    ctx.moveTo(320, 70); ctx.quadraticCurveTo(340, 55, 350, 70);
+    ctx.quadraticCurveTo(360, 95, 340, 95);
+    ctx.stroke();
+  }, [preSigned]);
+
+  if (preSigned) {
+    return (
+      <div>
+        <div className="form-label" style={{marginBottom:"var(--sp-2)"}}>{label}</div>
+        <div className="signature-pad signed">
+          <canvas ref={canvasRef} width={500} height={160} className="signature-canvas" />
+        </div>
+        <div className="signature-footer">
+          <span className="signature-timestamp">Signed Apr 8, 2026 at 2:34 PM</span>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <div className="form-label" style={{marginBottom:"var(--sp-2)"}}>{label}</div>
+      <SignaturePad onSign={(dataUrl, ts) => console.log("Signed:", ts, dataUrl.slice(0, 50))} />
+    </div>
+  );
+}
+
 /* ═══════════════════════════════════════════
    COMPONENTS — FORM ELEMENTS
    ═══════════════════════════════════════════ */
@@ -989,7 +1264,7 @@ function ComponentsForms() {
   return (
     <Section id="forms" label="Components" title="Form Elements"
       description="Clean, accessible form controls with clear focus states and error handling.">
-      <div className="grid g2 form-grid">
+      <div className="grid g2" style={{gap:"var(--sp-6)"}}>
         {/* Text Inputs */}
         <div className="card">
           <div className="sub-title">Text Inputs</div>
@@ -1098,7 +1373,12 @@ function ComponentsForms() {
             </div>
           </div>
         </div>
+      </div>
+      <CodeBlock
+        code={`/* Text Input */\n<TextField className="field">\n  <Label className="form-label">Email address</Label>\n  <Input className="input" placeholder="you@example.com" />\n</TextField>\n\n/* Input with error */\n<TextField isInvalid className="field">\n  <Label className="form-label">Full Name <span className="req">*</span></Label>\n  <Input className="input error" />\n  <div className="form-error-text">Full name is required</div>\n</TextField>\n\n/* Select */\n<Select className="field">\n  <Label className="form-label">Specialty</Label>\n  <Button className="input select-trigger">\n    <SelectValue />\n    <ChevronDown size={16} />\n  </Button>\n  <Popover className="select-popover">\n    <ListBox className="select-listbox">\n      <ListBoxItem className="select-option">Option</ListBoxItem>\n    </ListBox>\n  </Popover>\n</Select>\n\n/* MultiSelect */\n<div className="multiselect-wrapper">\n  <Label className="form-label">Filter by Specialty</Label>\n  <div className="multiselect-container">\n    <TagGroup onRemove={handleRemove}>\n      <TagList className="multiselect-tags">\n        <Tag className="chip" textValue="Cardiology">\n          Cardiology\n          <Button slot="remove" className="tag-remove"><X size={12} /></Button>\n        </Tag>\n      </TagList>\n    </TagGroup>\n    <ComboBox menuTrigger="focus" allowsCustomValue>\n      <Input className="multiselect-input" placeholder="Add more..." />\n      <Popover className="dropdown-popover">\n        <ListBox className="dropdown-menu">\n          <ListBoxItem className="dropdown-item">Option</ListBoxItem>\n        </ListBox>\n      </Popover>\n    </ComboBox>\n  </div>\n</div>`}
+      />
 
+      <div className="grid g2" style={{gap:"var(--sp-6)",marginTop:"var(--sp-6)"}}>
         {/* Checkboxes & Radios */}
         <div className="card">
           <div className="sub-title">Checkboxes</div>
@@ -1151,15 +1431,15 @@ function ComponentsForms() {
             </TextField>
           </div>
         </div>
-
       </div>
+
       <CodeBlock
-        code={`/* Text Input */\n<TextField className="field">\n  <Label className="form-label">Email address</Label>\n  <Input className="input" placeholder="you@example.com" />\n</TextField>\n\n/* Input with error */\n<TextField isInvalid className="field">\n  <Label className="form-label">Full Name <span className="req">*</span></Label>\n  <Input className="input error" />\n  <div className="form-error-text">Full name is required</div>\n</TextField>\n\n/* Select */\n<Select className="field">\n  <Label className="form-label">Specialty</Label>\n  <Button className="input select-trigger">\n    <SelectValue />\n    <ChevronDown size={16} />\n  </Button>\n  <Popover className="select-popover">\n    <ListBox className="select-listbox">\n      <ListBoxItem className="select-option">Option</ListBoxItem>\n    </ListBox>\n  </Popover>\n</Select>\n\n/* MultiSelect */\n<div className="multiselect-wrapper">\n  <Label className="form-label">Filter by Specialty</Label>\n  <div className="multiselect-container">\n    <TagGroup onRemove={handleRemove}>\n      <TagList className="multiselect-tags">\n        <Tag className="chip" textValue="Cardiology">\n          Cardiology\n          <Button slot="remove" className="tag-remove"><X size={12} /></Button>\n        </Tag>\n      </TagList>\n    </TagGroup>\n    <ComboBox menuTrigger="focus" allowsCustomValue>\n      <Input className="multiselect-input" placeholder="Add more..." />\n      <Popover className="dropdown-popover">\n        <ListBox className="dropdown-menu">\n          <ListBoxItem className="dropdown-item">Option</ListBoxItem>\n        </ListBox>\n      </Popover>\n    </ComboBox>\n  </div>\n</div>\n\n/* Checkbox */\n<Checkbox isSelected={checked} onChange={setChecked} className="check-item">\n  <div className={\`check-box \${checked ? "checked" : ""}\`} />\n  Label text\n</Checkbox>\n\n/* Radio Group */\n<RadioGroup defaultValue="phone" className="radio-list">\n  <Radio value="phone" className="radio-item">\n    <div className="radio-circle" /><span>Phone call</span>\n  </Radio>\n  <Radio value="video" className="radio-item">\n    <div className="radio-circle" /><span>Video call</span>\n  </Radio>\n  <Radio value="person" className="radio-item" isDisabled>\n    <div className="radio-circle" /><span>In-person</span>\n  </Radio>\n</RadioGroup>`}
+        code={`/* Checkbox */\n<Checkbox isSelected={checked} onChange={setChecked} className="check-item">\n  <div className={\`check-box \${checked ? "checked" : ""}\`} />\n  Label text\n</Checkbox>\n\n/* Radio Group */\n<RadioGroup defaultValue="phone" className="radio-list">\n  <Radio value="phone" className="radio-item">\n    <div className="radio-circle" /><span>Phone call</span>\n  </Radio>\n  <Radio value="video" className="radio-item">\n    <div className="radio-circle" /><span>Video call</span>\n  </Radio>\n  <Radio value="person" className="radio-item" isDisabled>\n    <div className="radio-circle" /><span>In-person</span>\n  </Radio>\n</RadioGroup>\n\n/* Large Input */\n<TextField className="field">\n  <Label className="form-label">Patient Search</Label>\n  <Input className="input input-lg" placeholder="Search by name, ID, or phone..." />\n</TextField>\n\n/* Disabled Input */\n<TextField isDisabled className="field">\n  <Label className="form-label">Disabled Field</Label>\n  <Input className="input" defaultValue="Read-only value" />\n</TextField>`}
       />
 
       <div style={{marginTop:"var(--sp-16)"}} />
       <SubSection title="Advanced Inputs" description="Specialized form controls for phone numbers, dates, and inputs with action icons.">
-        <div className="grid g2 form-grid">
+        <div className="grid g2" style={{gap:"var(--sp-6)"}}>
           {/* Phone Input */}
           <div className="card">
             <div className="sub-title">Phone Number</div>
@@ -1243,11 +1523,21 @@ function ComponentsForms() {
               </DatePicker>
             </div>
           </div>
+        </div>
+        <CodeBlock
+          code={`/* Phone — with Country Code */\n<div className="phone-input-group">\n  <Select defaultSelectedKey="+1" className="phone-country-select">\n    <Button className="phone-country-btn">\n      <SelectValue /><ChevronDown size={14} />\n    </Button>\n    <Popover className="select-popover">\n      <ListBox className="select-listbox">\n        <ListBoxItem id="+1">US +1</ListBoxItem>\n      </ListBox>\n    </Popover>\n  </Select>\n  <TextField className="field" style={{flex: 1}}>\n    <Input className="input phone-input" placeholder="(555) 123-4567" />\n  </TextField>\n</div>\n\n/* Date Picker */\n<DatePicker className="field">\n  <Label className="form-label">Appointment Date</Label>\n  <Group className="date-input-group">\n    <DateInput className="input date-input">\n      {(segment) => <DateSegment segment={segment} />}\n    </DateInput>\n    <Button className="input-icon-btn"><Calendar size={16} /></Button>\n  </Group>\n  <Popover className="date-popover">\n    <Dialog><Calendar>...</Calendar></Dialog>\n  </Popover>\n</DatePicker>\n\n/* Time Picker */\n<TimeField className="field">\n  <Label className="form-label">Appointment Time</Label>\n  <Group className="date-input-group">\n    <DateInput className="input date-input">\n      {(segment) => <DateSegment segment={segment} />}\n    </DateInput>\n    <div className="input-icon-btn" style={{pointerEvents:"none"}}><Clock size={16} /></div>\n  </Group>\n</TimeField>`}
+        />
 
+        <div className="grid g2" style={{gap:"var(--sp-6)",marginTop:"var(--sp-6)"}}>
           {/* Input with Action Icon */}
           <div className="card">
             <div className="sub-title">Input with Action Icon</div>
             <InputWithIcon />
+            <div className="sub-title" style={{marginTop:"var(--sp-6)"}}>Payment Input</div>
+            <div className="form-group">
+              <div className="form-label">Payment</div>
+              <PaymentInput />
+            </div>
           </div>
 
           {/* Unit & Number Inputs */}
@@ -1255,7 +1545,12 @@ function ComponentsForms() {
             <div className="sub-title">Input with Unit</div>
             <UnitInputs />
           </div>
+        </div>
+        <CodeBlock
+          code={`/* Input with Copy Action */\n<div className="input-icon-wrap">\n  <Input className="input input-with-icon-right" readOnly />\n  <Button className="input-icon-btn"><Copy size={16} /></Button>\n</div>\n\n/* Input with External Link */\n<div className="input-icon-wrap">\n  <Input className="input input-with-icon-right" />\n  <Button className="input-icon-btn"><ExternalLink size={16} /></Button>\n</div>\n\n/* Payment Input — with callbacks */\n<PaymentInput\n  cardPlaceholder="1234 5678 9012 3456"\n  expiryPlaceholder="MM / YY"\n  cvvPlaceholder="123"\n  onCardChange={(val) => console.log(val)}\n  onExpiryChange={(val) => console.log(val)}\n  onCvvChange={(val) => console.log(val)}\n/>\n\n/* Input with Static Unit */\n<div className="input-icon-wrap">\n  <Input className="input input-with-icon-right" placeholder="0" />\n  <span className="input-unit">mg</span>\n</div>\n\n/* Number Stepper */\n<NumberField defaultValue={5} minValue={0} maxValue={10} className="field">\n  <Label className="form-label">Quantity</Label>\n  <Group className="input-icon-wrap">\n    <Input className="input input-with-icon-right stepper-input" />\n    <div className="input-icon-btn stepper-btns">\n      <Button slot="decrement" className="stepper-half">&minus;</Button>\n      <div className="stepper-divider" />\n      <Button slot="increment" className="stepper-half">+</Button>\n    </div>\n  </Group>\n</NumberField>`}
+        />
 
+        <div className="grid g2" style={{gap:"var(--sp-6)",marginTop:"var(--sp-6)"}}>
           {/* Login */}
           <div className="card">
             <div className="sub-title">Login Form</div>
@@ -1268,15 +1563,15 @@ function ComponentsForms() {
             <p className="inline-input-text">
               Dispense
               <TextField className="field-inline" defaultValue="30">
-                <Input className="input input-inline input-inline-center" style={{width:"36px"}}/>
+                <Input className="input input-inline vertical-center" style={{width:"36px"}}/>
               </TextField>
               tablets, take
               <NumberField defaultValue={2} minValue={1} maxValue={10} className="field-inline">
-                <Input className="input input-inline input-inline-center"  style={{width:"36px"}}/>
+                <Input className="input input-inline vertical-center"  style={{width:"36px"}}/>
               </NumberField>
               times per day for
               <TextField className="field-inline" defaultValue="7">
-                              <Input className="input input-inline input-inline-center"  style={{width:"36px"}}/>
+                              <Input className="input input-inline vertical-center"  style={{width:"36px"}}/>
               </TextField>
               days.
             </p>
@@ -1313,7 +1608,7 @@ function ComponentsForms() {
             </div>
             <div className="inline-input-row" style={{marginTop:"var(--sp-4)"}}>
               <span className="inline-input-label">Quantity</span>
-              <NumberField defaultValue={5} minValue={0} maxValue={99} className="field-inline" style={{width:"100px"}}>
+              <NumberField defaultValue={5} minValue={0} maxValue={10} className="field-inline" style={{width:"100px"}}>
                 <Group className="input-icon-wrap input-icon-wrap-inline">
                   <Input className="input input-inline input-with-icon-right-inline stepper-input" />
                   <div className="input-icon-btn input-icon-btn-inline stepper-btns">
@@ -1374,7 +1669,17 @@ function ComponentsForms() {
           </div>
         </div>
         <CodeBlock
-          code={`/* Phone — with Country Code */\n<div className="phone-input-group">\n  <Select defaultSelectedKey="+1" className="phone-country-select">\n    <Button className="phone-country-btn">\n      <SelectValue /><ChevronDown size={14} />\n    </Button>\n    <Popover className="select-popover">\n      <ListBox className="select-listbox">\n        <ListBoxItem id="+1">US +1</ListBoxItem>\n      </ListBox>\n    </Popover>\n  </Select>\n  <TextField className="field" style={{flex: 1}}>\n    <Input className="input phone-input" placeholder="(555) 123-4567" />\n  </TextField>\n</div>\n\n/* Phone — with Country Code & Ext. */\n<div className="phone-input-group">\n  <Select defaultSelectedKey="+1" className="phone-country-select">\n    ...\n  </Select>\n  <TextField className="field" style={{flex: 1}}>\n    <Input className="input phone-input-middle" placeholder="(555) 123-4567" />\n  </TextField>\n  <div className="phone-ext">\n    <span className="phone-ext-label">Ext.</span>\n    <TextField className="field" style={{width: 40}}>\n      <Input className="input phone-ext-input" placeholder="0000" />\n    </TextField>\n  </div>\n</div>\n\n/* Phone — Simple */\n<TextField className="field">\n  <Input className="input" placeholder="(555) 123-4567" />\n</TextField>\n\n/* Date Picker */\n<DatePicker className="field">\n  <Label className="form-label">Appointment Date</Label>\n  <Group className="date-input-group">\n    <DateInput className="input date-input">\n      {(segment) => <DateSegment segment={segment} />}\n    </DateInput>\n    <Button className="input-icon-btn"><Calendar size={16} /></Button>\n  </Group>\n  <Popover className="date-popover">\n    <Dialog><Calendar>...</Calendar></Dialog>\n  </Popover>\n</DatePicker>\n\n/* Time Picker */\n<TimeField className="field">\n  <Label className="form-label">Appointment Time</Label>\n  <Group className="date-input-group">\n    <DateInput className="input date-input">\n      {(segment) => <DateSegment segment={segment} />}\n    </DateInput>\n    <div className="input-icon-btn" style={{pointerEvents:"none"}}><Clock size={16} /></div>\n  </Group>\n</TimeField>\n\n/* Date & Time Picker */\n<DatePicker granularity="minute" className="field">\n  <Label className="form-label">Appointment Date & Time</Label>\n  <Group className="date-input-group">\n    <DateInput className="input date-input">\n      {(segment) => <DateSegment segment={segment} />}\n    </DateInput>\n    <Button className="input-icon-btn"><Calendar size={16} /></Button>\n  </Group>\n  <Popover className="date-popover">\n    <Dialog><Calendar>...</Calendar></Dialog>\n  </Popover>\n</DatePicker>\n\n/* Input with Copy Action */\n<div className="input-icon-wrap">\n  <Input className="input input-with-icon-right" readOnly />\n  <Button className="input-icon-btn"><Copy size={16} /></Button>\n</div>\n\n/* Input with External Link */\n<div className="input-icon-wrap">\n  <Input className="input input-with-icon-right" />\n  <Button className="input-icon-btn"><ExternalLink size={16} /></Button>\n</div>\n\n/* Login Form */\n<Form className="login-form">\n  <TextField className="field">\n    <Label className="form-label">Email</Label>\n    <Input className="input" placeholder="you@example.com" />\n  </TextField>\n  <TextField className="field">\n    <Label className="form-label">Password</Label>\n    <div className="input-icon-wrap">\n      <Input className="input input-with-icon-right" type="password" />\n      <Button className="input-icon-btn"><Eye size={16} /></Button>\n    </div>\n  </TextField>\n  <Checkbox className="check-item">Remember me</Checkbox>\n  <Button className="btn btn-primary btn-block">Sign In</Button>\n</Form>`}
+          code={`/* Login Form */\n<Form className="login-form">\n  <TextField className="field">\n    <Label className="form-label">Email</Label>\n    <Input className="input" placeholder="you@example.com" />\n  </TextField>\n  <TextField className="field">\n    <Label className="form-label">Password</Label>\n    <div className="input-icon-wrap">\n      <Input className="input input-with-icon-right" type="password" />\n      <Button className="input-icon-btn"><Eye size={16} /></Button>\n    </div>\n  </TextField>\n  <Checkbox className="check-item">Remember me</Checkbox>\n  <Button className="btn btn-primary btn-block">Sign In</Button>\n</Form>\n\n/* Inline Inputs */\n<p className="inline-input-text">\n  Dispense <Input className="input input-inline" /> tablets,\n  take <Input className="input input-inline" /> times per day\n  for <Input className="input input-inline" /> days.\n</p>`}
+        />
+      </SubSection>
+
+      <SubSection title="Signature" description="A hand-signature capture area for consent forms, agreements, and patient intake workflows.">
+        <div className="grid g2">
+          <SignaturePadDemo label="Active" />
+          <SignaturePadDemo label="Signed" preSigned />
+        </div>
+        <CodeBlock
+          code={`<SignaturePad />\n\n{/* The component renders a <canvas> inside .signature-pad */}\n{/* Users draw with mouse or touch. On completion: */}\n<div className="signature-pad signed">\n  <canvas /> {/* contains the drawn signature */}\n</div>\n<div className="signature-footer">\n  <span className="signature-timestamp">Signed Apr 8, 2026 at 2:34 PM</span>\n  <button className="signature-clear">Clear</button>\n</div>`}
         />
       </SubSection>
     </Section>
@@ -2047,7 +2352,7 @@ function ComponentsOverlays() {
 
       <SubSection title="Vitals Card">
         <div className="panel" style={{maxWidth:500}}>
-          <div className="panel-header">Latest Vitals <span style={{fontSize:"var(--text-sm)",color:"var(--text-tertiary)",fontWeight:400,marginLeft:"auto"}}>Feb 26, 2026</span></div>
+          <div className="panel-header">Latest Vitals <span style={{fontSize:"var(--text-caption-size)",color:"var(--text-tertiary)",fontWeight:400,marginLeft:"auto"}}>Feb 26, 2026</span></div>
           <div className="panel-body">
             <div className="vitals-grid">
               <div className="vital"><div className="vital-val" style={{color:"var(--brand)"}}>120/80</div><div className="vital-label">Blood Pressure</div></div>
@@ -2077,8 +2382,8 @@ function PatternsLayouts() {
           <div style={{display:"grid", gridTemplateColumns:"repeat(3, 1fr)", gap:"var(--sp-3)"}}>
             {[{label:"Patients Today",val:"12"},{label:"Pending Orders",val:"5"},{label:"Messages",val:"3"}].map(s=>(
               <div key={s.label} style={{background:"var(--grey-100)",borderRadius:"var(--r-md)",padding:"var(--sp-4)",textAlign:"center"}}>
-                <div style={{fontSize:"var(--text-2xl)",fontWeight:700,color:"var(--brand)"}}>{s.val}</div>
-                <div style={{fontSize:"var(--text-sm)",color:"var(--text-secondary)"}}>{s.label}</div>
+                <div style={{fontSize:"var(--text-h4-size)",fontWeight:700,color:"var(--brand)"}}>{s.val}</div>
+                <div style={{fontSize:"var(--text-caption-size)",color:"var(--text-secondary)"}}>{s.label}</div>
               </div>
             ))}
           </div>
@@ -2091,7 +2396,7 @@ function PatternsLayouts() {
         <div style={{display:"flex",flexDirection:"column",gap:"var(--sp-3)"}}>
           {[{name:"Michelle Doe",id:"10042",status:"Active"},{name:"John Smith",id:"10089",status:"Pending"},{name:"Alice Wong",id:"10115",status:"Inactive"}].map(p=>(
             <div key={p.id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"var(--sp-3)",background:"var(--grey-100)",borderRadius:"var(--r-md)"}}>
-              <div><div style={{fontWeight:600}}>{p.name}</div><div style={{fontSize:"var(--text-sm)",color:"var(--text-tertiary)"}}>ID: {p.id}</div></div>
+              <div><div style={{fontWeight:600}}>{p.name}</div><div style={{fontSize:"var(--text-caption-size)",color:"var(--text-tertiary)"}}>ID: {p.id}</div></div>
               <span className={`badge ${p.status==="Active"?"badge-success":p.status==="Pending"?"badge-warning":"badge-neutral"}`}><span className="badge-dot" /> {p.status}</span>
             </div>
           ))}
@@ -2105,7 +2410,7 @@ function PatternsLayouts() {
           {[{time:"9:00 AM",patient:"Michelle Doe",type:"Follow-up"},{time:"10:30 AM",patient:"John Smith",type:"New Patient"},{time:"2:00 PM",patient:"Alice Wong",type:"Telemedicine"}].map(a=>(
             <div key={a.time} style={{display:"flex",gap:"var(--sp-4)",alignItems:"center",padding:"var(--sp-3)",background:"var(--grey-100)",borderRadius:"var(--r-md)"}}>
               <div style={{fontWeight:600,color:"var(--brand)",minWidth:70}}>{a.time}</div>
-              <div><div style={{fontWeight:600}}>{a.patient}</div><div style={{fontSize:"var(--text-sm)",color:"var(--text-tertiary)"}}>{a.type}</div></div>
+              <div><div style={{fontWeight:600}}>{a.patient}</div><div style={{fontSize:"var(--text-caption-size)",color:"var(--text-tertiary)"}}>{a.type}</div></div>
             </div>
           ))}
         </div>
@@ -2443,14 +2748,14 @@ function PatternsFormio() {
               </div>
             </div>
             <div className="panel-body">
-              <p style={{fontSize:"var(--text-sm)",color:"var(--text-tertiary)",marginBottom:"var(--sp-4)"}}>
+              <p style={{fontSize:"var(--text-caption-size)",color:"var(--text-tertiary)",marginBottom:"var(--sp-4)"}}>
                 Rendered by <code className="code-inline">@formio/react</code> · React Aria custom components
               </p>
               {submitted ? (
                 <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:"var(--sp-3)",padding:"var(--sp-8) 0",textAlign:"center"}}>
                   <CheckCircle2 size={48} style={{color:"var(--brand)"}} />
-                  <p style={{fontSize:"var(--text-base)",fontWeight:600}}>Intake form submitted!</p>
-                  <p style={{fontSize:"var(--text-sm)",color:"var(--text-secondary)"}}>
+                  <p style={{fontSize:"var(--text-body-size)",fontWeight:600}}>Intake form submitted!</p>
+                  <p style={{fontSize:"var(--text-caption-size)",color:"var(--text-secondary)"}}>
                     {firstName} {lastName} · {insurance || "No insurance"}
                   </p>
                   <Button className="btn btn-ghost btn-sm" onPress={resetForm}>Reset form</Button>
@@ -2506,7 +2811,7 @@ function PatternsFormio() {
                         <div className={`check-box ${hipaa ? "checked" : ""}`}>
                           {hipaa && <svg viewBox="0 0 14 14" fill="none" className="check-svg"><path d="M3 7l3 3 5-6" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" /></svg>}
                         </div>
-                        <span style={{fontSize:"var(--text-sm)",lineHeight:1.4}}>I have read and agree to the HIPAA Privacy Notice <span className="req">*</span></span>
+                        <span style={{fontSize:"var(--text-caption-size)",lineHeight:1.4}}>I have read and agree to the HIPAA Privacy Notice <span className="req">*</span></span>
                       </Checkbox>
                     </div>
                   </div>
@@ -2660,15 +2965,25 @@ function EngineeringTokens() {
         {"  "}<span className="c">{"/* Typography */"}</span>{"\n"}
         {"  "}<span className="p">--font</span>{": "}<span className="v">'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif</span>{";\n"}
         {"  "}<span className="p">--mono</span>{": "}<span className="v">'SF Mono', 'Fira Code', 'Consolas', monospace</span>{";\n"}
-        {"  "}<span className="p">--text-xs</span>{": "}<span className="v">12px</span>{"; "}<span className="p">--text-sm</span>{": "}<span className="v">13px</span>{"; "}<span className="p">--text-base</span>{": "}<span className="v">14px</span>{"; "}<span className="p">--text-lg</span>{": "}<span className="v">16px</span>{";\n"}
-        {"  "}<span className="p">--text-xl</span>{": "}<span className="v">18px</span>{"; "}<span className="p">--text-2xl</span>{": "}<span className="v">20px</span>{"; "}<span className="p">--text-3xl</span>{": "}<span className="v">24px</span>{"; "}<span className="p">--text-4xl</span>{": "}<span className="v">30px</span>{";\n"}
-        {"  "}<span className="p">--text-5xl</span>{": "}<span className="v">36px</span>{"; "}<span className="p">--text-6xl</span>{": "}<span className="v">48px</span>{"; "}<span className="p">--text-7xl</span>{": "}<span className="v">60px</span>{";\n\n"}
+        {"  "}<span className="p">--text-overline-size</span>{": "}<span className="v">12px</span>{"; "}<span className="p">--text-caption-size</span>{": "}<span className="v">13px</span>{"; "}<span className="p">--text-body-size</span>{": "}<span className="v">14px</span>{";\n"}
+        {"  "}<span className="p">--text-h5-size</span>{": "}<span className="v">16px</span>{"; "}<span className="p">--text-body-lg-size</span>{": "}<span className="v">16px</span>{"; "}<span className="p">--text-subtitle-size</span>{": "}<span className="v">18px</span>{";\n"}
+        {"  "}<span className="p">--text-h4-size</span>{": "}<span className="v">20px</span>{"; "}<span className="p">--text-h3-size</span>{": "}<span className="v">24px</span>{"; "}<span className="p">--text-h2-size</span>{": "}<span className="v">36px</span>{";\n"}
+        {"  "}<span className="p">--text-h1-size</span>{": "}<span className="v">48px</span>{"; "}<span className="p">--text-display-size</span>{": "}<span className="v">60px</span>{";\n\n"}
+        {"  "}<span className="c">{"/* Typography composite (font: weight size/line-height family) */"}</span>{"\n"}
+        {"  "}<span className="p">--text-display</span>{": "}<span className="v">800 60px/1.05 font</span>{";\n"}
+        {"  "}<span className="p">--text-h1</span>{": "}<span className="v">800 48px/1.1 font</span>{";\n"}
+        {"  "}<span className="p">--text-h2</span>{": "}<span className="v">700 36px/1.15 font</span>{";\n"}
+        {"  "}<span className="p">--text-h3</span>{": "}<span className="v">700 24px/1.2 font</span>{";\n"}
+        {"  "}<span className="p">--text-h4</span>{": "}<span className="v">600 20px/1.3 font</span>{";\n"}
+        {"  "}<span className="p">--text-h5</span>{": "}<span className="v">600 16px/1.4 font</span>{";\n"}
+        {"  "}<span className="p">--text-body-lg</span>{": "}<span className="v">400 16px/1.6 font</span>{"; "}<span className="p">--text-body</span>{": "}<span className="v">400 14px/1.5 font</span>{";\n"}
+        {"  "}<span className="p">--text-caption</span>{": "}<span className="v">500 13px/1.4 font</span>{"; "}<span className="p">--text-overline</span>{": "}<span className="v">700 12px/1.4 font</span>{";\n\n"}
         {"  "}<span className="c">{"/* Spacing (4px base) */"}</span>{"\n"}
         {"  "}<span className="p">--sp-1</span>{": "}<span className="v">4px</span>{";  "}<span className="p">--sp-2</span>{": "}<span className="v">8px</span>{";  "}<span className="p">--sp-3</span>{": "}<span className="v">12px</span>{"; "}<span className="p">--sp-4</span>{": "}<span className="v">16px</span>{";\n"}
         {"  "}<span className="p">--sp-5</span>{": "}<span className="v">20px</span>{"; "}<span className="p">--sp-6</span>{": "}<span className="v">24px</span>{"; "}<span className="p">--sp-8</span>{": "}<span className="v">32px</span>{"; "}<span className="p">--sp-10</span>{": "}<span className="v">40px</span>{";\n"}
-        {"  "}<span className="p">--sp-12</span>{": "}<span className="v">48px</span>{"; "}<span className="p">--sp-16</span>{": "}<span className="v">64px</span>{"; "}<span className="p">--sp-20</span>{": "}<span className="v">80px</span>{"; "}<span className="p">--sp-24</span>{": "}<span className="v">96px</span>{";\n\n"}
+        {"  "}<span className="p">--sp-12</span>{": "}<span className="v">48px</span>{"; "}<span className="p">--sp-16</span>{": "}<span className="v">64px</span>{"; "}<span className="p">--sp-20</span>{": "}<span className="v">80px</span>{"; "}<span className="p">--sp-24</span>{": "}<span className="v">96px</span>{"; "}<span className="p">--sp-32</span>{": "}<span className="v">128px</span>{";\n\n"}
         {"  "}<span className="c">{"/* Radius */"}</span>{"\n"}
-        {"  "}<span className="p">--r-sm</span>{": "}<span className="v">6px</span>{"; "}<span className="p">--r-md</span>{": "}<span className="v">8px</span>{"; "}<span className="p">--r-lg</span>{": "}<span className="v">12px</span>{"; "}<span className="p">--r-xl</span>{": "}<span className="v">16px</span>{";\n"}
+        {"  "}<span className="p">--r-xs</span>{": "}<span className="v">4px</span>{"; "}<span className="p">--r-sm</span>{": "}<span className="v">6px</span>{"; "}<span className="p">--r-md</span>{": "}<span className="v">8px</span>{"; "}<span className="p">--r-lg</span>{": "}<span className="v">12px</span>{"; "}<span className="p">--r-xl</span>{": "}<span className="v">16px</span>{";\n"}
         {"  "}<span className="p">--r-2xl</span>{": "}<span className="v">24px</span>{"; "}<span className="p">--r-full</span>{": "}<span className="v">9999px</span>{";\n\n"}
         {"  "}<span className="c">{"/* Shadows */"}</span>{"\n"}
         {"  "}<span className="p">--shadow-xs</span>{": "}<span className="v">0 1px 2px rgba(0,0,0,0.05)</span>{";\n"}
