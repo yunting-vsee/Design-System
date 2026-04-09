@@ -1,6 +1,17 @@
 ﻿# Changelog
 
 Apr 9
+  Font System                                                                                                                                      
+  - Added 8 Google Fonts for testing: Figtree, Sora, Albert Sans, Urbanist, Hanken Grotesk, Instrument Sans, Schibsted Grotesk, Bricolage Grotesque  - Added font family dropdown in sidebar to switch fonts live
+
+  Internationalization (i18n)
+  - Created i18n.tsx with React Context-based translation system supporting 4 languages: English, Vietnamese (Tiếng Việt), Spanish (Español), and
+  Traditional Chinese
+  - Added language dropdown in sidebar
+  - Translated ~437 UI strings across all sections: navigation, hero, colors, typography, spacing, buttons, forms, badges, feedback, navigation,
+  dropdowns, overlays, others, layouts, theming, form.io, and design tokens
+
+Apr 9
   Font System
   - Consolidated --font and --font-sans into a single --font-sans variable, removing the redundant --font declaration from :root and updating all 16 references across App.css and index.c
   UI Fixes

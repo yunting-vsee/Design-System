@@ -94,6 +94,7 @@ import {
   Lock,
 } from "lucide-react";
 import "./App.css";
+import { LanguageProvider, useTranslation, type Locale } from "./i18n";
 
 /* ─── Copy-to-clipboard helper ─── */
 function useCopyToast() {
@@ -111,53 +112,54 @@ function useCopyToast() {
 /* ─── Sidebar Navigation ─── */
 const NAV = [
   {
-    group: "Foundations",
+    groupKey: "nav.foundations",
     icon: <Palette size={14} />,
     items: [
-      { label: "Colors", id: "colors" },
-      { label: "Typography", id: "typography" },
-      { label: "Spacing & Layout", id: "spacing" },
+      { labelKey: "nav.colors", id: "colors" },
+      { labelKey: "nav.typography", id: "typography" },
+      { labelKey: "nav.spacing", id: "spacing" },
     ],
   },
   {
-    group: "Components",
+    groupKey: "nav.components",
     icon: <LayoutGrid size={14} />,
     items: [
-      { label: "Buttons", id: "buttons" },
-      { label: "Form Elements", id: "forms" },
-      { label: "Badges, Tags & Status", id: "badges" },
-      { label: "Feedback & Notifications", id: "feedback" },
-      { label: "Navigation", id: "navigation" },
-      { label: "Dropdowns", id: "dropdowns" },
-      { label: "Overlays", id: "overlay" },
-      { label: "Others", id: "data" },
+      { labelKey: "nav.buttons", id: "buttons" },
+      { labelKey: "nav.forms", id: "forms" },
+      { labelKey: "nav.badges", id: "badges" },
+      { labelKey: "nav.feedback", id: "feedback" },
+      { labelKey: "nav.navigation", id: "navigation" },
+      { labelKey: "nav.dropdowns", id: "dropdowns" },
+      { labelKey: "nav.overlays", id: "overlay" },
+      { labelKey: "nav.others", id: "data" },
     ],
   },
   {
-    group: "Patterns",
+    groupKey: "nav.patterns",
     icon: <Layers size={14} />,
     items: [
-      // { label: "EMR Patterns", id: "emr" },
-      { label: "Layouts", id: "layouts" },
+      { labelKey: "nav.layouts", id: "layouts" },
     ],
   },
   {
-    group: "Engineering",
+    groupKey: "nav.engineering",
     icon: <Settings size={14} />,
     items: [
-      { label: "Design Tokens", id: "tokens" },
-      { label: "White-Label", id: "theming" },
-      { label: "Form.io Integration", id: "formio" },
+      { labelKey: "nav.tokens", id: "tokens" },
+      { labelKey: "nav.theming", id: "theming" },
+      { labelKey: "nav.formio", id: "formio" },
     ],
   },
 ];
 
-function App() {
+function AppInner() {
   const [activeSection, setActiveSection] = useState("colors");
   const [navOpen, setNavOpen] = useState(false);
   const [brandTheme, setBrandTheme] = useState("");
   const [darkMode, setDarkMode] = useState(false);
+  const [fontFamily, setFontFamily] = useState("");
   const toast = useCopyToast();
+  const { t, locale, setLocale } = useTranslation();
 
   /* apply brand theme to root element */
   useEffect(() => {
@@ -176,6 +178,21 @@ function App() {
       document.documentElement.removeAttribute("data-mode");
     }
   }, [darkMode]);
+
+  /* apply font family to root element */
+  useEffect(() => {
+    if (fontFamily) {
+      document.documentElement.style.setProperty(
+        "--font",
+        `'${fontFamily}', -apple-system, BlinkMacSystemFont, sans-serif`
+      );
+    } else {
+      document.documentElement.style.setProperty(
+        "--font",
+        "'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif"
+      );
+    }
+  }, [fontFamily]);
 
   /* scroll-based active nav tracking */
   useEffect(() => {
@@ -219,13 +236,13 @@ function App() {
           </button>
         </div>
         <div className="ds-theme-switcher">
-          <div className="ds-theme-label">Brand Color</div>
+          <div className="ds-theme-label">{t("sidebar.brandColor")}</div>
           <div className="ds-theme-options">
             <button className={`ds-theme-dot ds-theme-green ${brandTheme === "" ? "active" : ""}`} onClick={() => setBrandTheme("")} title="Green (Default)" />
             <button className={`ds-theme-dot ds-theme-blue ${brandTheme === "blue" ? "active" : ""}`} onClick={() => setBrandTheme("blue")} title="Ocean Blue" />
             <button className={`ds-theme-dot ds-theme-purple ${brandTheme === "purple" ? "active" : ""}`} onClick={() => setBrandTheme("purple")} title="Royal Purple" />
           </div>
-          <div className="ds-theme-label" style={{marginTop:"var(--sp-3)"}}>Mode</div>
+          <div className="ds-theme-label" style={{marginTop:"var(--sp-3)"}}>{t("sidebar.mode")}</div>
           <button className="ds-mode-switch" onClick={() => setDarkMode(!darkMode)} title={darkMode ? "Switch to Light" : "Switch to Dark"}>
             <Sun size={12} className="ds-mode-icon ds-mode-icon-light" />
             <span className={`ds-mode-track ${darkMode ? "on" : ""}`}>
@@ -233,13 +250,40 @@ function App() {
             </span>
             <Moon size={12} className="ds-mode-icon ds-mode-icon-dark" />
           </button>
+          <div className="ds-theme-label" style={{marginTop:"var(--sp-3)"}}>{t("sidebar.fontFamily")}</div>
+          <select
+            className="ds-font-select"
+            value={fontFamily}
+            onChange={(e) => setFontFamily(e.target.value)}
+          >
+            <option value="">Plus Jakarta Sans (Default)</option>
+            <option value="Figtree">Figtree</option>
+            <option value="Sora">Sora</option>
+            <option value="Albert Sans">Albert Sans</option>
+            <option value="Urbanist">Urbanist</option>
+            <option value="Hanken Grotesk">Hanken Grotesk</option>
+            <option value="Instrument Sans">Instrument Sans</option>
+            <option value="Schibsted Grotesk">Schibsted Grotesk</option>
+            <option value="Bricolage Grotesque">Bricolage Grotesque</option>
+          </select>
+          <div className="ds-theme-label" style={{marginTop:"var(--sp-3)"}}>{t("sidebar.language")}</div>
+          <select
+            className="ds-font-select"
+            value={locale}
+            onChange={(e) => setLocale(e.target.value as Locale)}
+          >
+            <option value="en">English</option>
+            <option value="vi">Tiếng Việt</option>
+            <option value="es">Español</option>
+            <option value="zh-TW">正體中文</option>
+          </select>
         </div>
         <nav className="ds-nav-groups">
           {NAV.map((section) => (
-            <div key={section.group} className="ds-nav-group">
+            <div key={section.groupKey} className="ds-nav-group">
               <div className="ds-nav-group-title">
                 {section.icon}
-                {section.group}
+                {t(section.groupKey)}
               </div>
               {section.items.map((item) => (
                 <button
@@ -247,7 +291,7 @@ function App() {
                   onClick={() => scrollTo(item.id)}
                   className={`ds-nav-link ${activeSection === item.id ? "active" : ""}`}
                 >
-                  {item.label}
+                  {t(item.labelKey)}
                 </button>
               ))}
             </div>
@@ -259,14 +303,14 @@ function App() {
       <div className="ds-main">
         {/* Hero */}
         <div className="hero">
-          <div className="hero-badge">React Aria + Tailwind — 2026</div>
-          <h1>VSee Clinic<br />Design System</h1>
-          <p>The single source of truth for design and engineering. Modern, accessible, and built for telehealth at scale.</p>
+          <div className="hero-badge">{t("hero.badge")}</div>
+          <h1>VSee Clinic<br />{t("hero.title").split("\n")[1] || "Design System"}</h1>
+          <p>{t("hero.desc")}</p>
           <div className="hero-stats">
-            <div><div className="hero-stat-val">60+</div><div className="hero-stat-label">Design Tokens</div></div>
-            <div><div className="hero-stat-val">25+</div><div className="hero-stat-label">Components</div></div>
-            <div><div className="hero-stat-val">AA</div><div className="hero-stat-label">WCAG Compliant</div></div>
-            <div><div className="hero-stat-val">4px</div><div className="hero-stat-label">Base Grid</div></div>
+            <div><div className="hero-stat-val">60+</div><div className="hero-stat-label">{t("hero.tokens")}</div></div>
+            <div><div className="hero-stat-val">25+</div><div className="hero-stat-label">{t("hero.components")}</div></div>
+            <div><div className="hero-stat-val">AA</div><div className="hero-stat-label">{t("hero.wcag")}</div></div>
+            <div><div className="hero-stat-val">4px</div><div className="hero-stat-label">{t("hero.grid")}</div></div>
           </div>
         </div>
 
@@ -282,39 +326,39 @@ function App() {
                 className={`anchor-link ${isActive ? "active" : ""}`}
                 onClick={(e) => { e.preventDefault(); scrollTo(firstId); }}
               >
-                {g.group}
+                {t(g.groupKey)}
               </a>
             );
           })}
         </div>
 
-        <FoundationsColors copy={toast.copy} />
-        <FoundationsTypography />
-        <FoundationsSpacing />
-        <ComponentsButtons />
-        <ComponentsForms />
-        <ComponentsBadges />
-        <ComponentsFeedback />
-        <ComponentsNavigation />
-        <ComponentsDropdowns />
-        <ComponentsOverlays />
-        <ComponentsOthers />
+        <FoundationsColors copy={toast.copy} t={t} />
+        <FoundationsTypography t={t} />
+        <FoundationsSpacing t={t} />
+        <ComponentsButtons t={t} />
+        <ComponentsForms t={t} />
+        <ComponentsBadges t={t} />
+        <ComponentsFeedback t={t} />
+        <ComponentsNavigation t={t} />
+        <ComponentsDropdowns t={t} />
+        <ComponentsOverlays t={t} />
+        <ComponentsOthers t={t} />
         {/* <PatternsEMR /> */}
-        <PatternsLayouts />
-        <EngineeringTokens />
-        <PatternsTheming brandTheme={brandTheme} setBrandTheme={setBrandTheme} />
-        <PatternsFormio />
+        <PatternsLayouts t={t} />
+        <EngineeringTokens t={t} />
+        <PatternsTheming brandTheme={brandTheme} setBrandTheme={setBrandTheme} t={t} />
+        <PatternsFormio t={t} />
 
         {/* Footer */}
         <div className="ds-footer">
           <div className="ds-footer-logo">VSee</div>
-          <div className="ds-footer-sub">Design System · 2026</div>
-          <div className="ds-footer-meta">Plus Jakarta Sans · 4px grid · WCAG AA · White-label ready</div>
+          <div className="ds-footer-sub">{t("footer.sub")}</div>
+          <div className="ds-footer-meta">{t("footer.meta")}</div>
         </div>
       </div>
 
       {/* Copy toast */}
-      <div className={`copy-toast ${toast.show ? "show" : ""}`}>Copied {toast.text}</div>
+      <div className={`copy-toast ${toast.show ? "show" : ""}`}>{t("misc.copied")} {toast.text}</div>
     </div>
   );
 }
@@ -350,11 +394,12 @@ function SubSection({ title, description, children }: {
 /* ─── Code Block helper ─── */
 function CodeBlock({ code }: { code: string }) {
   const [open, setOpen] = useState(false);
+  const { t } = useTranslation();
   return (
     <div style={{ marginTop: "var(--sp-4)" }}>
       <button className="code-toggle" onClick={() => setOpen(!open)}>
         <ChevronRight size={14} className={`code-toggle-icon ${open ? "open" : ""}`} />
-        {open ? "Hide code" : "Show code"}
+        {open ? t("misc.hideCode") : t("misc.showCode")}
       </button>
       {open && code && <div className="code">{code}</div>}
     </div>
@@ -378,12 +423,14 @@ function Swatch({ color, name, hex, large, onClick }: {
   );
 }
 
-function FoundationsColors({ copy }: { copy: (v: string) => void }) {
-  return (
-    <Section id="colors" label="Foundation" title="Colors"
-      description="A refined, accessible palette built on VSee's brand green. Every color has been tested for WCAG AA contrast compliance.">
+type T = (key: string) => string;
 
-      <SubSection title="Brand" description="The primary brand scale — from light tints to deep active states.">
+function FoundationsColors({ copy, t }: { copy: (v: string) => void; t: T }) {
+  return (
+    <Section id="colors" label={t("colors.label")} title={t("colors.title")}
+      description={t("colors.desc")}>
+
+      <SubSection title={t("colors.brand")} description={t("colors.brandDesc")}>
         <div className="swatch-row">
           <Swatch large color="var(--brand-50)" name="--brand-50" hex="#F0FAF5" onClick={() => copy("var(--brand-50)")} />
           <Swatch large color="var(--brand-light)" name="--brand-light" hex="#E6F5EE" onClick={() => copy("var(--brand-light)")} />
@@ -393,7 +440,7 @@ function FoundationsColors({ copy }: { copy: (v: string) => void }) {
         </div>
       </SubSection>
 
-      <SubSection title="Semantic" description="Communicating meaning — success, information, warning, and danger states.">
+      <SubSection title={t("colors.semantic")} description={t("colors.semanticDesc")}>
         <div className="swatch-row">
           <Swatch color="var(--success)" name="--success" hex="#0D875C" onClick={() => copy("var(--success)")} />
           <Swatch color="var(--info)" name="--info" hex="#196CD2" onClick={() => copy("var(--info)")} />
@@ -408,7 +455,7 @@ function FoundationsColors({ copy }: { copy: (v: string) => void }) {
         </div>
       </SubSection>
 
-      <SubSection title="Neutrals">
+      <SubSection title={t("colors.neutrals")}>
         <div className="swatch-row">
           <Swatch color="var(--black)" name="--black" hex="#111827" onClick={() => copy("var(--black)")} />
           <Swatch color="var(--grey-900)" name="--grey-900" hex="#4B5563" onClick={() => copy("var(--grey-900)")} />
@@ -425,10 +472,10 @@ function FoundationsColors({ copy }: { copy: (v: string) => void }) {
         </div>
       </SubSection>
 
-      <SubSection title="Surfaces & Text">
+      <SubSection title={t("colors.surfaces")}>
         <div className="grid g2">
           <div className="card">
-            <div className="card-inner-title">Surfaces</div>
+            <div className="card-inner-title">{t("colors.surfacesCard")}</div>
             <div className="surface-text-list">
               <div className="st-row" onClick={() => copy("var(--white)")}><div className="st-swatch" style={{background:"var(--white)",border:"1px solid var(--border)"}} /><div><div className="st-name">--white</div><div className="st-val">#FFFFFF</div></div></div>
               <div className="st-row" onClick={() => copy("var(--grey-200)")}><div className="st-swatch" style={{background:"var(--grey-200)",border:"1px solid var(--border)"}} /><div><div className="st-name">--grey-200</div><div className="st-val">#F8F9FA</div></div></div>
@@ -436,7 +483,7 @@ function FoundationsColors({ copy }: { copy: (v: string) => void }) {
             </div>
           </div>
           <div className="card">
-            <div className="card-inner-title">Text Colors</div>
+            <div className="card-inner-title">{t("colors.textColors")}</div>
             <div className="surface-text-list">
               <div className="st-row" onClick={() => copy("var(--text-primary)")}><div className="st-swatch" style={{background:"var(--text-primary)"}} /><div><div className="st-name">--text-primary</div><div className="st-val">#111827</div></div></div>
               <div className="st-row" onClick={() => copy("var(--text-secondary)")}><div className="st-swatch" style={{background:"var(--text-secondary)"}} /><div><div className="st-name">--text-secondary</div><div className="st-val">#6B7280</div></div></div>
@@ -453,23 +500,23 @@ function FoundationsColors({ copy }: { copy: (v: string) => void }) {
 /* ═══════════════════════════════════════════
    FOUNDATIONS — TYPOGRAPHY
    ═══════════════════════════════════════════ */
-function FoundationsTypography() {
+function FoundationsTypography({ t }: { t: T }) {
   return (
-    <Section id="typography" label="Foundation" title="Typography"
-      description="Plus Jakarta Sans is our system font — clean, legible, and optimized for UI. The type scale uses a harmonious progression from 12px to 60px.">
+    <Section id="typography" label={t("typography.label")} title={t("typography.title")}
+      description={t("typography.desc")}>
 
       <div className="card" style={{marginBottom:"var(--sp-8)"}}>
         {[
-          { cls: "text-display", size: "60px", text: "Design for health" },
-          { cls: "text-h1", size: "48px", text: "Page title" },
-          { cls: "text-h2", size: "36px", text: "Section heading" },
-          { cls: "text-h3", size: "24px", text: "Subsection" },
-          { cls: "text-h4", size: "20px", text: "Card title" },
-          { cls: "text-h5", size: "16px", text: "Label heading" },
-          { cls: "text-body-lg", size: "16px", text: "Body text for longer-form content and introductory paragraphs." },
-          { cls: "text-body", size: "14px", text: "Standard body text used throughout the application." },
-          { cls: "text-caption", size: "13px", text: "Helper text, timestamps, and metadata" },
-          { cls: "text-overline", size: "12px", text: "Section Label" },
+          { cls: "text-display", size: "60px", text: t("typography.display") },
+          { cls: "text-h1", size: "48px", text: t("typography.h1") },
+          { cls: "text-h2", size: "36px", text: t("typography.h2") },
+          { cls: "text-h3", size: "24px", text: t("typography.h3") },
+          { cls: "text-h4", size: "20px", text: t("typography.h4") },
+          { cls: "text-h5", size: "16px", text: t("typography.h5") },
+          { cls: "text-body-lg", size: "16px", text: t("typography.bodyLg") },
+          { cls: "text-body", size: "14px", text: t("typography.body") },
+          { cls: "text-caption", size: "13px", text: t("typography.caption") },
+          { cls: "text-overline", size: "12px", text: t("typography.overline") },
         ].map((t) => (
           <div key={t.cls} className="type-row">
             <div className="type-meta">
@@ -481,25 +528,25 @@ function FoundationsTypography() {
         ))}
       </div>
 
-      <SubSection title="Font Weights">
+      <SubSection title={t("typography.fontWeights")}>
         <div className="preview vertical">
           {[
-            { w: 400, label: "Regular 400 — For body text and descriptions" },
-            { w: 500, label: "Medium 500 — For captions and secondary emphasis" },
-            { w: 600, label: "Semi Bold 600 — For labels and small headings" },
-            { w: 700, label: "Bold 700 — For headings and strong emphasis" },
-            { w: 800, label: "Extra Bold 800 — For display and page titles" },
+            { w: 400, label: t("typography.w400") },
+            { w: 500, label: t("typography.w500") },
+            { w: 600, label: t("typography.w600") },
+            { w: 700, label: t("typography.w700") },
+            { w: 800, label: t("typography.w800") },
           ].map((f) => (
             <div key={f.w} style={{ fontSize: 20, fontWeight: f.w }}>{f.label}</div>
           ))}
         </div>
       </SubSection>
 
-      <SubSection title="Date Format">
+      <SubSection title={t("typography.dateFormat")}>
         <div className="card" style={{padding:"var(--sp-4) var(--sp-6)"}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
             <div>
-              <div className="text-caption" style={{color:"var(--text-tertiary)",marginBottom:"var(--sp-1)"}}>US Format</div>
+              <div className="text-caption" style={{color:"var(--text-tertiary)",marginBottom:"var(--sp-1)"}}>{t("typography.usFormat")}</div>
               <div className="text-body" style={{fontWeight:600}}>{new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })} at {new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}</div>
             </div>
             <code style={{fontSize:"var(--text-caption-size)",color:"var(--text-tertiary)",background:"var(--grey-100)",padding:"var(--sp-1) var(--sp-2)",borderRadius:"var(--r-sm)"}}>MMM D, YYYY at h:mm A</code>
@@ -516,7 +563,7 @@ function FoundationsTypography() {
 /* ═══════════════════════════════════════════
    FOUNDATIONS — SPACING & LAYOUT
    ═══════════════════════════════════════════ */
-function FoundationsSpacing() {
+function FoundationsSpacing({ t }: { t: T }) {
   const spaces = [
     { token: "--sp-1", px: 4 }, { token: "--sp-2", px: 8 }, { token: "--sp-3", px: 12 },
     { token: "--sp-4", px: 16 }, { token: "--sp-6", px: 24 }, { token: "--sp-8", px: 32 },
@@ -525,11 +572,11 @@ function FoundationsSpacing() {
   ];
 
   return (
-    <Section id="spacing" label="Foundation" title="Spacing & Layout"
-      description="A 4px-based spacing scale ensures consistent rhythm across every component and layout.">
+    <Section id="spacing" label={t("spacing.label")} title={t("spacing.title")}
+      description={t("spacing.desc")}>
       <div className="grid" style={{gap:"var(--sp-10)",gridTemplateColumns:"1fr 2fr"}}>
         <div>
-          <div className="sub-title">Spacing Scale</div>
+          <div className="sub-title">{t("spacing.scale")}</div>
           {spaces.map((s) => (
             <div key={s.token} className="space-row">
               <div className="space-label">{s.token}</div>
@@ -539,7 +586,7 @@ function FoundationsSpacing() {
           ))}
         </div>
         <div>
-          <div className="sub-title">Shadows</div>
+          <div className="sub-title">{t("spacing.shadows")}</div>
           <div className="shadow-stack">
             {["xs","sm","md","lg","xl"].map((s) => (
               <div key={s} className="shadow-card" style={{boxShadow:`var(--shadow-${s})`}}>--shadow-{s}</div>
@@ -549,7 +596,7 @@ function FoundationsSpacing() {
       </div>
 
       <div style={{marginTop:"var(--sp-10)"}}>
-        <div className="sub-title">Border Radius</div>
+        <div className="sub-title">{t("spacing.radius")}</div>
         <div className="radius-row">
           {[
             { label: "--r-xs", val: 4 }, { label: "--r-sm", val: 6 }, { label: "--r-md", val: 8 }, { label: "--r-lg", val: 12 },
@@ -598,6 +645,7 @@ function FoundationsSpacing() {
 function Toggle() {
   const [switchOn, setSwitchOn] = useState(true);
   const [labeledSwitch, setLabeledSwitch] = useState(true);
+  const { t } = useTranslation();
   return (
     <div className="preview">
       <div className="toggle-list">
@@ -605,27 +653,27 @@ function Toggle() {
           <div className={`toggle-track ${switchOn ? "on" : ""}`}>
             <div className="toggle-thumb" />
           </div>
-          <span className="toggle-label">Notifications</span>
+          <span className="toggle-label">{t("buttons.notifications")}</span>
         </Switch>
         <Switch isSelected={labeledSwitch} onChange={setLabeledSwitch} className="toggle-wrap">
           <div className={`toggle-track-labeled ${labeledSwitch ? "on" : ""}`}>
-            <span className="toggle-text toggle-text-on">On</span>
-            <span className="toggle-text toggle-text-off">Off</span>
+            <span className="toggle-text toggle-text-on">{t("buttons.on")}</span>
+            <span className="toggle-text toggle-text-off">{t("buttons.off")}</span>
             <div className="toggle-thumb-labeled" />
           </div>
-          <span className="toggle-label">Auto-save</span>
+          <span className="toggle-label">{t("buttons.autoSave")}</span>
         </Switch>
         <Switch isSelected={true} isDisabled className="toggle-wrap">
           <div className="toggle-track on">
             <div className="toggle-thumb" />
           </div>
-          <span className="toggle-label">Always On</span>
+          <span className="toggle-label">{t("buttons.alwaysOn")}</span>
         </Switch>
         <Switch isSelected={false} isDisabled className="toggle-wrap">
           <div className="toggle-track">
             <div className="toggle-thumb" />
           </div>
-          <span className="toggle-label">Unavailable</span>
+          <span className="toggle-label">{t("buttons.unavailable")}</span>
         </Switch>
       </div>
     </div>
@@ -648,103 +696,103 @@ function ButtonGroup({ labels, defaultActive }: { labels: string[]; defaultActiv
 /* ═══════════════════════════════════════════
    COMPONENTS — BUTTONS
    ═══════════════════════════════════════════ */
-function ComponentsButtons() {
+function ComponentsButtons({ t }: { t: T }) {
   return (
-    <Section id="buttons" label="Components" title="Buttons"
-      description="Buttons communicate actions. Primary for key actions, secondary for supporting, ghost for tertiary.">
+    <Section id="buttons" label={t("buttons.label")} title={t("buttons.title")}
+      description={t("buttons.desc")}>
 
-      <SubSection title="Variants">
+      <SubSection title={t("buttons.variants")}>
         <div className="preview">
-          <Button className="btn btn-primary">Primary</Button>
-          <Button className="btn btn-secondary">Secondary</Button>
-          <Button className="btn btn-ghost">Ghost</Button>
-          <Button className="btn btn-danger">Danger</Button>
-          <Button className="btn btn-danger-outline">Danger Outline</Button>
-          <Button className="btn btn-info">Info</Button>
-          <Button className="btn btn-warning">Warning</Button>
-          <Button className="btn btn-link">Link</Button>
+          <Button className="btn btn-primary">{t("buttons.primary")}</Button>
+          <Button className="btn btn-secondary">{t("buttons.secondary")}</Button>
+          <Button className="btn btn-ghost">{t("buttons.ghost")}</Button>
+          <Button className="btn btn-danger">{t("buttons.danger")}</Button>
+          <Button className="btn btn-danger-outline">{t("buttons.dangerOutline")}</Button>
+          <Button className="btn btn-info">{t("buttons.info")}</Button>
+          <Button className="btn btn-warning">{t("buttons.warning")}</Button>
+          <Button className="btn btn-link">{t("buttons.link")}</Button>
         </div>
         <CodeBlock
           code={`<Button className="btn btn-primary">Primary</Button>\n<Button className="btn btn-secondary">Secondary</Button>\n<Button className="btn btn-ghost">Ghost</Button>\n<Button className="btn btn-danger">Danger</Button>\n<Button className="btn btn-danger-outline">Danger Outline</Button>\n<Button className="btn btn-info">Info</Button>\n<Button className="btn btn-warning">Warning</Button>\n<Button className="btn btn-link">Link</Button>`}
         />
       </SubSection>
 
-      <SubSection title="Sizes">
+      <SubSection title={t("buttons.sizes")}>
         <div className="preview">
-          <Button className="btn btn-primary btn-xl">Extra Large</Button>
-          <Button className="btn btn-primary btn-lg">Large</Button>
-          <Button className="btn btn-primary">Default</Button>
-          <Button className="btn btn-primary btn-sm">Small</Button>
+          <Button className="btn btn-primary btn-xl">{t("buttons.xl")}</Button>
+          <Button className="btn btn-primary btn-lg">{t("buttons.lg")}</Button>
+          <Button className="btn btn-primary">{t("buttons.default")}</Button>
+          <Button className="btn btn-primary btn-sm">{t("buttons.sm")}</Button>
         </div>
         <CodeBlock
           code={`<Button className="btn btn-primary btn-xl">Extra Large</Button>\n<Button className="btn btn-primary btn-lg">Large</Button>\n<Button className="btn btn-primary">Default</Button>\n<Button className="btn btn-primary btn-sm">Small</Button>`}
         />
       </SubSection>
 
-      <SubSection title="Pill Shape">
+      <SubSection title={t("buttons.pill")}>
         <div className="preview">
-          <Button className="btn btn-primary btn-pill">Primary Pill</Button>
-          <Button className="btn btn-secondary btn-pill">Secondary Pill</Button>
-          <Button className="btn btn-ghost btn-pill">Ghost Pill</Button>
+          <Button className="btn btn-primary btn-pill">{t("buttons.primaryPill")}</Button>
+          <Button className="btn btn-secondary btn-pill">{t("buttons.secondaryPill")}</Button>
+          <Button className="btn btn-ghost btn-pill">{t("buttons.ghostPill")}</Button>
         </div>
         <CodeBlock
           code={`<Button className="btn btn-primary btn-pill">Primary Pill</Button>\n<Button className="btn btn-secondary btn-pill">Secondary Pill</Button>\n<Button className="btn btn-ghost btn-pill">Ghost Pill</Button>`}
         />
       </SubSection>
 
-      <SubSection title="States">
+      <SubSection title={t("buttons.states")}>
         <div className="preview">
-          <Button className="btn btn-primary">Default</Button>
-          <Button className="btn btn-primary" style={{background:"var(--brand-hover)",boxShadow:"var(--shadow-sm)"}}>Hover</Button>
-          <Button className="btn btn-primary" style={{background:"var(--brand)"}}>Pressed</Button>
-          <Button className="btn btn-primary" style={{boxShadow:"var(--shadow-focus)",outline:"2px solid var(--brand)",outlineOffset:2}}>Focus</Button>
-          <Button className="btn btn-primary" isDisabled>Disabled</Button>
+          <Button className="btn btn-primary">{t("buttons.default")}</Button>
+          <Button className="btn btn-primary" style={{background:"var(--brand-hover)",boxShadow:"var(--shadow-sm)"}}>{t("buttons.hover")}</Button>
+          <Button className="btn btn-primary" style={{background:"var(--brand)"}}>{t("buttons.pressed")}</Button>
+          <Button className="btn btn-primary" style={{boxShadow:"var(--shadow-focus)",outline:"2px solid var(--brand)",outlineOffset:2}}>{t("buttons.focus")}</Button>
+          <Button className="btn btn-primary" isDisabled>{t("buttons.disabled")}</Button>
         </div>
         <CodeBlock
           code={`/* States are handled via React Aria data attributes */\n.btn[data-hovered]  { background: var(--brand-hover); }\n.btn[data-pressed]  { background: var(--brand-active); }\n.btn[data-focus-visible] { box-shadow: var(--shadow-focus); }\n.btn[data-disabled] { opacity: 0.5; cursor: not-allowed; }`}
         />
       </SubSection>
 
-      <SubSection title="Button Group">
-        <ButtonGroup labels={["Today", "Week", "Month"]} defaultActive="Week" />
+      <SubSection title={t("buttons.group")}>
+        <ButtonGroup labels={[t("buttons.today"), t("buttons.week"), t("buttons.month")]} defaultActive={t("buttons.week")} />
         <CodeBlock
           code={`const [active, setActive] = useState("Week");\n\n<div className="btn-group">\n  {["Today", "Week", "Month"].map(label => (\n    <Button\n      key={label}\n      className={\`btn \${active === label ? "active-group" : ""}\`}\n      onPress={() => setActive(label)}\n    >{label}</Button>\n  ))}\n</div>`}
         />
       </SubSection>
 
-      <SubSection title="Loading">
+      <SubSection title={t("buttons.loading")}>
         <div className="preview">
-          <Button className="btn btn-primary btn-loading" isDisabled><Loader2 size={16} className="btn-spinner" /> Saving...</Button>
-          <Button className="btn btn-secondary btn-loading" isDisabled><Loader2 size={16} className="btn-spinner" /> Loading...</Button>
-          <Button className="btn btn-ghost btn-loading" isDisabled><Loader2 size={16} className="btn-spinner" /> Please wait</Button>
-          <Button className="btn btn-danger btn-loading" isDisabled><Loader2 size={16} className="btn-spinner" /> Deleting...</Button>
+          <Button className="btn btn-primary btn-loading" isDisabled><Loader2 size={16} className="btn-spinner" /> {t("buttons.saving")}</Button>
+          <Button className="btn btn-secondary btn-loading" isDisabled><Loader2 size={16} className="btn-spinner" /> {t("buttons.loadingText")}</Button>
+          <Button className="btn btn-ghost btn-loading" isDisabled><Loader2 size={16} className="btn-spinner" /> {t("buttons.pleaseWait")}</Button>
+          <Button className="btn btn-danger btn-loading" isDisabled><Loader2 size={16} className="btn-spinner" /> {t("buttons.deleting")}</Button>
         </div>
         <CodeBlock
           code={`<Button className="btn btn-primary btn-loading" isDisabled>\n  <Loader2 size={16} className="btn-spinner" /> Saving...\n</Button>`}
         />
       </SubSection>
 
-      <SubSection title="Toggles">
+      <SubSection title={t("buttons.toggles")}>
         <Toggle />
         <CodeBlock
           code={`/* Default toggle */\n<Switch isSelected={on} onChange={setOn} className="toggle-wrap">\n  <div className={\`toggle-track \${on ? "on" : ""}\`}>\n    <div className="toggle-thumb" />\n  </div>\n  <span className="toggle-label">Notifications</span>\n</Switch>\n\n/* Labeled toggle (On/Off) */\n<Switch isSelected={on} onChange={setOn} className="toggle-wrap">\n  <div className={\`toggle-track-labeled \${on ? "on" : ""}\`}>\n    <span className="toggle-text toggle-text-on">On</span>\n    <span className="toggle-text toggle-text-off">Off</span>\n    <div className="toggle-thumb-labeled" />\n  </div>\n  <span className="toggle-label">Auto-save</span>\n</Switch>\n\n/* Disabled toggle */\n<Switch isSelected={false} isDisabled className="toggle-wrap">\n  <div className="toggle-track">\n    <div className="toggle-thumb" />\n  </div>\n  <span className="toggle-label">Unavailable</span>\n</Switch>`}
         />
       </SubSection>
 
-      <SubSection title="With Icons" description="React Aria buttons support any child content — place icons before or after text, or use icon-only buttons.">
+      <SubSection title={t("buttons.withIcons")} description={t("buttons.withIconsDesc")}>
         <div className="preview">
-          <Button className="btn btn-primary"><Plus size={16} /> New Patient</Button>
-          <Button className="btn btn-secondary"><Download size={16} /> Export</Button>
-          <Button className="btn btn-ghost"><Share2 size={16} /> Share</Button>
-          <Button className="btn btn-danger"><Trash2 size={16} /> Delete</Button>
+          <Button className="btn btn-primary"><Plus size={16} /> {t("buttons.newPatient")}</Button>
+          <Button className="btn btn-secondary"><Download size={16} /> {t("buttons.export")}</Button>
+          <Button className="btn btn-ghost"><Share2 size={16} /> {t("buttons.share")}</Button>
+          <Button className="btn btn-danger"><Trash2 size={16} /> {t("buttons.delete")}</Button>
         </div>
-        <div className="sub-title" style={{ marginTop: "var(--sp-6)" }}>Icon on Right</div>
+        <div className="sub-title" style={{ marginTop: "var(--sp-6)" }}>{t("buttons.iconRight")}</div>
         <div className="preview">
-          <Button className="btn btn-primary">Send <Send size={16} /></Button>
-          <Button className="btn btn-secondary">Upload <Upload size={16} /></Button>
-          <Button className="btn btn-ghost">Schedule <Calendar size={16} /></Button>
+          <Button className="btn btn-primary">{t("buttons.send")} <Send size={16} /></Button>
+          <Button className="btn btn-secondary">{t("buttons.upload")} <Upload size={16} /></Button>
+          <Button className="btn btn-ghost">{t("buttons.schedule")} <Calendar size={16} /></Button>
         </div>
-        <div className="sub-title" style={{ marginTop: "var(--sp-6)" }}>Icon Only</div>
+        <div className="sub-title" style={{ marginTop: "var(--sp-6)" }}>{t("buttons.iconOnly")}</div>
         <div className="preview">
           <Button className="btn btn-primary btn-icon"><Plus size={18} /></Button>
           <Button className="btn btn-secondary btn-icon"><Pencil size={18} /></Button>
@@ -752,12 +800,12 @@ function ComponentsButtons() {
           <Button className="btn btn-danger btn-icon"><Trash2 size={18} /></Button>
           <Button className="btn btn-info btn-icon"><Info size={18} /></Button>
         </div>
-        <div className="sub-title" style={{ marginTop: "var(--sp-6)" }}>Sizes with Icons</div>
+        <div className="sub-title" style={{ marginTop: "var(--sp-6)" }}>{t("buttons.sizesWithIcons")}</div>
         <div className="preview">
-          <Button className="btn btn-primary btn-xl"><Plus size={18} /> Extra Large</Button>
-          <Button className="btn btn-primary btn-lg"><Plus size={16} /> Large</Button>
-          <Button className="btn btn-primary"><Plus size={16} /> Default</Button>
-          <Button className="btn btn-primary btn-sm"><Plus size={14} /> Small</Button>
+          <Button className="btn btn-primary btn-xl"><Plus size={18} /> {t("buttons.xl")}</Button>
+          <Button className="btn btn-primary btn-lg"><Plus size={16} /> {t("buttons.lg")}</Button>
+          <Button className="btn btn-primary"><Plus size={16} /> {t("buttons.default")}</Button>
+          <Button className="btn btn-primary btn-sm"><Plus size={14} /> {t("buttons.sm")}</Button>
         </div>
         <CodeBlock
           code={`/* Icon left */\n<Button className="btn btn-primary"><Plus size={16} /> New Patient</Button>\n\n/* Icon right */\n<Button className="btn btn-primary">Send <Send size={16} /></Button>\n\n/* Icon only */\n<Button className="btn btn-primary btn-icon"><Plus size={18} /></Button>`}
@@ -793,11 +841,12 @@ function PhoneInput() {
   const [phone2, setPhone2] = useState("");
   const [ext, setExt] = useState("");
   const [phone3, setPhone3] = useState("");
+  const { t } = useTranslation();
   return (
     <>
       {/* Country code only */}
       <div className="form-group">
-        <Label className="form-label">With Country Code</Label>
+        <Label className="form-label">{t("forms.withCountryCode")}</Label>
         <div className="phone-input-group">
           <Select defaultSelectedKey="+1" className="phone-country-select">
             <Button className="phone-country-btn">
@@ -822,7 +871,7 @@ function PhoneInput() {
 
       {/* Country code + Ext */}
       <div className="form-group">
-        <Label className="form-label">With Country Code & Ext.</Label>
+        <Label className="form-label">{t("forms.withCountryCodeExt")}</Label>
         <div className="phone-input-group">
           <Select defaultSelectedKey="+1" className="phone-country-select">
             <Button className="phone-country-btn">
@@ -853,7 +902,7 @@ function PhoneInput() {
 
       {/* Simple — no country, no ext */}
       <div className="form-group">
-        <Label className="form-label">Simple</Label>
+        <Label className="form-label">{t("forms.simple")}</Label>
         <TextField className="field" value={phone3} onChange={(v) => setPhone3(formatPhone(v))}>
           <Input className="input" placeholder="(555) 123-4567" />
         </TextField>
@@ -944,11 +993,12 @@ function PaymentInput({
 function InputWithIcon() {
   const [url, setUrl] = useState("https://vsee.com");
   const [copied, setCopied] = useState(false);
+  const { t } = useTranslation();
   return (
     <>
       <div className="form-group">
         <TextField className="field" defaultValue="REF-2026-04-0382">
-          <Label className="form-label">Reference Code</Label>
+          <Label className="form-label">{t("forms.referenceCode")}</Label>
           <div className="input-icon-wrap">
             <Input className="input input-with-icon-right" readOnly />
             <Button className="input-icon-btn" onPress={() => { navigator.clipboard.writeText("REF-2026-04-0382"); setCopied(true); setTimeout(() => setCopied(false), 1500); }}>
@@ -959,7 +1009,7 @@ function InputWithIcon() {
       </div>
       <div className="form-group">
         <TextField className="field" value={url} onChange={setUrl}>
-          <Label className="form-label">Website URL</Label>
+          <Label className="form-label">{t("forms.websiteUrl")}</Label>
           <div className="input-icon-wrap">
             <Input className="input input-with-icon-right" placeholder="https://example.com" />
             <Button className="input-icon-btn" onPress={() => { if (url) window.open(url, "_blank"); }}>
@@ -973,12 +1023,13 @@ function InputWithIcon() {
 }
 
 function UnitInputs() {
+  const { t } = useTranslation();
   return (
     <>
       {/* Static unit */}
       <div className="form-group">
         <TextField className="field">
-          <Label className="form-label">Dosage</Label>
+          <Label className="form-label">{t("forms.dosage")}</Label>
           <div className="input-icon-wrap">
             <Input className="input input-with-icon-right" placeholder="0" />
             <div className="input-icon-btn" style={{pointerEvents:"none"}}>
@@ -991,7 +1042,7 @@ function UnitInputs() {
       {/* Dropdown unit */}
       <div className="form-group">
         <TextField className="field">
-          <Label className="form-label">Weight</Label>
+          <Label className="form-label">{t("forms.weight")}</Label>
           <div className="input-icon-wrap">
             <Input className="input input-with-icon-right" placeholder="0" />
             <Select defaultSelectedKey="kg" className="input-unit-select">
@@ -1013,7 +1064,7 @@ function UnitInputs() {
       {/* Number stepper */}
       <div className="form-group">
         <NumberField defaultValue={5} minValue={0} maxValue={10} className="field">
-          <Label className="form-label">Quantity</Label>
+          <Label className="form-label">{t("forms.quantity")}</Label>
           <Group className="input-icon-wrap">
             <Input className="input input-with-icon-right stepper-input" />
             <div className="input-icon-btn stepper-btns">
@@ -1032,19 +1083,20 @@ function UnitInputs() {
 function Login() {
   const [showPw, setShowPw] = useState(false);
   const [remember, setRemember] = useState(false);
+  const { t } = useTranslation();
   return (
     <Form className="login-form">
       <div className="form-group">
         <TextField className="field">
-          <Label className="form-label">Email</Label>
-          <Input className="input" placeholder="you@example.com" />
+          <Label className="form-label">{t("forms.email")}</Label>
+          <Input className="input" placeholder={t("forms.emailPlaceholder")} />
         </TextField>
       </div>
       <div className="form-group">
         <TextField className="field">
-          <Label className="form-label">Password</Label>
+          <Label className="form-label">{t("forms.password")}</Label>
           <div className="input-icon-wrap">
-            <Input className="input input-with-icon-right" type={showPw ? "text" : "password"} placeholder="Enter password" />
+            <Input className="input input-with-icon-right" type={showPw ? "text" : "password"} placeholder={t("forms.enterPassword")} />
             <Button className="input-icon-btn" onPress={() => setShowPw(!showPw)}>
               {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
             </Button>
@@ -1056,11 +1108,11 @@ function Login() {
           <div className={`check-box ${remember ? "checked" : ""}`}>
             {remember && <svg viewBox="0 0 14 14" fill="none" className="check-svg"><path d="M3 7l3 3 5-6" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" /></svg>}
           </div>
-          Remember me
+          {t("forms.rememberMe")}
         </Checkbox>
-        <Link className="login-forgot">Forgot password?</Link>
+        <Link className="login-forgot">{t("forms.forgotPassword")}</Link>
       </div>
-      <Button className="btn btn-primary btn-block">Sign In</Button>
+      <Button className="btn btn-primary btn-block">{t("forms.signIn")}</Button>
     </Form>
   );
 }
@@ -1245,7 +1297,7 @@ function SignaturePadDemo({ label, preSigned }: { label: string; preSigned?: boo
 /* ═══════════════════════════════════════════
    COMPONENTS — FORM ELEMENTS
    ═══════════════════════════════════════════ */
-function ComponentsForms() {
+function ComponentsForms({ t }: { t: T }) {
   const [check1, setCheck1] = useState(true);
   const [check2, setCheck2] = useState(false);
 
@@ -1262,37 +1314,37 @@ function ComponentsForms() {
   );
 
   return (
-    <Section id="forms" label="Components" title="Form Elements"
-      description="Clean, accessible form controls with clear focus states and error handling.">
+    <Section id="forms" label={t("forms.label")} title={t("forms.title")}
+      description={t("forms.desc")}>
       <div className="grid g2" style={{gap:"var(--sp-6)"}}>
         {/* Text Inputs */}
         <div className="card">
-          <div className="sub-title">Text Inputs</div>
+          <div className="sub-title">{t("forms.textInputs")}</div>
           <div className="form-group">
             <TextField className="field">
-              <Label className="form-label">Email address</Label>
-              <Input className="input" placeholder="you@example.com" />
+              <Label className="form-label">{t("forms.emailAddress")}</Label>
+              <Input className="input" placeholder={t("forms.emailPlaceholder")} />
             </TextField>
           </div>
           <div className="form-group">
             <TextField className="field">
-              <Label className="form-label">Full name <span className="req">*</span></Label>
-              <Input className="input" defaultValue="Penny Ng" />
-              <div className="form-hint">As it appears on your medical license</div>
+              <Label className="form-label">{t("forms.fullName")} <span className="req">*</span></Label>
+              <Input className="input" defaultValue={t("forms.fullNamePlaceholder")} />
+              <div className="form-hint">{t("forms.medicalLicenseHint")}</div>
             </TextField>
           </div>
           <div className="form-group">
             <TextField isInvalid className="field">
-              <Label className="form-label">Full Name <span className="req">*</span></Label>
+              <Label className="form-label">{t("forms.fullName")} <span className="req">*</span></Label>
               <Input className="input error" defaultValue="" />
-              <div className="form-error-text">Full name is required</div>
+              <div className="form-error-text">{t("forms.fullNameRequired")}</div>
             </TextField>
           </div>
           <div className="form-group">
             <SearchField className="field">
-              <Label className="form-label">Search</Label>
+              <Label className="form-label">{t("forms.search")}</Label>
               <div className="input-icon-wrap">
-                <Input className="input input-with-icon-right" placeholder="Search patients..." />
+                <Input className="input input-with-icon-right" placeholder={t("forms.searchPatients")} />
                 <Button className="input-icon-btn">
                   <Search size={16} />
                 </Button>
@@ -1303,32 +1355,32 @@ function ComponentsForms() {
 
         {/* Select & Textarea */}
         <div className="card">
-          <div className="sub-title">Select & Textarea</div>
+          <div className="sub-title">{t("forms.selectTextarea")}</div>
           <div className="form-group">
             <Select className="field">
-              <Label className="form-label">Specialty</Label>
+              <Label className="form-label">{t("forms.specialty")}</Label>
               <Button className="input select-trigger">
-                <SelectValue>{({isPlaceholder, selectedText}) => isPlaceholder ? "Select a specialty..." : selectedText}</SelectValue>
+                <SelectValue>{({isPlaceholder, selectedText}) => isPlaceholder ? t("forms.selectSpecialty") : selectedText}</SelectValue>
                 <ChevronDown size={16} className="select-chevron" />
               </Button>
               <Popover className="select-popover">
                 <ListBox className="select-listbox">
-                  <ListBoxItem id="internal" className="select-option">Internal Medicine</ListBoxItem>
-                  <ListBoxItem id="family" className="select-option">Family Medicine</ListBoxItem>
-                  <ListBoxItem id="peds" className="select-option">Pediatrics</ListBoxItem>
+                  <ListBoxItem id="internal" className="select-option">{t("forms.internalMedicine")}</ListBoxItem>
+                  <ListBoxItem id="family" className="select-option">{t("forms.familyMedicine")}</ListBoxItem>
+                  <ListBoxItem id="peds" className="select-option">{t("forms.pediatrics")}</ListBoxItem>
                 </ListBox>
               </Popover>
             </Select>
           </div>
           <div className="form-group">
             <TextField className="field">
-              <Label className="form-label">Notes</Label>
-              <TextArea className="input textarea" rows={3} placeholder="Add clinical notes..." />
+              <Label className="form-label">{t("forms.notes")}</Label>
+              <TextArea className="input textarea" rows={3} placeholder={t("forms.clinicalNotes")} />
             </TextField>
           </div>
-          <div className="sub-title" style={{marginTop:"var(--sp-6)"}}>MultiSelect</div>
+          <div className="sub-title" style={{marginTop:"var(--sp-6)"}}>{t("forms.multiSelect")}</div>
           <div className="multiselect-wrapper">
-            <Label className="form-label">Filter by Specialty</Label>
+            <Label className="form-label">{t("forms.filterSpecialty")}</Label>
             <div className="multiselect-container">
               <TagGroup onRemove={(keys) => setSelectedSpecialties(prev => prev.filter(s => !keys.has(s)))}>
                 <TagList className="multiselect-tags">
@@ -1353,7 +1405,7 @@ function ComponentsForms() {
                 menuTrigger="focus"
                 allowsCustomValue
               >
-                <Input className="multiselect-input" placeholder={selectedSpecialties.length ? "Add more..." : "Search specialties..."} />
+                <Input className="multiselect-input" placeholder={selectedSpecialties.length ? t("forms.addMore") : t("forms.searchSpecialties")} />
                 <Popover className="dropdown-popover">
                   <ListBox className="dropdown-menu">
                     {filteredSpecialties.map(s => (
@@ -1361,7 +1413,7 @@ function ComponentsForms() {
                     ))}
                     {filteredSpecialties.length === 0 && (
                       <ListBoxItem id="__empty" className="dropdown-item" style={{ color: "var(--text-tertiary)", fontStyle: "italic" }}>
-                        No matches found
+                        {t("forms.noMatches")}
                       </ListBoxItem>
                     )}
                   </ListBox>
@@ -1381,53 +1433,53 @@ function ComponentsForms() {
       <div className="grid g2" style={{gap:"var(--sp-6)",marginTop:"var(--sp-6)"}}>
         {/* Checkboxes & Radios */}
         <div className="card">
-          <div className="sub-title">Checkboxes</div>
+          <div className="sub-title">{t("forms.checkboxes")}</div>
           <div className="check-list">
             <Checkbox isSelected={check1} onChange={setCheck1} className="check-item">
               <div className={`check-box ${check1 ? "checked" : ""}`}>
                 {check1 && <svg viewBox="0 0 14 14" fill="none" className="check-svg"><path d="M3 7l3 3 5-6" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" /></svg>}
               </div>
-              Show consultations
+              {t("forms.showConsultations")}
             </Checkbox>
             <Checkbox isSelected={check2} onChange={setCheck2} className="check-item">
               <div className={`check-box ${check2 ? "checked" : ""}`}>
                 {check2 && <svg viewBox="0 0 14 14" fill="none" className="check-svg"><path d="M3 7l3 3 5-6" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" /></svg>}
               </div>
-              Only my patients
+              {t("forms.onlyMyPatients")}
             </Checkbox>
             <Checkbox isDisabled className="check-item disabled">
               <div className="check-box" />
-              Archived (disabled)
+              {t("forms.archivedDisabled")}
             </Checkbox>
           </div>
-          <div className="sub-title" style={{marginTop:"var(--sp-5)"}}>Radios</div>
+          <div className="sub-title" style={{marginTop:"var(--sp-5)"}}>{t("forms.radios")}</div>
           <RadioGroup defaultValue="phone" className="radio-list">
             <Radio value="phone" className="radio-item">
-              <div className="radio-circle" /><span>Phone call</span>
+              <div className="radio-circle" /><span>{t("forms.phoneCall")}</span>
             </Radio>
             <Radio value="video" className="radio-item">
-              <div className="radio-circle" /><span>Video call</span>
+              <div className="radio-circle" /><span>{t("forms.videoCall")}</span>
             </Radio>
             <Radio value="person" className="radio-item" isDisabled>
-              <div className="radio-circle" /><span>In-person</span>
+              <div className="radio-circle" /><span>{t("forms.inPerson")}</span>
             </Radio>
           </RadioGroup>
         </div>
 
         {/* Large & Disabled */}
         <div className="card">
-          <div className="sub-title">Large Input</div>
+          <div className="sub-title">{t("forms.largeInput")}</div>
           <div className="form-group">
             <TextField className="field">
-              <Label className="form-label">Patient Search</Label>
-              <Input className="input input-lg" placeholder="Search by name, ID, or phone..." />
+              <Label className="form-label">{t("forms.patientSearch")}</Label>
+              <Input className="input input-lg" placeholder={t("forms.searchByName")} />
             </TextField>
           </div>
-          <div className="sub-title" style={{marginTop:"var(--sp-6)"}}>Disabled State</div>
+          <div className="sub-title" style={{marginTop:"var(--sp-6)"}}>{t("forms.disabledState")}</div>
           <div className="form-group">
             <TextField isDisabled className="field">
-              <Label className="form-label">Disabled Field</Label>
-              <Input className="input" defaultValue="Read-only value" placeholder="Read-only value" />
+              <Label className="form-label">{t("forms.disabledField")}</Label>
+              <Input className="input" defaultValue={t("forms.readOnlyValue")} placeholder={t("forms.readOnlyValue")} />
             </TextField>
           </div>
         </div>
@@ -1438,20 +1490,20 @@ function ComponentsForms() {
       />
 
       <div style={{marginTop:"var(--sp-16)"}} />
-      <SubSection title="Advanced Inputs" description="Specialized form controls for phone numbers, dates, and inputs with action icons.">
+      <SubSection title={t("forms.advancedInputs")} description={t("forms.advancedDesc")}>
         <div className="grid g2" style={{gap:"var(--sp-6)"}}>
           {/* Phone Input */}
           <div className="card">
-            <div className="sub-title">Phone Number</div>
+            <div className="sub-title">{t("forms.phoneNumber")}</div>
             <PhoneInput />
           </div>
 
           {/* Date Picker */}
           <div className="card">
-            <div className="sub-title">Date Picker</div>
+            <div className="sub-title">{t("forms.datePicker")}</div>
             <div className="form-group">
               <DatePicker defaultValue={today(getLocalTimeZone())} className="field">
-                <Label className="form-label">Appointment Date</Label>
+                <Label className="form-label">{t("forms.appointmentDate")}</Label>
                 <Group className="date-input-group">
                   <DateInput className="input date-input">
                     {(segment) => <DateSegment segment={segment} className="date-segment" />}
@@ -1482,7 +1534,7 @@ function ComponentsForms() {
 
             <div className="form-group">
               <TimeField defaultValue={new Time(9, 0)} className="field">
-                <Label className="form-label">Appointment Time</Label>
+                <Label className="form-label">{t("forms.appointmentTime")}</Label>
                 <Group className="date-input-group">
                   <DateInput className="input date-input">
                     {(segment) => <DateSegment segment={segment} className="date-segment" />}
@@ -1494,7 +1546,7 @@ function ComponentsForms() {
 
             <div className="form-group">
               <DatePicker defaultValue={new CalendarDateTime(2026, 4, 3, 9, 0)} granularity="minute" className="field">
-                <Label className="form-label">Appointment Date & Time</Label>
+                <Label className="form-label">{t("forms.appointmentDateTime")}</Label>
                 <Group className="date-input-group">
                   <DateInput className="input date-input">
                     {(segment) => <DateSegment segment={segment} className="date-segment" />}
@@ -1531,18 +1583,18 @@ function ComponentsForms() {
         <div className="grid g2" style={{gap:"var(--sp-6)",marginTop:"var(--sp-6)"}}>
           {/* Input with Action Icon */}
           <div className="card">
-            <div className="sub-title">Input with Action Icon</div>
+            <div className="sub-title">{t("forms.inputWithIcon")}</div>
             <InputWithIcon />
-            <div className="sub-title" style={{marginTop:"var(--sp-6)"}}>Payment Input</div>
+            <div className="sub-title" style={{marginTop:"var(--sp-6)"}}>{t("forms.paymentInput")}</div>
             <div className="form-group">
-              <div className="form-label">Payment</div>
+              <div className="form-label">{t("forms.payment")}</div>
               <PaymentInput />
             </div>
           </div>
 
           {/* Unit & Number Inputs */}
           <div className="card">
-            <div className="sub-title">Input with Unit</div>
+            <div className="sub-title">{t("forms.inputWithUnit")}</div>
             <UnitInputs />
           </div>
         </div>
@@ -1553,30 +1605,30 @@ function ComponentsForms() {
         <div className="grid g2" style={{gap:"var(--sp-6)",marginTop:"var(--sp-6)"}}>
           {/* Login */}
           <div className="card">
-            <div className="sub-title">Login Form</div>
+            <div className="sub-title">{t("forms.loginForm")}</div>
             <Login />
           </div>
 
           {/* Inline Inputs */}
           <div className="card">
-            <div className="sub-title">Inline Inputs</div>
+            <div className="sub-title">{t("forms.inlineInputs")}</div>
             <p className="inline-input-text">
-              Dispense
+              {t("forms.dispense")}
               <TextField className="field-inline" defaultValue="30">
                 <Input className="input input-inline vertical-center" style={{width:"36px"}}/>
               </TextField>
-              tablets, take
+              {t("forms.tabletsTake")}
               <NumberField defaultValue={2} minValue={1} maxValue={10} className="field-inline">
                 <Input className="input input-inline vertical-center"  style={{width:"36px"}}/>
               </NumberField>
-              times per day for
+              {t("forms.timesPerDayFor")}
               <TextField className="field-inline" defaultValue="7">
                               <Input className="input input-inline vertical-center"  style={{width:"36px"}}/>
               </TextField>
-              days.
+              {t("forms.days")}
             </p>
             <div className="inline-input-row" style={{marginTop:"var(--sp-4)"}}>
-              <span className="inline-input-label">Fluids Given</span>
+              <span className="inline-input-label">{t("forms.fluidsGiven")}</span>
               <TextField className="field-inline" defaultValue="250" style={{width:"100px"}}>
                 <div className="input-icon-wrap input-icon-wrap-inline">
                   <Input className="input input-inline input-with-icon-right-inline" />
@@ -1596,7 +1648,7 @@ function ComponentsForms() {
               </TextField>
             </div>
             <div className="inline-input-row" style={{marginTop:"var(--sp-4)"}}>
-              <span className="inline-input-label">Dosage</span>
+              <span className="inline-input-label">{t("forms.dosageInline")}</span>
               <TextField className="field-inline" defaultValue="500" style={{width:"100px"}}>
                 <div className="input-icon-wrap input-icon-wrap-inline">
                   <Input className="input input-inline input-with-icon-right-inline" />
@@ -1607,7 +1659,7 @@ function ComponentsForms() {
               </TextField>
             </div>
             <div className="inline-input-row" style={{marginTop:"var(--sp-4)"}}>
-              <span className="inline-input-label">Quantity</span>
+              <span className="inline-input-label">{t("forms.quantityInline")}</span>
               <NumberField defaultValue={5} minValue={0} maxValue={10} className="field-inline" style={{width:"100px"}}>
                 <Group className="input-icon-wrap input-icon-wrap-inline">
                   <Input className="input input-inline input-with-icon-right-inline stepper-input" />
@@ -1620,7 +1672,7 @@ function ComponentsForms() {
               </NumberField>
             </div>
             <div className="inline-input-row" style={{marginTop:"var(--sp-4)"}}>
-              <span className="inline-input-label">Date of Service</span>
+              <span className="inline-input-label">{t("forms.dateOfService")}</span>
               <DatePicker defaultValue={today(getLocalTimeZone())} className="field-inline">
                 <Group className="date-input-group">
                   <DateInput className="input input-inline date-input">
@@ -1650,7 +1702,7 @@ function ComponentsForms() {
               </DatePicker>
             </div>
             <div className="inline-input-row" style={{marginTop:"var(--sp-4)"}}>
-              <span className="inline-input-label">Facility</span>
+              <span className="inline-input-label">{t("forms.facility")}</span>
               <Select defaultSelectedKey="mercy" className="field-inline">
                 <Button className="input input-inline select-trigger" style={{width:"250px"}}>
                   <SelectValue />
@@ -1673,10 +1725,10 @@ function ComponentsForms() {
         />
       </SubSection>
 
-      <SubSection title="Signature" description="A hand-signature capture area for consent forms, agreements, and patient intake workflows.">
+      <SubSection title={t("forms.signature")} description={t("forms.signatureDesc")}>
         <div className="grid g2">
-          <SignaturePadDemo label="Active" />
-          <SignaturePadDemo label="Signed" preSigned />
+          <SignaturePadDemo label={t("forms.active")} />
+          <SignaturePadDemo label={t("forms.signed")} preSigned />
         </div>
         <CodeBlock
           code={`<SignaturePad />\n\n{/* The component renders a <canvas> inside .signature-pad */}\n{/* Users draw with mouse or touch. On completion: */}\n<div className="signature-pad signed">\n  <canvas /> {/* contains the drawn signature */}\n</div>\n<div className="signature-footer">\n  <span className="signature-timestamp">Signed Apr 8, 2026 at 2:34 PM</span>\n  <button className="signature-clear">Clear</button>\n</div>`}
@@ -1689,7 +1741,7 @@ function ComponentsForms() {
 /* ═══════════════════════════════════════════
    COMPONENTS — BADGES, TAGS & STATUS
    ═══════════════════════════════════════════ */
-function ComponentsBadges() {
+function ComponentsBadges({ t }: { t: T }) {
   const [tags, setTags] = useState([
     { id: "1", name: "Hypertension" },
     { id: "2", name: "Diabetes Type 2" },
@@ -1699,41 +1751,41 @@ function ComponentsBadges() {
   ]);
 
   return (
-    <Section id="badges" label="Components" title="Badges, Tags & Status"
-      description="Communicate states, categories, and counts with subtle visual indicators. Tags support keyboard navigation and removal.">
+    <Section id="badges" label={t("badges.label")} title={t("badges.title")}
+      description={t("badges.desc")}>
 
-      <SubSection title="Soft Badges">
+      <SubSection title={t("badges.soft")}>
         <div className="preview">
-          <span className="badge badge-success"><span className="badge-dot" /> Active</span>
-          <span className="badge badge-info"><span className="badge-dot" /> Scheduled</span>
-          <span className="badge badge-warning"><span className="badge-dot" /> Pending</span>
-          <span className="badge badge-danger"><span className="badge-dot" /> Overdue</span>
-          <span className="badge badge-neutral"><span className="badge-dot" /> Draft</span>
+          <span className="badge badge-success"><span className="badge-dot" /> {t("badges.active")}</span>
+          <span className="badge badge-info"><span className="badge-dot" /> {t("badges.scheduled")}</span>
+          <span className="badge badge-warning"><span className="badge-dot" /> {t("badges.pending")}</span>
+          <span className="badge badge-danger"><span className="badge-dot" /> {t("badges.overdue")}</span>
+          <span className="badge badge-neutral"><span className="badge-dot" /> {t("badges.draft")}</span>
         </div>
         <CodeBlock
           code={`<span className="badge badge-success"><span className="badge-dot" /> Active</span>\n<span className="badge badge-info"><span className="badge-dot" /> Scheduled</span>\n<span className="badge badge-warning"><span className="badge-dot" /> Pending</span>\n<span className="badge badge-danger"><span className="badge-dot" /> Overdue</span>\n<span className="badge badge-neutral"><span className="badge-dot" /> Draft</span>`}
         />
       </SubSection>
 
-      <SubSection title="Solid Badges">
+      <SubSection title={t("badges.solid")}>
         <div className="preview">
-          <span className="badge badge-solid-success">Approved</span>
-          <span className="badge badge-solid-info">Processing</span>
-          <span className="badge badge-solid-warning">Review</span>
-          <span className="badge badge-solid-danger">Urgent</span>
-          <span className="badge badge-solid-neutral">Default</span>
+          <span className="badge badge-solid-success">{t("badges.approved")}</span>
+          <span className="badge badge-solid-info">{t("badges.processing")}</span>
+          <span className="badge badge-solid-warning">{t("badges.review")}</span>
+          <span className="badge badge-solid-danger">{t("badges.urgent")}</span>
+          <span className="badge badge-solid-neutral">{t("badges.default")}</span>
         </div>
         <CodeBlock
           code={`<span className="badge badge-solid-success">Approved</span>\n<span className="badge badge-solid-info">Processing</span>\n<span className="badge badge-solid-warning">Review</span>\n<span className="badge badge-solid-danger">Urgent</span>\n<span className="badge badge-solid-neutral">Default</span>`}
         />
       </SubSection>
 
-      <SubSection title="Removable Tags">
+      <SubSection title={t("badges.removableTags")}>
         <TagGroup
           selectionMode="none"
           onRemove={(keys) => setTags(prev => prev.filter(t => !keys.has(t.id)))}
         >
-          <Label className="form-label">Active Diagnoses</Label>
+          <Label className="form-label">{t("badges.activeDiagnoses")}</Label>
           <TagList className="tag-list">
             {tags.map(tag => (
               <Tag key={tag.id} id={tag.id} className="chip" textValue={tag.name}>
@@ -1755,7 +1807,7 @@ function ComponentsBadges() {
 /* ═══════════════════════════════════════════
    COMPONENTS — FEEDBACK & NOTIFICATIONS
    ═══════════════════════════════════════════ */
-function ComponentsFeedback() {
+function ComponentsFeedback({ t }: { t: T }) {
   /* Notification state */
   const [notifications, setNotifications] = useState<Array<{
     id: number; type: "success" | "error" | "info" | "warning"; title: string; message: string;
@@ -1773,45 +1825,45 @@ function ComponentsFeedback() {
   };
 
   return (
-    <Section id="feedback" label="Components" title="Feedback & Notifications"
-      description="Alerts, toasts, progress indicators, empty states, and notifications for communicating system state.">
+    <Section id="feedback" label={t("feedback.label")} title={t("feedback.title")}
+      description={t("feedback.desc")}>
 
-      <SubSection title="Alerts">
+      <SubSection title={t("feedback.alerts")}>
         <div className="alert-stack">
-          <div className="alert alert-success"><span className="alert-icon"><CheckCircle2 size={18} /></span><div><strong>Changes saved</strong><br/>Your patient record has been updated successfully.</div></div>
-          <div className="alert alert-info"><span className="alert-icon"><Info size={18} /></span><div><strong>Appointment reminder</strong><br/>Your next appointment is scheduled for tomorrow at 2:00 PM.</div></div>
-          <div className="alert alert-warning"><span className="alert-icon"><AlertTriangle size={18} /></span><div><strong>Outstanding balance</strong><br/>This patient has an unpaid balance of $45.00.</div></div>
-          <div className="alert alert-danger"><span className="alert-icon"><AlertCircle size={18} /></span><div><strong>Form submission failed</strong><br/>Please check the required fields and try again.</div></div>
+          <div className="alert alert-success"><span className="alert-icon"><CheckCircle2 size={18} /></span><div><strong>{t("feedback.changesSaved")}</strong><br/>{t("feedback.changesSavedDesc")}</div></div>
+          <div className="alert alert-info"><span className="alert-icon"><Info size={18} /></span><div><strong>{t("feedback.appointmentReminder")}</strong><br/>{t("feedback.appointmentReminderDesc")}</div></div>
+          <div className="alert alert-warning"><span className="alert-icon"><AlertTriangle size={18} /></span><div><strong>{t("feedback.outstandingBalance")}</strong><br/>{t("feedback.outstandingBalanceDesc")}</div></div>
+          <div className="alert alert-danger"><span className="alert-icon"><AlertCircle size={18} /></span><div><strong>{t("feedback.formFailed")}</strong><br/>{t("feedback.formFailedDesc")}</div></div>
         </div>
         <CodeBlock
           code={`<div className="alert alert-success">\n  <span className="alert-icon"><CheckCircle2 size={18} /></span>\n  <div><strong>Changes saved</strong><br/>Your patient record has been updated.</div>\n</div>\n\n/* Variants: alert-success | alert-info | alert-warning | alert-danger */`}
         />
       </SubSection>
 
-      <SubSection title="Toast Notifications">
+      <SubSection title={t("feedback.toasts")}>
         <div className="toast-stack">
-          <div className="toast toast-success"><div className="toast-body"><div className="toast-title">Appointment confirmed</div><div className="toast-msg">Feb 26, 2026 at 10:00 AM with Dr. Chen</div></div><span className="toast-close"><X size={16} /></span></div>
-          <div className="toast toast-danger"><div className="toast-body"><div className="toast-title">Connection lost</div><div className="toast-msg">Please check your internet connection.</div></div><span className="toast-close"><X size={16} /></span></div>
-          <div className="toast toast-info"><div className="toast-body"><div className="toast-title">New message</div><div className="toast-msg">You have 3 unread messages from patients.</div></div><span className="toast-close"><X size={16} /></span></div>
+          <div className="toast toast-success"><div className="toast-body"><div className="toast-title">{t("feedback.apptConfirmed")}</div><div className="toast-msg">{t("feedback.apptConfirmedDesc")}</div></div><span className="toast-close"><X size={16} /></span></div>
+          <div className="toast toast-danger"><div className="toast-body"><div className="toast-title">{t("feedback.connectionLost")}</div><div className="toast-msg">{t("feedback.connectionLostDesc")}</div></div><span className="toast-close"><X size={16} /></span></div>
+          <div className="toast toast-info"><div className="toast-body"><div className="toast-title">{t("feedback.newMessage")}</div><div className="toast-msg">{t("feedback.newMessageDesc")}</div></div><span className="toast-close"><X size={16} /></span></div>
         </div>
         <CodeBlock
           code={`<div className="toast toast-success">\n  <div className="toast-body">\n    <div className="toast-title">Appointment confirmed</div>\n    <div className="toast-msg">Feb 26, 2026 at 10:00 AM</div>\n  </div>\n  <span className="toast-close"><X size={16} /></span>\n</div>\n\n/* Variants: toast-success | toast-danger | toast-info */`}
         />
       </SubSection>
 
-      <SubSection title="Empty State" description="Placeholder content shown when a section has no data. Provides context and a call to action.">
+      <SubSection title={t("feedback.emptyState")} description={t("feedback.emptyStateDesc")}>
         <div className="grid g2" style={{ gap: "var(--sp-6)" }}>
           <div className="empty-state">
             <div className="empty-state-icon"><Inbox size={40} /></div>
-            <div className="empty-state-title">No Results Found</div>
-            <div className="empty-state-desc">There are no lab results for this patient yet. Results will appear here once ordered labs have been processed.</div>
-            <Button className="btn btn-primary" style={{ marginTop: "var(--sp-4)" }}>Order Lab Test</Button>
+            <div className="empty-state-title">{t("feedback.noResults")}</div>
+            <div className="empty-state-desc">{t("feedback.noResultsDesc")}</div>
+            <Button className="btn btn-primary" style={{ marginTop: "var(--sp-4)" }}>{t("feedback.orderLabTest")}</Button>
           </div>
           <div className="empty-state">
             <div className="empty-state-icon"><FileText size={40} /></div>
-            <div className="empty-state-title">No Documents</div>
-            <div className="empty-state-desc">This patient has no uploaded documents. Upload clinical documents, consent forms, or imaging reports.</div>
-            <Button className="btn btn-secondary" style={{ marginTop: "var(--sp-4)" }}>Upload Document</Button>
+            <div className="empty-state-title">{t("feedback.noDocuments")}</div>
+            <div className="empty-state-desc">{t("feedback.noDocumentsDesc")}</div>
+            <Button className="btn btn-secondary" style={{ marginTop: "var(--sp-4)" }}>{t("feedback.uploadDocument")}</Button>
           </div>
         </div>
         <CodeBlock
@@ -1819,19 +1871,19 @@ function ComponentsFeedback() {
         />
       </SubSection>
 
-      <SubSection title="Notifications" description="Toast-style notifications that appear in the corner. Used for system feedback — order confirmations, errors, warnings, and informational messages.">
+      <SubSection title={t("feedback.notifications")} description={t("feedback.notificationsDesc")}>
         <div style={{ display: "flex", gap: "var(--sp-3)", flexWrap: "wrap" }}>
-          <Button className="btn btn-primary" onPress={() => addNotification("success", "Order Submitted", "CBC lab order has been sent to the lab successfully.")}>
-            <CheckCircle size={16} /> Success
+          <Button className="btn btn-primary" onPress={() => addNotification("success", t("feedback.orderSubmitted"), t("feedback.orderSubmittedDesc"))}>
+            <CheckCircle size={16} /> {t("feedback.success")}
           </Button>
-          <Button className="btn btn-danger" onPress={() => addNotification("error", "Submission Failed", "Unable to submit order. Please check the connection and try again.")}>
-            <XCircle size={16} /> Error
+          <Button className="btn btn-danger" onPress={() => addNotification("error", t("feedback.submissionFailed"), t("feedback.submissionFailedDesc"))}>
+            <XCircle size={16} /> {t("feedback.error")}
           </Button>
-          <Button className="btn btn-warning" onPress={() => addNotification("warning", "Session Expiring", "Your session will expire in 5 minutes. Save your work.")}>
-            <AlertTriangle size={16} /> Warning
+          <Button className="btn btn-warning" onPress={() => addNotification("warning", t("feedback.sessionExpiring"), t("feedback.sessionExpiringDesc"))}>
+            <AlertTriangle size={16} /> {t("buttons.warning")}
           </Button>
-          <Button className="btn btn-info" onPress={() => addNotification("info", "New Message", "Dr. Chen has sent a message regarding patient Jane Doe.")}>
-            <Info size={16} /> Info
+          <Button className="btn btn-info" onPress={() => addNotification("info", t("feedback.newMessageNotif"), t("feedback.newMessageNotifDesc"))}>
+            <Info size={16} /> {t("buttons.info")}
           </Button>
         </div>
         <CodeBlock
@@ -1864,22 +1916,22 @@ function ComponentsFeedback() {
 /* ═══════════════════════════════════════════
    COMPONENTS — NAVIGATION
    ═══════════════════════════════════════════ */
-function ComponentsNavigation() {
+function ComponentsNavigation({ t }: { t: T }) {
   return (
-    <Section id="navigation" label="Components" title="Navigation"
-      description="Navigation patterns for consistent wayfinding across the application.">
+    <Section id="navigation" label={t("navigation.label")} title={t("navigation.title")}
+      description={t("navigation.desc")}>
 
-      <SubSection title="Top Navigation Bar">
+      <SubSection title={t("navigation.topNav")}>
         <div className="navbar">
           <div className="navbar-logo">VSee</div>
           <div className="navbar-links">
-            <div className="navbar-link active">Dashboard</div>
-            <div className="navbar-link">Patients</div>
-            <div className="navbar-link">Schedule</div>
-            <div className="navbar-link">Messages</div>
+            <div className="navbar-link active">{t("navigation.dashboard")}</div>
+            <div className="navbar-link">{t("navigation.patients")}</div>
+            <div className="navbar-link">{t("navigation.scheduleNav")}</div>
+            <div className="navbar-link">{t("navigation.messages")}</div>
           </div>
           <div className="navbar-right">
-            <Button className="btn btn-ghost btn-sm">Help</Button>
+            <Button className="btn btn-ghost btn-sm">{t("navigation.help")}</Button>
             <div className="avatar avatar-sm">PN</div>
           </div>
         </div>
@@ -1888,19 +1940,19 @@ function ComponentsNavigation() {
         />
       </SubSection>
 
-      <SubSection title="Tabs">
+      <SubSection title={t("navigation.tabs")}>
         <div className="card">
           <Tabs>
             <TabList className="tabs" aria-label="Clinic tabs">
-              <Tab id="patients" className="tab-item">Patients</Tab>
-              <Tab id="visits" className="tab-item">All Visits</Tab>
-              <Tab id="docs" className="tab-item">Documents</Tab>
-              <Tab id="labs" className="tab-item">Lab Results</Tab>
+              <Tab id="patients" className="tab-item">{t("navigation.patients")}</Tab>
+              <Tab id="visits" className="tab-item">{t("navigation.allVisits")}</Tab>
+              <Tab id="docs" className="tab-item">{t("navigation.documents")}</Tab>
+              <Tab id="labs" className="tab-item">{t("navigation.labResults")}</Tab>
             </TabList>
-            <TabPanel id="patients" className="tab-content">Tab content area</TabPanel>
-            <TabPanel id="visits" className="tab-content">All visits content</TabPanel>
-            <TabPanel id="docs" className="tab-content">Documents content</TabPanel>
-            <TabPanel id="labs" className="tab-content">Lab results content</TabPanel>
+            <TabPanel id="patients" className="tab-content">{t("navigation.tabContent")}</TabPanel>
+            <TabPanel id="visits" className="tab-content">{t("navigation.allVisitsContent")}</TabPanel>
+            <TabPanel id="docs" className="tab-content">{t("navigation.documentsContent")}</TabPanel>
+            <TabPanel id="labs" className="tab-content">{t("navigation.labResultsContent")}</TabPanel>
           </Tabs>
         </div>
         <CodeBlock
@@ -1908,11 +1960,11 @@ function ComponentsNavigation() {
         />
       </SubSection>
 
-      <SubSection title="Breadcrumb">
+      <SubSection title={t("navigation.breadcrumb")}>
         <div className="card">
           <Breadcrumbs className="breadcrumb">
-            <Breadcrumb><Link>Dashboard</Link><span className="breadcrumb-sep"> &gt; </span></Breadcrumb>
-            <Breadcrumb><Link>Patients</Link><span className="breadcrumb-sep"> &gt; </span></Breadcrumb>
+            <Breadcrumb><Link>{t("navigation.dashboard")}</Link><span className="breadcrumb-sep"> &gt; </span></Breadcrumb>
+            <Breadcrumb><Link>{t("navigation.patients")}</Link><span className="breadcrumb-sep"> &gt; </span></Breadcrumb>
             <Breadcrumb><Link className="breadcrumb-current">Michelle Doe</Link></Breadcrumb>
           </Breadcrumbs>
         </div>
@@ -1921,7 +1973,7 @@ function ComponentsNavigation() {
         />
       </SubSection>
 
-      <SubSection title="Pagination">
+      <SubSection title={t("navigation.pagination")}>
         <div className="card">
           <div className="pagination">
             <button className="page-btn disabled">&larr;</button>
@@ -1937,9 +1989,9 @@ function ComponentsNavigation() {
         />
       </SubSection>
 
-      <SubSection title="Anchor Navigation" description="In-page navigation for long scrollable content. Used in encounter notes and multi-section forms. The sticky bar at the top of this page is a live example.">
+      <SubSection title={t("navigation.anchorNav")} description={t("navigation.anchorNavDesc")}>
         <div className="preview-box">
-          <p>The anchor navigation bar fixed at the top of this page is a live demo of this component. It highlights the current section as you scroll and supports click-to-jump.</p>
+          <p>{t("navigation.anchorNavText")}</p>
           <div style={{ marginTop: "var(--sp-4)" }}>
             <div className="code">
               <span className="c">{"// Anchor navigation — sticky bar with scroll tracking"}</span>{"\n"}
@@ -1959,19 +2011,19 @@ function ComponentsNavigation() {
 /* ═══════════════════════════════════════════
    COMPONENTS — DROPDOWNS
    ═══════════════════════════════════════════ */
-function ComponentsDropdowns() {
+function ComponentsDropdowns({ t }: { t: T }) {
   const [actionMsg, setActionMsg] = useState("");
 
   return (
-    <Section id="dropdowns" label="Components" title="Dropdowns"
-      description="Dropdown menus, select lists, and action menus. All dropdowns are capped at 1/3 screen height and scroll when content overflows.">
+    <Section id="dropdowns" label={t("dropdowns.label")} title={t("dropdowns.title")}
+      description={t("dropdowns.desc")}>
 
-      <SubSection title="Select Dropdown" description="Standard select input with a scrollable list of options.">
+      <SubSection title={t("dropdowns.selectDropdown")} description={t("dropdowns.selectDropdownDesc")}>
         <div style={{ display: "flex", gap: "var(--sp-4)", flexWrap: "wrap", alignItems: "flex-start" }}>
           <Select className="field" style={{ minWidth: 200 }}>
-            <Label className="form-label">Country</Label>
+            <Label className="form-label">{t("dropdowns.country")}</Label>
             <Button className="input select-trigger">
-              <SelectValue>{({isPlaceholder, selectedText}) => isPlaceholder ? "Select a country..." : selectedText}</SelectValue>
+              <SelectValue>{({isPlaceholder, selectedText}) => isPlaceholder ? t("dropdowns.selectCountry") : selectedText}</SelectValue>
               <ChevronDown size={16} className="select-chevron" />
             </Button>
             <Popover className="select-popover">
@@ -1989,20 +2041,20 @@ function ComponentsDropdowns() {
         />
       </SubSection>
 
-      <SubSection title="Dropdown Button" description="Action menus triggered by a button. Used for contextual actions on rows, cards, and toolbars.">
+      <SubSection title={t("dropdowns.dropdownButton")} description={t("dropdowns.dropdownButtonDesc")}>
         <div style={{ display: "flex", gap: "var(--sp-4)", flexWrap: "wrap", alignItems: "flex-start" }}>
           <MenuTrigger>
             <Button className="btn btn-secondary">
-              Actions <ChevronDown size={16} />
+              {t("dropdowns.actions")} <ChevronDown size={16} />
             </Button>
             <Popover className="dropdown-popover">
               <Menu className="dropdown-menu" onAction={(key) => setActionMsg(`Action: ${key}`)}>
-                <MenuItem id="edit" className="dropdown-item"><Edit3 size={14} /> Edit Record</MenuItem>
-                <MenuItem id="copy" className="dropdown-item"><Copy size={14} /> Duplicate</MenuItem>
-                <MenuItem id="export" className="dropdown-item"><ExternalLink size={14} /> Export PDF</MenuItem>
-                <MenuItem id="archive" className="dropdown-item"><Archive size={14} /> Archive</MenuItem>
+                <MenuItem id="edit" className="dropdown-item"><Edit3 size={14} /> {t("dropdowns.editRecord")}</MenuItem>
+                <MenuItem id="copy" className="dropdown-item"><Copy size={14} /> {t("dropdowns.duplicate")}</MenuItem>
+                <MenuItem id="export" className="dropdown-item"><ExternalLink size={14} /> {t("dropdowns.exportPdf")}</MenuItem>
+                <MenuItem id="archive" className="dropdown-item"><Archive size={14} /> {t("dropdowns.archive")}</MenuItem>
                 <Separator className="dropdown-separator" />
-                <MenuItem id="delete" className="dropdown-item dropdown-item-danger"><Trash2 size={14} /> Delete</MenuItem>
+                <MenuItem id="delete" className="dropdown-item dropdown-item-danger"><Trash2 size={14} /> {t("buttons.delete")}</MenuItem>
               </Menu>
             </Popover>
           </MenuTrigger>
@@ -2013,30 +2065,30 @@ function ComponentsDropdowns() {
             </Button>
             <Popover className="dropdown-popover">
               <Menu className="dropdown-menu" onAction={(key) => setActionMsg(`Action: ${key}`)}>
-                <MenuItem id="view" className="dropdown-item">View Details</MenuItem>
-                <MenuItem id="assign" className="dropdown-item">Assign Provider</MenuItem>
-                <MenuItem id="flag" className="dropdown-item">Flag for Review</MenuItem>
+                <MenuItem id="view" className="dropdown-item">{t("dropdowns.viewDetails")}</MenuItem>
+                <MenuItem id="assign" className="dropdown-item">{t("dropdowns.assignProvider")}</MenuItem>
+                <MenuItem id="flag" className="dropdown-item">{t("dropdowns.flagReview")}</MenuItem>
               </Menu>
             </Popover>
           </MenuTrigger>
 
           <MenuTrigger>
             <Button className="btn btn-primary">
-              New Order <ChevronDown size={16} />
+              {t("dropdowns.newOrder")} <ChevronDown size={16} />
             </Button>
             <Popover className="dropdown-popover">
               <Menu className="dropdown-menu" onAction={(key) => setActionMsg(`Action: ${key}`)}>
                 <AriaSection>
-                  <Header className="dropdown-header">Lab Orders</Header>
-                  <MenuItem id="cbc" className="dropdown-item">Complete Blood Count</MenuItem>
-                  <MenuItem id="bmp" className="dropdown-item">Basic Metabolic Panel</MenuItem>
-                  <MenuItem id="lipid" className="dropdown-item">Lipid Panel</MenuItem>
+                  <Header className="dropdown-header">{t("dropdowns.labOrders")}</Header>
+                  <MenuItem id="cbc" className="dropdown-item">{t("dropdowns.cbc")}</MenuItem>
+                  <MenuItem id="bmp" className="dropdown-item">{t("dropdowns.bmp")}</MenuItem>
+                  <MenuItem id="lipid" className="dropdown-item">{t("dropdowns.lipid")}</MenuItem>
                 </AriaSection>
                 <Separator className="dropdown-separator" />
                 <AriaSection>
-                  <Header className="dropdown-header">Imaging</Header>
-                  <MenuItem id="xray" className="dropdown-item">X-Ray</MenuItem>
-                  <MenuItem id="mri" className="dropdown-item">MRI</MenuItem>
+                  <Header className="dropdown-header">{t("dropdowns.imaging")}</Header>
+                  <MenuItem id="xray" className="dropdown-item">{t("dropdowns.xray")}</MenuItem>
+                  <MenuItem id="mri" className="dropdown-item">{t("dropdowns.mri")}</MenuItem>
                 </AriaSection>
               </Menu>
             </Popover>
@@ -2054,7 +2106,7 @@ function ComponentsDropdowns() {
 /* ═══════════════════════════════════════════
    COMPONENTS — OTHERS
    ═══════════════════════════════════════════ */
-function ComponentsOthers() {
+function ComponentsOthers({ t }: { t: T }) {
   // commented out: Collapse / Accordion is commented out
   // const [openPanels, setOpenPanels] = useState<Set<string>>(new Set(["vitals"]));
   // const togglePanel = (id: string) => {
@@ -2072,8 +2124,8 @@ function ComponentsOthers() {
   // ];
 
   return (
-    <Section id="data" label="Components" title="Others"
-      description="Cards, tables, avatars, tooltips, and collapsible sections for displaying structured content.">
+    <Section id="data" label={t("others.label")} title={t("others.title")}
+      description={t("others.desc")}>
 
       {/* <SubSection title="Patient Card">
         <div className="grid g2" style={{gap:"var(--sp-4)"}}>
@@ -2153,18 +2205,18 @@ function ComponentsOthers() {
         />
       </SubSection> */}
 
-      <SubSection title="Progress Bars">
+      <SubSection title={t("others.progressBars")}>
         <div className="card" style={{maxWidth:500}}>
           <div className="progress-item">
-            <div className="progress-head"><span className="progress-label">Profile Complete</span><span className="progress-val">75%</span></div>
+            <div className="progress-head"><span className="progress-label">{t("others.profileComplete")}</span><span className="progress-val">75%</span></div>
             <div className="progress-track"><div className="progress-bar progress-bar-brand" style={{width:"75%"}} /></div>
           </div>
           <div className="progress-item">
-            <div className="progress-head"><span className="progress-label">Upload Progress</span><span className="progress-val">45%</span></div>
+            <div className="progress-head"><span className="progress-label">{t("others.uploadProgress")}</span><span className="progress-val">45%</span></div>
             <div className="progress-track"><div className="progress-bar progress-bar-info" style={{width:"45%"}} /></div>
           </div>
           <div className="progress-item">
-            <div className="progress-head"><span className="progress-label">Storage Used</span><span className="progress-val">90%</span></div>
+            <div className="progress-head"><span className="progress-label">{t("others.storageUsed")}</span><span className="progress-val">90%</span></div>
             <div className="progress-track"><div className="progress-bar progress-bar-danger" style={{width:"90%"}} /></div>
           </div>
         </div>
@@ -2173,7 +2225,7 @@ function ComponentsOthers() {
         />
       </SubSection>
 
-      <SubSection title="Avatars">
+      <SubSection title={t("others.avatars")}>
         <div className="preview">
           <div className="avatar avatar-sm">A</div>
           <div className="avatar">PN</div>
@@ -2210,58 +2262,58 @@ function ComponentsOthers() {
 /* ═══════════════════════════════════════════
    COMPONENTS — OVERLAYS
    ═══════════════════════════════════════════ */
-function ComponentsOverlays() {
+function ComponentsOverlays({ t }: { t: T }) {
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   return (
-    <Section id="overlay" label="Components" title="Overlays"
-      description="Modals, tooltips, and drawer patterns for focused interactions.">
+    <Section id="overlay" label={t("overlays.label")} title={t("overlays.title")}
+      description={t("overlays.desc")}>
 
-      <SubSection title="Modal / Dialog">
+      <SubSection title={t("overlays.modal")}>
         <div className="modal-backdrop-preview">
           <div className="modal-box">
             <div className="modal-head">
-              <h3>Cancel Appointment</h3>
+              <h3>{t("overlays.cancelAppointment")}</h3>
               <Button className="modal-close"><X size={20} /></Button>
             </div>
             <div className="modal-content">
               <p style={{color:"var(--text-secondary)",marginBottom:"var(--sp-4)"}}>
-                Are you sure you want to cancel this appointment with <strong>Dr. Sarah Chen</strong> on Feb 26, 2026?
+                {t("overlays.cancelConfirm")} <strong>Dr. Sarah Chen</strong> {t("overlays.onDate")}
               </p>
               <div className="form-group">
                 <Select className="field">
-                  <Label className="form-label">Reason for cancellation</Label>
+                  <Label className="form-label">{t("overlays.reasonForCancellation")}</Label>
                   <Button className="input select-trigger">
-                    <SelectValue>{({isPlaceholder, selectedText}) => isPlaceholder ? "Select a reason..." : selectedText}</SelectValue>
+                    <SelectValue>{({isPlaceholder, selectedText}) => isPlaceholder ? t("overlays.selectReason") : selectedText}</SelectValue>
                     <ChevronDown size={16} className="select-chevron" />
                   </Button>
                   <Popover className="select-popover">
                     <ListBox className="select-listbox">
-                      <ListBoxItem id="conflict" className="select-option">Schedule conflict</ListBoxItem>
-                      <ListBoxItem id="better" className="select-option">Feeling better</ListBoxItem>
-                      <ListBoxItem id="other" className="select-option">Other</ListBoxItem>
+                      <ListBoxItem id="conflict" className="select-option">{t("overlays.scheduleConflict")}</ListBoxItem>
+                      <ListBoxItem id="better" className="select-option">{t("overlays.feelingBetter")}</ListBoxItem>
+                      <ListBoxItem id="other" className="select-option">{t("overlays.other")}</ListBoxItem>
                     </ListBox>
                   </Popover>
                 </Select>
               </div>
             </div>
             <div className="modal-actions">
-              <Button className="btn btn-ghost">Keep Appointment</Button>
-              <Button className="btn btn-danger">Cancel Appointment</Button>
+              <Button className="btn btn-ghost">{t("overlays.keepAppointment")}</Button>
+              <Button className="btn btn-danger">{t("overlays.cancelAppointment")}</Button>
             </div>
           </div>
         </div>
       </SubSection>
 
-      <SubSection title="Tooltips">
+      <SubSection title={t("overlays.tooltips")}>
         <div className="preview" style={{padding:"60px 24px 24px"}}>
           <TooltipTrigger delay={300}>
-            <Button className="btn btn-ghost">Hover target</Button>
-            <AriaTooltip placement="top" className="tooltip-bubble">This is a tooltip</AriaTooltip>
+            <Button className="btn btn-ghost">{t("overlays.hoverTarget")}</Button>
+            <AriaTooltip placement="top" className="tooltip-bubble">{t("overlays.thisIsTooltip")}</AriaTooltip>
           </TooltipTrigger>
           <TooltipTrigger delay={300}>
-            <Button className="btn btn-primary btn-sm">Save</Button>
-            <AriaTooltip placement="top" className="tooltip-bubble">Save patient record</AriaTooltip>
+            <Button className="btn btn-primary btn-sm">{t("overlays.save")}</Button>
+            <AriaTooltip placement="top" className="tooltip-bubble">{t("overlays.saveRecord")}</AriaTooltip>
           </TooltipTrigger>
         </div>
         <CodeBlock
@@ -2269,9 +2321,9 @@ function ComponentsOverlays() {
         />
       </SubSection>
 
-      <SubSection title="Drawer" description="A slide-in panel from the side of the screen. Used for detail views, editing records, and order entry without leaving the current context.">
+      <SubSection title={t("overlays.drawer")} description={t("overlays.drawerDesc")}>
         <Button className="btn btn-primary" onPress={() => setDrawerOpen(true)}>
-          Open Patient Details
+          {t("overlays.openPatientDetails")}
         </Button>
 
         {drawerOpen && (
@@ -2279,42 +2331,42 @@ function ComponentsOverlays() {
             <div className="drawer-panel" onClick={e => e.stopPropagation()}>
               <div className="drawer-header">
                 <div>
-                  <div className="drawer-title">Patient Details</div>
+                  <div className="drawer-title">{t("overlays.patientDetails")}</div>
                   <div className="drawer-subtitle">Jane Doe · MRN: 00284731</div>
                 </div>
                 <button className="drawer-close" onClick={() => setDrawerOpen(false)}><X size={20} /></button>
               </div>
               <div className="drawer-body">
-                <div className="drawer-section-title">Demographics</div>
-                <div className="drawer-field"><span className="drawer-label">Date of Birth</span><span>March 15, 1985</span></div>
-                <div className="drawer-field"><span className="drawer-label">Gender</span><span>Female</span></div>
-                <div className="drawer-field"><span className="drawer-label">Phone</span><span>(555) 234-5678</span></div>
-                <div className="drawer-field"><span className="drawer-label">Email</span><span>jane.doe@email.com</span></div>
+                <div className="drawer-section-title">{t("overlays.demographics")}</div>
+                <div className="drawer-field"><span className="drawer-label">{t("overlays.dateOfBirth")}</span><span>March 15, 1985</span></div>
+                <div className="drawer-field"><span className="drawer-label">{t("overlays.gender")}</span><span>{t("overlays.female")}</span></div>
+                <div className="drawer-field"><span className="drawer-label">{t("overlays.phone")}</span><span>(555) 234-5678</span></div>
+                <div className="drawer-field"><span className="drawer-label">{t("overlays.emailLabel")}</span><span>jane.doe@email.com</span></div>
 
                 <div className="divider" />
 
-                <div className="drawer-section-title">Insurance</div>
-                <div className="drawer-field"><span className="drawer-label">Provider</span><span>BlueCross BlueShield</span></div>
-                <div className="drawer-field"><span className="drawer-label">Plan ID</span><span>BCB-9928371</span></div>
-                <div className="drawer-field"><span className="drawer-label">Group</span><span>GRP-44210</span></div>
+                <div className="drawer-section-title">{t("overlays.insurance")}</div>
+                <div className="drawer-field"><span className="drawer-label">{t("overlays.provider")}</span><span>BlueCross BlueShield</span></div>
+                <div className="drawer-field"><span className="drawer-label">{t("overlays.planId")}</span><span>BCB-9928371</span></div>
+                <div className="drawer-field"><span className="drawer-label">{t("overlays.group")}</span><span>GRP-44210</span></div>
 
                 <div className="divider" />
 
-                <div className="drawer-section-title">Recent Encounters</div>
+                <div className="drawer-section-title">{t("overlays.recentEncounters")}</div>
                 <div className="drawer-encounter">
                   <div className="drawer-encounter-date">Mar 28, 2026</div>
-                  <div className="drawer-encounter-type">Telemedicine — Follow-up</div>
+                  <div className="drawer-encounter-type">{t("overlays.telemedicineFollowup")}</div>
                   <div className="drawer-encounter-provider">Dr. Sarah Chen</div>
                 </div>
                 <div className="drawer-encounter">
                   <div className="drawer-encounter-date">Feb 10, 2026</div>
-                  <div className="drawer-encounter-type">In-Person — Annual Physical</div>
+                  <div className="drawer-encounter-type">{t("overlays.inPersonAnnual")}</div>
                   <div className="drawer-encounter-provider">Dr. Michael Park</div>
                 </div>
               </div>
               <div className="drawer-footer">
-                <Button className="btn btn-secondary" onPress={() => setDrawerOpen(false)}>Close</Button>
-                <Button className="btn btn-primary">Edit Patient</Button>
+                <Button className="btn btn-secondary" onPress={() => setDrawerOpen(false)}>{t("overlays.close")}</Button>
+                <Button className="btn btn-primary">{t("overlays.editPatient")}</Button>
               </div>
             </div>
           </div>
@@ -2372,7 +2424,7 @@ function ComponentsOverlays() {
 /* ═══════════════════════════════════════════
    PATTERNS — LAYOUTS
    ═══════════════════════════════════════════ */
-function PatternsLayouts() {
+function PatternsLayouts({ t }: { t: T }) {
   const sidebarPages: Record<string, { title: string; content: React.ReactNode }> = {
     Dashboard: {
       title: "Dashboard",
@@ -2434,13 +2486,13 @@ function PatternsLayouts() {
   const page = sidebarPages[activePage];
 
   return (
-    <Section id="layouts" label="Patterns" title="Layouts"
-      description="Common layout patterns used across the VSee Clinic application.">
+    <Section id="layouts" label={t("layouts.label")} title={t("layouts.title")}
+      description={t("layouts.desc")}>
 
-      <SubSection title="Sidebar + Content">
+      <SubSection title={t("layouts.sidebarContent")}>
         <div className="sidebar-layout">
           <div className="sidebar-panel">
-            <div className="sidebar-heading">Menu</div>
+            <div className="sidebar-heading">{t("layouts.menu")}</div>
             {Object.keys(sidebarPages).map((item) => (
               <div key={item} className={`sidebar-menu-item ${activePage === item ? "active" : ""}`} onClick={() => setActivePage(item)}>{item}</div>
             ))}
@@ -2458,16 +2510,16 @@ function PatternsLayouts() {
 /* ═══════════════════════════════════════════
    PATTERNS — WHITE-LABEL THEMING
    ═══════════════════════════════════════════ */
-function PatternsTheming({ brandTheme, setBrandTheme }: { brandTheme: string; setBrandTheme: (t: string) => void }) {
+function PatternsTheming({ brandTheme, setBrandTheme, t }: { brandTheme: string; setBrandTheme: (t: string) => void; t: T }) {
   return (
-    <Section id="theming" label="Engineering" title="White-Label Theming"
-      description={`VSee supports white-label customization per tenant. Override CSS variables via [data-theme] for brand colors and [data-mode="dark"] for dark mode. Click a card below to switch the theme live, or toggle dark mode in the sidebar.`}>
+    <Section id="theming" label={t("theming.label")} title={t("theming.title")}
+      description={t("theming.desc")}>
 
       <div className="grid g3" style={{gap:"var(--sp-4)"}}>
         {[
-          { name: "VSee Default", color: "#0D875C", theme: "" },
-          { name: "Ocean Blue", color: "#0891B2", theme: "blue" },
-          { name: "Royal Purple", color: "#7C3AED", theme: "purple" },
+          { name: t("theming.vseeDefault"), color: "#0D875C", theme: "" },
+          { name: t("theming.oceanBlue"), color: "#0891B2", theme: "blue" },
+          { name: t("theming.royalPurple"), color: "#7C3AED", theme: "purple" },
         ].map((t) => (
           <div key={t.name} className={`theme-card ${brandTheme === t.theme ? "theme-card-active" : ""}`} style={{cursor:"pointer"}} onClick={() => setBrandTheme(t.theme)}>
             <div className="theme-card-header"><div className="theme-card-dot" style={{background:t.color}} /> {t.name}</div>
@@ -2479,7 +2531,7 @@ function PatternsTheming({ brandTheme, setBrandTheme }: { brandTheme: string; se
         ))}
       </div>
 
-      <div className="sub-title" style={{marginTop:"var(--sp-8)"}}>How to Switch Themes</div>
+      <div className="sub-title" style={{marginTop:"var(--sp-8)"}}>{t("theming.howToSwitch")}</div>
       <div className="sub-desc">Add a <code className="code-inline">data-theme</code> attribute to the <code className="code-inline">{"<html>"}</code> element. The attribute overrides all <code className="code-inline">--brand-*</code> CSS variables globally.</div>
       <div className="code">
         <span className="c">{"/* 1. In HTML — set the attribute */"}</span>{"\n"}
@@ -2504,7 +2556,7 @@ function PatternsTheming({ brandTheme, setBrandTheme }: { brandTheme: string; se
         {"}, [theme]);\n"}
       </div>
 
-      <div className="sub-title" style={{marginTop:"var(--sp-8)"}}>Dark Mode</div>
+      <div className="sub-title" style={{marginTop:"var(--sp-8)"}}>{t("theming.darkMode")}</div>
       <div className="sub-desc">Toggle dark mode by setting <code className="code-inline">data-mode="dark"</code> on the <code className="code-inline">{"<html>"}</code> element. Dark mode works independently of brand themes — combine both attributes for branded dark UIs.</div>
       <div className="code">
         <span className="c">{"/* 1. In HTML */"}</span>{"\n"}
@@ -2521,7 +2573,7 @@ function PatternsTheming({ brandTheme, setBrandTheme }: { brandTheme: string; se
         {"}, [darkMode]);\n"}
       </div>
 
-      <div className="sub-title" style={{marginTop:"var(--sp-8)"}}>Creating a Custom Theme</div>
+      <div className="sub-title" style={{marginTop:"var(--sp-8)"}}>{t("theming.customTheme")}</div>
       <div className="sub-desc">Define a new <code className="code-inline">[data-theme]</code> block with all 7 brand variables:</div>
       <div className="code">
         <span className="k">{"[data-theme=\"your-brand\"]"}</span>{" {\n"}
@@ -2541,7 +2593,7 @@ function PatternsTheming({ brandTheme, setBrandTheme }: { brandTheme: string; se
 /* ═══════════════════════════════════════════
    PATTERNS — FORM.IO INTEGRATION
    ═══════════════════════════════════════════ */
-function PatternsFormio() {
+function PatternsFormio({ t }: { t: T }) {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [dob, setDob] = useState("");
@@ -2556,36 +2608,36 @@ function PatternsFormio() {
   };
 
   return (
-    <Section id="formio" label="Engineering" title="Form.io + React Aria"
+    <Section id="formio" label={t("formio.label")} title={t("formio.title")}
       description={<>Form.io is a headless form platform — forms are defined as JSON schemas on a server and rendered client-side via <code className="code-inline">@formio/react</code>. Registering React Aria components as Form.io <em>custom components</em> gives you runtime-driven, dynamic forms that look and feel like the rest of your design system.</>}>
 
       {/* ── How it works ── */}
-      <SubSection title="How it works">
+      <SubSection title={t("formio.howItWorks")}>
         <div className="arch-pipeline">
           <div className="arch-step">
-            <div className="arch-step-title">Form.io Builder</div>
-            <div className="arch-step-desc">Drag-and-drop form builder or JSON editor hosted on form.io or self-hosted</div>
+            <div className="arch-step-title">{t("formio.formBuilder")}</div>
+            <div className="arch-step-desc">{t("formio.formBuilderDesc")}</div>
           </div>
           <div className="arch-arrow"><ChevronRight size={20} /></div>
           <div className="arch-step">
-            <div className="arch-step-title">Form Schema</div>
-            <div className="arch-step-desc">Form definition fetched at runtime — no redeploy needed to change a form</div>
+            <div className="arch-step-title">{t("formio.formSchema")}</div>
+            <div className="arch-step-desc">{t("formio.formSchemaDesc")}</div>
           </div>
           <div className="arch-arrow"><ChevronRight size={20} /></div>
           <div className="arch-step">
-            <div className="arch-step-title">{"<Form>"}</div>
-            <div className="arch-step-desc">Renders schema, handles validation, submissions, and multi-step logic</div>
+            <div className="arch-step-title">{t("formio.formComponent")}</div>
+            <div className="arch-step-desc">{t("formio.formComponentDesc")}</div>
           </div>
           <div className="arch-arrow"><ChevronRight size={20} /></div>
           <div className="arch-step">
-            <div className="arch-step-title">Custom Components</div>
-            <div className="arch-step-desc">TextField, Checkbox, Select etc. registered as Form.io custom component overrides</div>
+            <div className="arch-step-title">{t("formio.customComponents")}</div>
+            <div className="arch-step-desc">{t("formio.customComponentsDesc")}</div>
           </div>
         </div>
       </SubSection>
 
       {/* ── JSON Schema ── */}
-      <SubSection title="Form.io JSON Schema">
+      <SubSection title={t("formio.jsonSchema")}>
         <p className="sub-desc">
           The server returns a JSON schema like this. The <code className="code-inline">type</code> field maps to the registered custom component.
         </p>
@@ -2652,7 +2704,7 @@ function PatternsFormio() {
       </SubSection>
 
       {/* ── Custom Component Bridge ── */}
-      <SubSection title="Custom Component Registration">
+      <SubSection title={t("formio.registration")}>
         <p className="sub-desc">
           Each Form.io component type is mapped to a React component. The <code className="code-inline">component</code> object carries the schema properties; <code className="code-inline">onChange</code> updates the submission data.
         </p>
@@ -2709,7 +2761,7 @@ function PatternsFormio() {
       </SubSection>
 
       {/* ── Wiring ── */}
-      <SubSection title="Wiring it Together">
+      <SubSection title={t("formio.wiring")}>
         <div className="code">
           <span className="c">{"// src/pages/PatientIntake.tsx"}</span>{"\n"}
           <span className="k">import</span>{" { "}<span className="f">Form</span>{" } "}<span className="k">from</span>{" "}<span className="s">"@formio/react"</span>{"\n"}
@@ -2733,7 +2785,7 @@ function PatternsFormio() {
       </SubSection>
 
       {/* ── Live Demo ── */}
-      <SubSection title="Live Preview — Patient Intake Form">
+      <SubSection title={t("formio.livePreview")}>
         <p className="sub-desc">
           This is what the form above renders using the React Aria custom components. All validation, layout, and
           field logic come from the JSON schema; the React Aria components supply only styling and accessibility.
@@ -2744,7 +2796,7 @@ function PatternsFormio() {
             <div className="panel-header">
               <div style={{display:"flex",alignItems:"center",gap:8}}>
                 <FileText size={18} style={{color:"var(--brand)"}} />
-                Patient Intake Form
+                {t("formio.patientIntake")}
               </div>
             </div>
             <div className="panel-body">
@@ -2754,39 +2806,39 @@ function PatternsFormio() {
               {submitted ? (
                 <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:"var(--sp-3)",padding:"var(--sp-8) 0",textAlign:"center"}}>
                   <CheckCircle2 size={48} style={{color:"var(--brand)"}} />
-                  <p style={{fontSize:"var(--text-body-size)",fontWeight:600}}>Intake form submitted!</p>
+                  <p style={{fontSize:"var(--text-body-size)",fontWeight:600}}>{t("formio.submitted")}</p>
                   <p style={{fontSize:"var(--text-caption-size)",color:"var(--text-secondary)"}}>
                     {firstName} {lastName} · {insurance || "No insurance"}
                   </p>
-                  <Button className="btn btn-ghost btn-sm" onPress={resetForm}>Reset form</Button>
+                  <Button className="btn btn-ghost btn-sm" onPress={resetForm}>{t("formio.resetForm")}</Button>
                 </div>
               ) : (
                 <Form onSubmit={(e) => { e.preventDefault(); setSubmitted(true); }}>
                   <div className="grid g2" style={{gap:"var(--sp-3)",marginBottom:"var(--sp-4)"}}>
                     <div className="form-group" style={{marginBottom:0}}>
                       <TextField value={firstName} onChange={setFirstName} isRequired className="field">
-                        <Label className="form-label">First Name <span className="req">*</span></Label>
+                        <Label className="form-label">{t("formio.firstName")} <span className="req">*</span></Label>
                         <Input className="input" placeholder="Jane" />
                       </TextField>
                     </div>
                     <div className="form-group" style={{marginBottom:0}}>
                       <TextField value={lastName} onChange={setLastName} isRequired className="field">
-                        <Label className="form-label">Last Name <span className="req">*</span></Label>
+                        <Label className="form-label">{t("formio.lastName")} <span className="req">*</span></Label>
                         <Input className="input" placeholder="Doe" />
                       </TextField>
                     </div>
                   </div>
                   <div className="form-group">
                     <TextField value={dob} onChange={setDob} isRequired className="field">
-                      <Label className="form-label">Date of Birth <span className="req">*</span></Label>
+                      <Label className="form-label">{t("formio.dateOfBirth")} <span className="req">*</span></Label>
                       <Input className="input" type="date" />
                     </TextField>
                   </div>
                   <div className="form-group">
                     <Select className="field" selectedKey={insurance || undefined} onSelectionChange={(k) => setInsurance(k as string)}>
-                      <Label className="form-label">Insurance Provider</Label>
+                      <Label className="form-label">{t("formio.insuranceProvider")}</Label>
                       <Button className="input select-trigger">
-                        <SelectValue>{({isPlaceholder, selectedText}) => isPlaceholder ? "Select provider…" : selectedText}</SelectValue>
+                        <SelectValue>{({isPlaceholder, selectedText}) => isPlaceholder ? t("formio.selectProvider") : selectedText}</SelectValue>
                         <ChevronDown size={16} className="select-chevron" />
                       </Button>
                       <Popover className="select-popover">
@@ -2801,8 +2853,8 @@ function PatternsFormio() {
                   </div>
                   <div className="form-group">
                     <TextField value={reason} onChange={setReason} className="field">
-                      <Label className="form-label">Reason for Visit</Label>
-                      <TextArea className="input textarea" placeholder="Describe your symptoms or reason for visit…" rows={3} />
+                      <Label className="form-label">{t("formio.reasonForVisit")}</Label>
+                      <TextArea className="input textarea" placeholder={t("formio.reasonPlaceholder")} rows={3} />
                     </TextField>
                   </div>
                   <div className="form-group">
@@ -2811,12 +2863,12 @@ function PatternsFormio() {
                         <div className={`check-box ${hipaa ? "checked" : ""}`}>
                           {hipaa && <svg viewBox="0 0 14 14" fill="none" className="check-svg"><path d="M3 7l3 3 5-6" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" /></svg>}
                         </div>
-                        <span style={{fontSize:"var(--text-caption-size)",lineHeight:1.4}}>I have read and agree to the HIPAA Privacy Notice <span className="req">*</span></span>
+                        <span style={{fontSize:"var(--text-caption-size)",lineHeight:1.4}}>{t("formio.hipaaConsent")} <span className="req">*</span></span>
                       </Checkbox>
                     </div>
                   </div>
                   <Button type="submit" className="btn btn-primary btn-block" isDisabled={!hipaa}>
-                    Submit Intake Form
+                    {t("formio.submitIntake")}
                   </Button>
                 </Form>
               )}
@@ -2826,20 +2878,20 @@ function PatternsFormio() {
           {/* Responsibility cards */}
           <div style={{display:"flex",flexDirection:"column",gap:"var(--sp-4)"}}>
             <div className="panel">
-              <div className="panel-header">What Form.io handles</div>
+              <div className="panel-header">{t("formio.whatFormio")}</div>
               <div className="panel-body">
                 <ul className="resp-list">
-                  {["Schema fetch & caching","Field-level validation rules (required, min/max, regex)","Conditional visibility logic","Multi-step wizard / page navigation","Submission to Form.io or custom endpoint","Offline drafts & resume"].map(item => (
+                  {[t("formio.formioList1"),t("formio.formioList2"),t("formio.formioList3"),t("formio.formioList4"),t("formio.formioList5"),t("formio.formioList6")].map(item => (
                     <li key={item}><CheckCircle2 size={14} style={{color:"var(--brand)",flexShrink:0}} /> {item}</li>
                   ))}
                 </ul>
               </div>
             </div>
             <div className="panel">
-              <div className="panel-header">What React Aria handles</div>
+              <div className="panel-header">{t("formio.whatAria")}</div>
               <div className="panel-body">
                 <ul className="resp-list">
-                  {["Visual styling & brand tokens","Keyboard navigation & focus rings","ARIA labels, roles, error associations","React Aria accessibility primitives","Consistent hover / focus / disabled states","Design system token inheritance"].map(item => (
+                  {[t("formio.ariaList1"),t("formio.ariaList2"),t("formio.ariaList3"),t("formio.ariaList4"),t("formio.ariaList5"),t("formio.ariaList6")].map(item => (
                     <li key={item}><CheckCircle2 size={14} style={{color:"var(--brand)",flexShrink:0}} /> {item}</li>
                   ))}
                 </ul>
@@ -2850,7 +2902,7 @@ function PatternsFormio() {
       </SubSection>
 
       {/* ── Install ── */}
-      <SubSection title="Install">
+      <SubSection title={t("formio.install")}>
         <div className="code">
 {`# Install Form.io React renderer + core library
 npm install @formio/react formiojs
@@ -2866,10 +2918,10 @@ npm install react-aria-components`}
 /* ═══════════════════════════════════════════
    ENGINEERING — DESIGN TOKENS
    ═══════════════════════════════════════════ */
-function EngineeringTokens() {
+function EngineeringTokens({ t }: { t: T }) {
   return (
-    <Section id="tokens" label="Engineering" title="Design Tokens"
-      description="Copy the :root block into your global CSS. Tokens support light and dark mode via [data-mode] attributes. Available as CSS custom properties, Tokens Studio JSON, and Figma Variables.">
+    <Section id="tokens" label={t("tokens.label")} title={t("tokens.title")}
+      description={t("tokens.desc")}>
       <div className="code">
         <span className="c">{"/* index.css — VSee Clinic Design Tokens */"}</span>{"\n\n"}
         <span className="k">@import</span>{" "}<span className="s">"tailwindcss"</span>{";\n\n"}
@@ -2999,6 +3051,14 @@ function EngineeringTokens() {
         {"}"}
       </div>
     </Section>
+  );
+}
+
+function App() {
+  return (
+    <LanguageProvider>
+      <AppInner />
+    </LanguageProvider>
   );
 }
 

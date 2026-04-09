@@ -24,6 +24,10 @@
 .ds-theme-blue { background: #0891B2; }
 .ds-theme-purple { background: #7C3AED; }
 
+.ds-font-select { width: 100%; padding: 6px 8px; font-size: var(--text-caption-size); font-family: var(--font-sans); font-weight: 500; color: var(--text-primary); background: var(--white); border: 1px solid var(--border); border-radius: var(--r-md); cursor: pointer; outline: none; transition: all var(--t-fast); appearance: auto; }
+.ds-font-select:hover { border-color: var(--brand); }
+.ds-font-select:focus { border-color: var(--brand); box-shadow: var(--shadow-focus); }
+
 .ds-mode-switch { display: inline-flex; align-items: center; gap: 8px; padding: 0; background: none; border: none; cursor: pointer; }
 .ds-mode-icon { color: var(--text-tertiary); transition: color var(--t-fast); flex-shrink: 0; }
 .ds-mode-track { width: 36px; height: 20px; background: var(--grey-400); border-radius: var(--r-full); position: relative; transition: background var(--t-fast); flex-shrink: 0; }
