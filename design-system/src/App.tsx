@@ -321,7 +321,7 @@ function AppInner() {
             const isActive = g.items.some(i => i.id === activeSection);
             return (
               <a
-                key={g.group}
+                key={g.groupKey}
                 href={`#${firstId}`}
                 className={`anchor-link ${isActive ? "active" : ""}`}
                 onClick={(e) => { e.preventDefault(); scrollTo(firstId); }}
