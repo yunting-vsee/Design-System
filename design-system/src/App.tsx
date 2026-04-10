@@ -267,7 +267,6 @@ function AppInner() {
           >
             <option value="">Plus Jakarta Sans (Default)</option>
             <option value="Figtree">Figtree</option>
-            <option value="Sora">Sora</option>
             <option value="Albert Sans">Albert Sans</option>
             <option value="Urbanist">Urbanist</option>
             <option value="Hanken Grotesk">Hanken Grotesk</option>
