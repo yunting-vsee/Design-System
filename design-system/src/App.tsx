@@ -182,13 +182,22 @@ function AppInner() {
   /* apply font family to root element */
   useEffect(() => {
     if (fontFamily) {
+      /* dynamically load the font from Google Fonts */
+      const id = `gfont-${fontFamily.replace(/\s+/g, "-")}`;
+      if (!document.getElementById(id)) {
+        const link = document.createElement("link");
+        link.id = id;
+        link.rel = "stylesheet";
+        link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(fontFamily)}:wght@400;500;600;700&display=swap`;
+        document.head.appendChild(link);
+      }
       document.documentElement.style.setProperty(
-        "--font",
+        "--font-sans",
         `'${fontFamily}', -apple-system, BlinkMacSystemFont, sans-serif`
       );
     } else {
       document.documentElement.style.setProperty(
-        "--font",
+        "--font-sans",
         "'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif"
       );
     }

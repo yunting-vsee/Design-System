@@ -1,6 +1,10 @@
 ﻿# Changelog
 
 Apr 9
+  Font Family Switcher Fix                                                                                  
+  - Updated the CSS variable from --font to --font-sans to match the recent refactor, and added dynamic Google Fonts loading for alternate font options. 
+
+Apr 9
   Font System                                                                                                                                      
   - Added 8 Google Fonts for testing: Figtree, Sora, Albert Sans, Urbanist, Hanken Grotesk, Instrument Sans, Schibsted Grotesk, Bricolage Grotesque  - Added font family dropdown in sidebar to switch fonts live
 
@@ -9,7 +13,7 @@ Apr 9
   Traditional Chinese
   - Added language dropdown in sidebar
   - Translated ~437 UI strings across all sections: navigation, hero, colors, typography, spacing, buttons, forms, badges, feedback, navigation,
-  dropdowns, overlays, others, layouts, theming, form.io, and design tokens
+  dropsamedowns, overlays, others, layouts, theming, form.io, and design tokens
 
 Apr 9
   Font System
