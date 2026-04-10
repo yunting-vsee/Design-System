@@ -4,7 +4,7 @@ Apr 9
   Font Family Switcher Fix                                                                                  
   - Updated the CSS variable from --font to --font-sans to match the recent refactor
   - Added dynamic Google Fonts loading for alternate font options. 
-  - Added Lexend to the font family dropdown options.
+  - Added Lexend, Arial, and Inter to the font family dropdown options.
 
 Apr 9
   Font System                                                                                                                                      

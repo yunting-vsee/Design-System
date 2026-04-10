@@ -275,6 +275,8 @@ function AppInner() {
             <option value="Schibsted Grotesk">Schibsted Grotesk</option>
             <option value="Bricolage Grotesque">Bricolage Grotesque</option>
             <option value="Lexend">Lexend</option>
+            <option value="Inter">Inter</option>
+            <option value="Arial">Arial</option>
           </select>
           <div className="ds-theme-label" style={{marginTop:"var(--sp-3)"}}>{t("sidebar.language")}</div>
           <select
