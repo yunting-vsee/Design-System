@@ -1,6 +1,10 @@
 ﻿# Changelog
 
 Apr 9
+  - Added a live date/time format preview line under the Typography section that detects the user's browser language
+    and displays the corresponding date format (e.g., MM/DD/YYYY for en-US, DD/MM/YYYY for en-GB, YYYY/MM/DD for ja-JP, etc.).
+
+Apr 9
   Font System
   - Consolidated --font and --font-sans into a single --font-sans variable, removing the redundant --font declaration from :root and updating all 16 references across App.css and index.c
   UI Fixes
@@ -13,7 +17,9 @@ Apr 9
 - Apr 8
   Foundations — Typography
 
-  - Added --r-xs (4px) square to Border Radius display                                                                                               - Moved Shadows next to Spacing (right column), moved Border Radius below Spacing (full width)                                                     - Renamed all typography size tokens from generic (--text-xs, --text-sm, --text-base, etc.) to semantic names (--text-overline-size,
+  - Added --r-xs (4px) square to Border Radius display
+  - Moved Shadows next to Spacing (right column), moved Border Radius below Spacing (full width)
+  - Renamed all typography size tokens from generic (--text-xs, --text-sm, --text-base, etc.) to semantic names (--text-overline-size,
   --text-caption-size, --text-body-size, --text-h5-size, --text-h4-size, --text-h3-size, --text-h2-size, --text-h1-size, --text-display-size)
   - Added --text-body-lg-size (16px) as separate token from --text-h5-size
   - Added --text-subtitle-size (18px) for subtitles/modal headers

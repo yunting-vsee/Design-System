@@ -496,17 +496,25 @@ function FoundationsTypography() {
       </SubSection>
 
       <SubSection title="Date Format">
-        <div className="card" style={{padding:"var(--sp-4) var(--sp-6)"}}>
+        <div className="card" style={{padding:"var(--sp-4) var(--sp-6)", display:"flex", flexDirection:"column", gap:"var(--sp-3)"}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
             <div>
               <div className="text-caption" style={{color:"var(--text-tertiary)",marginBottom:"var(--sp-1)"}}>US Format</div>
-              <div className="text-body" style={{fontWeight:600}}>{new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })} at {new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}</div>
+              <div className="text-body" style={{fontWeight:600}}>{new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}, {new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}</div>
             </div>
-            <code style={{fontSize:"var(--text-caption-size)",color:"var(--text-tertiary)",background:"var(--grey-100)",padding:"var(--sp-1) var(--sp-2)",borderRadius:"var(--r-sm)"}}>MMM D, YYYY at h:mm A</code>
+            <code style={{fontSize:"var(--text-caption-size)",color:"var(--text-tertiary)",background:"var(--grey-100)",padding:"var(--sp-1) var(--sp-2)",borderRadius:"var(--r-sm)"}}>MMM D, YYYY, h:mm A</code>
+          </div>
+          <hr style={{border:"none",borderTop:"1px solid var(--grey-200)",margin:0}} />
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+            <div>
+              <div className="text-caption" style={{color:"var(--text-tertiary)",marginBottom:"var(--sp-1)"}}>Browser Locale ({navigator.language})</div>
+              <div className="text-body" style={{fontWeight:600}}>{new Date().toLocaleDateString(navigator.language, { month: "short", day: "numeric", year: "numeric" })}, {new Date().toLocaleTimeString(navigator.language, { hour: "numeric", minute: "2-digit" })}</div>
+            </div>
+            <code style={{fontSize:"var(--text-caption-size)",color:"var(--text-tertiary)",background:"var(--grey-100)",padding:"var(--sp-1) var(--sp-2)",borderRadius:"var(--r-sm)"}}>{navigator.language}</code>
           </div>
         </div>
         <CodeBlock
-          code={`/* US Date Format */\nconst formatDate = (date: Date) =>\n  date.toLocaleDateString("en-US", {\n    month: "short", day: "numeric", year: "numeric"\n  }) + " at " + date.toLocaleTimeString("en-US", {\n    hour: "numeric", minute: "2-digit"\n  });\n\n// Output: "Apr 8, 2026 at 8:35 PM"`}
+          code={`/* Browser-locale Date Format */\nconst formatDate = (date: Date) => {\n  const locale = navigator.language; // e.g. "en-US", "zh-TW", "ja-JP"\n  const dateStr = date.toLocaleDateString(locale, {\n    month: "short", day: "numeric", year: "numeric"\n  });\n  const timeStr = date.toLocaleTimeString(locale, {\n    hour: "numeric", minute: "2-digit"\n  });\n  return \`\${dateStr} \${timeStr}\`;\n};\n\n// Examples by locale:\n// "en-US"  → "Apr 10, 2026, 8:35 PM"\n// "zh-TW"  → "2026年4月10日 下午8:35"\n// "ja-JP"  → "2026年4月10日 20:35"\n// "de-DE"  → "10. Apr. 2026, 20:35"`}
         />
       </SubSection>
     </Section>
