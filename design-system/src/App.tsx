@@ -389,7 +389,7 @@ function FoundationsColors({ copy }: { copy: (v: string) => void }) {
           <Swatch large color="var(--brand-light)" name="--brand-light" hex="#E6F5EE" onClick={() => copy("var(--brand-light)")} />
           <Swatch large color="var(--brand)" name="--brand" hex="#0D875C" onClick={() => copy("var(--brand)")} />
           <Swatch large color="var(--brand-hover)" name="--brand-hover" hex="#0B7550" onClick={() => copy("var(--brand-hover)")} />
-          <Swatch large color="var(--brand-active)" name="--brand-active" hex="#096843" onClick={() => copy("var(--brand-active)")} />
+          <Swatch large color="var(--brand-semidark)" name="--brand-semidark" hex="#096843" onClick={() => copy("var(--brand-semidark)")} />
         </div>
       </SubSection>
 
@@ -440,7 +440,6 @@ function FoundationsColors({ copy }: { copy: (v: string) => void }) {
             <div className="surface-text-list">
               <div className="st-row" onClick={() => copy("var(--text-primary)")}><div className="st-swatch" style={{background:"var(--text-primary)"}} /><div><div className="st-name">--text-primary</div><div className="st-val">#111827</div></div></div>
               <div className="st-row" onClick={() => copy("var(--text-secondary)")}><div className="st-swatch" style={{background:"var(--text-secondary)"}} /><div><div className="st-name">--text-secondary</div><div className="st-val">#6B7280</div></div></div>
-              <div className="st-row" onClick={() => copy("var(--text-tertiary)")}><div className="st-swatch" style={{background:"var(--text-tertiary)"}} /><div><div className="st-name">--text-tertiary</div><div className="st-val">#6F7787</div></div></div>
               <div className="st-row" onClick={() => copy("var(--link)")}><div className="st-swatch" style={{background:"var(--link)"}} /><div><div className="st-name">--link</div><div className="st-val">#0D875C</div></div></div>
             </div>
           </div>
@@ -499,18 +498,18 @@ function FoundationsTypography() {
         <div className="card" style={{padding:"var(--sp-4) var(--sp-6)", display:"flex", flexDirection:"column", gap:"var(--sp-3)"}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
             <div>
-              <div className="text-caption" style={{color:"var(--text-tertiary)",marginBottom:"var(--sp-1)"}}>US Format</div>
+              <div className="text-caption" style={{color:"var(--text-secondary)",marginBottom:"var(--sp-1)"}}>US Format</div>
               <div className="text-body" style={{fontWeight:600}}>{new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}, {new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}</div>
             </div>
-            <code style={{fontSize:"var(--text-caption-size)",color:"var(--text-tertiary)",background:"var(--grey-100)",padding:"var(--sp-1) var(--sp-2)",borderRadius:"var(--r-sm)"}}>MMM D, YYYY, h:mm A</code>
+            <code style={{fontSize:"var(--text-caption-size)",color:"var(--text-secondary)",background:"var(--grey-100)",padding:"var(--sp-1) var(--sp-2)",borderRadius:"var(--r-sm)"}}>MMM D, YYYY, h:mm A</code>
           </div>
           <hr style={{border:"none",borderTop:"1px solid var(--grey-200)",margin:0}} />
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
             <div>
-              <div className="text-caption" style={{color:"var(--text-tertiary)",marginBottom:"var(--sp-1)"}}>Browser Locale ({navigator.language})</div>
+              <div className="text-caption" style={{color:"var(--text-secondary)",marginBottom:"var(--sp-1)"}}>Browser Locale ({navigator.language})</div>
               <div className="text-body" style={{fontWeight:600}}>{new Date().toLocaleDateString(navigator.language, { month: "short", day: "numeric", year: "numeric" })}, {new Date().toLocaleTimeString(navigator.language, { hour: "numeric", minute: "2-digit" })}</div>
             </div>
-            <code style={{fontSize:"var(--text-caption-size)",color:"var(--text-tertiary)",background:"var(--grey-100)",padding:"var(--sp-1) var(--sp-2)",borderRadius:"var(--r-sm)"}}>{navigator.language}</code>
+            <code style={{fontSize:"var(--text-caption-size)",color:"var(--text-secondary)",background:"var(--grey-100)",padding:"var(--sp-1) var(--sp-2)",borderRadius:"var(--r-sm)"}}>{navigator.language}</code>
           </div>
         </div>
         <CodeBlock
@@ -588,7 +587,7 @@ function FoundationsSpacing() {
             <span>Dept: Internal Medicine</span>
           </div>
           <div className="divider divider-thick" />
-          <div style={{ color: "var(--text-tertiary)" }}>End of section</div>
+          <div style={{ color: "var(--text-secondary)" }}>End of section</div>
         </div>
         <div style={{ marginTop: "var(--sp-6)" }}>
           <div className="sub-title">Divider with Label</div>
@@ -679,13 +678,12 @@ function ComponentsButtons() {
 
       <SubSection title="Sizes">
         <div className="preview">
-          <Button className="btn btn-primary btn-xl">Extra Large</Button>
           <Button className="btn btn-primary btn-lg">Large</Button>
           <Button className="btn btn-primary">Default</Button>
           <Button className="btn btn-primary btn-sm">Small</Button>
         </div>
         <CodeBlock
-          code={`<Button className="btn btn-primary btn-xl">Extra Large</Button>\n<Button className="btn btn-primary btn-lg">Large</Button>\n<Button className="btn btn-primary">Default</Button>\n<Button className="btn btn-primary btn-sm">Small</Button>`}
+          code={`<Button className="btn btn-primary btn-lg">Large</Button>\n<Button className="btn btn-primary">Default</Button>\n<Button className="btn btn-primary btn-sm">Small</Button>`}
         />
       </SubSection>
 
@@ -709,7 +707,7 @@ function ComponentsButtons() {
           <Button className="btn btn-primary" isDisabled>Disabled</Button>
         </div>
         <CodeBlock
-          code={`/* States are handled via React Aria data attributes */\n.btn[data-hovered]  { background: var(--brand-hover); }\n.btn[data-pressed]  { background: var(--brand-active); }\n.btn[data-focus-visible] { box-shadow: var(--shadow-focus); }\n.btn[data-disabled] { opacity: 0.5; cursor: not-allowed; }`}
+          code={`/* States are handled via React Aria data attributes */\n.btn[data-hovered]  { background: var(--brand-hover); }\n.btn[data-pressed]  { background: var(--brand-semidark); }\n.btn[data-focus-visible] { box-shadow: var(--shadow-focus); }\n.btn[data-disabled] { opacity: 0.5; cursor: not-allowed; }`}
         />
       </SubSection>
 
@@ -762,7 +760,6 @@ function ComponentsButtons() {
         </div>
         <div className="sub-title" style={{ marginTop: "var(--sp-6)" }}>Sizes with Icons</div>
         <div className="preview">
-          <Button className="btn btn-primary btn-xl"><Plus size={18} /> Extra Large</Button>
           <Button className="btn btn-primary btn-lg"><Plus size={16} /> Large</Button>
           <Button className="btn btn-primary"><Plus size={16} /> Default</Button>
           <Button className="btn btn-primary btn-sm"><Plus size={14} /> Small</Button>
@@ -1368,7 +1365,7 @@ function ComponentsForms() {
                       <ListBoxItem key={s} id={s} className="dropdown-item">{s}</ListBoxItem>
                     ))}
                     {filteredSpecialties.length === 0 && (
-                      <ListBoxItem id="__empty" className="dropdown-item" style={{ color: "var(--text-tertiary)", fontStyle: "italic" }}>
+                      <ListBoxItem id="__empty" className="dropdown-item" style={{ color: "var(--text-secondary)", fontStyle: "italic" }}>
                         No matches found
                       </ListBoxItem>
                     )}
@@ -2360,7 +2357,7 @@ function ComponentsOverlays() {
 
       <SubSection title="Vitals Card">
         <div className="panel" style={{maxWidth:500}}>
-          <div className="panel-header">Latest Vitals <span style={{fontSize:"var(--text-caption-size)",color:"var(--text-tertiary)",fontWeight:400,marginLeft:"auto"}}>Feb 26, 2026</span></div>
+          <div className="panel-header">Latest Vitals <span style={{fontSize:"var(--text-caption-size)",color:"var(--text-secondary)",fontWeight:400,marginLeft:"auto"}}>Feb 26, 2026</span></div>
           <div className="panel-body">
             <div className="vitals-grid">
               <div className="vital"><div className="vital-val" style={{color:"var(--brand)"}}>120/80</div><div className="vital-label">Blood Pressure</div></div>
@@ -2404,7 +2401,7 @@ function PatternsLayouts() {
         <div style={{display:"flex",flexDirection:"column",gap:"var(--sp-3)"}}>
           {[{name:"Michelle Doe",id:"10042",status:"Active"},{name:"John Smith",id:"10089",status:"Pending"},{name:"Alice Wong",id:"10115",status:"Inactive"}].map(p=>(
             <div key={p.id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"var(--sp-3)",background:"var(--grey-100)",borderRadius:"var(--r-md)"}}>
-              <div><div style={{fontWeight:600}}>{p.name}</div><div style={{fontSize:"var(--text-caption-size)",color:"var(--text-tertiary)"}}>ID: {p.id}</div></div>
+              <div><div style={{fontWeight:600}}>{p.name}</div><div style={{fontSize:"var(--text-caption-size)",color:"var(--text-secondary)"}}>ID: {p.id}</div></div>
               <span className={`badge ${p.status==="Active"?"badge-success":p.status==="Pending"?"badge-warning":"badge-neutral"}`}><span className="badge-dot" /> {p.status}</span>
             </div>
           ))}
@@ -2418,7 +2415,7 @@ function PatternsLayouts() {
           {[{time:"9:00 AM",patient:"Michelle Doe",type:"Follow-up"},{time:"10:30 AM",patient:"John Smith",type:"New Patient"},{time:"2:00 PM",patient:"Alice Wong",type:"Telemedicine"}].map(a=>(
             <div key={a.time} style={{display:"flex",gap:"var(--sp-4)",alignItems:"center",padding:"var(--sp-3)",background:"var(--grey-100)",borderRadius:"var(--r-md)"}}>
               <div style={{fontWeight:600,color:"var(--brand)",minWidth:70}}>{a.time}</div>
-              <div><div style={{fontWeight:600}}>{a.patient}</div><div style={{fontSize:"var(--text-caption-size)",color:"var(--text-tertiary)"}}>{a.type}</div></div>
+              <div><div style={{fontWeight:600}}>{a.patient}</div><div style={{fontSize:"var(--text-caption-size)",color:"var(--text-secondary)"}}>{a.type}</div></div>
             </div>
           ))}
         </div>
@@ -2535,7 +2532,7 @@ function PatternsTheming({ brandTheme, setBrandTheme }: { brandTheme: string; se
         <span className="k">{"[data-theme=\"your-brand\"]"}</span>{" {\n"}
         {"  "}<span className="p">--brand</span>{": "}<span className="v">#______</span>{";        "}<span className="c">{"/* Main brand color */"}</span>{"\n"}
         {"  "}<span className="p">--brand-hover</span>{": "}<span className="v">#______</span>{";  "}<span className="c">{"/* Slightly darker for hover */"}</span>{"\n"}
-        {"  "}<span className="p">--brand-active</span>{": "}<span className="v">#______</span>{"; "}<span className="c">{"/* Darker for pressed/active */"}</span>{"\n"}
+        {"  "}<span className="p">--brand-semidark</span>{": "}<span className="v">#______</span>{"; "}<span className="c">{"/* Darker for pressed/active */"}</span>{"\n"}
         {"  "}<span className="p">--brand-dark</span>{": "}<span className="v">#______</span>{";   "}<span className="c">{"/* Dark variant (gradients) */"}</span>{"\n"}
         {"  "}<span className="p">--brand-darker</span>{": "}<span className="v">#______</span>{"; "}<span className="c">{"/* Darkest variant (gradients) */"}</span>{"\n"}
         {"  "}<span className="p">--brand-light</span>{": "}<span className="v">#______</span>{";  "}<span className="c">{"/* Light tint background */"}</span>{"\n"}
@@ -2756,7 +2753,7 @@ function PatternsFormio() {
               </div>
             </div>
             <div className="panel-body">
-              <p style={{fontSize:"var(--text-caption-size)",color:"var(--text-tertiary)",marginBottom:"var(--sp-4)"}}>
+              <p style={{fontSize:"var(--text-caption-size)",color:"var(--text-secondary)",marginBottom:"var(--sp-4)"}}>
                 Rendered by <code className="code-inline">@formio/react</code> · React Aria custom components
               </p>
               {submitted ? (
@@ -2927,21 +2924,21 @@ function EngineeringTokens() {
         <span className="k">:root</span>{" {\n"}
         {"  "}<span className="c">{"/* Brand */"}</span>{"\n"}
         {"  "}<span className="p">--brand</span>{": "}<span className="v">#0D875C</span>{";     "}<span className="p">--brand-hover</span>{": "}<span className="v">#0B7550</span>{";\n"}
-        {"  "}<span className="p">--brand-active</span>{": "}<span className="v">#096843</span>{"; "}<span className="p">--brand-dark</span>{": "}<span className="v">#0A6B49</span>{";\n"}
+        {"  "}<span className="p">--brand-semidark</span>{": "}<span className="v">#096843</span>{"; "}<span className="p">--brand-dark</span>{": "}<span className="v">#0A6B49</span>{";\n"}
         {"  "}<span className="p">--brand-darker</span>{": "}<span className="v">#074D35</span>{";\n"}
         {"  "}<span className="p">--brand-light</span>{": "}<span className="v">#E6F5EE</span>{";  "}<span className="p">--brand-50</span>{": "}<span className="v">#F0FAF5</span>{";\n"}
         {"}\n\n"}
         <span className="c">{"/* ── Brand theme: Ocean Blue ── */"}</span>{"\n"}
         <span className="k">{"[data-theme=\"blue\"]"}</span>{" {\n"}
         {"  "}<span className="p">--brand</span>{": "}<span className="v">#0891B2</span>{";     "}<span className="p">--brand-hover</span>{": "}<span className="v">#0E7490</span>{";\n"}
-        {"  "}<span className="p">--brand-active</span>{": "}<span className="v">#155E75</span>{"; "}<span className="p">--brand-dark</span>{": "}<span className="v">#0E7490</span>{";\n"}
+        {"  "}<span className="p">--brand-semidark</span>{": "}<span className="v">#155E75</span>{"; "}<span className="p">--brand-dark</span>{": "}<span className="v">#0E7490</span>{";\n"}
         {"  "}<span className="p">--brand-darker</span>{": "}<span className="v">#164E63</span>{";\n"}
         {"  "}<span className="p">--brand-light</span>{": "}<span className="v">#E0F7FA</span>{";  "}<span className="p">--brand-50</span>{": "}<span className="v">#ECFEFF</span>{";\n"}
         {"}\n\n"}
         <span className="c">{"/* ── Brand theme: Royal Purple ── */"}</span>{"\n"}
         <span className="k">{"[data-theme=\"purple\"]"}</span>{" {\n"}
         {"  "}<span className="p">--brand</span>{": "}<span className="v">#7C3AED</span>{";     "}<span className="p">--brand-hover</span>{": "}<span className="v">#6D31D6</span>{";\n"}
-        {"  "}<span className="p">--brand-active</span>{": "}<span className="v">#5E28BF</span>{"; "}<span className="p">--brand-dark</span>{": "}<span className="v">#6332C4</span>{";\n"}
+        {"  "}<span className="p">--brand-semidark</span>{": "}<span className="v">#5E28BF</span>{"; "}<span className="p">--brand-dark</span>{": "}<span className="v">#6332C4</span>{";\n"}
         {"  "}<span className="p">--brand-darker</span>{": "}<span className="v">#47248C</span>{";\n"}
         {"  "}<span className="p">--brand-light</span>{": "}<span className="v">#EDE9FE</span>{";  "}<span className="p">--brand-50</span>{": "}<span className="v">#F5F3FF</span>{";\n"}
         {"}\n\n"}
@@ -2966,8 +2963,7 @@ function EngineeringTokens() {
         {"  "}<span className="p">--grey-300</span>{": "}<span className="v">#E5E7EB</span>{"; "}<span className="p">--grey-200</span>{": "}<span className="v">#F3F4F6</span>{"; "}<span className="p">--grey-100</span>{": "}<span className="v">#F9FAFB</span>{";\n"}
         {"  "}<span className="p">--white</span>{": "}<span className="v">#FFFFFF</span>{";\n\n"}
         {"  "}<span className="c">{"/* Text (≥ 4.5:1 on white) */"}</span>{"\n"}
-        {"  "}<span className="p">--text-primary</span>{": "}<span className="v">#111827</span>{"; "}<span className="p">--text-secondary</span>{": "}<span className="v">#6B7280</span>{";\n"}
-        {"  "}<span className="p">--text-tertiary</span>{": "}<span className="v">#6F7787</span>{"; "}<span className="p">--text-brand</span>{": "}<span className="v">#0D875C</span>{";\n\n"}
+        {"  "}<span className="p">--text-primary</span>{": "}<span className="v">#111827</span>{"; "}<span className="p">--text-secondary</span>{": "}<span className="v">#6B7280</span>{";\n\n"}
         {"  "}<span className="c">{"/* Borders */"}</span>{"\n"}
         {"  "}<span className="p">--border</span>{": "}<span className="v">#E5E7EB</span>{"; "}<span className="p">--border-strong</span>{": "}<span className="v">#D1D5DB</span>{";\n\n"}
         {"  "}<span className="c">{"/* Typography */"}</span>{"\n"}

@@ -51,7 +51,7 @@ Copy the `:root` block from `src/index.css` into your project's global CSS to ge
 :root {
   --brand: #0D875C;
   --brand-hover: #0B7550;
-  --brand-active: #096843;
+  --brand-semidark: #096843;
   --brand-dark: #0A6B49;
   --brand-darker: #074D35;
   --brand-light: #E6F5EE;
@@ -123,7 +123,7 @@ No attribute needed. This is the default VSee brand.
 [data-theme="blue"] {
   --brand: #0891B2;
   --brand-hover: #0E7490;
-  --brand-active: #155E75;
+  --brand-semidark: #155E75;
   --brand-dark: #0E7490;
   --brand-darker: #164E63;
   --brand-light: #E0F7FA;
@@ -141,7 +141,7 @@ No attribute needed. This is the default VSee brand.
 [data-theme="purple"] {
   --brand: #7C3AED;
   --brand-hover: #6D31D6;
-  --brand-active: #5E28BF;
+  --brand-semidark: #5E28BF;
   --brand-dark: #6332C4;
   --brand-darker: #47248C;
   --brand-light: #EDE9FE;
@@ -167,7 +167,7 @@ To add your own brand color, define a new `[data-theme]` block with all 7 brand 
 [data-theme="your-theme"] {
   --brand: #______;        /* Main brand color */
   --brand-hover: #______;  /* Slightly darker for hover */
-  --brand-active: #______; /* Darker for pressed/active */
+  --brand-semidark: #______; /* Darker for pressed/active */
   --brand-dark: #______;   /* Dark variant (gradients) */
   --brand-darker: #______; /* Darkest variant (gradients) */
   --brand-light: #______;  /* Light tint background */

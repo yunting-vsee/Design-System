@@ -1,5 +1,16 @@
 ﻿# Changelog
 
+Apr 16
+  - Token rename: --brand-active → --brand-semidark (all 3 themes)
+  - Tokens removed: --text-tertiary, --text-brand — consolidated into --text-secondary and --brand
+  - New token: --hover-overlay — a universal darkening overlay for hover states, replacing per-component
+  background: var(--grey-100/200) patterns
+  - Success color fix: --success was #0D875C (identical to --brand), now #367D17 with updated -light, -dark,
+  -border values
+  - Spacing/radius tokenization: ~50 hardcoded px values replaced with CSS variable references across App.css
+  - Removed: .btn-xl button size variant
+  - Dark mode: added .copy-toast elevated bg, .section-label uses --brand-dark
+
 Apr 9
   - Added a live date/time format preview line under the Typography section that detects the user's browser language
     and displays the corresponding date format (e.g., MM/DD/YYYY for en-US, DD/MM/YYYY for en-GB, YYYY/MM/DD for ja-JP, etc.).

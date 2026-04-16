@@ -75,7 +75,7 @@
   /* Brand hex values (used in swatches, demos) */
   --brand: #0D875C;
   --brand-hover: #0B7550;
-  --brand-active: #096843;
+  --brand-semidark: #096843;
   --brand-dark: #0A6B49;
   --brand-darker: #074D35;
   --brand-light: #E6F5EE;
@@ -86,7 +86,7 @@
 [data-theme="blue"] {
   --brand: #0891B2;
   --brand-hover: #0E7490;
-  --brand-active: #155E75;
+  --brand-semidark: #155E75;
   --brand-dark: #0E7490;
   --brand-darker: #164E63;
   --brand-light: #E0F7FA;
@@ -97,7 +97,7 @@
 [data-theme="purple"] {
   --brand: #7C3AED;
   --brand-hover: #6D31D6;
-  --brand-active: #5E28BF;
+  --brand-semidark: #5E28BF;
   --brand-dark: #6332C4;
   --brand-darker: #47248C;
   --brand-light: #EDE9FE;
@@ -106,21 +106,21 @@
 
 :root {
   /* Semantic hex (AA-compliant for white foreground) */
-  --success: #0D875C; --success-light: #E6F5EE;
+  --success: #367D17; --success-light: #F9FEF6;
   --info: #196CD2; --info-light: #E0F2FE;
   --warning: #FFCB5A; --warning-light: #FEF3C7;
   --danger: #DC2626; --danger-light: #FEE2E2;
   --danger-hover: #B91C1C;
 
   /* Semantic dark text (AA-compliant on matching -light backgrounds) */
-  --success-dark: #065F46;
+  --success-dark: #265C10;
   --info-dark: #075985;
   --warning-dark: #92400E;
   --danger-dark: #991B1B;
   --warning-on-solid: #2D1806;
 
   /* Semantic borders (alerts) */
-  --success-border: #A7F3D0;
+  --success-border: #DAF1C1;
   --info-border: #BAE6FD;
   --warning-border: #FDE68A;
   --danger-border: #FECACA;
@@ -134,7 +134,6 @@
 
   /* Text (AA-compliant: ≥ 4.5:1 on white) */
   --text-primary: #111827; --text-secondary: #6B7280;
-  --text-tertiary: #6F7787; --text-brand: #0D875C;
 
   /* Link */
   --link: var(--brand);
@@ -162,6 +161,9 @@
   /* Shadows */
   --shadow-xs: 0 1px 2px rgba(0,0,0,0.05);
   --shadow-focus: 0 0 0 3px rgba(13,135,92,0.15);
+
+  /* Hover overlay */
+  --hover-overlay: linear-gradient(rgba(0,0,0,0.07), rgba(0,0,0,0.07));
 
   /* Transitions */
   --ease: cubic-bezier(0.4, 0, 0.2, 1);
@@ -240,7 +242,6 @@ a:hover {
   --white: #0B1120;
 
   --text-primary: #F9FAFB; --text-secondary: #9CA3AF;
-  --text-tertiary: #9CA3AF; --text-brand: #34D399;
 
   --border: #1F2937; --border-strong: #374151;
 
