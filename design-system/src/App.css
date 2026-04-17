@@ -119,28 +119,28 @@
    BUTTONS — React Aria Button
    ═══════════════════════════════════════════ */
 .btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--sp-2);
-  font-family: var(--font-sans);
-  font-weight: 600;
-  font-size: var(--text-body-size);
-  height: 38px;
-  padding: 0 var(--sp-5);
-  border-radius: var(--r-md);
-  border: 1px solid transparent;
-  cursor: pointer;
-  transition: all var(--t-fast);
-  text-decoration: none;
-  line-height: 1;
-  white-space: nowrap;
-  outline: none;
-  vertical-align: middle;
-  box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--sp-2);
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: var(--text-body-size);
+    height: 38px;
+    padding: var(--sp-3) var(--sp-5);
+    border-radius: var(--r-md);
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all var(--t-fast);
+    text-decoration: none;
+    line-height: 1;
+    white-space: nowrap;
+    outline: none;
+    vertical-align: middle;
+    box-sizing: border-box;
 }
 .btn[data-focus-visible] { box-shadow: var(--shadow-focus); outline: 2px solid var(--brand); outline-offset: 2px; }
-.btn[data-disabled], .btn.disabled { background: var(--grey-300); color: var(--grey-700); border-color: var(--grey-400); cursor: not-allowed; pointer-events: none; }
+.btn[data-disabled], .btn.disabled { background: var(--grey-300); color: var(--text-secondary); border-color: var(--border-strong); cursor: not-allowed; }
 
 .btn-primary { background: var(--brand); color: white; }
 .btn-primary[data-hovered] { background-image: var(--hover-overlay); box-shadow: var(--shadow-sm); }
@@ -166,15 +166,15 @@
 .btn-info[data-hovered] { background-image: var(--hover-overlay); }
 .btn-info[data-pressed] { opacity: 1; }
 
-.btn-warning { background: var(--warning); color: var(--text-primary); }
+.btn-warning { background: var(--warning); color: var(--warning-on-solid); }
 .btn-warning[data-hovered] { background-image: var(--hover-overlay); }
 .btn-warning[data-pressed] { opacity: 1; }
 
 .btn-link { background: transparent; color: var(--brand); padding: 0; border: none; }
 .btn-link[data-hovered] { text-decoration: underline; }
 
-.btn-sm { font-size: var(--text-caption-size); height: 28px; padding: 6px 14px; border-radius: var(--r-sm); }
-.btn-lg { font-size: var(--text-body-lg-size); height: 46px; padding: 14px 28px; }
+.btn-sm { font-size: var(--text-caption-size); height: 30px; padding: var(--sp-2) var(--sp-3); border-radius: var(--r-sm); }
+.btn-lg { font-size: var(--text-body-lg-size); height: 48px; padding: var(--sp-4) var(--sp-6); }
 
 .btn-icon { width: 38px; height: 38px; padding: 0; border-radius: var(--r-md); }
 .btn-pill { border-radius: var(--r-full); }
@@ -187,12 +187,16 @@
 @keyframes spin { to { transform: rotate(360deg); } }
 .btn-spinner { animation: spin 0.8s linear infinite; }
 .btn-block { display: flex; width: 100%; }
-.btn-group { display: inline-flex; background: var(--grey-200); border-radius: var(--r-full); padding: var(--sp-1); border: 1px solid var(--grey-300); }
-.btn-group .btn { border: none; border-radius: var(--r-full); background: transparent; color: var(--text-secondary); font-weight: 500; padding: var(--sp-2) var(--sp-6); transition: all var(--t-fast); }
+.btn-group { display: inline-flex; position: relative; background: var(--grey-200); border-radius: var(--r-full); padding: 2px; border: 1px solid var(--grey-300); }
+.btn-group::before { content: ""; position: absolute; top: 2px; bottom: 2px; left: 2px; width: var(--slider-w, 0); transform: translateX(var(--slider-x, 0)); background: var(--brand); border-radius: var(--r-full); box-shadow: var(--shadow-sm); transition: transform var(--t-base), width var(--t-base); pointer-events: none; }
+.btn-group .btn { position: relative; z-index: 1; height: 32px; border: none; border-radius: var(--r-full); background: transparent; color: var(--text-secondary); font-weight: 500; padding: var(--sp-2) var(--sp-6); transition: color var(--t-fast); }
 .btn-group .btn[data-hovered] { color: var(--text-primary); box-shadow: none; }
 .btn-group .btn[data-pressed] { color: var(--text-primary); }
-.btn-group .btn.active-group { background: var(--brand); color: white; box-shadow: var(--shadow-sm); }
-.btn-group .btn.active-group[data-hovered] { background-image: var(--hover-overlay); color: white; }
+.btn-group .btn.active-group { color: white; }
+.btn-group .btn.active-group[data-hovered] { color: white; }
+.btn-group.btn-group-square,
+.btn-group.btn-group-square::before,
+.btn-group.btn-group-square .btn { border-radius: var(--r-sm); }
 
 /* ═══════════════════════════════════════════
    FORMS — React Aria
@@ -207,7 +211,7 @@
 .input {
   width: 100%;
   height: var(--sp-10);
-  padding: 0 var(--sp-3);
+  padding: 0 var(--sp-2) 0 var(--sp-3);
   font-family: var(--font-sans);
   font-size: var(--text-body-size);
   color: var(--text-primary);
@@ -223,7 +227,8 @@
 .input[disabled], .input[data-disabled] { background: var(--grey-200); opacity: 0.7; cursor: not-allowed; }
 .input.error { border-color: var(--danger); }
 .input.error:focus { box-shadow: 0 0 0 3px rgba(239,68,68,0.15); }
-.input-lg { height: var(--sp-12); font-size: var(--text-body-lg-size); padding: 0 var(--sp-4); border-radius: var(--r-lg); }
+.input-sm { height: 34px; padding: 0 var(--sp-2) 0 var(--sp-3); border-radius: var(--r-xs); }
+.field:has(.input-sm) .form-label { margin-bottom: var(--sp-1); }
 .textarea { height: auto; min-height: 100px; padding: var(--sp-3); resize: vertical; line-height: 1.5; }
 
 /* Select */
@@ -296,6 +301,8 @@
 .input-icon-btn[data-pressed] { background: var(--grey-200); }
 .input-icon-btn[data-focus-visible] { box-shadow: var(--shadow-focus); }
 .input-icon-btn-inline { width: 30px; border-radius: 0 var(--r-xs) var(--r-xs) 0; padding: 0 var(--sp-1); font-size: var(--text-overline-size); }
+.input-icon-btn-sm { width: 34px; border-radius: 0 var(--r-xs) var(--r-xs) 0; }
+.input-sm.input-with-icon-right { padding-right: 38px !important; }
 .input-icon-wrap-inline { display: inline-flex; }
 .input-with-icon-right-inline { padding-right: 26px !important; text-align: left; }
 .input-unit-label { font-size: var(--text-overline-size); font-weight: 600; color: var(--text-secondary); }
@@ -386,22 +393,25 @@ input::-webkit-credentials-auto-fill-button { display: none; }
 /* Toggle — React Aria Switch */
 .toggle-list { display: flex; gap: var(--sp-8); }
 .toggle-wrap { display: flex; align-items: center; gap: var(--sp-3); cursor: pointer; }
-.toggle-track { width: 44px; height: 24px; background: var(--grey-700); border-radius: var(--r-full); position: relative; transition: background var(--t-fast); flex-shrink: 0; }
+.toggle-track { width: 46px; height: 24px; background: var(--grey-700); border-radius: var(--r-full); position: relative; transition: background var(--t-fast); flex-shrink: 0; }
 .toggle-track.on { background: var(--brand); }
-.toggle-thumb { position: absolute; width: 20px; height: 20px; left: 2px; top: 2px; background: var(--white); border-radius: 50%; transition: transform var(--t-fast); box-shadow: var(--shadow-sm); }
-.toggle-track.on .toggle-thumb { transform: translateX(20px); }
+.toggle-thumb { position: absolute; width: 16px; height: 16px; left: 4px; top: 4px; background: var(--white); border-radius: 50%; transition: transform var(--t-fast); box-shadow: var(--shadow-sm); }
+.toggle-track.on .toggle-thumb { transform: translateX(22px); }
 .toggle-label { font-size: var(--text-body-size); color: var(--text-primary); }
 .toggle-wrap[data-focus-visible] .toggle-track { box-shadow: var(--shadow-focus); }
-.toggle-wrap[data-disabled] { cursor: not-allowed; opacity: 0.5; }
-.toggle-wrap[data-disabled] .toggle-track { background: var(--grey-600); }
+.toggle-wrap[data-disabled] { cursor: not-allowed; }
+.toggle-wrap[data-disabled] .toggle-thumb,
+.toggle-wrap[data-disabled] .toggle-thumb-labeled { background: var(--grey-300); }
+.toggle-wrap[data-disabled] .toggle-track,
+.toggle-wrap[data-disabled] .toggle-track-labeled { background: var(--grey-500); }
 .toggle-wrap[data-disabled] .toggle-label { color: var(--text-secondary); }
-.toggle-track-labeled { width: 62px; height: 24px; background: var(--grey-700); border-radius: var(--r-full); position: relative; transition: background var(--t-fast); flex-shrink: 0; }
+.toggle-track-labeled { width: 56px; height: 24px; background: var(--grey-700); border-radius: var(--r-full); position: relative; transition: background var(--t-fast); flex-shrink: 0; }
 .toggle-track-labeled.on { background: var(--brand); }
-.toggle-track-labeled .toggle-thumb-labeled { position: absolute; width: 20px; height: 20px; left: 2px; top: 2px; background: var(--white); border-radius: 50%; transition: transform var(--t-fast); box-shadow: var(--shadow-sm); }
-.toggle-track-labeled.on .toggle-thumb-labeled { transform: translateX(38px); }
-.toggle-track-labeled .toggle-text { position: absolute; top: 52%; transform: translateY(-50%); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: white; transition: opacity var(--t-fast); }
-.toggle-track-labeled .toggle-text-on { left: 13px; opacity: 0; }
-.toggle-track-labeled .toggle-text-off { right: 12px; opacity: 1; color: white; }
+.toggle-track-labeled .toggle-thumb-labeled { position: absolute; width: 16px; height: 16px; left: 4px; top: 4px; background: var(--white); border-radius: 50%; transition: transform var(--t-fast); box-shadow: var(--shadow-sm); }
+.toggle-track-labeled.on .toggle-thumb-labeled { transform: translateX(32px); }
+.toggle-track-labeled .toggle-text { position: absolute; top: 52%; transform: translateY(-50%); font-size: var(--text-overline-size); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; color: white; transition: opacity var(--t-fast); }
+.toggle-track-labeled .toggle-text-on { left: 10px; opacity: 0; }
+.toggle-track-labeled .toggle-text-off { right: 8px; opacity: 1; color: white; }
 .toggle-track-labeled.on .toggle-text-on { opacity: 1; }
 .toggle-track-labeled.on .toggle-text-off { opacity: 0; }
 
@@ -920,8 +930,6 @@ input::-webkit-credentials-auto-fill-button { display: none; }
 [data-mode="dark"] .drawer-panel,
 [data-mode="dark"] .notification { background: var(--surface-elevated); }
 
-[data-mode="dark"] .btn-warning { background: var(--warning); color: var(--text-primary); }
-[data-mode="dark"] .badge-solid-warning { background: var(--warning); color: var(--warning-on-solid); }
 [data-mode="dark"] .badge-solid-neutral { background: var(--grey-400); color: var(--grey-900); }
 [data-mode="dark"] .chip { background: var(--brand-light); }
 [data-mode="dark"] .tooltip-bubble,

@@ -1,15 +1,77 @@
 ﻿# Changelog
 
+Apr 17
+  Typography
+  - System font switched from Plus Jakarta Sans to Figtree (loaded via Google Fonts).
+  - Composite text tokens (--text-display, --text-h1…h5, --text-body-lg, --text-body, --text-caption, --text-overline) removed — use size + weight
+  directly.
+
+  Color tokens
+  - Removed: --brand-hover, --danger-hover, all --status-* (EMR), and the shadcn-style @theme block (--color-primary*, --color-background,
+  --color-foreground, --color-secondary*, --color-muted*, --color-accent*, --color-destructive*, --color-success*, --color-info*, --color-warning*,
+  --color-border, --color-input, --color-ring, --color-card*, oklch radii).
+  - Semantic values retuned: success greener (#367D17), success-light lighter (#F9FEF6), info #196CD2, warning #FFCB5A, plus success-dark /
+  warning-on-solid / success-border adjustments.
+  - Grey scale re-tuned across all 9 stops (softer/warmer).
+  - --link-hover now resolves to --brand-semidark (was --brand-hover).
+
+  Buttons
+  - .btn-group now has an animated sliding pill (::before positioned via --slider-x/--slider-w, measured in useLayoutEffect).
+  - New .btn-group-square modifier (square corners via --r-sm).
+  - .btn-warning text uses --warning-on-solid.
+  - .btn[data-disabled] uses --text-secondary + --border-strong; no longer sets pointer-events:none.
+  - .btn padding tokenized (var(--sp-3) var(--sp-5)); .btn-sm 30px, .btn-lg 48px.
+
+  Inputs
+  - .input-lg removed; .input-sm added (34px, --r-xs).
+  - New .input-icon-btn-sm and .input-sm.input-with-icon-right.
+  - Forms demo: "Large & Disabled" card replaced with "Small & Disabled" SearchField.
+
+  Toggles
+  - Thumb 20×20 → 16×16 (both plain and labeled variants).
+  - Labeled track 62 → 56px; plain track 44 → 46px.
+  - Disabled state now greys thumb (--grey-300) and track (--grey-500) instead of using opacity: 0.5.
+  - .toggle-text weight 700 → 500.
+  - Typography demo's "Unavailable" switch now uses labeled variant.
+
+  Other
+  - [data-focus-visible] outline → var(--brand) (ring token removed).
+  - README: "all 7 brand variables" → "all 6"; --brand-hover row deleted from custom-theme template.
+  - Deleted local .claude/settings.local.json.
+
 Apr 16
-  - Token rename: --brand-active → --brand-semidark (all 3 themes)
-  - Tokens removed: --text-tertiary, --text-brand — consolidated into --text-secondary and --brand
-  - New token: --hover-overlay — a universal darkening overlay for hover states, replacing per-component
-  background: var(--grey-100/200) patterns
-  - Success color fix: --success was #0D875C (identical to --brand), now #367D17 with updated -light, -dark,
-  -border values
-  - Spacing/radius tokenization: ~50 hardcoded px values replaced with CSS variable references across App.css
-  - Removed: .btn-xl button size variant
-  - Dark mode: added .copy-toast elevated bg, .section-label uses --brand-dark
+  Color tokens
+  - --brand-active → --brand-semidark (renamed across :root, blue, purple themes; hex unchanged).                                                            - Removed --text-tertiary (#6F7787) — use --text-secondary instead.
+  - Removed --text-brand — use --brand directly.
+  - --success decoupled from --brand: #0D875C → #367D17 (olive green).
+  - --success-light #E6F5EE → #F9FEF6; --success-dark #065F46 → #265C10; --success-border #A7F3D0 → #DAF1C1.
+
+  New: universal hover overlay
+  - Added --hover-overlay: linear-gradient(rgba(0,0,0,0.07), rgba(0,0,0,0.07)).
+  - ~20 hover rules converted from hardcoded background: var(--grey-100|200|brand-hover|danger-hover|...) to background-image: var(--hover-overlay).
+  Affected selectors: .ds-nav-link, .st-row, all .btn-*[data-hovered], .btn-group .btn.active-group[data-hovered], .phone-country-btn, .calendar-nav-btn,
+  .calendar-cell, .input-icon-btn, .navbar-link, .page-btn, .table tr:hover td, .modal-close, .sidebar-menu-item, .anchor-link, .drawer-close,
+  .notification-close, .code-toggle.
+
+  Spacing/radius tokenization (~50 sites)
+  - 40px → var(--sp-10), 32px → var(--sp-8), 20px → var(--sp-5), 16px → var(--sp-4), 12px → var(--sp-3), 8px → var(--sp-2), 4px → var(--sp-1) across
+  avatar, input, calendar-nav, navbar-link, theme-btn, copy-toast, tag-list, multiselect, tooltip, status, dropdown-item, code-toggle, etc.
+  - border-radius: 8px → var(--r-md); 4px → var(--r-xs).
+
+  Components
+  - Removed .btn-xl variant (lg/default/sm remain); demos and CodeBlock strings updated.
+  - .btn-warning color reverted --warning-on-solid → --text-primary (light + dark).
+  - .section-label color --text-brand → --brand.
+  - --text-tertiary → --text-secondary across ~30 selectors (swatches, nav, form hints, calendar headers, payment fields, drawer labels, empty states,
+  dropdown header, etc.) and ~10 inline style props in App.tsx.
+
+  Dark mode
+  - Added [data-mode="dark"] .copy-toast (grey-900 bg, white text).
+  - Added [data-mode="dark"] .section-label (--brand-dark).
+
+  Repo housekeeping
+  - .gitignore: added .claude/.
+  - .claude/settings.local.json: added 14 permission entries (Gmail/Asana MCP, Bash patterns, Read scope).
 
 Apr 9
   - Added a live date/time format preview line under the Typography section that detects the user's browser language

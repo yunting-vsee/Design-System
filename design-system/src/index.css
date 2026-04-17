@@ -1,116 +1,23 @@
 @import "tailwindcss";
 
-/* ── Plus Jakarta Sans Font ── */
-@font-face {
-  font-family: "Plus Jakarta Sans";
-  src: url("/fonts/Plus Jakarta Sans-Regular.woff2") format("woff2"),
-       url("/fonts/Plus Jakarta Sans-Regular.woff") format("woff");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Plus Jakarta Sans";
-  src: url("/fonts/Plus Jakarta Sans-Bold.woff2") format("woff2"),
-       url("/fonts/Plus Jakarta Sans-Bold.woff") format("woff");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
 /* ── Tailwind v4 Theme ── */
 @theme {
-  --font-sans: "Plus Jakarta Sans", "Inter", system-ui, -apple-system, sans-serif;
-  --font-heading: "Plus Jakarta Sans", "Inter", system-ui, -apple-system, sans-serif;
-  --font-mono: ui-monospace, "Cascadia Code", "Fira Code", Consolas, monospace;
+  /* Font */
+  --font-sans: "Figtree", system-ui, -apple-system, sans-serif;
 
-  --color-primary: oklch(0.52 0.14 162);
-  --color-primary-foreground: #ffffff;
-  --color-primary-hover: oklch(0.46 0.14 162);
-
-  --color-background: #ffffff;
-  --color-foreground: oklch(0.16 0.02 265);
-
-  --color-secondary: oklch(0.96 0.005 265);
-  --color-secondary-foreground: oklch(0.16 0.02 265);
-
-  --color-muted: oklch(0.96 0.005 265);
-  --color-muted-foreground: oklch(0.52 0.01 265);
-
-  --color-accent: oklch(0.95 0.04 162);
-  --color-accent-foreground: oklch(0.35 0.1 162);
-
-  --color-destructive: oklch(0.58 0.22 25);
-  --color-destructive-foreground: #ffffff;
-
-  --color-success: oklch(0.62 0.17 145);
-  --color-success-foreground: #ffffff;
-
-  --color-info: oklch(0.62 0.14 250);
-  --color-info-foreground: #ffffff;
-
-  --color-warning: oklch(0.65 0.17 70);
-  --color-warning-foreground: #422006;
-
-  --color-border: oklch(0.92 0.005 265);
-  --color-input: oklch(0.92 0.005 265);
-  --color-ring: oklch(0.52 0.14 162);
-
-  --color-card: #ffffff;
-  --color-card-foreground: oklch(0.16 0.02 265);
-
-  --radius-sm: 0.375rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 0.75rem;
-  --radius-xl: 1rem;
-
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-}
-
-/* ── Additional CSS variables for the design system ── */
-:root {
-  /* Brand hex values (used in swatches, demos) */
+  /* Brand */
   --brand: #0D875C;
-  --brand-hover: #0B7550;
   --brand-semidark: #096843;
   --brand-dark: #0A6B49;
   --brand-darker: #074D35;
   --brand-light: #E6F5EE;
   --brand-50: #F0FAF5;
-}
 
-/* ── Brand theme: Ocean Blue ── */
-[data-theme="blue"] {
-  --brand: #0891B2;
-  --brand-hover: #0E7490;
-  --brand-semidark: #155E75;
-  --brand-dark: #0E7490;
-  --brand-darker: #164E63;
-  --brand-light: #E0F7FA;
-  --brand-50: #ECFEFF;
-}
-
-/* ── Brand theme: Royal Purple ── */
-[data-theme="purple"] {
-  --brand: #7C3AED;
-  --brand-hover: #6D31D6;
-  --brand-semidark: #5E28BF;
-  --brand-dark: #6332C4;
-  --brand-darker: #47248C;
-  --brand-light: #EDE9FE;
-  --brand-50: #F5F3FF;
-}
-
-:root {
-  /* Semantic hex (AA-compliant for white foreground) */
+  /* Semantic (AA-compliant for white foreground) */
   --success: #367D17; --success-light: #F9FEF6;
   --info: #196CD2; --info-light: #E0F2FE;
   --warning: #FFCB5A; --warning-light: #FEF3C7;
   --danger: #DC2626; --danger-light: #FEE2E2;
-  --danger-hover: #B91C1C;
 
   /* Semantic dark text (AA-compliant on matching -light backgrounds) */
   --success-dark: #265C10;
@@ -132,12 +39,8 @@
   --grey-300: #F1F2F4; --grey-200: #F8F9FA; --grey-100: #FCFCFD;
   --white: #FFFFFF;
 
-  /* Text (AA-compliant: ≥ 4.5:1 on white) */
+  /* Text (AA-compliant: >= 4.5:1 on white) */
   --text-primary: #111827; --text-secondary: #6B7280;
-
-  /* Link */
-  --link: var(--brand);
-  --link-hover: var(--brand-hover);
 
   /* Borders */
   --border: #E5E7EB; --border-strong: #D1D5DB;
@@ -147,7 +50,6 @@
   --text-overline-size: 12px; --text-caption-size: 13px; --text-body-size: 14px;
   --text-h5-size: 16px; --text-body-lg-size: 16px; --text-subtitle-size: 18px;
   --text-h4-size: 20px; --text-h3-size: 24px; --text-h2-size: 36px; --text-h1-size: 48px; --text-display-size: 60px;
-
 
   /* Spacing */
   --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px;
@@ -160,6 +62,10 @@
 
   /* Shadows */
   --shadow-xs: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
   --shadow-focus: 0 0 0 3px rgba(13,135,92,0.15);
 
   /* Hover overlay */
@@ -167,10 +73,36 @@
 
   /* Transitions */
   --ease: cubic-bezier(0.4, 0, 0.2, 1);
-  --t-fast: 150ms var(--ease); --t-base: 200ms var(--ease); --t-slow: 300ms var(--ease);
 
   /* Nav */
   --nav-width: 240px;
+}
+
+/* Tokens that reference other tokens (not supported in @theme) */
+:root {
+  --link: var(--brand);
+  --link-hover: var(--brand-semidark);
+  --t-fast: 150ms var(--ease); --t-base: 200ms var(--ease); --t-slow: 300ms var(--ease);
+}
+
+/* ── Brand theme: Ocean Blue ── */
+[data-theme="blue"] {
+  --brand: #0891B2;
+  --brand-semidark: #155E75;
+  --brand-dark: #0E7490;
+  --brand-darker: #164E63;
+  --brand-light: #E0F7FA;
+  --brand-50: #ECFEFF;
+}
+
+/* ── Brand theme: Royal Purple ── */
+[data-theme="purple"] {
+  --brand: #7C3AED;
+  --brand-semidark: #5E28BF;
+  --brand-dark: #6332C4;
+  --brand-darker: #47248C;
+  --brand-light: #EDE9FE;
+  --brand-50: #F5F3FF;
 }
 
 /* ── Typography classes ── */
@@ -219,7 +151,7 @@ a:hover {
 
 /* ── React Aria focus styles ── */
 [data-focus-visible] {
-  outline: 2px solid var(--color-ring);
+  outline: 2px solid var(--brand);
   outline-offset: 2px;
 }
 
@@ -227,13 +159,12 @@ a:hover {
 [data-mode="dark"] {
   --brand-light: #0F2D22;
   --brand-50: #0A1F18;
+  --brand-dark: #34D399;
 
   --success-light: #0F2D22; --info-light: #0C1F2E; --warning-light: #2D1806; --danger-light: #2D1212;
   --success-dark: #6EE7B7; --info-dark: #7DD3FC; --warning-dark: #FDE68A; --danger-dark: #FCA5A5;
   --warning-on-solid: #422006;
   --success-border: #065F46; --info-border: #075985; --warning-border: #92400E; --danger-border: #991B1B;
-
-  --brand-dark: #34D399;
 
   --black: #F9FAFB;
   --grey-900: #F3F4F6; --grey-800: #E5E7EB; --grey-700: #D1D5DB;

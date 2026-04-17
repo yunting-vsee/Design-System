@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useLayoutEffect } from "react";
 import {
   Button,
   TextField,
@@ -309,7 +309,7 @@ function App() {
         <div className="ds-footer">
           <div className="ds-footer-logo">VSee</div>
           <div className="ds-footer-sub">Design System · 2026</div>
-          <div className="ds-footer-meta">Plus Jakarta Sans · 4px grid · WCAG AA · White-label ready</div>
+          <div className="ds-footer-meta">Figtree · 4px grid · WCAG AA · White-label ready</div>
         </div>
       </div>
 
@@ -388,20 +388,19 @@ function FoundationsColors({ copy }: { copy: (v: string) => void }) {
           <Swatch large color="var(--brand-50)" name="--brand-50" hex="#F0FAF5" onClick={() => copy("var(--brand-50)")} />
           <Swatch large color="var(--brand-light)" name="--brand-light" hex="#E6F5EE" onClick={() => copy("var(--brand-light)")} />
           <Swatch large color="var(--brand)" name="--brand" hex="#0D875C" onClick={() => copy("var(--brand)")} />
-          <Swatch large color="var(--brand-hover)" name="--brand-hover" hex="#0B7550" onClick={() => copy("var(--brand-hover)")} />
           <Swatch large color="var(--brand-semidark)" name="--brand-semidark" hex="#096843" onClick={() => copy("var(--brand-semidark)")} />
         </div>
       </SubSection>
 
       <SubSection title="Semantic" description="Communicating meaning — success, information, warning, and danger states.">
         <div className="swatch-row">
-          <Swatch color="var(--success)" name="--success" hex="#0D875C" onClick={() => copy("var(--success)")} />
+          <Swatch color="var(--success)" name="--success" hex="#367D17" onClick={() => copy("var(--success)")} />
           <Swatch color="var(--info)" name="--info" hex="#196CD2" onClick={() => copy("var(--info)")} />
           <Swatch color="var(--warning)" name="--warning" hex="#FFCB5A" onClick={() => copy("var(--warning)")} />
           <Swatch color="var(--danger)" name="--danger" hex="#DC2626" onClick={() => copy("var(--danger)")} />
         </div>
         <div className="swatch-row">
-          <Swatch color="var(--success-light)" name="--success-light" hex="#E6F5EE" onClick={() => copy("var(--success-light)")} />
+          <Swatch color="var(--success-light)" name="--success-light" hex="#F9FEF6" onClick={() => copy("var(--success-light)")} />
           <Swatch color="var(--info-light)" name="--info-light" hex="#E0F2FE" onClick={() => copy("var(--info-light)")} />
           <Swatch color="var(--warning-light)" name="--warning-light" hex="#FEF3C7" onClick={() => copy("var(--warning-light)")} />
           <Swatch color="var(--danger-light)" name="--danger-light" hex="#FEE2E2" onClick={() => copy("var(--danger-light)")} />
@@ -455,7 +454,7 @@ function FoundationsColors({ copy }: { copy: (v: string) => void }) {
 function FoundationsTypography() {
   return (
     <Section id="typography" label="Foundation" title="Typography"
-      description="Plus Jakarta Sans is our system font — clean, legible, and optimized for UI. The type scale uses a harmonious progression from 12px to 60px.">
+      description="Figtree is our system font — clean, legible, and optimized for UI. The type scale uses a harmonious progression from 12px to 60px.">
 
       <div className="card" style={{marginBottom:"var(--sp-8)"}}>
         {[
@@ -629,8 +628,10 @@ function Toggle() {
           <span className="toggle-label">Always On</span>
         </Switch>
         <Switch isSelected={false} isDisabled className="toggle-wrap">
-          <div className="toggle-track">
-            <div className="toggle-thumb" />
+          <div className="toggle-track-labeled">
+            <span className="toggle-text toggle-text-on">On</span>
+            <span className="toggle-text toggle-text-off">Off</span>
+            <div className="toggle-thumb-labeled" />
           </div>
           <span className="toggle-label">Unavailable</span>
         </Switch>
@@ -639,15 +640,32 @@ function Toggle() {
   );
 }
 
-function ButtonGroup({ labels, defaultActive }: { labels: string[]; defaultActive: string }) {
+function ButtonGroup({ labels, defaultActive, className = "" }: { labels: string[]; defaultActive: string; className?: string }) {
   const [active, setActive] = useState(defaultActive);
+  const groupRef = useRef<HTMLDivElement>(null);
+  const btnRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+
+  useLayoutEffect(() => {
+    const group = groupRef.current;
+    const btn = btnRefs.current[active];
+    const first = btnRefs.current[labels[0]];
+    if (!group || !btn || !first) return;
+    group.style.setProperty("--slider-x", `${btn.offsetLeft - first.offsetLeft}px`);
+    group.style.setProperty("--slider-w", `${btn.offsetWidth}px`);
+  }, [active, labels]);
+
   return (
-    <div className="preview">
-      <div className="btn-group">
-        {labels.map(label => (
-          <Button key={label} className={`btn ${active === label ? "active-group" : ""}`} onPress={() => setActive(label)}>{label}</Button>
-        ))}
-      </div>
+    <div className={`btn-group ${className}`} ref={groupRef}>
+      {labels.map(label => (
+        <Button
+          key={label}
+          ref={(el: HTMLButtonElement | null) => { btnRefs.current[label] = el; }}
+          className={`btn ${active === label ? "active-group" : ""}`}
+          onPress={() => setActive(label)}
+        >
+          {label}
+        </Button>
+      ))}
     </div>
   );
 }
@@ -701,20 +719,23 @@ function ComponentsButtons() {
       <SubSection title="States">
         <div className="preview">
           <Button className="btn btn-primary">Default</Button>
-          <Button className="btn btn-primary" style={{background:"var(--brand-hover)",boxShadow:"var(--shadow-sm)"}}>Hover</Button>
+          <Button className="btn btn-primary" style={{backgroundImage:"var(--hover-overlay)",boxShadow:"var(--shadow-sm)"}}>Hover</Button>
           <Button className="btn btn-primary" style={{background:"var(--brand)"}}>Pressed</Button>
           <Button className="btn btn-primary" style={{boxShadow:"var(--shadow-focus)",outline:"2px solid var(--brand)",outlineOffset:2}}>Focus</Button>
           <Button className="btn btn-primary" isDisabled>Disabled</Button>
         </div>
         <CodeBlock
-          code={`/* States are handled via React Aria data attributes */\n.btn[data-hovered]  { background: var(--brand-hover); }\n.btn[data-pressed]  { background: var(--brand-semidark); }\n.btn[data-focus-visible] { box-shadow: var(--shadow-focus); }\n.btn[data-disabled] { opacity: 0.5; cursor: not-allowed; }`}
+          code={`/* States are handled via React Aria data attributes */\n.btn[data-hovered]  { background-image: var(--hover-overlay); }\n.btn[data-pressed]  { background: var(--brand-semidark); }\n.btn[data-focus-visible] { box-shadow: var(--shadow-focus); }\n.btn[data-disabled] { opacity: 0.5; cursor: not-allowed; }`}
         />
       </SubSection>
 
       <SubSection title="Button Group">
-        <ButtonGroup labels={["Today", "Week", "Month"]} defaultActive="Week" />
+        <div className="preview">
+          <ButtonGroup labels={["Today", "Week", "Month"]} defaultActive="Week" />
+          <ButtonGroup labels={["Day", "Week", "Month", "Year"]} defaultActive="Month" className="btn-group-square" />
+        </div>
         <CodeBlock
-          code={`const [active, setActive] = useState("Week");\n\n<div className="btn-group">\n  {["Today", "Week", "Month"].map(label => (\n    <Button\n      key={label}\n      className={\`btn \${active === label ? "active-group" : ""}\`}\n      onPress={() => setActive(label)}\n    >{label}</Button>\n  ))}\n</div>`}
+          code={`const [active, setActive] = useState("Week");\n\n<div className="btn-group">\n  {["Today", "Week", "Month"].map(label => (\n    <Button\n      key={label}\n      className={\`btn \${active === label ? "active-group" : ""}\`}\n      onPress={() => setActive(label)}\n    >{label}</Button>\n  ))}\n</div>\n\n{/* Square variant */}\n<div className="btn-group btn-group-square">...</div>`}
         />
       </SubSection>
 
@@ -1419,14 +1440,19 @@ function ComponentsForms() {
           </RadioGroup>
         </div>
 
-        {/* Large & Disabled */}
+        {/* Small & Disabled */}
         <div className="card">
-          <div className="sub-title">Large Input</div>
+          <div className="sub-title">Small Input</div>
           <div className="form-group">
-            <TextField className="field">
+            <SearchField className="field">
               <Label className="form-label">Patient Search</Label>
-              <Input className="input input-lg" placeholder="Search by name, ID, or phone..." />
-            </TextField>
+              <div className="input-icon-wrap">
+                <Input className="input input-sm input-with-icon-right" placeholder="Search by name, ID, or phone..." />
+                <Button className="input-icon-btn input-icon-btn-sm">
+                  <Search size={14} />
+                </Button>
+              </div>
+            </SearchField>
           </div>
           <div className="sub-title" style={{marginTop:"var(--sp-6)"}}>Disabled State</div>
           <div className="form-group">
@@ -1439,7 +1465,7 @@ function ComponentsForms() {
       </div>
 
       <CodeBlock
-        code={`/* Checkbox */\n<Checkbox isSelected={checked} onChange={setChecked} className="check-item">\n  <div className={\`check-box \${checked ? "checked" : ""}\`} />\n  Label text\n</Checkbox>\n\n/* Radio Group */\n<RadioGroup defaultValue="phone" className="radio-list">\n  <Radio value="phone" className="radio-item">\n    <div className="radio-circle" /><span>Phone call</span>\n  </Radio>\n  <Radio value="video" className="radio-item">\n    <div className="radio-circle" /><span>Video call</span>\n  </Radio>\n  <Radio value="person" className="radio-item" isDisabled>\n    <div className="radio-circle" /><span>In-person</span>\n  </Radio>\n</RadioGroup>\n\n/* Large Input */\n<TextField className="field">\n  <Label className="form-label">Patient Search</Label>\n  <Input className="input input-lg" placeholder="Search by name, ID, or phone..." />\n</TextField>\n\n/* Disabled Input */\n<TextField isDisabled className="field">\n  <Label className="form-label">Disabled Field</Label>\n  <Input className="input" defaultValue="Read-only value" />\n</TextField>`}
+        code={`/* Checkbox */\n<Checkbox isSelected={checked} onChange={setChecked} className="check-item">\n  <div className={\`check-box \${checked ? "checked" : ""}\`} />\n  Label text\n</Checkbox>\n\n/* Radio Group */\n<RadioGroup defaultValue="phone" className="radio-list">\n  <Radio value="phone" className="radio-item">\n    <div className="radio-circle" /><span>Phone call</span>\n  </Radio>\n  <Radio value="video" className="radio-item">\n    <div className="radio-circle" /><span>Video call</span>\n  </Radio>\n  <Radio value="person" className="radio-item" isDisabled>\n    <div className="radio-circle" /><span>In-person</span>\n  </Radio>\n</RadioGroup>\n\n/* Small Input with Search Button */\n<SearchField className="field">\n  <Label className="form-label">Patient Search</Label>\n  <div className="input-icon-wrap">\n    <Input className="input input-sm input-with-icon-right" placeholder="Search by name, ID, or phone..." />\n    <Button className="input-icon-btn input-icon-btn-sm">\n      <Search size={14} />\n    </Button>\n  </div>\n</SearchField>\n\n/* Disabled Input */\n<TextField isDisabled className="field">\n  <Label className="form-label">Disabled Field</Label>\n  <Input className="input" defaultValue="Read-only value" />\n</TextField>`}
       />
 
       <div style={{marginTop:"var(--sp-16)"}} />
@@ -2527,11 +2553,10 @@ function PatternsTheming({ brandTheme, setBrandTheme }: { brandTheme: string; se
       </div>
 
       <div className="sub-title" style={{marginTop:"var(--sp-8)"}}>Creating a Custom Theme</div>
-      <div className="sub-desc">Define a new <code className="code-inline">[data-theme]</code> block with all 7 brand variables:</div>
+      <div className="sub-desc">Define a new <code className="code-inline">[data-theme]</code> block with all 6 brand variables:</div>
       <div className="code">
         <span className="k">{"[data-theme=\"your-brand\"]"}</span>{" {\n"}
         {"  "}<span className="p">--brand</span>{": "}<span className="v">#______</span>{";        "}<span className="c">{"/* Main brand color */"}</span>{"\n"}
-        {"  "}<span className="p">--brand-hover</span>{": "}<span className="v">#______</span>{";  "}<span className="c">{"/* Slightly darker for hover */"}</span>{"\n"}
         {"  "}<span className="p">--brand-semidark</span>{": "}<span className="v">#______</span>{"; "}<span className="c">{"/* Darker for pressed/active */"}</span>{"\n"}
         {"  "}<span className="p">--brand-dark</span>{": "}<span className="v">#______</span>{";   "}<span className="c">{"/* Dark variant (gradients) */"}</span>{"\n"}
         {"  "}<span className="p">--brand-darker</span>{": "}<span className="v">#______</span>{"; "}<span className="c">{"/* Darkest variant (gradients) */"}</span>{"\n"}
@@ -2880,126 +2905,106 @@ function EngineeringTokens() {
         <span className="k">@import</span>{" "}<span className="s">"tailwindcss"</span>{";\n\n"}
         <span className="c">{"/* ── Tailwind v4 Theme ── */"}</span>{"\n"}
         <span className="k">@theme</span>{" {\n"}
-        {"  "}<span className="c">{"/* Fonts */"}</span>{"\n"}
-        {"  "}<span className="p">--font-sans</span>{": "}<span className="v">"Plus Jakarta Sans", "Inter", system-ui, -apple-system, sans-serif</span>{";\n"}
-        {"  "}<span className="p">--font-heading</span>{": "}<span className="v">"Plus Jakarta Sans", "Inter", system-ui, -apple-system, sans-serif</span>{";\n"}
-        {"  "}<span className="p">--font-mono</span>{": "}<span className="v">ui-monospace, "Cascadia Code", "Fira Code", Consolas, monospace</span>{";\n\n"}
-        {"  "}<span className="c">{"/* Colors */"}</span>{"\n"}
-        {"  "}<span className="p">--color-primary</span>{": "}<span className="v">oklch(0.52 0.14 162)</span>{";\n"}
-        {"  "}<span className="p">--color-primary-foreground</span>{": "}<span className="v">#ffffff</span>{";\n"}
-        {"  "}<span className="p">--color-primary-hover</span>{": "}<span className="v">oklch(0.46 0.14 162)</span>{";\n"}
-        {"  "}<span className="p">--color-background</span>{": "}<span className="v">#ffffff</span>{";\n"}
-        {"  "}<span className="p">--color-foreground</span>{": "}<span className="v">oklch(0.16 0.02 265)</span>{";\n"}
-        {"  "}<span className="p">--color-secondary</span>{": "}<span className="v">oklch(0.96 0.005 265)</span>{";\n"}
-        {"  "}<span className="p">--color-secondary-foreground</span>{": "}<span className="v">oklch(0.16 0.02 265)</span>{";\n"}
-        {"  "}<span className="p">--color-muted</span>{": "}<span className="v">oklch(0.96 0.005 265)</span>{";\n"}
-        {"  "}<span className="p">--color-muted-foreground</span>{": "}<span className="v">oklch(0.52 0.01 265)</span>{";\n"}
-        {"  "}<span className="p">--color-accent</span>{": "}<span className="v">oklch(0.95 0.04 162)</span>{";\n"}
-        {"  "}<span className="p">--color-accent-foreground</span>{": "}<span className="v">oklch(0.35 0.1 162)</span>{";\n"}
-        {"  "}<span className="p">--color-destructive</span>{": "}<span className="v">oklch(0.58 0.22 25)</span>{";\n"}
-        {"  "}<span className="p">--color-destructive-foreground</span>{": "}<span className="v">#ffffff</span>{";\n"}
-        {"  "}<span className="p">--color-success</span>{": "}<span className="v">oklch(0.62 0.17 145)</span>{";\n"}
-        {"  "}<span className="p">--color-success-foreground</span>{": "}<span className="v">#ffffff</span>{";\n"}
-        {"  "}<span className="p">--color-info</span>{": "}<span className="v">oklch(0.62 0.14 250)</span>{";\n"}
-        {"  "}<span className="p">--color-info-foreground</span>{": "}<span className="v">#ffffff</span>{";\n"}
-        {"  "}<span className="p">--color-warning</span>{": "}<span className="v">oklch(0.65 0.17 70)</span>{";\n"}
-        {"  "}<span className="p">--color-warning-foreground</span>{": "}<span className="v">#422006</span>{";\n"}
-        {"  "}<span className="p">--color-border</span>{": "}<span className="v">oklch(0.92 0.005 265)</span>{";\n"}
-        {"  "}<span className="p">--color-input</span>{": "}<span className="v">oklch(0.92 0.005 265)</span>{";\n"}
-        {"  "}<span className="p">--color-ring</span>{": "}<span className="v">oklch(0.52 0.14 162)</span>{";\n"}
-        {"  "}<span className="p">--color-card</span>{": "}<span className="v">#ffffff</span>{";\n"}
-        {"  "}<span className="p">--color-card-foreground</span>{": "}<span className="v">oklch(0.16 0.02 265)</span>{";\n\n"}
-        {"  "}<span className="c">{"/* Radius */"}</span>{"\n"}
-        {"  "}<span className="p">--radius-sm</span>{": "}<span className="v">0.375rem</span>{";\n"}
-        {"  "}<span className="p">--radius-md</span>{": "}<span className="v">0.5rem</span>{";\n"}
-        {"  "}<span className="p">--radius-lg</span>{": "}<span className="v">0.75rem</span>{";\n"}
-        {"  "}<span className="p">--radius-xl</span>{": "}<span className="v">1rem</span>{";\n\n"}
-        {"  "}<span className="c">{"/* Shadows */"}</span>{"\n"}
-        {"  "}<span className="p">--shadow-sm</span>{": "}<span className="v">0 1px 2px 0 rgb(0 0 0 / 0.05)</span>{";\n"}
-        {"  "}<span className="p">--shadow-md</span>{": "}<span className="v">0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)</span>{";\n"}
-        {"  "}<span className="p">--shadow-lg</span>{": "}<span className="v">0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)</span>{";\n"}
-        {"  "}<span className="p">--shadow-xl</span>{": "}<span className="v">0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)</span>{";\n"}
-        {"}\n\n"}
-        <span className="c">{"/* ── CSS Custom Properties ── */"}</span>{"\n"}
-        <span className="k">:root</span>{" {\n"}
+        {"  "}<span className="c">{"/* Font */"}</span>{"\n"}
+        {"  "}<span className="p">--font-sans</span>{": "}<span className="v">"Figtree", system-ui, -apple-system, sans-serif</span>{";\n\n"}
         {"  "}<span className="c">{"/* Brand */"}</span>{"\n"}
-        {"  "}<span className="p">--brand</span>{": "}<span className="v">#0D875C</span>{";     "}<span className="p">--brand-hover</span>{": "}<span className="v">#0B7550</span>{";\n"}
-        {"  "}<span className="p">--brand-semidark</span>{": "}<span className="v">#096843</span>{"; "}<span className="p">--brand-dark</span>{": "}<span className="v">#0A6B49</span>{";\n"}
+        {"  "}<span className="p">--brand</span>{": "}<span className="v">#0D875C</span>{";\n"}
+        {"  "}<span className="p">--brand-semidark</span>{": "}<span className="v">#096843</span>{";\n"}
+        {"  "}<span className="p">--brand-dark</span>{": "}<span className="v">#0A6B49</span>{";\n"}
         {"  "}<span className="p">--brand-darker</span>{": "}<span className="v">#074D35</span>{";\n"}
-        {"  "}<span className="p">--brand-light</span>{": "}<span className="v">#E6F5EE</span>{";  "}<span className="p">--brand-50</span>{": "}<span className="v">#F0FAF5</span>{";\n"}
-        {"}\n\n"}
-        <span className="c">{"/* ── Brand theme: Ocean Blue ── */"}</span>{"\n"}
-        <span className="k">{"[data-theme=\"blue\"]"}</span>{" {\n"}
-        {"  "}<span className="p">--brand</span>{": "}<span className="v">#0891B2</span>{";     "}<span className="p">--brand-hover</span>{": "}<span className="v">#0E7490</span>{";\n"}
-        {"  "}<span className="p">--brand-semidark</span>{": "}<span className="v">#155E75</span>{"; "}<span className="p">--brand-dark</span>{": "}<span className="v">#0E7490</span>{";\n"}
-        {"  "}<span className="p">--brand-darker</span>{": "}<span className="v">#164E63</span>{";\n"}
-        {"  "}<span className="p">--brand-light</span>{": "}<span className="v">#E0F7FA</span>{";  "}<span className="p">--brand-50</span>{": "}<span className="v">#ECFEFF</span>{";\n"}
-        {"}\n\n"}
-        <span className="c">{"/* ── Brand theme: Royal Purple ── */"}</span>{"\n"}
-        <span className="k">{"[data-theme=\"purple\"]"}</span>{" {\n"}
-        {"  "}<span className="p">--brand</span>{": "}<span className="v">#7C3AED</span>{";     "}<span className="p">--brand-hover</span>{": "}<span className="v">#6D31D6</span>{";\n"}
-        {"  "}<span className="p">--brand-semidark</span>{": "}<span className="v">#5E28BF</span>{"; "}<span className="p">--brand-dark</span>{": "}<span className="v">#6332C4</span>{";\n"}
-        {"  "}<span className="p">--brand-darker</span>{": "}<span className="v">#47248C</span>{";\n"}
-        {"  "}<span className="p">--brand-light</span>{": "}<span className="v">#EDE9FE</span>{";  "}<span className="p">--brand-50</span>{": "}<span className="v">#F5F3FF</span>{";\n"}
-        {"}\n\n"}
-        <span className="k">:root</span>{" {\n"}
-        {"  "}<span className="c">{"/* Semantic (AA on white) */"}</span>{"\n"}
-        {"  "}<span className="p">--success</span>{": "}<span className="v">#0D875C</span>{";   "}<span className="p">--success-light</span>{": "}<span className="v">#E6F5EE</span>{";\n"}
-        {"  "}<span className="p">--info</span>{": "}<span className="v">#0575AD</span>{";      "}<span className="p">--info-light</span>{": "}<span className="v">#E0F2FE</span>{";\n"}
-        {"  "}<span className="p">--warning</span>{": "}<span className="v">#D97706</span>{";   "}<span className="p">--warning-light</span>{": "}<span className="v">#FEF3C7</span>{";\n"}
-        {"  "}<span className="p">--danger</span>{": "}<span className="v">#DC2626</span>{";    "}<span className="p">--danger-light</span>{": "}<span className="v">#FEE2E2</span>{";\n"}
-        {"  "}<span className="p">--danger-hover</span>{": "}<span className="v">#B91C1C</span>{";\n\n"}
+        {"  "}<span className="p">--brand-light</span>{": "}<span className="v">#E6F5EE</span>{";\n"}
+        {"  "}<span className="p">--brand-50</span>{": "}<span className="v">#F0FAF5</span>{";\n\n"}
+        {"  "}<span className="c">{"/* Semantic (AA-compliant for white foreground) */"}</span>{"\n"}
+        {"  "}<span className="p">--success</span>{": "}<span className="v">#367D17</span>{"; "}<span className="p">--success-light</span>{": "}<span className="v">#F9FEF6</span>{";\n"}
+        {"  "}<span className="p">--info</span>{": "}<span className="v">#196CD2</span>{"; "}<span className="p">--info-light</span>{": "}<span className="v">#E0F2FE</span>{";\n"}
+        {"  "}<span className="p">--warning</span>{": "}<span className="v">#FFCB5A</span>{"; "}<span className="p">--warning-light</span>{": "}<span className="v">#FEF3C7</span>{";\n"}
+        {"  "}<span className="p">--danger</span>{": "}<span className="v">#DC2626</span>{"; "}<span className="p">--danger-light</span>{": "}<span className="v">#FEE2E2</span>{";\n\n"}
         {"  "}<span className="c">{"/* Semantic dark text (AA on matching -light bg) */"}</span>{"\n"}
-        {"  "}<span className="p">--success-dark</span>{": "}<span className="v">#065F46</span>{"; "}<span className="p">--info-dark</span>{": "}<span className="v">#075985</span>{";\n"}
-        {"  "}<span className="p">--warning-dark</span>{": "}<span className="v">#92400E</span>{"; "}<span className="p">--danger-dark</span>{": "}<span className="v">#991B1B</span>{";\n"}
-        {"  "}<span className="p">--warning-on-solid</span>{": "}<span className="v">#422006</span>{";\n\n"}
+        {"  "}<span className="p">--success-dark</span>{": "}<span className="v">#265C10</span>{";\n"}
+        {"  "}<span className="p">--info-dark</span>{": "}<span className="v">#075985</span>{";\n"}
+        {"  "}<span className="p">--warning-dark</span>{": "}<span className="v">#92400E</span>{";\n"}
+        {"  "}<span className="p">--danger-dark</span>{": "}<span className="v">#991B1B</span>{";\n"}
+        {"  "}<span className="p">--warning-on-solid</span>{": "}<span className="v">#2D1806</span>{";\n\n"}
         {"  "}<span className="c">{"/* Semantic borders (alerts) */"}</span>{"\n"}
-        {"  "}<span className="p">--success-border</span>{": "}<span className="v">#A7F3D0</span>{"; "}<span className="p">--info-border</span>{": "}<span className="v">#BAE6FD</span>{";\n"}
-        {"  "}<span className="p">--warning-border</span>{": "}<span className="v">#FDE68A</span>{"; "}<span className="p">--danger-border</span>{": "}<span className="v">#FECACA</span>{";\n\n"}
+        {"  "}<span className="p">--success-border</span>{": "}<span className="v">#DAF1C1</span>{";\n"}
+        {"  "}<span className="p">--info-border</span>{": "}<span className="v">#BAE6FD</span>{";\n"}
+        {"  "}<span className="p">--warning-border</span>{": "}<span className="v">#FDE68A</span>{";\n"}
+        {"  "}<span className="p">--danger-border</span>{": "}<span className="v">#FECACA</span>{";\n\n"}
         {"  "}<span className="c">{"/* Neutrals (AA-compliant) */"}</span>{"\n"}
         {"  "}<span className="p">--black</span>{": "}<span className="v">#111827</span>{";\n"}
-        {"  "}<span className="p">--grey-900</span>{": "}<span className="v">#1F2937</span>{"; "}<span className="p">--grey-800</span>{": "}<span className="v">#374151</span>{"; "}<span className="p">--grey-700</span>{": "}<span className="v">#4B5563</span>{";\n"}
-        {"  "}<span className="p">--grey-600</span>{": "}<span className="v">#6B7280</span>{"; "}<span className="p">--grey-500</span>{": "}<span className="v">#868E9C</span>{"; "}<span className="p">--grey-400</span>{": "}<span className="v">#D1D5DB</span>{";\n"}
-        {"  "}<span className="p">--grey-300</span>{": "}<span className="v">#E5E7EB</span>{"; "}<span className="p">--grey-200</span>{": "}<span className="v">#F3F4F6</span>{"; "}<span className="p">--grey-100</span>{": "}<span className="v">#F9FAFB</span>{";\n"}
+        {"  "}<span className="p">--grey-900</span>{": "}<span className="v">#4B5563</span>{"; "}<span className="p">--grey-800</span>{": "}<span className="v">#6B7280</span>{"; "}<span className="p">--grey-700</span>{": "}<span className="v">#9CA3AF</span>{";\n"}
+        {"  "}<span className="p">--grey-600</span>{": "}<span className="v">#B0B7C3</span>{"; "}<span className="p">--grey-500</span>{": "}<span className="v">#C9CED6</span>{"; "}<span className="p">--grey-400</span>{": "}<span className="v">#E8EAED</span>{";\n"}
+        {"  "}<span className="p">--grey-300</span>{": "}<span className="v">#F1F2F4</span>{"; "}<span className="p">--grey-200</span>{": "}<span className="v">#F8F9FA</span>{"; "}<span className="p">--grey-100</span>{": "}<span className="v">#FCFCFD</span>{";\n"}
         {"  "}<span className="p">--white</span>{": "}<span className="v">#FFFFFF</span>{";\n\n"}
         {"  "}<span className="c">{"/* Text (≥ 4.5:1 on white) */"}</span>{"\n"}
         {"  "}<span className="p">--text-primary</span>{": "}<span className="v">#111827</span>{"; "}<span className="p">--text-secondary</span>{": "}<span className="v">#6B7280</span>{";\n\n"}
         {"  "}<span className="c">{"/* Borders */"}</span>{"\n"}
         {"  "}<span className="p">--border</span>{": "}<span className="v">#E5E7EB</span>{"; "}<span className="p">--border-strong</span>{": "}<span className="v">#D1D5DB</span>{";\n\n"}
-        {"  "}<span className="c">{"/* Typography */"}</span>{"\n"}
-        {"  "}<span className="p">--font</span>{": "}<span className="v">'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif</span>{";\n"}
+        {"  "}<span className="c">{"/* Typography scale */"}</span>{"\n"}
         {"  "}<span className="p">--mono</span>{": "}<span className="v">'SF Mono', 'Fira Code', 'Consolas', monospace</span>{";\n"}
         {"  "}<span className="p">--text-overline-size</span>{": "}<span className="v">12px</span>{"; "}<span className="p">--text-caption-size</span>{": "}<span className="v">13px</span>{"; "}<span className="p">--text-body-size</span>{": "}<span className="v">14px</span>{";\n"}
         {"  "}<span className="p">--text-h5-size</span>{": "}<span className="v">16px</span>{"; "}<span className="p">--text-body-lg-size</span>{": "}<span className="v">16px</span>{"; "}<span className="p">--text-subtitle-size</span>{": "}<span className="v">18px</span>{";\n"}
         {"  "}<span className="p">--text-h4-size</span>{": "}<span className="v">20px</span>{"; "}<span className="p">--text-h3-size</span>{": "}<span className="v">24px</span>{"; "}<span className="p">--text-h2-size</span>{": "}<span className="v">36px</span>{";\n"}
         {"  "}<span className="p">--text-h1-size</span>{": "}<span className="v">48px</span>{"; "}<span className="p">--text-display-size</span>{": "}<span className="v">60px</span>{";\n\n"}
-        {"  "}<span className="c">{"/* Typography composite (font: weight size/line-height family) */"}</span>{"\n"}
-        {"  "}<span className="p">--text-display</span>{": "}<span className="v">800 60px/1.05 font</span>{";\n"}
-        {"  "}<span className="p">--text-h1</span>{": "}<span className="v">800 48px/1.1 font</span>{";\n"}
-        {"  "}<span className="p">--text-h2</span>{": "}<span className="v">700 36px/1.15 font</span>{";\n"}
-        {"  "}<span className="p">--text-h3</span>{": "}<span className="v">700 24px/1.2 font</span>{";\n"}
-        {"  "}<span className="p">--text-h4</span>{": "}<span className="v">600 20px/1.3 font</span>{";\n"}
-        {"  "}<span className="p">--text-h5</span>{": "}<span className="v">600 16px/1.4 font</span>{";\n"}
-        {"  "}<span className="p">--text-body-lg</span>{": "}<span className="v">400 16px/1.6 font</span>{"; "}<span className="p">--text-body</span>{": "}<span className="v">400 14px/1.5 font</span>{";\n"}
-        {"  "}<span className="p">--text-caption</span>{": "}<span className="v">500 13px/1.4 font</span>{"; "}<span className="p">--text-overline</span>{": "}<span className="v">700 12px/1.4 font</span>{";\n\n"}
         {"  "}<span className="c">{"/* Spacing (4px base) */"}</span>{"\n"}
-        {"  "}<span className="p">--sp-1</span>{": "}<span className="v">4px</span>{";  "}<span className="p">--sp-2</span>{": "}<span className="v">8px</span>{";  "}<span className="p">--sp-3</span>{": "}<span className="v">12px</span>{"; "}<span className="p">--sp-4</span>{": "}<span className="v">16px</span>{";\n"}
+        {"  "}<span className="p">--sp-1</span>{": "}<span className="v">4px</span>{"; "}<span className="p">--sp-2</span>{": "}<span className="v">8px</span>{"; "}<span className="p">--sp-3</span>{": "}<span className="v">12px</span>{"; "}<span className="p">--sp-4</span>{": "}<span className="v">16px</span>{";\n"}
         {"  "}<span className="p">--sp-5</span>{": "}<span className="v">20px</span>{"; "}<span className="p">--sp-6</span>{": "}<span className="v">24px</span>{"; "}<span className="p">--sp-8</span>{": "}<span className="v">32px</span>{"; "}<span className="p">--sp-10</span>{": "}<span className="v">40px</span>{";\n"}
         {"  "}<span className="p">--sp-12</span>{": "}<span className="v">48px</span>{"; "}<span className="p">--sp-16</span>{": "}<span className="v">64px</span>{"; "}<span className="p">--sp-20</span>{": "}<span className="v">80px</span>{"; "}<span className="p">--sp-24</span>{": "}<span className="v">96px</span>{"; "}<span className="p">--sp-32</span>{": "}<span className="v">128px</span>{";\n\n"}
         {"  "}<span className="c">{"/* Radius */"}</span>{"\n"}
-        {"  "}<span className="p">--r-xs</span>{": "}<span className="v">4px</span>{"; "}<span className="p">--r-sm</span>{": "}<span className="v">6px</span>{"; "}<span className="p">--r-md</span>{": "}<span className="v">8px</span>{"; "}<span className="p">--r-lg</span>{": "}<span className="v">12px</span>{"; "}<span className="p">--r-xl</span>{": "}<span className="v">16px</span>{";\n"}
-        {"  "}<span className="p">--r-2xl</span>{": "}<span className="v">24px</span>{"; "}<span className="p">--r-full</span>{": "}<span className="v">9999px</span>{";\n\n"}
+        {"  "}<span className="p">--r-xs</span>{": "}<span className="v">4px</span>{"; "}<span className="p">--r-sm</span>{": "}<span className="v">6px</span>{"; "}<span className="p">--r-md</span>{": "}<span className="v">8px</span>{"; "}<span className="p">--r-lg</span>{": "}<span className="v">12px</span>{";\n"}
+        {"  "}<span className="p">--r-xl</span>{": "}<span className="v">16px</span>{"; "}<span className="p">--r-2xl</span>{": "}<span className="v">24px</span>{"; "}<span className="p">--r-full</span>{": "}<span className="v">9999px</span>{";\n\n"}
         {"  "}<span className="c">{"/* Shadows */"}</span>{"\n"}
         {"  "}<span className="p">--shadow-xs</span>{": "}<span className="v">0 1px 2px rgba(0,0,0,0.05)</span>{";\n"}
+        {"  "}<span className="p">--shadow-sm</span>{": "}<span className="v">0 1px 2px 0 rgb(0 0 0 / 0.05)</span>{";\n"}
+        {"  "}<span className="p">--shadow-md</span>{": "}<span className="v">0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)</span>{";\n"}
+        {"  "}<span className="p">--shadow-lg</span>{": "}<span className="v">0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)</span>{";\n"}
+        {"  "}<span className="p">--shadow-xl</span>{": "}<span className="v">0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)</span>{";\n"}
         {"  "}<span className="p">--shadow-focus</span>{": "}<span className="v">0 0 0 3px rgba(13,135,92,0.15)</span>{";\n\n"}
-        {"  "}<span className="c">{"/* Status (EMR) */"}</span>{"\n"}
-        {"  "}<span className="p">--status-ordered</span>{": "}<span className="v">#0D875C</span>{";     "}<span className="p">--status-scheduled</span>{": "}<span className="v">#0575AD</span>{";\n"}
-        {"  "}<span className="p">--status-overdue</span>{": "}<span className="v">#DC2626</span>{";     "}<span className="p">--status-in-progress</span>{": "}<span className="v">#D97706</span>{";\n"}
-        {"  "}<span className="p">--status-cancelled</span>{": "}<span className="v">#9CA3AF</span>{";   "}<span className="p">--status-resulted</span>{": "}<span className="v">#0D875C</span>{";\n"}
-        {"  "}<span className="p">--status-completed</span>{": "}<span className="v">#374151</span>{";\n\n"}
+        {"  "}<span className="c">{"/* Hover overlay */"}</span>{"\n"}
+        {"  "}<span className="p">--hover-overlay</span>{": "}<span className="v">linear-gradient(rgba(0,0,0,0.07), rgba(0,0,0,0.07))</span>{";\n\n"}
         {"  "}<span className="c">{"/* Transitions */"}</span>{"\n"}
-        {"  "}<span className="p">--ease</span>{": "}<span className="v">cubic-bezier(0.4, 0, 0.2, 1)</span>{";\n"}
+        {"  "}<span className="p">--ease</span>{": "}<span className="v">cubic-bezier(0.4, 0, 0.2, 1)</span>{";\n\n"}
+        {"  "}<span className="c">{"/* Nav */"}</span>{"\n"}
+        {"  "}<span className="p">--nav-width</span>{": "}<span className="v">240px</span>{";\n"}
+        {"}\n\n"}
+        <span className="c">{"/* Tokens that reference other tokens (not supported in @theme) */"}</span>{"\n"}
+        <span className="k">:root</span>{" {\n"}
+        {"  "}<span className="p">--link</span>{": "}<span className="v">var(--brand)</span>{";\n"}
+        {"  "}<span className="p">--link-hover</span>{": "}<span className="v">var(--brand-semidark)</span>{";\n"}
         {"  "}<span className="p">--t-fast</span>{": "}<span className="v">150ms var(--ease)</span>{"; "}<span className="p">--t-base</span>{": "}<span className="v">200ms var(--ease)</span>{"; "}<span className="p">--t-slow</span>{": "}<span className="v">300ms var(--ease)</span>{";\n"}
+        {"}\n\n"}
+        <span className="c">{"/* ── Brand theme: Ocean Blue ── */"}</span>{"\n"}
+        <span className="k">{"[data-theme=\"blue\"]"}</span>{" {\n"}
+        {"  "}<span className="p">--brand</span>{": "}<span className="v">#0891B2</span>{"; "}<span className="p">--brand-semidark</span>{": "}<span className="v">#155E75</span>{";\n"}
+        {"  "}<span className="p">--brand-dark</span>{": "}<span className="v">#0E7490</span>{"; "}<span className="p">--brand-darker</span>{": "}<span className="v">#164E63</span>{";\n"}
+        {"  "}<span className="p">--brand-light</span>{": "}<span className="v">#E0F7FA</span>{"; "}<span className="p">--brand-50</span>{": "}<span className="v">#ECFEFF</span>{";\n"}
+        {"}\n\n"}
+        <span className="c">{"/* ── Brand theme: Royal Purple ── */"}</span>{"\n"}
+        <span className="k">{"[data-theme=\"purple\"]"}</span>{" {\n"}
+        {"  "}<span className="p">--brand</span>{": "}<span className="v">#7C3AED</span>{"; "}<span className="p">--brand-semidark</span>{": "}<span className="v">#5E28BF</span>{";\n"}
+        {"  "}<span className="p">--brand-dark</span>{": "}<span className="v">#6332C4</span>{"; "}<span className="p">--brand-darker</span>{": "}<span className="v">#47248C</span>{";\n"}
+        {"  "}<span className="p">--brand-light</span>{": "}<span className="v">#EDE9FE</span>{"; "}<span className="p">--brand-50</span>{": "}<span className="v">#F5F3FF</span>{";\n"}
+        {"}\n\n"}
+        <span className="c">{"/* ── Dark Mode ── */"}</span>{"\n"}
+        <span className="k">{"[data-mode=\"dark\"]"}</span>{" {\n"}
+        {"  "}<span className="p">--brand-light</span>{": "}<span className="v">#0F2D22</span>{"; "}<span className="p">--brand-50</span>{": "}<span className="v">#0A1F18</span>{";\n"}
+        {"  "}<span className="p">--brand-dark</span>{": "}<span className="v">#34D399</span>{";\n\n"}
+        {"  "}<span className="p">--success-light</span>{": "}<span className="v">#0F2D22</span>{"; "}<span className="p">--info-light</span>{": "}<span className="v">#0C1F2E</span>{";\n"}
+        {"  "}<span className="p">--warning-light</span>{": "}<span className="v">#2D1806</span>{"; "}<span className="p">--danger-light</span>{": "}<span className="v">#2D1212</span>{";\n"}
+        {"  "}<span className="p">--success-dark</span>{": "}<span className="v">#6EE7B7</span>{"; "}<span className="p">--info-dark</span>{": "}<span className="v">#7DD3FC</span>{";\n"}
+        {"  "}<span className="p">--warning-dark</span>{": "}<span className="v">#FDE68A</span>{"; "}<span className="p">--danger-dark</span>{": "}<span className="v">#FCA5A5</span>{";\n"}
+        {"  "}<span className="p">--warning-on-solid</span>{": "}<span className="v">#422006</span>{";\n"}
+        {"  "}<span className="p">--success-border</span>{": "}<span className="v">#065F46</span>{"; "}<span className="p">--info-border</span>{": "}<span className="v">#075985</span>{";\n"}
+        {"  "}<span className="p">--warning-border</span>{": "}<span className="v">#92400E</span>{"; "}<span className="p">--danger-border</span>{": "}<span className="v">#991B1B</span>{";\n\n"}
+        {"  "}<span className="p">--black</span>{": "}<span className="v">#F9FAFB</span>{";\n"}
+        {"  "}<span className="p">--grey-900</span>{": "}<span className="v">#F3F4F6</span>{"; "}<span className="p">--grey-800</span>{": "}<span className="v">#E5E7EB</span>{"; "}<span className="p">--grey-700</span>{": "}<span className="v">#D1D5DB</span>{";\n"}
+        {"  "}<span className="p">--grey-600</span>{": "}<span className="v">#9CA3AF</span>{"; "}<span className="p">--grey-500</span>{": "}<span className="v">#6B7280</span>{"; "}<span className="p">--grey-400</span>{": "}<span className="v">#4B5563</span>{";\n"}
+        {"  "}<span className="p">--grey-300</span>{": "}<span className="v">#1F2937</span>{"; "}<span className="p">--grey-200</span>{": "}<span className="v">#111827</span>{"; "}<span className="p">--grey-100</span>{": "}<span className="v">#0F172A</span>{";\n"}
+        {"  "}<span className="p">--white</span>{": "}<span className="v">#0B1120</span>{";\n\n"}
+        {"  "}<span className="p">--text-primary</span>{": "}<span className="v">#F9FAFB</span>{"; "}<span className="p">--text-secondary</span>{": "}<span className="v">#9CA3AF</span>{";\n"}
+        {"  "}<span className="p">--border</span>{": "}<span className="v">#1F2937</span>{"; "}<span className="p">--border-strong</span>{": "}<span className="v">#374151</span>{";\n"}
+        {"  "}<span className="p">--surface-elevated</span>{": "}<span className="v">#131B2E</span>{";\n\n"}
+        {"  "}<span className="p">color-scheme</span>{": "}<span className="v">dark</span>{";\n"}
         {"}"}
       </div>
     </Section>

@@ -50,7 +50,6 @@ Copy the `:root` block from `src/index.css` into your project's global CSS to ge
 ```css
 :root {
   --brand: #0D875C;
-  --brand-hover: #0B7550;
   --brand-semidark: #096843;
   --brand-dark: #0A6B49;
   --brand-darker: #074D35;
@@ -122,7 +121,6 @@ No attribute needed. This is the default VSee brand.
 ```css
 [data-theme="blue"] {
   --brand: #0891B2;
-  --brand-hover: #0E7490;
   --brand-semidark: #155E75;
   --brand-dark: #0E7490;
   --brand-darker: #164E63;
@@ -140,7 +138,6 @@ No attribute needed. This is the default VSee brand.
 ```css
 [data-theme="purple"] {
   --brand: #7C3AED;
-  --brand-hover: #6D31D6;
   --brand-semidark: #5E28BF;
   --brand-dark: #6332C4;
   --brand-darker: #47248C;
@@ -161,12 +158,11 @@ document.documentElement.removeAttribute("data-theme");
 
 ### Creating a Custom Theme
 
-To add your own brand color, define a new `[data-theme]` block with all 7 brand variables:
+To add your own brand color, define a new `[data-theme]` block with all 6 brand variables:
 
 ```css
 [data-theme="your-theme"] {
   --brand: #______;        /* Main brand color */
-  --brand-hover: #______;  /* Slightly darker for hover */
   --brand-semidark: #______; /* Darker for pressed/active */
   --brand-dark: #______;   /* Dark variant (gradients) */
   --brand-darker: #______; /* Darkest variant (gradients) */
