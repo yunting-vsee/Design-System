@@ -46,7 +46,11 @@
       "Bash(rm -f rebase-plan.txt rebase-editor.sh)",
       "Bash(rm -f /d/tmp/git-output.txt /d/tmp/rebase-check.txt /d/tmp/rebase-output.txt /d/tmp/rebase-output2.txt /d/tmp/stash-output.txt /d/tmp/final-log.txt /d/tmp/stash-pop.txt)",
       "Bash(echo \"exit: $?\")",
-      "Bash(cd /d \"D:\\\\Downloads\\\\AI Studio\\\\Design System\\\\design-system\\\\src\")"
+      "Bash(cd /d \"D:\\\\Downloads\\\\AI Studio\\\\Design System\\\\design-system\\\\src\")",
+      "mcp__claude_ai_Asana__search_tasks",
+      "mcp__claude_ai_Gmail__gmail_search_messages",
+      "mcp__claude_ai_Asana__get_my_tasks",
+      "mcp__claude_ai_Asana__get_task"
     ]
   }
 }

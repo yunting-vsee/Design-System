@@ -267,6 +267,9 @@ function AppInner() {
           >
             <option value="">Plus Jakarta Sans (Default)</option>
             <option value="Figtree">Figtree</option>
+            <option value="Manrope">Manrope</option>
+            <option value="DM Sans">DM Sans</option>
+            <option value="Outfit">Outfit</option>
             <option value="Albert Sans">Albert Sans</option>
             <option value="Urbanist">Urbanist</option>
             <option value="Hanken Grotesk">Hanken Grotesk</option>
@@ -275,6 +278,8 @@ function AppInner() {
             <option value="Bricolage Grotesque">Bricolage Grotesque</option>
             <option value="Lexend">Lexend</option>
             <option value="Inter">Inter</option>
+            <option value="Noto Sans">Noto Sans (EN / ES / VI)</option>
+            <option value="Noto Sans TC">Noto Sans TC (繁體中文)</option>
             <option value="Arial">Arial</option>
           </select>
           <div className="ds-theme-label" style={{marginTop:"var(--sp-3)"}}>{t("sidebar.language")}</div>
