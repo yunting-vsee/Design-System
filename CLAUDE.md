@@ -85,6 +85,39 @@ Tokens are prefixed **at source** (`--vsee-brand`, `--vsee-sp-4`, `--vsee-text-h
 - `master` — default branch; autodeploys to GitHub Pages on push
 - Feature branches: `feat/*`, fix branches: `fix/*`
 
+## Commit convention
+
+Scoped conventional commits: `<type>(<scope>): <subject>`.
+
+```
+feat(button):  add xl-destructive variant
+fix(tokens):   restore --vsee-brand-dark for blue theme in dark mode
+refactor(app): split FoundationsColors into its own file
+docs(adr):     0005 — component extraction order
+chore(deps):   bump react-aria to 1.17
+test(visual):  regenerate token-screen parity snapshots
+style(docs):   tighten code-block spacing
+```
+
+Types: `feat` / `fix` / `refactor` / `docs` / `style` / `chore` / `test`.
+
+Scopes — pick the one that matches the change:
+- `tokens` — `src/tokens.css`
+- `styles` — `src/styles.css` (utilities, visual treatment)
+- `button` / `input` / `badge` / ... — single-component changes (once extracted in Phase 1+)
+- `app` — `apps/docs/src/App.tsx` and other docs-site React code
+- `docs` — `docs/adr/`, `docs/roadmap/`, `README.md`, this file
+- `tooling` — lefthook, lint config, deploy workflow, package manifests
+- `deps` — dependency bumps
+- `visual` — Playwright visual tests
+
+Rules:
+- Subject in imperative mood, lowercase after the colon, no trailing period, soft-wrapped at ~72 chars.
+- Body (optional) explains *why*, not *what* — the diff shows what.
+- One concern per commit. Tooling change, feature change, and docs change get separate commits even if they land together.
+- Mirrors the `va-main` (Phoenix) convention so downstream consumers read the same shape.
+- Applies going forward; historic unscoped commits stay as-is (rewriting history isn't worth the churn).
+
 ## Deployment
 
 `.github/workflows/deploy.yml` — GitHub Actions workflow mirrored from the Bitbucket repo to GitHub; on push to `master` or `main`, builds the Vite app and deploys to GitHub Pages. The workflow runs from `apps/docs/` (see `working-directory` in the YAML). **Don't change the trigger branches without coordinating with the design team** — breaking the deploy breaks the docs site.
