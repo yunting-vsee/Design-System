@@ -1,0 +1,20 @@
+# Pre-commit gates for vp-design-system.
+# Install once: `npx lefthook install`.
+# The `gitleaks` binary is optional — if missing, the security job
+# prints a warning and passes. Never hard-blocks.
+
+pre-commit:
+  parallel: true
+  jobs:
+    - name: security
+      run: |
+        if command -v gitleaks >/dev/null 2>&1; then
+          gitleaks git --staged
+        else
+          echo "⚠ gitleaks not installed — skipping security scan. Install with: brew install gitleaks"
+        fi
+    - name: lint
+      glob: "design-system/**/*.{ts,tsx,js,jsx,css}"
+      run: |
+        cd design-system
+        npm run lint
