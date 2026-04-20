@@ -135,9 +135,11 @@ Managed by [lefthook](https://github.com/evilmartians/lefthook) (`lefthook.yml`)
 
 ## Bitbucket PR workflow
 
+**Full reference:** [`docs/bitbucket-pr-workflow.md`](docs/bitbucket-pr-workflow.md) — read/write/create/comment/merge via API, auth setup, common errors, cheat sheet.
+
 Same auth pattern as va-main. Export these in your shell profile — `~/.zshrc` on macOS, `~/.bashrc` (Git Bash) on Windows:
-- `BITBUCKET_EMAIL="an@vsee.com"`
-- `BITBUCKET_API_TOKEN="ATATT..."`
+- `BITBUCKET_EMAIL="your@vsee.com"` — Atlassian account email
+- `BITBUCKET_API_TOKEN="ATATT..."` — token from https://id.atlassian.com/manage-profile/security/api-tokens (needs `read:*:bitbucket` + `write:pullrequest:bitbucket` scopes)
 
 Create PR (REST API uses the email as Basic-auth username):
 ```bash
