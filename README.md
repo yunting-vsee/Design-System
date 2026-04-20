@@ -15,10 +15,29 @@ The VSee Design System is built with **React Aria** (Adobe's accessibility-first
 
 ## Installation
 
+### As a library (downstream consumers)
+
+```jsonc
+// package.json
+"dependencies": {
+  "@vsee/ui": "bitbucket:vsee/vp-design-system#v0.1.0"
+}
+```
+
+```css
+/* your global CSS */
+@import '@vsee/ui/tokens.css';
+@import '@vsee/ui/styles.css';
+```
+
+v0.1.0 is CSS-only (tokens + base styles). Component exports land in v0.2.0+.
+
+### To develop the docs site
+
 ```bash
 # Clone the repository
 git clone <repo-url>
-cd design-system
+cd vp-design-system/apps/docs
 
 # Install dependencies
 npm install
@@ -30,20 +49,25 @@ npm run dev
 ## Project Structure
 
 ```
-design-system/
-  src/
-    index.css      # Design tokens, CSS variables, Tailwind theme
-    App.css        # Component styles
-    App.tsx        # All component demos and documentation
-  public/
-    fonts/         # Legend font files
-    favicon.svg
-    icons.svg
+vp-design-system/
+  src/                   # @vsee/ui library source
+    tokens.css           # Design tokens (@theme + brand/dark-mode overrides)
+    styles.css           # Typography utilities + component visual styling
+    index.ts             # Library entry (placeholder until v0.2+)
+  apps/
+    docs/                # Vite docs site (consumes the library via alias)
+      src/
+        index.css        # Tailwind + @vsee/ui imports + docs-site resets
+        App.tsx          # All component demos
+      public/
+        favicon.svg
+        icons.svg
+  package.json           # @vsee/ui manifest
 ```
 
 ## Using Design Tokens
 
-Copy the `:root` block from `src/index.css` into your project's global CSS to get all design tokens:
+The canonical token source is `src/tokens.css` (prefixed `--vsee-*` at source — see ADR 0004). Consumers who install `@vsee/ui` get them via `@import '@vsee/ui/tokens.css'`. The snippets below show the shape of each scale; the actual token names are `--vsee-brand`, `--vsee-sp-4`, `--vsee-text-h1-size`, etc. — the `--vsee-` prefix is omitted here for readability only.
 
 ### Brand Colors
 
