@@ -14,7 +14,7 @@ pre-commit:
           echo "⚠ gitleaks not installed — skipping security scan. Install with: brew install gitleaks"
         fi
     - name: lint
-      glob: "design-system/**/*.{ts,tsx,js,jsx,css}"
+      glob: "apps/docs/**/*.{ts,tsx,js,jsx,css}"
       run: |
-        cd design-system
+        cd apps/docs
         npm run lint

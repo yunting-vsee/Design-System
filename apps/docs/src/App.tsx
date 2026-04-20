@@ -93,7 +93,8 @@ import {
   CreditCard,
   Lock,
 } from "lucide-react";
-import "./App.css";
+
+// Component visual styles come from `@vsee/ui/styles.css`, loaded via `src/index.css`.
 
 /* ─── Copy-to-clipboard helper ─── */
 function useCopyToast() {

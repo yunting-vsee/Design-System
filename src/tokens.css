@@ -1,4 +1,10 @@
-@import "tailwindcss";
+/* ═══════════════════════════════════════════
+   @vsee/ui — Design Tokens
+   ═══════════════════════════════════════════
+   Single source of truth for the VSee token palette.
+   Consumers: @import '@vsee/ui/tokens.css'.
+   All token names are prefixed --vsee-* at source (ADR 0004).
+*/
 
 /* ── Tailwind v4 Theme ── */
 @theme {
@@ -105,56 +111,6 @@
   --vsee-brand-50: #F5F3FF;
 }
 
-/* ── Typography classes ── */
-.text-display { font-size: var(--vsee-text-display-size); font-weight: 800; line-height: 1.05; letter-spacing: -2px; }
-.text-h1 { font-size: var(--vsee-text-h1-size); font-weight: 800; line-height: 1.1; letter-spacing: -1.5px; }
-.text-h2 { font-size: var(--vsee-text-h2-size); font-weight: 700; line-height: 1.15; letter-spacing: -0.5px; }
-.text-h3 { font-size: var(--vsee-text-h3-size); font-weight: 700; line-height: 1.2; letter-spacing: -0.3px; }
-.text-h4 { font-size: var(--vsee-text-h4-size); font-weight: 600; line-height: 1.3; }
-.text-h5 { font-size: var(--vsee-text-h5-size); font-weight: 600; line-height: 1.4; }
-.text-body-lg { font-size: var(--vsee-text-body-lg-size); font-weight: 400; line-height: 1.6; }
-.text-body { font-size: var(--vsee-text-body-size); font-weight: 400; line-height: 1.5; }
-.text-caption { font-size: var(--vsee-text-caption-size); font-weight: 500; line-height: 1.4; }
-.text-overline { font-size: var(--vsee-text-overline-size); font-weight: 700; line-height: 1.4; letter-spacing: 1px; text-transform: uppercase; }
-
-/* ── Base ── */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
-html {
-  font-family: var(--vsee-font-sans);
-  font-size: var(--vsee-text-body-size);
-  line-height: 1.5;
-  color: var(--vsee-text-primary);
-  background: var(--vsee-white);
-  transition: background 0.2s ease, color 0.2s ease;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-body {
-  margin: 0;
-}
-
-a {
-  color: var(--vsee-link);
-  text-decoration: none;
-  transition: color var(--vsee-t-fast);
-}
-
-a:hover {
-  color: var(--vsee-link-hover);
-}
-
-/* ── React Aria focus styles ── */
-[data-focus-visible] {
-  outline: 2px solid var(--vsee-brand);
-  outline-offset: 2px;
-}
-
 /* ── Dark Mode ── */
 [data-mode="dark"] {
   --vsee-brand-light: #0F2D22;
@@ -200,8 +156,3 @@ a:hover {
   --vsee-brand-50: #140B25;
   --vsee-brand-dark: #C4B5FD;
 }
-
-/* ── Scrollbar ── */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--vsee-border); border-radius: 3px; }

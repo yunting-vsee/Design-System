@@ -1,0 +1,55 @@
+@import "tailwindcss";
+
+/* Library source — @vsee/ui tokens + base styles.
+   Resolved via the Vite `@vsee/ui` alias (see vite.config.ts). */
+@import "@vsee/ui/tokens.css";
+@import "@vsee/ui/styles.css";
+
+/* ═══════════════════════════════════════════
+   Docs-site base resets
+   ═══════════════════════════════════════════
+   These are deliberately NOT in the library. Library consumers already
+   ship their own resets; forcing ours on them would conflict.
+*/
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: var(--vsee-font-sans);
+  font-size: var(--vsee-text-body-size);
+  line-height: 1.5;
+  color: var(--vsee-text-primary);
+  background: var(--vsee-white);
+  transition: background 0.2s ease, color 0.2s ease;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+}
+
+a {
+  color: var(--vsee-link);
+  text-decoration: none;
+  transition: color var(--vsee-t-fast);
+}
+
+a:hover {
+  color: var(--vsee-link-hover);
+}
+
+/* ── React Aria focus styles ── */
+[data-focus-visible] {
+  outline: 2px solid var(--vsee-brand);
+  outline-offset: 2px;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--vsee-border); border-radius: 3px; }
