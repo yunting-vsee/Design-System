@@ -225,7 +225,7 @@ function App() {
             <button className={`ds-theme-dot ds-theme-blue ${brandTheme === "blue" ? "active" : ""}`} onClick={() => setBrandTheme("blue")} title="Ocean Blue" />
             <button className={`ds-theme-dot ds-theme-purple ${brandTheme === "purple" ? "active" : ""}`} onClick={() => setBrandTheme("purple")} title="Royal Purple" />
           </div>
-          <div className="ds-theme-label" style={{marginTop:"var(--sp-3)"}}>Mode</div>
+          <div className="ds-theme-label" style={{marginTop:"var(--vsee-sp-3)"}}>Mode</div>
           <button className="ds-mode-switch" onClick={() => setDarkMode(!darkMode)} title={darkMode ? "Switch to Light" : "Switch to Dark"}>
             <Sun size={12} className="ds-mode-icon ds-mode-icon-light" />
             <span className={`ds-mode-track ${darkMode ? "on" : ""}`}>
@@ -351,7 +351,7 @@ function SubSection({ title, description, children }: {
 function CodeBlock({ code }: { code: string }) {
   const [open, setOpen] = useState(false);
   return (
-    <div style={{ marginTop: "var(--sp-4)" }}>
+    <div style={{ marginTop: "var(--vsee-sp-4)" }}>
       <button className="code-toggle" onClick={() => setOpen(!open)}>
         <ChevronRight size={14} className={`code-toggle-icon ${open ? "open" : ""}`} />
         {open ? "Hide code" : "Show code"}
@@ -385,42 +385,42 @@ function FoundationsColors({ copy }: { copy: (v: string) => void }) {
 
       <SubSection title="Brand" description="The primary brand scale — from light tints to deep active states.">
         <div className="swatch-row">
-          <Swatch large color="var(--brand-50)" name="--brand-50" hex="#F0FAF5" onClick={() => copy("var(--brand-50)")} />
-          <Swatch large color="var(--brand-light)" name="--brand-light" hex="#E6F5EE" onClick={() => copy("var(--brand-light)")} />
-          <Swatch large color="var(--brand)" name="--brand" hex="#0D875C" onClick={() => copy("var(--brand)")} />
-          <Swatch large color="var(--brand-semidark)" name="--brand-semidark" hex="#096843" onClick={() => copy("var(--brand-semidark)")} />
+          <Swatch large color="var(--vsee-brand-50)" name="--vsee-brand-50" hex="#F0FAF5" onClick={() => copy("var(--vsee-brand-50)")} />
+          <Swatch large color="var(--vsee-brand-light)" name="--vsee-brand-light" hex="#E6F5EE" onClick={() => copy("var(--vsee-brand-light)")} />
+          <Swatch large color="var(--vsee-brand)" name="--vsee-brand" hex="#0D875C" onClick={() => copy("var(--vsee-brand)")} />
+          <Swatch large color="var(--vsee-brand-semidark)" name="--vsee-brand-semidark" hex="#096843" onClick={() => copy("var(--vsee-brand-semidark)")} />
         </div>
       </SubSection>
 
       <SubSection title="Semantic" description="Communicating meaning — success, information, warning, and danger states.">
         <div className="swatch-row">
-          <Swatch color="var(--success)" name="--success" hex="#367D17" onClick={() => copy("var(--success)")} />
-          <Swatch color="var(--info)" name="--info" hex="#196CD2" onClick={() => copy("var(--info)")} />
-          <Swatch color="var(--warning)" name="--warning" hex="#FFCB5A" onClick={() => copy("var(--warning)")} />
-          <Swatch color="var(--danger)" name="--danger" hex="#DC2626" onClick={() => copy("var(--danger)")} />
+          <Swatch color="var(--vsee-success)" name="--vsee-success" hex="#367D17" onClick={() => copy("var(--vsee-success)")} />
+          <Swatch color="var(--vsee-info)" name="--vsee-info" hex="#196CD2" onClick={() => copy("var(--vsee-info)")} />
+          <Swatch color="var(--vsee-warning)" name="--vsee-warning" hex="#FFCB5A" onClick={() => copy("var(--vsee-warning)")} />
+          <Swatch color="var(--vsee-danger)" name="--vsee-danger" hex="#DC2626" onClick={() => copy("var(--vsee-danger)")} />
         </div>
         <div className="swatch-row">
-          <Swatch color="var(--success-light)" name="--success-light" hex="#F9FEF6" onClick={() => copy("var(--success-light)")} />
-          <Swatch color="var(--info-light)" name="--info-light" hex="#E0F2FE" onClick={() => copy("var(--info-light)")} />
-          <Swatch color="var(--warning-light)" name="--warning-light" hex="#FEF3C7" onClick={() => copy("var(--warning-light)")} />
-          <Swatch color="var(--danger-light)" name="--danger-light" hex="#FEE2E2" onClick={() => copy("var(--danger-light)")} />
+          <Swatch color="var(--vsee-success-light)" name="--vsee-success-light" hex="#F9FEF6" onClick={() => copy("var(--vsee-success-light)")} />
+          <Swatch color="var(--vsee-info-light)" name="--vsee-info-light" hex="#E0F2FE" onClick={() => copy("var(--vsee-info-light)")} />
+          <Swatch color="var(--vsee-warning-light)" name="--vsee-warning-light" hex="#FEF3C7" onClick={() => copy("var(--vsee-warning-light)")} />
+          <Swatch color="var(--vsee-danger-light)" name="--vsee-danger-light" hex="#FEE2E2" onClick={() => copy("var(--vsee-danger-light)")} />
         </div>
       </SubSection>
 
       <SubSection title="Neutrals">
         <div className="swatch-row">
-          <Swatch color="var(--black)" name="--black" hex="#111827" onClick={() => copy("var(--black)")} />
-          <Swatch color="var(--grey-900)" name="--grey-900" hex="#4B5563" onClick={() => copy("var(--grey-900)")} />
-          <Swatch color="var(--grey-800)" name="--grey-800" hex="#6B7280" onClick={() => copy("var(--grey-800)")} />
-          <Swatch color="var(--grey-700)" name="--grey-700" hex="#9CA3AF" onClick={() => copy("var(--grey-700)")} />
-          <Swatch color="var(--grey-600)" name="--grey-600" hex="#B0B7C3" onClick={() => copy("var(--grey-600)")} />
+          <Swatch color="var(--vsee-black)" name="--vsee-black" hex="#111827" onClick={() => copy("var(--vsee-black)")} />
+          <Swatch color="var(--vsee-grey-900)" name="--vsee-grey-900" hex="#4B5563" onClick={() => copy("var(--vsee-grey-900)")} />
+          <Swatch color="var(--vsee-grey-800)" name="--vsee-grey-800" hex="#6B7280" onClick={() => copy("var(--vsee-grey-800)")} />
+          <Swatch color="var(--vsee-grey-700)" name="--vsee-grey-700" hex="#9CA3AF" onClick={() => copy("var(--vsee-grey-700)")} />
+          <Swatch color="var(--vsee-grey-600)" name="--vsee-grey-600" hex="#B0B7C3" onClick={() => copy("var(--vsee-grey-600)")} />
         </div>
         <div className="swatch-row">
-          <Swatch color="var(--grey-500)" name="--grey-500" hex="#C9CED6" onClick={() => copy("var(--grey-500)")} />
-          <Swatch color="var(--grey-400)" name="--grey-400" hex="#E8EAED" onClick={() => copy("var(--grey-400)")} />
-          <Swatch color="var(--grey-300)" name="--grey-300" hex="#F1F2F4" onClick={() => copy("var(--grey-300)")} />
-          <Swatch color="var(--grey-200)" name="--grey-200" hex="#F8F9FA" onClick={() => copy("var(--grey-200)")} />
-          <Swatch color="var(--grey-100)" name="--grey-100" hex="#FCFCFD" onClick={() => copy("var(--grey-100)")} />
+          <Swatch color="var(--vsee-grey-500)" name="--vsee-grey-500" hex="#C9CED6" onClick={() => copy("var(--vsee-grey-500)")} />
+          <Swatch color="var(--vsee-grey-400)" name="--vsee-grey-400" hex="#E8EAED" onClick={() => copy("var(--vsee-grey-400)")} />
+          <Swatch color="var(--vsee-grey-300)" name="--vsee-grey-300" hex="#F1F2F4" onClick={() => copy("var(--vsee-grey-300)")} />
+          <Swatch color="var(--vsee-grey-200)" name="--vsee-grey-200" hex="#F8F9FA" onClick={() => copy("var(--vsee-grey-200)")} />
+          <Swatch color="var(--vsee-grey-100)" name="--vsee-grey-100" hex="#FCFCFD" onClick={() => copy("var(--vsee-grey-100)")} />
         </div>
       </SubSection>
 
@@ -429,17 +429,17 @@ function FoundationsColors({ copy }: { copy: (v: string) => void }) {
           <div className="card">
             <div className="card-inner-title">Surfaces</div>
             <div className="surface-text-list">
-              <div className="st-row" onClick={() => copy("var(--white)")}><div className="st-swatch" style={{background:"var(--white)",border:"1px solid var(--border)"}} /><div><div className="st-name">--white</div><div className="st-val">#FFFFFF</div></div></div>
-              <div className="st-row" onClick={() => copy("var(--grey-200)")}><div className="st-swatch" style={{background:"var(--grey-200)",border:"1px solid var(--border)"}} /><div><div className="st-name">--grey-200</div><div className="st-val">#F8F9FA</div></div></div>
-              <div className="st-row" onClick={() => copy("var(--grey-300)")}><div className="st-swatch" style={{background:"var(--grey-300)",border:"1px solid var(--border)"}} /><div><div className="st-name">--grey-300</div><div className="st-val">#F1F2F4</div></div></div>
+              <div className="st-row" onClick={() => copy("var(--vsee-white)")}><div className="st-swatch" style={{background:"var(--vsee-white)",border:"1px solid var(--vsee-border)"}} /><div><div className="st-name">--vsee-white</div><div className="st-val">#FFFFFF</div></div></div>
+              <div className="st-row" onClick={() => copy("var(--vsee-grey-200)")}><div className="st-swatch" style={{background:"var(--vsee-grey-200)",border:"1px solid var(--vsee-border)"}} /><div><div className="st-name">--vsee-grey-200</div><div className="st-val">#F8F9FA</div></div></div>
+              <div className="st-row" onClick={() => copy("var(--vsee-grey-300)")}><div className="st-swatch" style={{background:"var(--vsee-grey-300)",border:"1px solid var(--vsee-border)"}} /><div><div className="st-name">--vsee-grey-300</div><div className="st-val">#F1F2F4</div></div></div>
             </div>
           </div>
           <div className="card">
             <div className="card-inner-title">Text Colors</div>
             <div className="surface-text-list">
-              <div className="st-row" onClick={() => copy("var(--text-primary)")}><div className="st-swatch" style={{background:"var(--text-primary)"}} /><div><div className="st-name">--text-primary</div><div className="st-val">#111827</div></div></div>
-              <div className="st-row" onClick={() => copy("var(--text-secondary)")}><div className="st-swatch" style={{background:"var(--text-secondary)"}} /><div><div className="st-name">--text-secondary</div><div className="st-val">#6B7280</div></div></div>
-              <div className="st-row" onClick={() => copy("var(--link)")}><div className="st-swatch" style={{background:"var(--link)"}} /><div><div className="st-name">--link</div><div className="st-val">#0D875C</div></div></div>
+              <div className="st-row" onClick={() => copy("var(--vsee-text-primary)")}><div className="st-swatch" style={{background:"var(--vsee-text-primary)"}} /><div><div className="st-name">--vsee-text-primary</div><div className="st-val">#111827</div></div></div>
+              <div className="st-row" onClick={() => copy("var(--vsee-text-secondary)")}><div className="st-swatch" style={{background:"var(--vsee-text-secondary)"}} /><div><div className="st-name">--vsee-text-secondary</div><div className="st-val">#6B7280</div></div></div>
+              <div className="st-row" onClick={() => copy("var(--vsee-link)")}><div className="st-swatch" style={{background:"var(--vsee-link)"}} /><div><div className="st-name">--vsee-link</div><div className="st-val">#0D875C</div></div></div>
             </div>
           </div>
         </div>
@@ -456,7 +456,7 @@ function FoundationsTypography() {
     <Section id="typography" label="Foundation" title="Typography"
       description="Figtree is our system font — clean, legible, and optimized for UI. The type scale uses a harmonious progression from 12px to 60px.">
 
-      <div className="card" style={{marginBottom:"var(--sp-8)"}}>
+      <div className="card" style={{marginBottom:"var(--vsee-sp-8)"}}>
         {[
           { cls: "text-display", size: "60px", text: "Design for health" },
           { cls: "text-h1", size: "48px", text: "Page title" },
@@ -494,21 +494,21 @@ function FoundationsTypography() {
       </SubSection>
 
       <SubSection title="Date Format">
-        <div className="card" style={{padding:"var(--sp-4) var(--sp-6)", display:"flex", flexDirection:"column", gap:"var(--sp-3)"}}>
+        <div className="card" style={{padding:"var(--vsee-sp-4) var(--vsee-sp-6)", display:"flex", flexDirection:"column", gap:"var(--vsee-sp-3)"}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
             <div>
-              <div className="text-caption" style={{color:"var(--text-secondary)",marginBottom:"var(--sp-1)"}}>US Format</div>
+              <div className="text-caption" style={{color:"var(--vsee-text-secondary)",marginBottom:"var(--vsee-sp-1)"}}>US Format</div>
               <div className="text-body" style={{fontWeight:600}}>{new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}, {new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}</div>
             </div>
-            <code style={{fontSize:"var(--text-caption-size)",color:"var(--text-secondary)",background:"var(--grey-100)",padding:"var(--sp-1) var(--sp-2)",borderRadius:"var(--r-sm)"}}>MMM D, YYYY, h:mm A</code>
+            <code style={{fontSize:"var(--vsee-text-caption-size)",color:"var(--vsee-text-secondary)",background:"var(--vsee-grey-100)",padding:"var(--vsee-sp-1) var(--vsee-sp-2)",borderRadius:"var(--vsee-r-sm)"}}>MMM D, YYYY, h:mm A</code>
           </div>
-          <hr style={{border:"none",borderTop:"1px solid var(--grey-200)",margin:0}} />
+          <hr style={{border:"none",borderTop:"1px solid var(--vsee-grey-200)",margin:0}} />
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
             <div>
-              <div className="text-caption" style={{color:"var(--text-secondary)",marginBottom:"var(--sp-1)"}}>Browser Locale ({navigator.language})</div>
+              <div className="text-caption" style={{color:"var(--vsee-text-secondary)",marginBottom:"var(--vsee-sp-1)"}}>Browser Locale ({navigator.language})</div>
               <div className="text-body" style={{fontWeight:600}}>{new Date().toLocaleDateString(navigator.language, { month: "short", day: "numeric", year: "numeric" })}, {new Date().toLocaleTimeString(navigator.language, { hour: "numeric", minute: "2-digit" })}</div>
             </div>
-            <code style={{fontSize:"var(--text-caption-size)",color:"var(--text-secondary)",background:"var(--grey-100)",padding:"var(--sp-1) var(--sp-2)",borderRadius:"var(--r-sm)"}}>{navigator.language}</code>
+            <code style={{fontSize:"var(--vsee-text-caption-size)",color:"var(--vsee-text-secondary)",background:"var(--vsee-grey-100)",padding:"var(--vsee-sp-1) var(--vsee-sp-2)",borderRadius:"var(--vsee-r-sm)"}}>{navigator.language}</code>
           </div>
         </div>
         <CodeBlock
@@ -524,16 +524,16 @@ function FoundationsTypography() {
    ═══════════════════════════════════════════ */
 function FoundationsSpacing() {
   const spaces = [
-    { token: "--sp-1", px: 4 }, { token: "--sp-2", px: 8 }, { token: "--sp-3", px: 12 },
-    { token: "--sp-4", px: 16 }, { token: "--sp-6", px: 24 }, { token: "--sp-8", px: 32 },
-    { token: "--sp-10", px: 40 }, { token: "--sp-12", px: 48 }, { token: "--sp-16", px: 64 },
-    { token: "--sp-24", px: 96 }, { token: "--sp-32", px: 128 },
+    { token: "--vsee-sp-1", px: 4 }, { token: "--vsee-sp-2", px: 8 }, { token: "--vsee-sp-3", px: 12 },
+    { token: "--vsee-sp-4", px: 16 }, { token: "--vsee-sp-6", px: 24 }, { token: "--vsee-sp-8", px: 32 },
+    { token: "--vsee-sp-10", px: 40 }, { token: "--vsee-sp-12", px: 48 }, { token: "--vsee-sp-16", px: 64 },
+    { token: "--vsee-sp-24", px: 96 }, { token: "--vsee-sp-32", px: 128 },
   ];
 
   return (
     <Section id="spacing" label="Foundation" title="Spacing & Layout"
       description="A 4px-based spacing scale ensures consistent rhythm across every component and layout.">
-      <div className="grid" style={{gap:"var(--sp-10)",gridTemplateColumns:"1fr 2fr"}}>
+      <div className="grid" style={{gap:"var(--vsee-sp-10)",gridTemplateColumns:"1fr 2fr"}}>
         <div>
           <div className="sub-title">Spacing Scale</div>
           {spaces.map((s) => (
@@ -548,19 +548,19 @@ function FoundationsSpacing() {
           <div className="sub-title">Shadows</div>
           <div className="shadow-stack">
             {["xs","sm","md","lg","xl"].map((s) => (
-              <div key={s} className="shadow-card" style={{boxShadow:`var(--shadow-${s})`}}>--shadow-{s}</div>
+              <div key={s} className="shadow-card" style={{boxShadow:`var(--vsee-shadow-${s})`}}>--vsee-shadow-{s}</div>
             ))}
           </div>
         </div>
       </div>
 
-      <div style={{marginTop:"var(--sp-10)"}}>
+      <div style={{marginTop:"var(--vsee-sp-10)"}}>
         <div className="sub-title">Border Radius</div>
         <div className="radius-row">
           {[
-            { label: "--r-xs", val: 4 }, { label: "--r-sm", val: 6 }, { label: "--r-md", val: 8 }, { label: "--r-lg", val: 12 },
-            { label: "--r-xl", val: 16 }, { label: "--r-2xl", val: 24 },
-            { label: "--r-full", val: 9999 },
+            { label: "--vsee-r-xs", val: 4 }, { label: "--vsee-r-sm", val: 6 }, { label: "--vsee-r-md", val: 8 }, { label: "--vsee-r-lg", val: 12 },
+            { label: "--vsee-r-xl", val: 16 }, { label: "--vsee-r-2xl", val: 24 },
+            { label: "--vsee-r-full", val: 9999 },
           ].map((r) => (
             <div key={r.label} style={{textAlign:"center"}}>
               <div className="radius-preview" style={{borderRadius: r.val, width: 80, height: 80}}>{r.val === 9999 ? "∞" : `${r.val}px`}</div>
@@ -570,25 +570,25 @@ function FoundationsSpacing() {
         </div>
       </div>
 
-      <div style={{marginTop:"var(--sp-8)"}} />
+      <div style={{marginTop:"var(--vsee-sp-8)"}} />
       {/* <SubSection title="Dividers" description="Horizontal separators used to visually group content within cards, panels, and forms.">
         <div className="preview-box">
           <div style={{ fontWeight: 600 }}>Patient Information</div>
           <div className="divider" />
-          <div style={{ display: "flex", gap: "var(--sp-8)" }}>
+          <div style={{ display: "flex", gap: "var(--vsee-sp-8)" }}>
             <span>Name: Jane Doe</span>
             <span>DOB: 03/15/1985</span>
             <span>MRN: 00284731</span>
           </div>
           <div className="divider divider-dashed" />
-          <div style={{ display: "flex", gap: "var(--sp-8)" }}>
+          <div style={{ display: "flex", gap: "var(--vsee-sp-8)" }}>
             <span>Provider: Dr. Sarah Chen</span>
             <span>Dept: Internal Medicine</span>
           </div>
           <div className="divider divider-thick" />
-          <div style={{ color: "var(--text-secondary)" }}>End of section</div>
+          <div style={{ color: "var(--vsee-text-secondary)" }}>End of section</div>
         </div>
-        <div style={{ marginTop: "var(--sp-6)" }}>
+        <div style={{ marginTop: "var(--vsee-sp-6)" }}>
           <div className="sub-title">Divider with Label</div>
           <div className="preview-box">
             <div>Content above</div>
@@ -719,13 +719,13 @@ function ComponentsButtons() {
       <SubSection title="States">
         <div className="preview">
           <Button className="btn btn-primary">Default</Button>
-          <Button className="btn btn-primary" style={{backgroundImage:"var(--hover-overlay)",boxShadow:"var(--shadow-sm)"}}>Hover</Button>
-          <Button className="btn btn-primary" style={{background:"var(--brand)"}}>Pressed</Button>
-          <Button className="btn btn-primary" style={{boxShadow:"var(--shadow-focus)",outline:"2px solid var(--brand)",outlineOffset:2}}>Focus</Button>
+          <Button className="btn btn-primary" style={{backgroundImage:"var(--vsee-hover-overlay)",boxShadow:"var(--vsee-shadow-sm)"}}>Hover</Button>
+          <Button className="btn btn-primary" style={{background:"var(--vsee-brand)"}}>Pressed</Button>
+          <Button className="btn btn-primary" style={{boxShadow:"var(--vsee-shadow-focus)",outline:"2px solid var(--vsee-brand)",outlineOffset:2}}>Focus</Button>
           <Button className="btn btn-primary" isDisabled>Disabled</Button>
         </div>
         <CodeBlock
-          code={`/* States are handled via React Aria data attributes */\n.btn[data-hovered]  { background-image: var(--hover-overlay); }\n.btn[data-pressed]  { background: var(--brand-semidark); }\n.btn[data-focus-visible] { box-shadow: var(--shadow-focus); }\n.btn[data-disabled] { opacity: 0.5; cursor: not-allowed; }`}
+          code={`/* States are handled via React Aria data attributes */\n.btn[data-hovered]  { background-image: var(--vsee-hover-overlay); }\n.btn[data-pressed]  { background: var(--vsee-brand-semidark); }\n.btn[data-focus-visible] { box-shadow: var(--vsee-shadow-focus); }\n.btn[data-disabled] { opacity: 0.5; cursor: not-allowed; }`}
         />
       </SubSection>
 
@@ -765,13 +765,13 @@ function ComponentsButtons() {
           <Button className="btn btn-ghost"><Share2 size={16} /> Share</Button>
           <Button className="btn btn-danger"><Trash2 size={16} /> Delete</Button>
         </div>
-        <div className="sub-title" style={{ marginTop: "var(--sp-6)" }}>Icon on Right</div>
+        <div className="sub-title" style={{ marginTop: "var(--vsee-sp-6)" }}>Icon on Right</div>
         <div className="preview">
           <Button className="btn btn-primary">Send <Send size={16} /></Button>
           <Button className="btn btn-secondary">Upload <Upload size={16} /></Button>
           <Button className="btn btn-ghost">Schedule <Calendar size={16} /></Button>
         </div>
-        <div className="sub-title" style={{ marginTop: "var(--sp-6)" }}>Icon Only</div>
+        <div className="sub-title" style={{ marginTop: "var(--vsee-sp-6)" }}>Icon Only</div>
         <div className="preview">
           <Button className="btn btn-primary btn-icon"><Plus size={18} /></Button>
           <Button className="btn btn-secondary btn-icon"><Pencil size={18} /></Button>
@@ -779,7 +779,7 @@ function ComponentsButtons() {
           <Button className="btn btn-danger btn-icon"><Trash2 size={18} /></Button>
           <Button className="btn btn-info btn-icon"><Info size={18} /></Button>
         </div>
-        <div className="sub-title" style={{ marginTop: "var(--sp-6)" }}>Sizes with Icons</div>
+        <div className="sub-title" style={{ marginTop: "var(--vsee-sp-6)" }}>Sizes with Icons</div>
         <div className="preview">
           <Button className="btn btn-primary btn-lg"><Plus size={16} /> Large</Button>
           <Button className="btn btn-primary"><Plus size={16} /> Default</Button>
@@ -927,7 +927,7 @@ function PaymentInput({
     <div className="payment-input">
       <div className="payment-row payment-card-row">
         <CreditCard size={16} className="payment-icon" />
-        <label className="payment-label" style={{paddingLeft:"var(--sp-2)"}}>Card #</label>
+        <label className="payment-label" style={{paddingLeft:"var(--vsee-sp-2)"}}>Card #</label>
         <input
           className="payment-field payment-card"
           placeholder={cardPlaceholder}
@@ -940,7 +940,7 @@ function PaymentInput({
       <div className="payment-row payment-detail-row">
         <div className="payment-detail-col">
           <Calendar size={16} className="payment-icon" />
-          <label className="payment-label" style={{paddingLeft:"var(--sp-2)"}}>Expiry</label>
+          <label className="payment-label" style={{paddingLeft:"var(--vsee-sp-2)"}}>Expiry</label>
           <input
             className="payment-field payment-expiry"
             placeholder={expiryPlaceholder}
@@ -951,7 +951,7 @@ function PaymentInput({
         <div className="payment-divider" />
         <div className="payment-detail-col">
           <Lock size={16} className="payment-icon" />
-          <label className="payment-label" style={{paddingLeft:"var(--sp-2)"}}>CVV</label>
+          <label className="payment-label" style={{paddingLeft:"var(--vsee-sp-2)"}}>CVV</label>
           <input
             type="password"
             inputMode="numeric"
@@ -1129,7 +1129,7 @@ function SignaturePad({
 
   const getStrokeColor = useCallback(() => {
     if (strokeColor) return strokeColor;
-    return getComputedStyle(canvasRef.current!).getPropertyValue("--text-primary").trim() || "#111827";
+    return getComputedStyle(canvasRef.current!).getPropertyValue("--vsee-text-primary").trim() || "#111827";
   }, [strokeColor]);
 
   const startDraw = useCallback((e: React.MouseEvent | React.TouchEvent) => {
@@ -1249,7 +1249,7 @@ function SignaturePadDemo({ label, preSigned }: { label: string; preSigned?: boo
   if (preSigned) {
     return (
       <div>
-        <div className="form-label" style={{marginBottom:"var(--sp-2)"}}>{label}</div>
+        <div className="form-label" style={{marginBottom:"var(--vsee-sp-2)"}}>{label}</div>
         <div className="signature-pad signed">
           <canvas ref={canvasRef} width={500} height={160} className="signature-canvas" />
         </div>
@@ -1262,7 +1262,7 @@ function SignaturePadDemo({ label, preSigned }: { label: string; preSigned?: boo
 
   return (
     <div>
-      <div className="form-label" style={{marginBottom:"var(--sp-2)"}}>{label}</div>
+      <div className="form-label" style={{marginBottom:"var(--vsee-sp-2)"}}>{label}</div>
       <SignaturePad onSign={(dataUrl, ts) => console.log("Signed:", ts, dataUrl.slice(0, 50))} />
     </div>
   );
@@ -1290,7 +1290,7 @@ function ComponentsForms() {
   return (
     <Section id="forms" label="Components" title="Form Elements"
       description="Clean, accessible form controls with clear focus states and error handling.">
-      <div className="grid g2" style={{gap:"var(--sp-6)"}}>
+      <div className="grid g2" style={{gap:"var(--vsee-sp-6)"}}>
         {/* Text Inputs */}
         <div className="card">
           <div className="sub-title">Text Inputs</div>
@@ -1352,7 +1352,7 @@ function ComponentsForms() {
               <TextArea className="input textarea" rows={3} placeholder="Add clinical notes..." />
             </TextField>
           </div>
-          <div className="sub-title" style={{marginTop:"var(--sp-6)"}}>MultiSelect</div>
+          <div className="sub-title" style={{marginTop:"var(--vsee-sp-6)"}}>MultiSelect</div>
           <div className="multiselect-wrapper">
             <Label className="form-label">Filter by Specialty</Label>
             <div className="multiselect-container">
@@ -1386,7 +1386,7 @@ function ComponentsForms() {
                       <ListBoxItem key={s} id={s} className="dropdown-item">{s}</ListBoxItem>
                     ))}
                     {filteredSpecialties.length === 0 && (
-                      <ListBoxItem id="__empty" className="dropdown-item" style={{ color: "var(--text-secondary)", fontStyle: "italic" }}>
+                      <ListBoxItem id="__empty" className="dropdown-item" style={{ color: "var(--vsee-text-secondary)", fontStyle: "italic" }}>
                         No matches found
                       </ListBoxItem>
                     )}
@@ -1404,7 +1404,7 @@ function ComponentsForms() {
         code={`/* Text Input */\n<TextField className="field">\n  <Label className="form-label">Email address</Label>\n  <Input className="input" placeholder="you@example.com" />\n</TextField>\n\n/* Input with error */\n<TextField isInvalid className="field">\n  <Label className="form-label">Full Name <span className="req">*</span></Label>\n  <Input className="input error" />\n  <div className="form-error-text">Full name is required</div>\n</TextField>\n\n/* Select */\n<Select className="field">\n  <Label className="form-label">Specialty</Label>\n  <Button className="input select-trigger">\n    <SelectValue />\n    <ChevronDown size={16} />\n  </Button>\n  <Popover className="select-popover">\n    <ListBox className="select-listbox">\n      <ListBoxItem className="select-option">Option</ListBoxItem>\n    </ListBox>\n  </Popover>\n</Select>\n\n/* MultiSelect */\n<div className="multiselect-wrapper">\n  <Label className="form-label">Filter by Specialty</Label>\n  <div className="multiselect-container">\n    <TagGroup onRemove={handleRemove}>\n      <TagList className="multiselect-tags">\n        <Tag className="chip" textValue="Cardiology">\n          Cardiology\n          <Button slot="remove" className="tag-remove"><X size={12} /></Button>\n        </Tag>\n      </TagList>\n    </TagGroup>\n    <ComboBox menuTrigger="focus" allowsCustomValue>\n      <Input className="multiselect-input" placeholder="Add more..." />\n      <Popover className="dropdown-popover">\n        <ListBox className="dropdown-menu">\n          <ListBoxItem className="dropdown-item">Option</ListBoxItem>\n        </ListBox>\n      </Popover>\n    </ComboBox>\n  </div>\n</div>`}
       />
 
-      <div className="grid g2" style={{gap:"var(--sp-6)",marginTop:"var(--sp-6)"}}>
+      <div className="grid g2" style={{gap:"var(--vsee-sp-6)",marginTop:"var(--vsee-sp-6)"}}>
         {/* Checkboxes & Radios */}
         <div className="card">
           <div className="sub-title">Checkboxes</div>
@@ -1426,7 +1426,7 @@ function ComponentsForms() {
               Archived (disabled)
             </Checkbox>
           </div>
-          <div className="sub-title" style={{marginTop:"var(--sp-5)"}}>Radios</div>
+          <div className="sub-title" style={{marginTop:"var(--vsee-sp-5)"}}>Radios</div>
           <RadioGroup defaultValue="phone" className="radio-list">
             <Radio value="phone" className="radio-item">
               <div className="radio-circle" /><span>Phone call</span>
@@ -1454,7 +1454,7 @@ function ComponentsForms() {
               </div>
             </SearchField>
           </div>
-          <div className="sub-title" style={{marginTop:"var(--sp-6)"}}>Disabled State</div>
+          <div className="sub-title" style={{marginTop:"var(--vsee-sp-6)"}}>Disabled State</div>
           <div className="form-group">
             <TextField isDisabled className="field">
               <Label className="form-label">Disabled Field</Label>
@@ -1468,9 +1468,9 @@ function ComponentsForms() {
         code={`/* Checkbox */\n<Checkbox isSelected={checked} onChange={setChecked} className="check-item">\n  <div className={\`check-box \${checked ? "checked" : ""}\`} />\n  Label text\n</Checkbox>\n\n/* Radio Group */\n<RadioGroup defaultValue="phone" className="radio-list">\n  <Radio value="phone" className="radio-item">\n    <div className="radio-circle" /><span>Phone call</span>\n  </Radio>\n  <Radio value="video" className="radio-item">\n    <div className="radio-circle" /><span>Video call</span>\n  </Radio>\n  <Radio value="person" className="radio-item" isDisabled>\n    <div className="radio-circle" /><span>In-person</span>\n  </Radio>\n</RadioGroup>\n\n/* Small Input with Search Button */\n<SearchField className="field">\n  <Label className="form-label">Patient Search</Label>\n  <div className="input-icon-wrap">\n    <Input className="input input-sm input-with-icon-right" placeholder="Search by name, ID, or phone..." />\n    <Button className="input-icon-btn input-icon-btn-sm">\n      <Search size={14} />\n    </Button>\n  </div>\n</SearchField>\n\n/* Disabled Input */\n<TextField isDisabled className="field">\n  <Label className="form-label">Disabled Field</Label>\n  <Input className="input" defaultValue="Read-only value" />\n</TextField>`}
       />
 
-      <div style={{marginTop:"var(--sp-16)"}} />
+      <div style={{marginTop:"var(--vsee-sp-16)"}} />
       <SubSection title="Advanced Inputs" description="Specialized form controls for phone numbers, dates, and inputs with action icons.">
-        <div className="grid g2" style={{gap:"var(--sp-6)"}}>
+        <div className="grid g2" style={{gap:"var(--vsee-sp-6)"}}>
           {/* Phone Input */}
           <div className="card">
             <div className="sub-title">Phone Number</div>
@@ -1559,12 +1559,12 @@ function ComponentsForms() {
           code={`/* Phone — with Country Code */\n<div className="phone-input-group">\n  <Select defaultSelectedKey="+1" className="phone-country-select">\n    <Button className="phone-country-btn">\n      <SelectValue /><ChevronDown size={14} />\n    </Button>\n    <Popover className="select-popover">\n      <ListBox className="select-listbox">\n        <ListBoxItem id="+1">US +1</ListBoxItem>\n      </ListBox>\n    </Popover>\n  </Select>\n  <TextField className="field" style={{flex: 1}}>\n    <Input className="input phone-input" placeholder="(555) 123-4567" />\n  </TextField>\n</div>\n\n/* Date Picker */\n<DatePicker className="field">\n  <Label className="form-label">Appointment Date</Label>\n  <Group className="date-input-group">\n    <DateInput className="input date-input">\n      {(segment) => <DateSegment segment={segment} />}\n    </DateInput>\n    <Button className="input-icon-btn"><Calendar size={16} /></Button>\n  </Group>\n  <Popover className="date-popover">\n    <Dialog><Calendar>...</Calendar></Dialog>\n  </Popover>\n</DatePicker>\n\n/* Time Picker */\n<TimeField className="field">\n  <Label className="form-label">Appointment Time</Label>\n  <Group className="date-input-group">\n    <DateInput className="input date-input">\n      {(segment) => <DateSegment segment={segment} />}\n    </DateInput>\n    <div className="input-icon-btn" style={{pointerEvents:"none"}}><Clock size={16} /></div>\n  </Group>\n</TimeField>`}
         />
 
-        <div className="grid g2" style={{gap:"var(--sp-6)",marginTop:"var(--sp-6)"}}>
+        <div className="grid g2" style={{gap:"var(--vsee-sp-6)",marginTop:"var(--vsee-sp-6)"}}>
           {/* Input with Action Icon */}
           <div className="card">
             <div className="sub-title">Input with Action Icon</div>
             <InputWithIcon />
-            <div className="sub-title" style={{marginTop:"var(--sp-6)"}}>Payment Input</div>
+            <div className="sub-title" style={{marginTop:"var(--vsee-sp-6)"}}>Payment Input</div>
             <div className="form-group">
               <div className="form-label">Payment</div>
               <PaymentInput />
@@ -1581,7 +1581,7 @@ function ComponentsForms() {
           code={`/* Input with Copy Action */\n<div className="input-icon-wrap">\n  <Input className="input input-with-icon-right" readOnly />\n  <Button className="input-icon-btn"><Copy size={16} /></Button>\n</div>\n\n/* Input with External Link */\n<div className="input-icon-wrap">\n  <Input className="input input-with-icon-right" />\n  <Button className="input-icon-btn"><ExternalLink size={16} /></Button>\n</div>\n\n/* Payment Input — with callbacks */\n<PaymentInput\n  cardPlaceholder="1234 5678 9012 3456"\n  expiryPlaceholder="MM / YY"\n  cvvPlaceholder="123"\n  onCardChange={(val) => console.log(val)}\n  onExpiryChange={(val) => console.log(val)}\n  onCvvChange={(val) => console.log(val)}\n/>\n\n/* Input with Static Unit */\n<div className="input-icon-wrap">\n  <Input className="input input-with-icon-right" placeholder="0" />\n  <span className="input-unit">mg</span>\n</div>\n\n/* Input with Dropdown Unit */\n<div className="input-icon-wrap">\n  <Input className="input input-with-icon-right" placeholder="0" />\n  <Select defaultSelectedKey="kg" className="input-unit-select">\n    <Button className="input-icon-btn input-unit-select-btn">\n      <SelectValue />\n      <ChevronDown size={10} />\n    </Button>\n    <Popover className="select-popover">\n      <ListBox className="select-listbox">\n        <ListBoxItem id="kg" className="select-option">kg</ListBoxItem>\n        <ListBoxItem id="lbs" className="select-option">lbs</ListBoxItem>\n      </ListBox>\n    </Popover>\n  </Select>\n</div>\n\n/* Number Stepper */\n<NumberField defaultValue={5} minValue={0} maxValue={10} className="field">\n  <Label className="form-label">Quantity</Label>\n  <Group className="input-icon-wrap">\n    <Input className="input input-with-icon-right stepper-input" />\n    <div className="input-icon-btn stepper-btns">\n      <Button slot="decrement" className="stepper-half">&minus;</Button>\n      <div className="stepper-divider" />\n      <Button slot="increment" className="stepper-half">+</Button>\n    </div>\n  </Group>\n</NumberField>`}
         />
 
-        <div className="grid g2" style={{gap:"var(--sp-6)",marginTop:"var(--sp-6)"}}>
+        <div className="grid g2" style={{gap:"var(--vsee-sp-6)",marginTop:"var(--vsee-sp-6)"}}>
           {/* Login */}
           <div className="card">
             <div className="sub-title">Login Form</div>
@@ -1606,7 +1606,7 @@ function ComponentsForms() {
               </TextField>
               days.
             </p>
-            <div className="inline-input-row" style={{marginTop:"var(--sp-4)"}}>
+            <div className="inline-input-row" style={{marginTop:"var(--vsee-sp-4)"}}>
               <span className="inline-input-label">Fluids Given</span>
               <TextField className="field-inline" defaultValue="250" style={{width:"100px"}}>
                 <div className="input-icon-wrap input-icon-wrap-inline">
@@ -1626,7 +1626,7 @@ function ComponentsForms() {
                 </div>
               </TextField>
             </div>
-            <div className="inline-input-row" style={{marginTop:"var(--sp-4)"}}>
+            <div className="inline-input-row" style={{marginTop:"var(--vsee-sp-4)"}}>
               <span className="inline-input-label">Dosage</span>
               <TextField className="field-inline" defaultValue="500" style={{width:"100px"}}>
                 <div className="input-icon-wrap input-icon-wrap-inline">
@@ -1637,7 +1637,7 @@ function ComponentsForms() {
                 </div>
               </TextField>
             </div>
-            <div className="inline-input-row" style={{marginTop:"var(--sp-4)"}}>
+            <div className="inline-input-row" style={{marginTop:"var(--vsee-sp-4)"}}>
               <span className="inline-input-label">Quantity</span>
               <NumberField defaultValue={5} minValue={0} maxValue={10} className="field-inline" style={{width:"100px"}}>
                 <Group className="input-icon-wrap input-icon-wrap-inline">
@@ -1650,7 +1650,7 @@ function ComponentsForms() {
                 </Group>
               </NumberField>
             </div>
-            <div className="inline-input-row" style={{marginTop:"var(--sp-4)"}}>
+            <div className="inline-input-row" style={{marginTop:"var(--vsee-sp-4)"}}>
               <span className="inline-input-label">Date of Service</span>
               <DatePicker defaultValue={today(getLocalTimeZone())} className="field-inline">
                 <Group className="date-input-group">
@@ -1680,7 +1680,7 @@ function ComponentsForms() {
                 </Popover>
               </DatePicker>
             </div>
-            <div className="inline-input-row" style={{marginTop:"var(--sp-4)"}}>
+            <div className="inline-input-row" style={{marginTop:"var(--vsee-sp-4)"}}>
               <span className="inline-input-label">Facility</span>
               <Select defaultSelectedKey="mercy" className="field-inline">
                 <Button className="input input-inline select-trigger" style={{width:"250px"}}>
@@ -1831,18 +1831,18 @@ function ComponentsFeedback() {
       </SubSection>
 
       <SubSection title="Empty State" description="Placeholder content shown when a section has no data. Provides context and a call to action.">
-        <div className="grid g2" style={{ gap: "var(--sp-6)" }}>
+        <div className="grid g2" style={{ gap: "var(--vsee-sp-6)" }}>
           <div className="empty-state">
             <div className="empty-state-icon"><Inbox size={40} /></div>
             <div className="empty-state-title">No Results Found</div>
             <div className="empty-state-desc">There are no lab results for this patient yet. Results will appear here once ordered labs have been processed.</div>
-            <Button className="btn btn-primary" style={{ marginTop: "var(--sp-4)" }}>Order Lab Test</Button>
+            <Button className="btn btn-primary" style={{ marginTop: "var(--vsee-sp-4)" }}>Order Lab Test</Button>
           </div>
           <div className="empty-state">
             <div className="empty-state-icon"><FileText size={40} /></div>
             <div className="empty-state-title">No Documents</div>
             <div className="empty-state-desc">This patient has no uploaded documents. Upload clinical documents, consent forms, or imaging reports.</div>
-            <Button className="btn btn-secondary" style={{ marginTop: "var(--sp-4)" }}>Upload Document</Button>
+            <Button className="btn btn-secondary" style={{ marginTop: "var(--vsee-sp-4)" }}>Upload Document</Button>
           </div>
         </div>
         <CodeBlock
@@ -1851,7 +1851,7 @@ function ComponentsFeedback() {
       </SubSection>
 
       <SubSection title="Notifications" description="Toast-style notifications that appear in the corner. Used for system feedback — order confirmations, errors, warnings, and informational messages.">
-        <div style={{ display: "flex", gap: "var(--sp-3)", flexWrap: "wrap" }}>
+        <div style={{ display: "flex", gap: "var(--vsee-sp-3)", flexWrap: "wrap" }}>
           <Button className="btn btn-primary" onPress={() => addNotification("success", "Order Submitted", "CBC lab order has been sent to the lab successfully.")}>
             <CheckCircle size={16} /> Success
           </Button>
@@ -1971,7 +1971,7 @@ function ComponentsNavigation() {
       <SubSection title="Anchor Navigation" description="In-page navigation for long scrollable content. Used in encounter notes and multi-section forms. The sticky bar at the top of this page is a live example.">
         <div className="preview-box">
           <p>The anchor navigation bar fixed at the top of this page is a live demo of this component. It highlights the current section as you scroll and supports click-to-jump.</p>
-          <div style={{ marginTop: "var(--sp-4)" }}>
+          <div style={{ marginTop: "var(--vsee-sp-4)" }}>
             <div className="code">
               <span className="c">{"// Anchor navigation — sticky bar with scroll tracking"}</span>{"\n"}
               <span className="t">{"<div"}</span>{" "}<span className="p">className</span>{"="}<span className="s">"anchor-bar"</span><span className="t">{">"}</span>{"\n"}
@@ -1998,7 +1998,7 @@ function ComponentsDropdowns() {
       description="Dropdown menus, select lists, and action menus. All dropdowns are capped at 1/3 screen height and scroll when content overflows.">
 
       <SubSection title="Select Dropdown" description="Standard select input with a scrollable list of options.">
-        <div style={{ display: "flex", gap: "var(--sp-4)", flexWrap: "wrap", alignItems: "flex-start" }}>
+        <div style={{ display: "flex", gap: "var(--vsee-sp-4)", flexWrap: "wrap", alignItems: "flex-start" }}>
           <Select className="field" style={{ minWidth: 200 }}>
             <Label className="form-label">Country</Label>
             <Button className="input select-trigger">
@@ -2021,7 +2021,7 @@ function ComponentsDropdowns() {
       </SubSection>
 
       <SubSection title="Dropdown Button" description="Action menus triggered by a button. Used for contextual actions on rows, cards, and toolbars.">
-        <div style={{ display: "flex", gap: "var(--sp-4)", flexWrap: "wrap", alignItems: "flex-start" }}>
+        <div style={{ display: "flex", gap: "var(--vsee-sp-4)", flexWrap: "wrap", alignItems: "flex-start" }}>
           <MenuTrigger>
             <Button className="btn btn-secondary">
               Actions <ChevronDown size={16} />
@@ -2107,7 +2107,7 @@ function ComponentsOthers() {
       description="Cards, tables, avatars, tooltips, and collapsible sections for displaying structured content.">
 
       {/* <SubSection title="Patient Card">
-        <div className="grid g2" style={{gap:"var(--sp-4)"}}>
+        <div className="grid g2" style={{gap:"var(--vsee-sp-4)"}}>
           <div className="panel">
             <div className="panel-header">Patient Summary</div>
             <div className="panel-body">
@@ -2256,7 +2256,7 @@ function ComponentsOverlays() {
               <Button className="modal-close"><X size={20} /></Button>
             </div>
             <div className="modal-content">
-              <p style={{color:"var(--text-secondary)",marginBottom:"var(--sp-4)"}}>
+              <p style={{color:"var(--vsee-text-secondary)",marginBottom:"var(--vsee-sp-4)"}}>
                 Are you sure you want to cancel this appointment with <strong>Dr. Sarah Chen</strong> on Feb 26, 2026?
               </p>
               <div className="form-group">
@@ -2383,15 +2383,15 @@ function ComponentsOverlays() {
 
       <SubSection title="Vitals Card">
         <div className="panel" style={{maxWidth:500}}>
-          <div className="panel-header">Latest Vitals <span style={{fontSize:"var(--text-caption-size)",color:"var(--text-secondary)",fontWeight:400,marginLeft:"auto"}}>Feb 26, 2026</span></div>
+          <div className="panel-header">Latest Vitals <span style={{fontSize:"var(--vsee-text-caption-size)",color:"var(--vsee-text-secondary)",fontWeight:400,marginLeft:"auto"}}>Feb 26, 2026</span></div>
           <div className="panel-body">
             <div className="vitals-grid">
-              <div className="vital"><div className="vital-val" style={{color:"var(--brand)"}}>120/80</div><div className="vital-label">Blood Pressure</div></div>
+              <div className="vital"><div className="vital-val" style={{color:"var(--vsee-brand)"}}>120/80</div><div className="vital-label">Blood Pressure</div></div>
               <div className="vital"><div className="vital-val">72</div><div className="vital-label">Heart Rate</div></div>
               <div className="vital"><div className="vital-val">98.6°</div><div className="vital-label">Temperature</div></div>
-              <div className="vital"><div className="vital-val" style={{color:"var(--success)"}}>98%</div><div className="vital-label">SpO2</div></div>
+              <div className="vital"><div className="vital-val" style={{color:"var(--vsee-success)"}}>98%</div><div className="vital-label">SpO2</div></div>
               <div className="vital"><div className="vital-val">16</div><div className="vital-label">Resp Rate</div></div>
-              <div className="vital"><div className="vital-val" style={{color:"var(--warning)"}}>28.5</div><div className="vital-label">BMI</div></div>
+              <div className="vital"><div className="vital-val" style={{color:"var(--vsee-warning)"}}>28.5</div><div className="vital-label">BMI</div></div>
             </div>
           </div>
         </div>
@@ -2409,12 +2409,12 @@ function PatternsLayouts() {
       title: "Dashboard",
       content: (
         <>
-          <p style={{color:"var(--text-secondary)", marginBottom:"var(--sp-4)"}}>Welcome back, Dr. Chen. Here's your overview for today.</p>
-          <div style={{display:"grid", gridTemplateColumns:"repeat(3, 1fr)", gap:"var(--sp-3)"}}>
+          <p style={{color:"var(--vsee-text-secondary)", marginBottom:"var(--vsee-sp-4)"}}>Welcome back, Dr. Chen. Here's your overview for today.</p>
+          <div style={{display:"grid", gridTemplateColumns:"repeat(3, 1fr)", gap:"var(--vsee-sp-3)"}}>
             {[{label:"Patients Today",val:"12"},{label:"Pending Orders",val:"5"},{label:"Messages",val:"3"}].map(s=>(
-              <div key={s.label} style={{background:"var(--grey-100)",borderRadius:"var(--r-md)",padding:"var(--sp-4)",textAlign:"center"}}>
-                <div style={{fontSize:"var(--text-h4-size)",fontWeight:700,color:"var(--brand)"}}>{s.val}</div>
-                <div style={{fontSize:"var(--text-caption-size)",color:"var(--text-secondary)"}}>{s.label}</div>
+              <div key={s.label} style={{background:"var(--vsee-grey-100)",borderRadius:"var(--vsee-r-md)",padding:"var(--vsee-sp-4)",textAlign:"center"}}>
+                <div style={{fontSize:"var(--vsee-text-h4-size)",fontWeight:700,color:"var(--vsee-brand)"}}>{s.val}</div>
+                <div style={{fontSize:"var(--vsee-text-caption-size)",color:"var(--vsee-text-secondary)"}}>{s.label}</div>
               </div>
             ))}
           </div>
@@ -2424,10 +2424,10 @@ function PatternsLayouts() {
     Patients: {
       title: "Patients",
       content: (
-        <div style={{display:"flex",flexDirection:"column",gap:"var(--sp-3)"}}>
+        <div style={{display:"flex",flexDirection:"column",gap:"var(--vsee-sp-3)"}}>
           {[{name:"Michelle Doe",id:"10042",status:"Active"},{name:"John Smith",id:"10089",status:"Pending"},{name:"Alice Wong",id:"10115",status:"Inactive"}].map(p=>(
-            <div key={p.id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"var(--sp-3)",background:"var(--grey-100)",borderRadius:"var(--r-md)"}}>
-              <div><div style={{fontWeight:600}}>{p.name}</div><div style={{fontSize:"var(--text-caption-size)",color:"var(--text-secondary)"}}>ID: {p.id}</div></div>
+            <div key={p.id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"var(--vsee-sp-3)",background:"var(--vsee-grey-100)",borderRadius:"var(--vsee-r-md)"}}>
+              <div><div style={{fontWeight:600}}>{p.name}</div><div style={{fontSize:"var(--vsee-text-caption-size)",color:"var(--vsee-text-secondary)"}}>ID: {p.id}</div></div>
               <span className={`badge ${p.status==="Active"?"badge-success":p.status==="Pending"?"badge-warning":"badge-neutral"}`}><span className="badge-dot" /> {p.status}</span>
             </div>
           ))}
@@ -2437,11 +2437,11 @@ function PatternsLayouts() {
     Appointments: {
       title: "Appointments",
       content: (
-        <div style={{display:"flex",flexDirection:"column",gap:"var(--sp-3)"}}>
+        <div style={{display:"flex",flexDirection:"column",gap:"var(--vsee-sp-3)"}}>
           {[{time:"9:00 AM",patient:"Michelle Doe",type:"Follow-up"},{time:"10:30 AM",patient:"John Smith",type:"New Patient"},{time:"2:00 PM",patient:"Alice Wong",type:"Telemedicine"}].map(a=>(
-            <div key={a.time} style={{display:"flex",gap:"var(--sp-4)",alignItems:"center",padding:"var(--sp-3)",background:"var(--grey-100)",borderRadius:"var(--r-md)"}}>
-              <div style={{fontWeight:600,color:"var(--brand)",minWidth:70}}>{a.time}</div>
-              <div><div style={{fontWeight:600}}>{a.patient}</div><div style={{fontSize:"var(--text-caption-size)",color:"var(--text-secondary)"}}>{a.type}</div></div>
+            <div key={a.time} style={{display:"flex",gap:"var(--vsee-sp-4)",alignItems:"center",padding:"var(--vsee-sp-3)",background:"var(--vsee-grey-100)",borderRadius:"var(--vsee-r-md)"}}>
+              <div style={{fontWeight:600,color:"var(--vsee-brand)",minWidth:70}}>{a.time}</div>
+              <div><div style={{fontWeight:600}}>{a.patient}</div><div style={{fontSize:"var(--vsee-text-caption-size)",color:"var(--vsee-text-secondary)"}}>{a.type}</div></div>
             </div>
           ))}
         </div>
@@ -2449,15 +2449,15 @@ function PatternsLayouts() {
     },
     Messages: {
       title: "Messages",
-      content: <p style={{color:"var(--text-secondary)"}}>You have 3 unread messages from patients. Check your inbox for the latest updates.</p>,
+      content: <p style={{color:"var(--vsee-text-secondary)"}}>You have 3 unread messages from patients. Check your inbox for the latest updates.</p>,
     },
     "Lab Results": {
       title: "Lab Results",
-      content: <p style={{color:"var(--text-secondary)"}}>2 new lab results are ready for review. Click a result to view the full report.</p>,
+      content: <p style={{color:"var(--vsee-text-secondary)"}}>2 new lab results are ready for review. Click a result to view the full report.</p>,
     },
     Settings: {
       title: "Settings",
-      content: <p style={{color:"var(--text-secondary)"}}>Manage your profile, notification preferences, and clinic configuration.</p>,
+      content: <p style={{color:"var(--vsee-text-secondary)"}}>Manage your profile, notification preferences, and clinic configuration.</p>,
     },
   };
 
@@ -2477,7 +2477,7 @@ function PatternsLayouts() {
             ))}
           </div>
           <div className="sidebar-content">
-            <div style={{fontSize:20,fontWeight:700,marginBottom:"var(--sp-4)"}}>{page.title}</div>
+            <div style={{fontSize:20,fontWeight:700,marginBottom:"var(--vsee-sp-4)"}}>{page.title}</div>
             {page.content}
           </div>
         </div>
@@ -2494,7 +2494,7 @@ function PatternsTheming({ brandTheme, setBrandTheme }: { brandTheme: string; se
     <Section id="theming" label="Engineering" title="White-Label Theming"
       description={`VSee supports white-label customization per tenant. Override CSS variables via [data-theme] for brand colors and [data-mode="dark"] for dark mode. Click a card below to switch the theme live, or toggle dark mode in the sidebar.`}>
 
-      <div className="grid g3" style={{gap:"var(--sp-4)"}}>
+      <div className="grid g3" style={{gap:"var(--vsee-sp-4)"}}>
         {[
           { name: "VSee Default", color: "#0D875C", theme: "" },
           { name: "Ocean Blue", color: "#0891B2", theme: "blue" },
@@ -2510,8 +2510,8 @@ function PatternsTheming({ brandTheme, setBrandTheme }: { brandTheme: string; se
         ))}
       </div>
 
-      <div className="sub-title" style={{marginTop:"var(--sp-8)"}}>How to Switch Themes</div>
-      <div className="sub-desc">Add a <code className="code-inline">data-theme</code> attribute to the <code className="code-inline">{"<html>"}</code> element. The attribute overrides all <code className="code-inline">--brand-*</code> CSS variables globally.</div>
+      <div className="sub-title" style={{marginTop:"var(--vsee-sp-8)"}}>How to Switch Themes</div>
+      <div className="sub-desc">Add a <code className="code-inline">data-theme</code> attribute to the <code className="code-inline">{"<html>"}</code> element. The attribute overrides all <code className="code-inline">--vsee-brand-*</code> CSS variables globally.</div>
       <div className="code">
         <span className="c">{"/* 1. In HTML — set the attribute */"}</span>{"\n"}
         <span className="t">{"<html"}</span>{" "}<span className="p">data-theme</span>{"="}<span className="s">"blue"</span><span className="t">{">"}</span>{"   "}<span className="c">{"/* Ocean Blue */"}</span>{"\n"}
@@ -2535,7 +2535,7 @@ function PatternsTheming({ brandTheme, setBrandTheme }: { brandTheme: string; se
         {"}, [theme]);\n"}
       </div>
 
-      <div className="sub-title" style={{marginTop:"var(--sp-8)"}}>Dark Mode</div>
+      <div className="sub-title" style={{marginTop:"var(--vsee-sp-8)"}}>Dark Mode</div>
       <div className="sub-desc">Toggle dark mode by setting <code className="code-inline">data-mode="dark"</code> on the <code className="code-inline">{"<html>"}</code> element. Dark mode works independently of brand themes — combine both attributes for branded dark UIs.</div>
       <div className="code">
         <span className="c">{"/* 1. In HTML */"}</span>{"\n"}
@@ -2552,16 +2552,16 @@ function PatternsTheming({ brandTheme, setBrandTheme }: { brandTheme: string; se
         {"}, [darkMode]);\n"}
       </div>
 
-      <div className="sub-title" style={{marginTop:"var(--sp-8)"}}>Creating a Custom Theme</div>
+      <div className="sub-title" style={{marginTop:"var(--vsee-sp-8)"}}>Creating a Custom Theme</div>
       <div className="sub-desc">Define a new <code className="code-inline">[data-theme]</code> block with all 6 brand variables:</div>
       <div className="code">
         <span className="k">{"[data-theme=\"your-brand\"]"}</span>{" {\n"}
-        {"  "}<span className="p">--brand</span>{": "}<span className="v">#______</span>{";        "}<span className="c">{"/* Main brand color */"}</span>{"\n"}
-        {"  "}<span className="p">--brand-semidark</span>{": "}<span className="v">#______</span>{"; "}<span className="c">{"/* Darker for pressed/active */"}</span>{"\n"}
-        {"  "}<span className="p">--brand-dark</span>{": "}<span className="v">#______</span>{";   "}<span className="c">{"/* Dark variant (gradients) */"}</span>{"\n"}
-        {"  "}<span className="p">--brand-darker</span>{": "}<span className="v">#______</span>{"; "}<span className="c">{"/* Darkest variant (gradients) */"}</span>{"\n"}
-        {"  "}<span className="p">--brand-light</span>{": "}<span className="v">#______</span>{";  "}<span className="c">{"/* Light tint background */"}</span>{"\n"}
-        {"  "}<span className="p">--brand-50</span>{": "}<span className="v">#______</span>{";     "}<span className="c">{"/* Very light tint background */"}</span>{"\n"}
+        {"  "}<span className="p">--vsee-brand</span>{": "}<span className="v">#______</span>{";        "}<span className="c">{"/* Main brand color */"}</span>{"\n"}
+        {"  "}<span className="p">--vsee-brand-semidark</span>{": "}<span className="v">#______</span>{"; "}<span className="c">{"/* Darker for pressed/active */"}</span>{"\n"}
+        {"  "}<span className="p">--vsee-brand-dark</span>{": "}<span className="v">#______</span>{";   "}<span className="c">{"/* Dark variant (gradients) */"}</span>{"\n"}
+        {"  "}<span className="p">--vsee-brand-darker</span>{": "}<span className="v">#______</span>{"; "}<span className="c">{"/* Darkest variant (gradients) */"}</span>{"\n"}
+        {"  "}<span className="p">--vsee-brand-light</span>{": "}<span className="v">#______</span>{";  "}<span className="c">{"/* Light tint background */"}</span>{"\n"}
+        {"  "}<span className="p">--vsee-brand-50</span>{": "}<span className="v">#______</span>{";     "}<span className="c">{"/* Very light tint background */"}</span>{"\n"}
         {"}"}
       </div>
     </Section>
@@ -2702,7 +2702,7 @@ function PatternsFormio() {
           {"      "}<span className="t">{"<Label>"}</span>{"\n"}
           {"        {component.label}\n"}
           {"        {component.validate?.required && (\n"}
-          {"          "}<span className="t">{"<span"}</span>{" "}<span className="p">style</span>{"={{ color: "}<span className="s">"var(--danger)"</span>{", marginLeft: "}<span className="v">2</span>{" }}"}<span className="t">{">"}</span>{"*"}<span className="t">{"</span>"}</span>{"\n"}
+          {"          "}<span className="t">{"<span"}</span>{" "}<span className="p">style</span>{"={{ color: "}<span className="s">"var(--vsee-danger)"</span>{", marginLeft: "}<span className="v">2</span>{" }}"}<span className="t">{">"}</span>{"*"}<span className="t">{"</span>"}</span>{"\n"}
           {"        )}\n"}
           {"      "}<span className="t">{"</Label>"}</span>{"\n"}
           {"      "}<span className="t">{"<Input"}</span>{"\n"}
@@ -2768,31 +2768,31 @@ function PatternsFormio() {
           This is what the form above renders using the React Aria custom components. All validation, layout, and
           field logic come from the JSON schema; the React Aria components supply only styling and accessibility.
         </p>
-        <div className="grid g2" style={{gap:"var(--sp-6)"}}>
+        <div className="grid g2" style={{gap:"var(--vsee-sp-6)"}}>
           {/* Form card */}
           <div className="panel">
             <div className="panel-header">
               <div style={{display:"flex",alignItems:"center",gap:8}}>
-                <FileText size={18} style={{color:"var(--brand)"}} />
+                <FileText size={18} style={{color:"var(--vsee-brand)"}} />
                 Patient Intake Form
               </div>
             </div>
             <div className="panel-body">
-              <p style={{fontSize:"var(--text-caption-size)",color:"var(--text-secondary)",marginBottom:"var(--sp-4)"}}>
+              <p style={{fontSize:"var(--vsee-text-caption-size)",color:"var(--vsee-text-secondary)",marginBottom:"var(--vsee-sp-4)"}}>
                 Rendered by <code className="code-inline">@formio/react</code> · React Aria custom components
               </p>
               {submitted ? (
-                <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:"var(--sp-3)",padding:"var(--sp-8) 0",textAlign:"center"}}>
-                  <CheckCircle2 size={48} style={{color:"var(--brand)"}} />
-                  <p style={{fontSize:"var(--text-body-size)",fontWeight:600}}>Intake form submitted!</p>
-                  <p style={{fontSize:"var(--text-caption-size)",color:"var(--text-secondary)"}}>
+                <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:"var(--vsee-sp-3)",padding:"var(--vsee-sp-8) 0",textAlign:"center"}}>
+                  <CheckCircle2 size={48} style={{color:"var(--vsee-brand)"}} />
+                  <p style={{fontSize:"var(--vsee-text-body-size)",fontWeight:600}}>Intake form submitted!</p>
+                  <p style={{fontSize:"var(--vsee-text-caption-size)",color:"var(--vsee-text-secondary)"}}>
                     {firstName} {lastName} · {insurance || "No insurance"}
                   </p>
                   <Button className="btn btn-ghost btn-sm" onPress={resetForm}>Reset form</Button>
                 </div>
               ) : (
                 <Form onSubmit={(e) => { e.preventDefault(); setSubmitted(true); }}>
-                  <div className="grid g2" style={{gap:"var(--sp-3)",marginBottom:"var(--sp-4)"}}>
+                  <div className="grid g2" style={{gap:"var(--vsee-sp-3)",marginBottom:"var(--vsee-sp-4)"}}>
                     <div className="form-group" style={{marginBottom:0}}>
                       <TextField value={firstName} onChange={setFirstName} isRequired className="field">
                         <Label className="form-label">First Name <span className="req">*</span></Label>
@@ -2841,7 +2841,7 @@ function PatternsFormio() {
                         <div className={`check-box ${hipaa ? "checked" : ""}`}>
                           {hipaa && <svg viewBox="0 0 14 14" fill="none" className="check-svg"><path d="M3 7l3 3 5-6" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" /></svg>}
                         </div>
-                        <span style={{fontSize:"var(--text-caption-size)",lineHeight:1.4}}>I have read and agree to the HIPAA Privacy Notice <span className="req">*</span></span>
+                        <span style={{fontSize:"var(--vsee-text-caption-size)",lineHeight:1.4}}>I have read and agree to the HIPAA Privacy Notice <span className="req">*</span></span>
                       </Checkbox>
                     </div>
                   </div>
@@ -2854,13 +2854,13 @@ function PatternsFormio() {
           </div>
 
           {/* Responsibility cards */}
-          <div style={{display:"flex",flexDirection:"column",gap:"var(--sp-4)"}}>
+          <div style={{display:"flex",flexDirection:"column",gap:"var(--vsee-sp-4)"}}>
             <div className="panel">
               <div className="panel-header">What Form.io handles</div>
               <div className="panel-body">
                 <ul className="resp-list">
                   {["Schema fetch & caching","Field-level validation rules (required, min/max, regex)","Conditional visibility logic","Multi-step wizard / page navigation","Submission to Form.io or custom endpoint","Offline drafts & resume"].map(item => (
-                    <li key={item}><CheckCircle2 size={14} style={{color:"var(--brand)",flexShrink:0}} /> {item}</li>
+                    <li key={item}><CheckCircle2 size={14} style={{color:"var(--vsee-brand)",flexShrink:0}} /> {item}</li>
                   ))}
                 </ul>
               </div>
@@ -2870,7 +2870,7 @@ function PatternsFormio() {
               <div className="panel-body">
                 <ul className="resp-list">
                   {["Visual styling & brand tokens","Keyboard navigation & focus rings","ARIA labels, roles, error associations","React Aria accessibility primitives","Consistent hover / focus / disabled states","Design system token inheritance"].map(item => (
-                    <li key={item}><CheckCircle2 size={14} style={{color:"var(--brand)",flexShrink:0}} /> {item}</li>
+                    <li key={item}><CheckCircle2 size={14} style={{color:"var(--vsee-brand)",flexShrink:0}} /> {item}</li>
                   ))}
                 </ul>
               </div>
@@ -2906,104 +2906,104 @@ function EngineeringTokens() {
         <span className="c">{"/* ── Tailwind v4 Theme ── */"}</span>{"\n"}
         <span className="k">@theme</span>{" {\n"}
         {"  "}<span className="c">{"/* Font */"}</span>{"\n"}
-        {"  "}<span className="p">--font-sans</span>{": "}<span className="v">"Figtree", system-ui, -apple-system, sans-serif</span>{";\n\n"}
+        {"  "}<span className="p">--vsee-font-sans</span>{": "}<span className="v">"Figtree", system-ui, -apple-system, sans-serif</span>{";\n\n"}
         {"  "}<span className="c">{"/* Brand */"}</span>{"\n"}
-        {"  "}<span className="p">--brand</span>{": "}<span className="v">#0D875C</span>{";\n"}
-        {"  "}<span className="p">--brand-semidark</span>{": "}<span className="v">#096843</span>{";\n"}
-        {"  "}<span className="p">--brand-dark</span>{": "}<span className="v">#0A6B49</span>{";\n"}
-        {"  "}<span className="p">--brand-darker</span>{": "}<span className="v">#074D35</span>{";\n"}
-        {"  "}<span className="p">--brand-light</span>{": "}<span className="v">#E6F5EE</span>{";\n"}
-        {"  "}<span className="p">--brand-50</span>{": "}<span className="v">#F0FAF5</span>{";\n\n"}
+        {"  "}<span className="p">--vsee-brand</span>{": "}<span className="v">#0D875C</span>{";\n"}
+        {"  "}<span className="p">--vsee-brand-semidark</span>{": "}<span className="v">#096843</span>{";\n"}
+        {"  "}<span className="p">--vsee-brand-dark</span>{": "}<span className="v">#0A6B49</span>{";\n"}
+        {"  "}<span className="p">--vsee-brand-darker</span>{": "}<span className="v">#074D35</span>{";\n"}
+        {"  "}<span className="p">--vsee-brand-light</span>{": "}<span className="v">#E6F5EE</span>{";\n"}
+        {"  "}<span className="p">--vsee-brand-50</span>{": "}<span className="v">#F0FAF5</span>{";\n\n"}
         {"  "}<span className="c">{"/* Semantic (AA-compliant for white foreground) */"}</span>{"\n"}
-        {"  "}<span className="p">--success</span>{": "}<span className="v">#367D17</span>{"; "}<span className="p">--success-light</span>{": "}<span className="v">#F9FEF6</span>{";\n"}
-        {"  "}<span className="p">--info</span>{": "}<span className="v">#196CD2</span>{"; "}<span className="p">--info-light</span>{": "}<span className="v">#E0F2FE</span>{";\n"}
-        {"  "}<span className="p">--warning</span>{": "}<span className="v">#FFCB5A</span>{"; "}<span className="p">--warning-light</span>{": "}<span className="v">#FEF3C7</span>{";\n"}
-        {"  "}<span className="p">--danger</span>{": "}<span className="v">#DC2626</span>{"; "}<span className="p">--danger-light</span>{": "}<span className="v">#FEE2E2</span>{";\n\n"}
+        {"  "}<span className="p">--vsee-success</span>{": "}<span className="v">#367D17</span>{"; "}<span className="p">--vsee-success-light</span>{": "}<span className="v">#F9FEF6</span>{";\n"}
+        {"  "}<span className="p">--vsee-info</span>{": "}<span className="v">#196CD2</span>{"; "}<span className="p">--vsee-info-light</span>{": "}<span className="v">#E0F2FE</span>{";\n"}
+        {"  "}<span className="p">--vsee-warning</span>{": "}<span className="v">#FFCB5A</span>{"; "}<span className="p">--vsee-warning-light</span>{": "}<span className="v">#FEF3C7</span>{";\n"}
+        {"  "}<span className="p">--vsee-danger</span>{": "}<span className="v">#DC2626</span>{"; "}<span className="p">--vsee-danger-light</span>{": "}<span className="v">#FEE2E2</span>{";\n\n"}
         {"  "}<span className="c">{"/* Semantic dark text (AA on matching -light bg) */"}</span>{"\n"}
-        {"  "}<span className="p">--success-dark</span>{": "}<span className="v">#265C10</span>{";\n"}
-        {"  "}<span className="p">--info-dark</span>{": "}<span className="v">#075985</span>{";\n"}
-        {"  "}<span className="p">--warning-dark</span>{": "}<span className="v">#92400E</span>{";\n"}
-        {"  "}<span className="p">--danger-dark</span>{": "}<span className="v">#991B1B</span>{";\n"}
-        {"  "}<span className="p">--warning-on-solid</span>{": "}<span className="v">#2D1806</span>{";\n\n"}
+        {"  "}<span className="p">--vsee-success-dark</span>{": "}<span className="v">#265C10</span>{";\n"}
+        {"  "}<span className="p">--vsee-info-dark</span>{": "}<span className="v">#075985</span>{";\n"}
+        {"  "}<span className="p">--vsee-warning-dark</span>{": "}<span className="v">#92400E</span>{";\n"}
+        {"  "}<span className="p">--vsee-danger-dark</span>{": "}<span className="v">#991B1B</span>{";\n"}
+        {"  "}<span className="p">--vsee-warning-on-solid</span>{": "}<span className="v">#2D1806</span>{";\n\n"}
         {"  "}<span className="c">{"/* Semantic borders (alerts) */"}</span>{"\n"}
-        {"  "}<span className="p">--success-border</span>{": "}<span className="v">#DAF1C1</span>{";\n"}
-        {"  "}<span className="p">--info-border</span>{": "}<span className="v">#BAE6FD</span>{";\n"}
-        {"  "}<span className="p">--warning-border</span>{": "}<span className="v">#FDE68A</span>{";\n"}
-        {"  "}<span className="p">--danger-border</span>{": "}<span className="v">#FECACA</span>{";\n\n"}
+        {"  "}<span className="p">--vsee-success-border</span>{": "}<span className="v">#DAF1C1</span>{";\n"}
+        {"  "}<span className="p">--vsee-info-border</span>{": "}<span className="v">#BAE6FD</span>{";\n"}
+        {"  "}<span className="p">--vsee-warning-border</span>{": "}<span className="v">#FDE68A</span>{";\n"}
+        {"  "}<span className="p">--vsee-danger-border</span>{": "}<span className="v">#FECACA</span>{";\n\n"}
         {"  "}<span className="c">{"/* Neutrals (AA-compliant) */"}</span>{"\n"}
-        {"  "}<span className="p">--black</span>{": "}<span className="v">#111827</span>{";\n"}
-        {"  "}<span className="p">--grey-900</span>{": "}<span className="v">#4B5563</span>{"; "}<span className="p">--grey-800</span>{": "}<span className="v">#6B7280</span>{"; "}<span className="p">--grey-700</span>{": "}<span className="v">#9CA3AF</span>{";\n"}
-        {"  "}<span className="p">--grey-600</span>{": "}<span className="v">#B0B7C3</span>{"; "}<span className="p">--grey-500</span>{": "}<span className="v">#C9CED6</span>{"; "}<span className="p">--grey-400</span>{": "}<span className="v">#E8EAED</span>{";\n"}
-        {"  "}<span className="p">--grey-300</span>{": "}<span className="v">#F1F2F4</span>{"; "}<span className="p">--grey-200</span>{": "}<span className="v">#F8F9FA</span>{"; "}<span className="p">--grey-100</span>{": "}<span className="v">#FCFCFD</span>{";\n"}
-        {"  "}<span className="p">--white</span>{": "}<span className="v">#FFFFFF</span>{";\n\n"}
+        {"  "}<span className="p">--vsee-black</span>{": "}<span className="v">#111827</span>{";\n"}
+        {"  "}<span className="p">--vsee-grey-900</span>{": "}<span className="v">#4B5563</span>{"; "}<span className="p">--vsee-grey-800</span>{": "}<span className="v">#6B7280</span>{"; "}<span className="p">--vsee-grey-700</span>{": "}<span className="v">#9CA3AF</span>{";\n"}
+        {"  "}<span className="p">--vsee-grey-600</span>{": "}<span className="v">#B0B7C3</span>{"; "}<span className="p">--vsee-grey-500</span>{": "}<span className="v">#C9CED6</span>{"; "}<span className="p">--vsee-grey-400</span>{": "}<span className="v">#E8EAED</span>{";\n"}
+        {"  "}<span className="p">--vsee-grey-300</span>{": "}<span className="v">#F1F2F4</span>{"; "}<span className="p">--vsee-grey-200</span>{": "}<span className="v">#F8F9FA</span>{"; "}<span className="p">--vsee-grey-100</span>{": "}<span className="v">#FCFCFD</span>{";\n"}
+        {"  "}<span className="p">--vsee-white</span>{": "}<span className="v">#FFFFFF</span>{";\n\n"}
         {"  "}<span className="c">{"/* Text (≥ 4.5:1 on white) */"}</span>{"\n"}
-        {"  "}<span className="p">--text-primary</span>{": "}<span className="v">#111827</span>{"; "}<span className="p">--text-secondary</span>{": "}<span className="v">#6B7280</span>{";\n\n"}
+        {"  "}<span className="p">--vsee-text-primary</span>{": "}<span className="v">#111827</span>{"; "}<span className="p">--vsee-text-secondary</span>{": "}<span className="v">#6B7280</span>{";\n\n"}
         {"  "}<span className="c">{"/* Borders */"}</span>{"\n"}
-        {"  "}<span className="p">--border</span>{": "}<span className="v">#E5E7EB</span>{"; "}<span className="p">--border-strong</span>{": "}<span className="v">#D1D5DB</span>{";\n\n"}
+        {"  "}<span className="p">--vsee-border</span>{": "}<span className="v">#E5E7EB</span>{"; "}<span className="p">--vsee-border-strong</span>{": "}<span className="v">#D1D5DB</span>{";\n\n"}
         {"  "}<span className="c">{"/* Typography scale */"}</span>{"\n"}
-        {"  "}<span className="p">--mono</span>{": "}<span className="v">'SF Mono', 'Fira Code', 'Consolas', monospace</span>{";\n"}
-        {"  "}<span className="p">--text-overline-size</span>{": "}<span className="v">12px</span>{"; "}<span className="p">--text-caption-size</span>{": "}<span className="v">13px</span>{"; "}<span className="p">--text-body-size</span>{": "}<span className="v">14px</span>{";\n"}
-        {"  "}<span className="p">--text-h5-size</span>{": "}<span className="v">16px</span>{"; "}<span className="p">--text-body-lg-size</span>{": "}<span className="v">16px</span>{"; "}<span className="p">--text-subtitle-size</span>{": "}<span className="v">18px</span>{";\n"}
-        {"  "}<span className="p">--text-h4-size</span>{": "}<span className="v">20px</span>{"; "}<span className="p">--text-h3-size</span>{": "}<span className="v">24px</span>{"; "}<span className="p">--text-h2-size</span>{": "}<span className="v">36px</span>{";\n"}
-        {"  "}<span className="p">--text-h1-size</span>{": "}<span className="v">48px</span>{"; "}<span className="p">--text-display-size</span>{": "}<span className="v">60px</span>{";\n\n"}
+        {"  "}<span className="p">--vsee-mono</span>{": "}<span className="v">'SF Mono', 'Fira Code', 'Consolas', monospace</span>{";\n"}
+        {"  "}<span className="p">--vsee-text-overline-size</span>{": "}<span className="v">12px</span>{"; "}<span className="p">--vsee-text-caption-size</span>{": "}<span className="v">13px</span>{"; "}<span className="p">--vsee-text-body-size</span>{": "}<span className="v">14px</span>{";\n"}
+        {"  "}<span className="p">--vsee-text-h5-size</span>{": "}<span className="v">16px</span>{"; "}<span className="p">--vsee-text-body-lg-size</span>{": "}<span className="v">16px</span>{"; "}<span className="p">--vsee-text-subtitle-size</span>{": "}<span className="v">18px</span>{";\n"}
+        {"  "}<span className="p">--vsee-text-h4-size</span>{": "}<span className="v">20px</span>{"; "}<span className="p">--vsee-text-h3-size</span>{": "}<span className="v">24px</span>{"; "}<span className="p">--vsee-text-h2-size</span>{": "}<span className="v">36px</span>{";\n"}
+        {"  "}<span className="p">--vsee-text-h1-size</span>{": "}<span className="v">48px</span>{"; "}<span className="p">--vsee-text-display-size</span>{": "}<span className="v">60px</span>{";\n\n"}
         {"  "}<span className="c">{"/* Spacing (4px base) */"}</span>{"\n"}
-        {"  "}<span className="p">--sp-1</span>{": "}<span className="v">4px</span>{"; "}<span className="p">--sp-2</span>{": "}<span className="v">8px</span>{"; "}<span className="p">--sp-3</span>{": "}<span className="v">12px</span>{"; "}<span className="p">--sp-4</span>{": "}<span className="v">16px</span>{";\n"}
-        {"  "}<span className="p">--sp-5</span>{": "}<span className="v">20px</span>{"; "}<span className="p">--sp-6</span>{": "}<span className="v">24px</span>{"; "}<span className="p">--sp-8</span>{": "}<span className="v">32px</span>{"; "}<span className="p">--sp-10</span>{": "}<span className="v">40px</span>{";\n"}
-        {"  "}<span className="p">--sp-12</span>{": "}<span className="v">48px</span>{"; "}<span className="p">--sp-16</span>{": "}<span className="v">64px</span>{"; "}<span className="p">--sp-20</span>{": "}<span className="v">80px</span>{"; "}<span className="p">--sp-24</span>{": "}<span className="v">96px</span>{"; "}<span className="p">--sp-32</span>{": "}<span className="v">128px</span>{";\n\n"}
+        {"  "}<span className="p">--vsee-sp-1</span>{": "}<span className="v">4px</span>{"; "}<span className="p">--vsee-sp-2</span>{": "}<span className="v">8px</span>{"; "}<span className="p">--vsee-sp-3</span>{": "}<span className="v">12px</span>{"; "}<span className="p">--vsee-sp-4</span>{": "}<span className="v">16px</span>{";\n"}
+        {"  "}<span className="p">--vsee-sp-5</span>{": "}<span className="v">20px</span>{"; "}<span className="p">--vsee-sp-6</span>{": "}<span className="v">24px</span>{"; "}<span className="p">--vsee-sp-8</span>{": "}<span className="v">32px</span>{"; "}<span className="p">--vsee-sp-10</span>{": "}<span className="v">40px</span>{";\n"}
+        {"  "}<span className="p">--vsee-sp-12</span>{": "}<span className="v">48px</span>{"; "}<span className="p">--vsee-sp-16</span>{": "}<span className="v">64px</span>{"; "}<span className="p">--vsee-sp-20</span>{": "}<span className="v">80px</span>{"; "}<span className="p">--vsee-sp-24</span>{": "}<span className="v">96px</span>{"; "}<span className="p">--vsee-sp-32</span>{": "}<span className="v">128px</span>{";\n\n"}
         {"  "}<span className="c">{"/* Radius */"}</span>{"\n"}
-        {"  "}<span className="p">--r-xs</span>{": "}<span className="v">4px</span>{"; "}<span className="p">--r-sm</span>{": "}<span className="v">6px</span>{"; "}<span className="p">--r-md</span>{": "}<span className="v">8px</span>{"; "}<span className="p">--r-lg</span>{": "}<span className="v">12px</span>{";\n"}
-        {"  "}<span className="p">--r-xl</span>{": "}<span className="v">16px</span>{"; "}<span className="p">--r-2xl</span>{": "}<span className="v">24px</span>{"; "}<span className="p">--r-full</span>{": "}<span className="v">9999px</span>{";\n\n"}
+        {"  "}<span className="p">--vsee-r-xs</span>{": "}<span className="v">4px</span>{"; "}<span className="p">--vsee-r-sm</span>{": "}<span className="v">6px</span>{"; "}<span className="p">--vsee-r-md</span>{": "}<span className="v">8px</span>{"; "}<span className="p">--vsee-r-lg</span>{": "}<span className="v">12px</span>{";\n"}
+        {"  "}<span className="p">--vsee-r-xl</span>{": "}<span className="v">16px</span>{"; "}<span className="p">--vsee-r-2xl</span>{": "}<span className="v">24px</span>{"; "}<span className="p">--vsee-r-full</span>{": "}<span className="v">9999px</span>{";\n\n"}
         {"  "}<span className="c">{"/* Shadows */"}</span>{"\n"}
-        {"  "}<span className="p">--shadow-xs</span>{": "}<span className="v">0 1px 2px rgba(0,0,0,0.05)</span>{";\n"}
-        {"  "}<span className="p">--shadow-sm</span>{": "}<span className="v">0 1px 2px 0 rgb(0 0 0 / 0.05)</span>{";\n"}
-        {"  "}<span className="p">--shadow-md</span>{": "}<span className="v">0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)</span>{";\n"}
-        {"  "}<span className="p">--shadow-lg</span>{": "}<span className="v">0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)</span>{";\n"}
-        {"  "}<span className="p">--shadow-xl</span>{": "}<span className="v">0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)</span>{";\n"}
-        {"  "}<span className="p">--shadow-focus</span>{": "}<span className="v">0 0 0 3px rgba(13,135,92,0.15)</span>{";\n\n"}
+        {"  "}<span className="p">--vsee-shadow-xs</span>{": "}<span className="v">0 1px 2px rgba(0,0,0,0.05)</span>{";\n"}
+        {"  "}<span className="p">--vsee-shadow-sm</span>{": "}<span className="v">0 1px 2px 0 rgb(0 0 0 / 0.05)</span>{";\n"}
+        {"  "}<span className="p">--vsee-shadow-md</span>{": "}<span className="v">0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)</span>{";\n"}
+        {"  "}<span className="p">--vsee-shadow-lg</span>{": "}<span className="v">0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)</span>{";\n"}
+        {"  "}<span className="p">--vsee-shadow-xl</span>{": "}<span className="v">0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)</span>{";\n"}
+        {"  "}<span className="p">--vsee-shadow-focus</span>{": "}<span className="v">0 0 0 3px rgba(13,135,92,0.15)</span>{";\n\n"}
         {"  "}<span className="c">{"/* Hover overlay */"}</span>{"\n"}
-        {"  "}<span className="p">--hover-overlay</span>{": "}<span className="v">linear-gradient(rgba(0,0,0,0.07), rgba(0,0,0,0.07))</span>{";\n\n"}
+        {"  "}<span className="p">--vsee-hover-overlay</span>{": "}<span className="v">linear-gradient(rgba(0,0,0,0.07), rgba(0,0,0,0.07))</span>{";\n\n"}
         {"  "}<span className="c">{"/* Transitions */"}</span>{"\n"}
-        {"  "}<span className="p">--ease</span>{": "}<span className="v">cubic-bezier(0.4, 0, 0.2, 1)</span>{";\n\n"}
+        {"  "}<span className="p">--vsee-ease</span>{": "}<span className="v">cubic-bezier(0.4, 0, 0.2, 1)</span>{";\n\n"}
         {"  "}<span className="c">{"/* Nav */"}</span>{"\n"}
-        {"  "}<span className="p">--nav-width</span>{": "}<span className="v">240px</span>{";\n"}
+        {"  "}<span className="p">--vsee-nav-width</span>{": "}<span className="v">240px</span>{";\n"}
         {"}\n\n"}
         <span className="c">{"/* Tokens that reference other tokens (not supported in @theme) */"}</span>{"\n"}
         <span className="k">:root</span>{" {\n"}
-        {"  "}<span className="p">--link</span>{": "}<span className="v">var(--brand)</span>{";\n"}
-        {"  "}<span className="p">--link-hover</span>{": "}<span className="v">var(--brand-semidark)</span>{";\n"}
-        {"  "}<span className="p">--t-fast</span>{": "}<span className="v">150ms var(--ease)</span>{"; "}<span className="p">--t-base</span>{": "}<span className="v">200ms var(--ease)</span>{"; "}<span className="p">--t-slow</span>{": "}<span className="v">300ms var(--ease)</span>{";\n"}
+        {"  "}<span className="p">--vsee-link</span>{": "}<span className="v">var(--vsee-brand)</span>{";\n"}
+        {"  "}<span className="p">--vsee-link-hover</span>{": "}<span className="v">var(--vsee-brand-semidark)</span>{";\n"}
+        {"  "}<span className="p">--vsee-t-fast</span>{": "}<span className="v">150ms var(--vsee-ease)</span>{"; "}<span className="p">--vsee-t-base</span>{": "}<span className="v">200ms var(--vsee-ease)</span>{"; "}<span className="p">--vsee-t-slow</span>{": "}<span className="v">300ms var(--vsee-ease)</span>{";\n"}
         {"}\n\n"}
         <span className="c">{"/* ── Brand theme: Ocean Blue ── */"}</span>{"\n"}
         <span className="k">{"[data-theme=\"blue\"]"}</span>{" {\n"}
-        {"  "}<span className="p">--brand</span>{": "}<span className="v">#0891B2</span>{"; "}<span className="p">--brand-semidark</span>{": "}<span className="v">#155E75</span>{";\n"}
-        {"  "}<span className="p">--brand-dark</span>{": "}<span className="v">#0E7490</span>{"; "}<span className="p">--brand-darker</span>{": "}<span className="v">#164E63</span>{";\n"}
-        {"  "}<span className="p">--brand-light</span>{": "}<span className="v">#E0F7FA</span>{"; "}<span className="p">--brand-50</span>{": "}<span className="v">#ECFEFF</span>{";\n"}
+        {"  "}<span className="p">--vsee-brand</span>{": "}<span className="v">#0891B2</span>{"; "}<span className="p">--vsee-brand-semidark</span>{": "}<span className="v">#155E75</span>{";\n"}
+        {"  "}<span className="p">--vsee-brand-dark</span>{": "}<span className="v">#0E7490</span>{"; "}<span className="p">--vsee-brand-darker</span>{": "}<span className="v">#164E63</span>{";\n"}
+        {"  "}<span className="p">--vsee-brand-light</span>{": "}<span className="v">#E0F7FA</span>{"; "}<span className="p">--vsee-brand-50</span>{": "}<span className="v">#ECFEFF</span>{";\n"}
         {"}\n\n"}
         <span className="c">{"/* ── Brand theme: Royal Purple ── */"}</span>{"\n"}
         <span className="k">{"[data-theme=\"purple\"]"}</span>{" {\n"}
-        {"  "}<span className="p">--brand</span>{": "}<span className="v">#7C3AED</span>{"; "}<span className="p">--brand-semidark</span>{": "}<span className="v">#5E28BF</span>{";\n"}
-        {"  "}<span className="p">--brand-dark</span>{": "}<span className="v">#6332C4</span>{"; "}<span className="p">--brand-darker</span>{": "}<span className="v">#47248C</span>{";\n"}
-        {"  "}<span className="p">--brand-light</span>{": "}<span className="v">#EDE9FE</span>{"; "}<span className="p">--brand-50</span>{": "}<span className="v">#F5F3FF</span>{";\n"}
+        {"  "}<span className="p">--vsee-brand</span>{": "}<span className="v">#7C3AED</span>{"; "}<span className="p">--vsee-brand-semidark</span>{": "}<span className="v">#5E28BF</span>{";\n"}
+        {"  "}<span className="p">--vsee-brand-dark</span>{": "}<span className="v">#6332C4</span>{"; "}<span className="p">--vsee-brand-darker</span>{": "}<span className="v">#47248C</span>{";\n"}
+        {"  "}<span className="p">--vsee-brand-light</span>{": "}<span className="v">#EDE9FE</span>{"; "}<span className="p">--vsee-brand-50</span>{": "}<span className="v">#F5F3FF</span>{";\n"}
         {"}\n\n"}
         <span className="c">{"/* ── Dark Mode ── */"}</span>{"\n"}
         <span className="k">{"[data-mode=\"dark\"]"}</span>{" {\n"}
-        {"  "}<span className="p">--brand-light</span>{": "}<span className="v">#0F2D22</span>{"; "}<span className="p">--brand-50</span>{": "}<span className="v">#0A1F18</span>{";\n"}
-        {"  "}<span className="p">--brand-dark</span>{": "}<span className="v">#34D399</span>{";\n\n"}
-        {"  "}<span className="p">--success-light</span>{": "}<span className="v">#0F2D22</span>{"; "}<span className="p">--info-light</span>{": "}<span className="v">#0C1F2E</span>{";\n"}
-        {"  "}<span className="p">--warning-light</span>{": "}<span className="v">#2D1806</span>{"; "}<span className="p">--danger-light</span>{": "}<span className="v">#2D1212</span>{";\n"}
-        {"  "}<span className="p">--success-dark</span>{": "}<span className="v">#6EE7B7</span>{"; "}<span className="p">--info-dark</span>{": "}<span className="v">#7DD3FC</span>{";\n"}
-        {"  "}<span className="p">--warning-dark</span>{": "}<span className="v">#FDE68A</span>{"; "}<span className="p">--danger-dark</span>{": "}<span className="v">#FCA5A5</span>{";\n"}
-        {"  "}<span className="p">--warning-on-solid</span>{": "}<span className="v">#422006</span>{";\n"}
-        {"  "}<span className="p">--success-border</span>{": "}<span className="v">#065F46</span>{"; "}<span className="p">--info-border</span>{": "}<span className="v">#075985</span>{";\n"}
-        {"  "}<span className="p">--warning-border</span>{": "}<span className="v">#92400E</span>{"; "}<span className="p">--danger-border</span>{": "}<span className="v">#991B1B</span>{";\n\n"}
-        {"  "}<span className="p">--black</span>{": "}<span className="v">#F9FAFB</span>{";\n"}
-        {"  "}<span className="p">--grey-900</span>{": "}<span className="v">#F3F4F6</span>{"; "}<span className="p">--grey-800</span>{": "}<span className="v">#E5E7EB</span>{"; "}<span className="p">--grey-700</span>{": "}<span className="v">#D1D5DB</span>{";\n"}
-        {"  "}<span className="p">--grey-600</span>{": "}<span className="v">#9CA3AF</span>{"; "}<span className="p">--grey-500</span>{": "}<span className="v">#6B7280</span>{"; "}<span className="p">--grey-400</span>{": "}<span className="v">#4B5563</span>{";\n"}
-        {"  "}<span className="p">--grey-300</span>{": "}<span className="v">#1F2937</span>{"; "}<span className="p">--grey-200</span>{": "}<span className="v">#111827</span>{"; "}<span className="p">--grey-100</span>{": "}<span className="v">#0F172A</span>{";\n"}
-        {"  "}<span className="p">--white</span>{": "}<span className="v">#0B1120</span>{";\n\n"}
-        {"  "}<span className="p">--text-primary</span>{": "}<span className="v">#F9FAFB</span>{"; "}<span className="p">--text-secondary</span>{": "}<span className="v">#9CA3AF</span>{";\n"}
-        {"  "}<span className="p">--border</span>{": "}<span className="v">#1F2937</span>{"; "}<span className="p">--border-strong</span>{": "}<span className="v">#374151</span>{";\n"}
-        {"  "}<span className="p">--surface-elevated</span>{": "}<span className="v">#131B2E</span>{";\n\n"}
+        {"  "}<span className="p">--vsee-brand-light</span>{": "}<span className="v">#0F2D22</span>{"; "}<span className="p">--vsee-brand-50</span>{": "}<span className="v">#0A1F18</span>{";\n"}
+        {"  "}<span className="p">--vsee-brand-dark</span>{": "}<span className="v">#34D399</span>{";\n\n"}
+        {"  "}<span className="p">--vsee-success-light</span>{": "}<span className="v">#0F2D22</span>{"; "}<span className="p">--vsee-info-light</span>{": "}<span className="v">#0C1F2E</span>{";\n"}
+        {"  "}<span className="p">--vsee-warning-light</span>{": "}<span className="v">#2D1806</span>{"; "}<span className="p">--vsee-danger-light</span>{": "}<span className="v">#2D1212</span>{";\n"}
+        {"  "}<span className="p">--vsee-success-dark</span>{": "}<span className="v">#6EE7B7</span>{"; "}<span className="p">--vsee-info-dark</span>{": "}<span className="v">#7DD3FC</span>{";\n"}
+        {"  "}<span className="p">--vsee-warning-dark</span>{": "}<span className="v">#FDE68A</span>{"; "}<span className="p">--vsee-danger-dark</span>{": "}<span className="v">#FCA5A5</span>{";\n"}
+        {"  "}<span className="p">--vsee-warning-on-solid</span>{": "}<span className="v">#422006</span>{";\n"}
+        {"  "}<span className="p">--vsee-success-border</span>{": "}<span className="v">#065F46</span>{"; "}<span className="p">--vsee-info-border</span>{": "}<span className="v">#075985</span>{";\n"}
+        {"  "}<span className="p">--vsee-warning-border</span>{": "}<span className="v">#92400E</span>{"; "}<span className="p">--vsee-danger-border</span>{": "}<span className="v">#991B1B</span>{";\n\n"}
+        {"  "}<span className="p">--vsee-black</span>{": "}<span className="v">#F9FAFB</span>{";\n"}
+        {"  "}<span className="p">--vsee-grey-900</span>{": "}<span className="v">#F3F4F6</span>{"; "}<span className="p">--vsee-grey-800</span>{": "}<span className="v">#E5E7EB</span>{"; "}<span className="p">--vsee-grey-700</span>{": "}<span className="v">#D1D5DB</span>{";\n"}
+        {"  "}<span className="p">--vsee-grey-600</span>{": "}<span className="v">#9CA3AF</span>{"; "}<span className="p">--vsee-grey-500</span>{": "}<span className="v">#6B7280</span>{"; "}<span className="p">--vsee-grey-400</span>{": "}<span className="v">#4B5563</span>{";\n"}
+        {"  "}<span className="p">--vsee-grey-300</span>{": "}<span className="v">#1F2937</span>{"; "}<span className="p">--vsee-grey-200</span>{": "}<span className="v">#111827</span>{"; "}<span className="p">--vsee-grey-100</span>{": "}<span className="v">#0F172A</span>{";\n"}
+        {"  "}<span className="p">--vsee-white</span>{": "}<span className="v">#0B1120</span>{";\n\n"}
+        {"  "}<span className="p">--vsee-text-primary</span>{": "}<span className="v">#F9FAFB</span>{"; "}<span className="p">--vsee-text-secondary</span>{": "}<span className="v">#9CA3AF</span>{";\n"}
+        {"  "}<span className="p">--vsee-border</span>{": "}<span className="v">#1F2937</span>{"; "}<span className="p">--vsee-border-strong</span>{": "}<span className="v">#374151</span>{";\n"}
+        {"  "}<span className="p">--vsee-surface-elevated</span>{": "}<span className="v">#131B2E</span>{";\n\n"}
         {"  "}<span className="p">color-scheme</span>{": "}<span className="v">dark</span>{";\n"}
         {"}"}
       </div>
