@@ -42,9 +42,9 @@ npm run preview      # preview built output
 - `src/App.css` — component styling. Some selectors (`.btn`, `.input`, `.badge`) wrap React Aria renders with our visual treatment.
 - **Tailwind v4** — arbitrary-value classes (e.g. `bg-[var(--brand)]`, `text-[var(--text-primary)]`) are common. Use them for one-off styling; promote to a named CSS class when a pattern repeats.
 
-**Token naming — naked convention**
+**Token naming — `--vsee-*` prefix at source**
 
-Tokens in this repo are intentionally **unprefixed** (`--brand`, `--sp-4`, `--text-h1-size`). This is the authoritative source. Downstream consumers (Phoenix) apply a prefix (`--vsee-*`) at build time per their ADR 0004. Don't prefix here — it breaks the copy-paste UX on the docs site and complicates Token Studio exports.
+Tokens in this repo are prefixed **at source** (`--vsee-brand`, `--vsee-sp-4`, `--vsee-text-h1-size`) — see ADR 0004. This matches the Phoenix convention (va-main ADR 0004) and ships as-is via `@vsee/ui/tokens.css` — no build-time transform needed. Downstream consumers `@import` the stylesheet and get the final names directly. If a future consumer needs a different prefix (white-label Phase 4), we can publish a second `tokens.raw.css` export at that point rather than carrying a transform today.
 
 **Themes**
 
