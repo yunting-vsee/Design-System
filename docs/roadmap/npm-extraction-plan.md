@@ -12,15 +12,16 @@ See:
 - [ADR 0002 — Package naming `@vsee/ui`](../adr/0002-package-naming.md)
 - [ADR 0003 — Versioning policy](../adr/0003-versioning-policy.md)
 
-## Phase 0 — ship tokens + base CSS (~3 days)
+## Phase 0 — ship tokens + base CSS (~2 days)
 
 **Goal:** Phoenix imports tokens from `@vsee/ui` instead of duplicating them locally.
 
+**Precondition:** mechanical token rename `--X` → `--vsee-X` across `src/*` (ADR 0004) merged first — shipped as a separate PR so this ADR and this phase's restructure stay conceptually clean.
+
 - [ ] Restructure repo: library at root; `design-system/` → `apps/docs/`
-- [ ] Add `scripts/prefix-tokens.mjs` — transforms naked `--X` to `--vsee-X` at build time
 - [ ] Root `package.json` — name `@vsee/ui`, version `0.1.0`, main/types/files fields, `prepare` script
 - [ ] Library entry `src/tokens.ts` (or `src/index.ts` exporting just the CSS paths)
-- [ ] Library publishes: `tokens.css` (prefixed) + `styles.css` (renamed from current `App.css`)
+- [ ] Library publishes: `tokens.css` (already prefixed per ADR 0004) + `styles.css` (renamed from current `App.css`)
 - [ ] Tag `v0.1.0`, push
 - [ ] Phoenix consumes via Git URL; imports `@vsee/ui/tokens.css`; deletes duplicate `--vsee-*` tokens
 
