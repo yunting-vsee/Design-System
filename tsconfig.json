@@ -1,0 +1,17 @@
+{
+  "//": "Minimal library-level tsconfig — v0.1.0 ships CSS only, no .ts compilation required. Exists so IDEs pick up src/index.ts and v0.2+ component additions drop straight into place.",
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "lib": ["ES2022", "DOM"],
+    "strict": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx"]
+}

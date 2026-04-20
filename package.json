@@ -1,0 +1,27 @@
+{
+  "name": "@vsee/ui",
+  "version": "0.1.0",
+  "description": "VSee Design System — tokens, components, and patterns for VSee products",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@bitbucket.org/vsee/vp-design-system.git"
+  },
+  "license": "UNLICENSED",
+  "private": false,
+  "sideEffects": [
+    "*.css"
+  ],
+  "exports": {
+    "./tokens.css": "./src/tokens.css",
+    "./styles.css": "./src/styles.css"
+  },
+  "files": [
+    "src/tokens.css",
+    "src/styles.css",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "echo 'v0.1.0 is CSS-only — no build step'",
+    "prepare": "npm run build"
+  }
+}
