@@ -83,7 +83,7 @@ Tokens are prefixed **at source** (`--vsee-brand`, `--vsee-sp-4`, `--vsee-text-h
 ## Branching
 
 - `master` — default branch; autodeploys to GitHub Pages on push
-- Feature branches: `feat/*`, fix branches: `fix/*`
+- Branch prefix matches the commit type of the primary change: `feat/*`, `fix/*`, `docs/*`, `refactor/*`, `chore/*`, `test/*`, `style/*`
 
 ## Commit convention
 
@@ -135,17 +135,25 @@ Managed by [lefthook](https://github.com/evilmartians/lefthook) (`lefthook.yml`)
 
 ## Bitbucket PR workflow
 
-Same auth pattern as va-main:
-- `BITBUCKET_EMAIL="an@vsee.com"` in `~/.zshrc`
-- `BITBUCKET_API_TOKEN="ATATT..."` in `~/.zshrc`
+Same auth pattern as va-main. Export these in your shell profile — `~/.zshrc` on macOS, `~/.bashrc` (Git Bash) on Windows:
+- `BITBUCKET_EMAIL="an@vsee.com"`
+- `BITBUCKET_API_TOKEN="ATATT..."`
 
-Create PR:
+Create PR (REST API uses the email as Basic-auth username):
 ```bash
 curl -s -u "$BITBUCKET_EMAIL:$BITBUCKET_API_TOKEN" \
   -H "Content-Type: application/json" \
   -X POST "https://api.bitbucket.org/2.0/repositories/vsee/vp-design-system/pullrequests" \
   -d '{"title":"...", "source":{"branch":{"name":"..."}}, "destination":{"branch":{"name":"master"}}, "close_source_branch":true}'
 ```
+
+Push over git-HTTPS with the same API token — **the username must be the static literal `x-bitbucket-api-token-auth`** (not the email, not the Bitbucket username, and not `x-token-auth` which is the legacy App-Password convention):
+```bash
+git remote set-url bitbucket \
+  "https://x-bitbucket-api-token-auth:${BITBUCKET_API_TOKEN}@bitbucket.org/vsee/vp-design-system.git"
+git push bitbucket <branch>
+```
+The PR-creation `-u email:token` pattern above and the git-HTTPS `x-bitbucket-api-token-auth:token` pattern use the **same** token — only the username differs. App Passwords (the older mechanism) are being retired by Atlassian on 2026-06-09; API tokens are the forward path.
 
 ## Key files
 
