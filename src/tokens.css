@@ -1,0 +1,158 @@
+/* ═══════════════════════════════════════════
+   @vsee/ui — Design Tokens
+   ═══════════════════════════════════════════
+   Single source of truth for the VSee token palette.
+   Consumers: @import '@vsee/ui/tokens.css'.
+   All token names are prefixed --vsee-* at source (ADR 0004).
+*/
+
+/* ── Tailwind v4 Theme ── */
+@theme {
+  /* Font */
+  --vsee-font-sans: "Figtree", system-ui, -apple-system, sans-serif;
+
+  /* Brand */
+  --vsee-brand: #0D875C;
+  --vsee-brand-semidark: #096843;
+  --vsee-brand-dark: #0A6B49;
+  --vsee-brand-darker: #074D35;
+  --vsee-brand-light: #E6F5EE;
+  --vsee-brand-50: #F0FAF5;
+
+  /* Semantic (AA-compliant for white foreground) */
+  --vsee-success: #367D17; --vsee-success-light: #F9FEF6;
+  --vsee-info: #196CD2; --vsee-info-light: #E0F2FE;
+  --vsee-warning: #FFCB5A; --vsee-warning-light: #FEF3C7;
+  --vsee-danger: #DC2626; --vsee-danger-light: #FEE2E2;
+
+  /* Semantic dark text (AA-compliant on matching -light backgrounds) */
+  --vsee-success-dark: #265C10;
+  --vsee-info-dark: #075985;
+  --vsee-warning-dark: #92400E;
+  --vsee-danger-dark: #991B1B;
+  --vsee-warning-on-solid: #2D1806;
+
+  /* Semantic borders (alerts) */
+  --vsee-success-border: #DAF1C1;
+  --vsee-info-border: #BAE6FD;
+  --vsee-warning-border: #FDE68A;
+  --vsee-danger-border: #FECACA;
+
+  /* Neutral scale (AA-compliant) */
+  --vsee-black: #111827;
+  --vsee-grey-900: #4B5563; --vsee-grey-800: #6B7280; --vsee-grey-700: #9CA3AF;
+  --vsee-grey-600: #B0B7C3; --vsee-grey-500: #C9CED6; --vsee-grey-400: #E8EAED;
+  --vsee-grey-300: #F1F2F4; --vsee-grey-200: #F8F9FA; --vsee-grey-100: #FCFCFD;
+  --vsee-white: #FFFFFF;
+
+  /* Text (AA-compliant: >= 4.5:1 on white) */
+  --vsee-text-primary: #111827; --vsee-text-secondary: #6B7280;
+
+  /* Borders */
+  --vsee-border: #E5E7EB; --vsee-border-strong: #D1D5DB;
+
+  /* Typography scale */
+  --vsee-mono: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+  --vsee-text-overline-size: 12px; --vsee-text-caption-size: 13px; --vsee-text-body-size: 14px;
+  --vsee-text-h5-size: 16px; --vsee-text-body-lg-size: 16px; --vsee-text-subtitle-size: 18px;
+  --vsee-text-h4-size: 20px; --vsee-text-h3-size: 24px; --vsee-text-h2-size: 36px; --vsee-text-h1-size: 48px; --vsee-text-display-size: 60px;
+
+  /* Spacing */
+  --vsee-sp-1: 4px; --vsee-sp-2: 8px; --vsee-sp-3: 12px; --vsee-sp-4: 16px;
+  --vsee-sp-5: 20px; --vsee-sp-6: 24px; --vsee-sp-8: 32px; --vsee-sp-10: 40px;
+  --vsee-sp-12: 48px; --vsee-sp-16: 64px; --vsee-sp-20: 80px; --vsee-sp-24: 96px; --vsee-sp-32: 128px;
+
+  /* Radius */
+  --vsee-r-xs: 4px; --vsee-r-sm: 6px; --vsee-r-md: 8px; --vsee-r-lg: 12px;
+  --vsee-r-xl: 16px; --vsee-r-2xl: 24px; --vsee-r-full: 9999px;
+
+  /* Shadows */
+  --vsee-shadow-xs: 0 1px 2px rgba(0,0,0,0.05);
+  --vsee-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --vsee-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --vsee-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --vsee-shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --vsee-shadow-focus: 0 0 0 3px rgba(13,135,92,0.15);
+
+  /* Hover overlay */
+  --vsee-hover-overlay: linear-gradient(rgba(0,0,0,0.07), rgba(0,0,0,0.07));
+
+  /* Transitions */
+  --vsee-ease: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Nav */
+  --vsee-nav-width: 240px;
+}
+
+/* Tokens that reference other tokens (not supported in @theme) */
+:root {
+  --vsee-link: var(--vsee-brand);
+  --vsee-link-hover: var(--vsee-brand-semidark);
+  --vsee-t-fast: 150ms var(--vsee-ease); --vsee-t-base: 200ms var(--vsee-ease); --vsee-t-slow: 300ms var(--vsee-ease);
+}
+
+/* ── Brand theme: Ocean Blue ── */
+[data-theme="blue"] {
+  --vsee-brand: #0891B2;
+  --vsee-brand-semidark: #155E75;
+  --vsee-brand-dark: #0E7490;
+  --vsee-brand-darker: #164E63;
+  --vsee-brand-light: #E0F7FA;
+  --vsee-brand-50: #ECFEFF;
+}
+
+/* ── Brand theme: Royal Purple ── */
+[data-theme="purple"] {
+  --vsee-brand: #7C3AED;
+  --vsee-brand-semidark: #5E28BF;
+  --vsee-brand-dark: #6332C4;
+  --vsee-brand-darker: #47248C;
+  --vsee-brand-light: #EDE9FE;
+  --vsee-brand-50: #F5F3FF;
+}
+
+/* ── Dark Mode ── */
+[data-mode="dark"] {
+  --vsee-brand-light: #0F2D22;
+  --vsee-brand-50: #0A1F18;
+  --vsee-brand-dark: #34D399;
+
+  --vsee-success-light: #0F2D22; --vsee-info-light: #0C1F2E; --vsee-warning-light: #2D1806; --vsee-danger-light: #2D1212;
+  --vsee-success-dark: #6EE7B7; --vsee-info-dark: #7DD3FC; --vsee-warning-dark: #FDE68A; --vsee-danger-dark: #FCA5A5;
+  --vsee-warning-on-solid: #422006;
+  --vsee-success-border: #065F46; --vsee-info-border: #075985; --vsee-warning-border: #92400E; --vsee-danger-border: #991B1B;
+
+  --vsee-black: #F9FAFB;
+  --vsee-grey-900: #F3F4F6; --vsee-grey-800: #E5E7EB; --vsee-grey-700: #D1D5DB;
+  --vsee-grey-600: #9CA3AF; --vsee-grey-500: #6B7280; --vsee-grey-400: #4B5563;
+  --vsee-grey-300: #1F2937; --vsee-grey-200: #111827; --vsee-grey-100: #0F172A;
+  --vsee-white: #0B1120;
+
+  --vsee-text-primary: #F9FAFB; --vsee-text-secondary: #9CA3AF;
+
+  --vsee-border: #1F2937; --vsee-border-strong: #374151;
+
+  /* Stronger shadows for dark backgrounds */
+  --vsee-shadow-xs: 0 1px 2px rgb(0 0 0 / 0.3);
+  --vsee-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+  --vsee-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+  --vsee-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.3);
+  --vsee-shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.4), 0 8px 10px -6px rgb(0 0 0 / 0.3);
+
+  /* Elevated surface — slightly lighter than base --vsee-white */
+  --vsee-surface-elevated: #131B2E;
+
+  color-scheme: dark;
+}
+
+[data-mode="dark"][data-theme="blue"] {
+  --vsee-brand-light: #0C1F2E;
+  --vsee-brand-50: #091A25;
+  --vsee-brand-dark: #67E8F9;
+}
+
+[data-mode="dark"][data-theme="purple"] {
+  --vsee-brand-light: #1A0F2E;
+  --vsee-brand-50: #140B25;
+  --vsee-brand-dark: #C4B5FD;
+}
