@@ -1,5 +1,18 @@
 ﻿# Changelog
 
+Apr 22
+  Changelog discipline
+  - Added a `## Changelog` section to CLAUDE.md codifying the rule: every
+    commit and every merge to master updates this file in the same commit
+    that introduces the change. Opening a PR alone does not trigger an
+    entry — the commits inside the PR already carry theirs.
+  - Format pinned to the existing informal style (date header at column 0,
+    topic sub-heading indented two spaces, bullets describe the change,
+    no version numbers). Same-day commits append under the existing date
+    header.
+  - Skip only truly trivial, non-behavioural edits (formatter-only commits,
+    pure comment/typo fixes). When unsure, write the entry.
+
 Apr 17
   Typography
   - System font switched from Plus Jakarta Sans to Figtree (loaded via Google Fonts).

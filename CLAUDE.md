@@ -118,6 +118,18 @@ Rules:
 - Mirrors the `va-main` (Phoenix) convention so downstream consumers read the same shape.
 - Applies going forward; historic unscoped commits stay as-is (rewriting history isn't worth the churn).
 
+## Changelog
+
+`CHANGELOG.md` at the repo root is a running journal of library and docs-site changes. **Every commit and every merge to `master` updates it, in the same commit that introduces the change.** Opening a PR does not itself trigger an entry — the commits inside the PR already carry theirs.
+
+Format (match existing entries — it's intentionally informal, not Keep-a-Changelog):
+
+- Date header at column 0 — e.g. `Apr 22`. Same-day commits append under the existing header; a new day opens a new block.
+- Topic sub-heading indented two spaces — e.g. `Buttons`, `Color tokens`, `Login pattern`.
+- Bullets under the topic describe the change. Terse. Past or present tense, whichever reads cleaner. No version numbers.
+
+Skip only for truly trivial, non-behavioural edits (formatter-only commits, pure comment/typo fixes). When unsure, write the entry — it's cheaper than missing one.
+
 ## Deployment
 
 `.github/workflows/deploy.yml` — GitHub Actions workflow mirrored from the Bitbucket repo to GitHub; on push to `master` or `main`, builds the Vite app and deploys to GitHub Pages. The workflow runs from `apps/docs/` (see `working-directory` in the YAML). **Don't change the trigger branches without coordinating with the design team** — breaking the deploy breaks the docs site.
