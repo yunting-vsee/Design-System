@@ -140,6 +140,7 @@ const NAV = [
     items: [
       // { label: "EMR Patterns", id: "emr" },
       { label: "Layouts", id: "layouts" },
+      { label: "Login", id: "login" },
     ],
   },
   {
@@ -302,6 +303,7 @@ function App() {
         <ComponentsOthers />
         {/* <PatternsEMR /> */}
         <PatternsLayouts />
+        <PatternsLogin />
         <EngineeringTokens />
         <PatternsTheming brandTheme={brandTheme} setBrandTheme={setBrandTheme} />
         <PatternsFormio />
@@ -2480,6 +2482,46 @@ function PatternsLayouts() {
           <div className="sidebar-content">
             <div style={{fontSize:20,fontWeight:700,marginBottom:"var(--vsee-sp-4)"}}>{page.title}</div>
             {page.content}
+          </div>
+        </div>
+      </SubSection>
+    </Section>
+  );
+}
+
+/* ═══════════════════════════════════════════
+   PATTERNS — LOGIN
+   ═══════════════════════════════════════════ */
+function PatternsLogin() {
+  // Base-aware so dev (BASE_URL=/) and GitHub Pages (BASE_URL=/Design-System/)
+  // both resolve to the right static file. login.html lives in apps/docs/public
+  // and Vite copies public/* verbatim into dist/.
+  const href = import.meta.env.BASE_URL + "login.html";
+  return (
+    <Section id="login" label="Patterns" title="Login"
+      description="Full-screen authentication pattern built on @vsee/ui tokens and utility classes — an end-to-end example of what it looks like when a product-surface login consumes the design system instead of shipping its own one-off CSS. The prototype is a standalone HTML file so it can be opened in isolation, with its own brand and light/dark toolbar for evaluation.">
+
+      <SubSection title="Prototype" description="Preview below is the live page — click into the iframe to try the email → password flow, or open it in its own tab for full-screen.">
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--vsee-sp-4)" }}>
+          <div style={{
+            width: "100%", maxWidth: 880, height: 640,
+            border: "1px solid var(--vsee-border)",
+            borderRadius: "var(--vsee-r-lg)",
+            overflow: "hidden",
+            background: "var(--vsee-grey-200)",
+            boxShadow: "var(--vsee-shadow-md)",
+          }}>
+            <iframe
+              src={href}
+              title="Login prototype"
+              loading="lazy"
+              style={{ width: "100%", height: "100%", border: 0, display: "block" }}
+            />
+          </div>
+          <div>
+            <a href={href} target="_blank" rel="noopener noreferrer" className="btn btn-primary">
+              Open prototype <ExternalLink size={16} />
+            </a>
           </div>
         </div>
       </SubSection>
