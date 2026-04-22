@@ -7,12 +7,10 @@ pre-commit:
   parallel: true
   jobs:
     - name: security
-      run: |
-        if command -v gitleaks >/dev/null 2>&1; then
-          gitleaks git --staged
-        else
-          echo "⚠ gitleaks not installed — skipping security scan. Install with: brew install gitleaks"
-        fi
+      # On Windows, lefthook invokes `run:` directly without a shell, so
+      # inline `if`/pipes/quotes don't work. Routing through `bash <script>`
+      # gives the conditional a real shell on every platform.
+      run: bash scripts/pre-commit-gitleaks.sh
     - name: lint
       glob: "apps/docs/**/*.{ts,tsx,js,jsx,css}"
       run: |
