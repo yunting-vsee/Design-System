@@ -1,5 +1,10 @@
 ﻿# Changelog
 
+Apr 23
+  Repo housekeeping
+  - Stopped tracking IDE project files — removed `Design System.sln` (root) and `apps/docs/design-system.esproj`.
+  - `.gitignore`: added `.vscode/`, `/package-lock.json`, `/design-system.esproj`; reordered `.claude/` below `dist/`.
+
 Apr 17
   Typography
   - System font switched from Plus Jakarta Sans to Figtree (loaded via Google Fonts).
