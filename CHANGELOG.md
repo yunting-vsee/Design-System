@@ -40,6 +40,13 @@ Apr 24
 
   Tooling
   - .gitignore: added /design-system.esproj, /design-system.esproj.user, /Design System.sln, /package-lock.json, .vscode/.
+  - lefthook.yml: security (gitleaks) job routed through scripts/pre-commit-gitleaks.sh (from chore/remove-ide-files) so the optional-skip logic has a real shell on every platform.
+
+Apr 23
+  Repo housekeeping
+  - Stopped tracking IDE project files — removed `Design System.sln` (root) and `apps/docs/design-system.esproj`.
+  - `.gitignore`: added `.vscode/`, `/package-lock.json`, `/design-system.esproj`; reordered `.claude/` below `dist/`.
+  - lefthook.yml: security job invokes `bash scripts/pre-commit-gitleaks.sh` — inline shell syntax doesn't survive on Windows Git Bash.
 
 Apr 17
   Typography
