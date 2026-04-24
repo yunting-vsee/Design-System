@@ -372,3 +372,4 @@ dist/
 .vscode/
 /package-lock.json
 /design-system.esproj
+/design-system.esproj.user
