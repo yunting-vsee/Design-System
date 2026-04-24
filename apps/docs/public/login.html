@@ -84,6 +84,9 @@
 
     [data-mode="dark"] {
       --vsee-brand-light: #0F2D22; --vsee-brand-50: #0A1F18; --vsee-brand-dark: #34D399;
+      /* Brightened in dark mode so error text (form errors, input error
+         border) passes WCAG AA 4.5:1 against the dark body (~6.5:1). */
+      --vsee-danger: #F87171;
       --vsee-danger-light: #2D1212;
       --vsee-black: #F9FAFB;
       --vsee-grey-900: #F3F4F6; --vsee-grey-800: #E5E7EB; --vsee-grey-700: #D1D5DB;

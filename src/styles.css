@@ -996,6 +996,14 @@ input::-webkit-credentials-auto-fill-button { display: none; }
 [data-mode="dark"] .notification { background: var(--vsee-surface-elevated); }
 
 [data-mode="dark"] .badge-solid-neutral { background: var(--vsee-grey-400); color: var(--vsee-grey-900); }
+/* --vsee-danger is brightened in dark mode (see tokens.css) for WCAG AA
+   text contrast on the dark body. For filled surfaces that pair with
+   white text, swap in --vsee-danger-border (#991B1B) so white-on-red
+   stays ~7.9:1 instead of dropping to ~2.6:1. */
+[data-mode="dark"] .btn-danger,
+[data-mode="dark"] .btn-danger[data-pressed],
+[data-mode="dark"] .btn-loading.btn-danger[data-disabled],
+[data-mode="dark"] .badge-solid-danger { background: var(--vsee-danger-border); }
 [data-mode="dark"] .chip { background: var(--vsee-brand-light); }
 [data-mode="dark"] .tooltip-bubble,
 [data-mode="dark"] .copy-toast { background: var(--vsee-grey-900); color: var(--vsee-white); }

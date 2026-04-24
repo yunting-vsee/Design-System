@@ -117,6 +117,13 @@
   --vsee-brand-50: #0A1F18;
   --vsee-brand-dark: #34D399;
 
+  /* --vsee-danger brightened in dark mode so small-text use (.form-error-text,
+     .dropdown-item-danger, .btn-danger-outline, etc.) clears WCAG AA
+     normal-text 4.5:1 against the --vsee-white body (#0B1120). #F87171 gives
+     ~6.5:1. See [data-mode="dark"] .btn-danger / .badge-solid-danger in
+     styles.css for the filled-surface override that keeps white-on-red
+     contrast. */
+  --vsee-danger: #F87171;
   --vsee-success-light: #0F2D22; --vsee-info-light: #0C1F2E; --vsee-warning-light: #2D1806; --vsee-danger-light: #2D1212;
   --vsee-success-dark: #6EE7B7; --vsee-info-dark: #7DD3FC; --vsee-warning-dark: #FDE68A; --vsee-danger-dark: #FCA5A5;
   --vsee-warning-on-solid: #422006;
