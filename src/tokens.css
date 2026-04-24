@@ -20,10 +20,10 @@
   --vsee-brand-50: #F0FAF5;
 
   /* Semantic (AA-compliant for white foreground) */
-  --vsee-success: #367D17; --vsee-success-light: #F9FEF6;
-  --vsee-info: #196CD2; --vsee-info-light: #E0F2FE;
+  --vsee-success: #367D17; --vsee-success-light: #F1F9E1;
+  --vsee-info: #196CD2; --vsee-info-light: #EBF7FE;
   --vsee-warning: #FFCB5A; --vsee-warning-light: #FEF3C7;
-  --vsee-danger: #DC2626; --vsee-danger-light: #FEE2E2;
+  --vsee-danger: #D31212; --vsee-danger-light: #FEE7E7;
 
   /* Semantic dark text (AA-compliant on matching -light backgrounds) */
   --vsee-success-dark: #265C10;
