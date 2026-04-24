@@ -7,12 +7,10 @@ pre-commit:
   parallel: true
   jobs:
     - name: security
+      # Short-circuit one-liner — some shells (Windows Git Bash via
+      # lefthook) fail to parse the multi-line if/then/fi form.
       run: |
-        if command -v gitleaks >/dev/null 2>&1; then
-          gitleaks git --staged
-        else
-          echo "⚠ gitleaks not installed — skipping security scan. Install with: brew install gitleaks"
-        fi
+        command -v gitleaks >/dev/null 2>&1 && gitleaks git --staged || echo "⚠ gitleaks not installed — skipping security scan (install with: brew install gitleaks)"
     - name: lint
       glob: "apps/docs/**/*.{ts,tsx,js,jsx,css}"
       run: |

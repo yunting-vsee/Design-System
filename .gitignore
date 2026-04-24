@@ -369,3 +369,10 @@ doc/
 
 # Library build output (@vsee/ui v0.2+ will emit here).
 dist/
+
+.claude/
+.vscode/
+/package-lock.json
+/design-system.esproj
+/design-system.esproj.user
+/Design System.sln
