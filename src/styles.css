@@ -717,6 +717,8 @@ input::-webkit-credentials-auto-fill-button { display: none; }
 /* Right-aligned group inside the anchor-bar — holds the Patterns title + items. */
 .anchor-bar-right { margin-left: auto; display: flex; align-items: center; gap: var(--vsee-sp-1); }
 .anchor-bar-group-title { display: inline-flex; align-items: center; gap: 6px; font-size: var(--vsee-text-body-size); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--vsee-text-secondary); padding: 0 var(--vsee-sp-2); white-space: nowrap; }
+/* Prototype-page link (opens a self-contained HTML file from public/ in a new tab). */
+.anchor-link-external { display: inline-flex; align-items: center; gap: 4px; }
 
 /* ═══════════════════════════════════════════
    EMR PAGE — DROPDOWN

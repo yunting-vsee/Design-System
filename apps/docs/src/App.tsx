@@ -145,13 +145,12 @@ const NAV = [
 ];
 
 // Patterns is rendered on the right of the anchor-bar, not the left sidebar.
+// Layouts is commented out for now — PatternsLayouts has no visible content
+// after its subsections moved to Components → Others.
 const PATTERNS_GROUP = {
   group: "Patterns",
   icon: <Layers size={14} />,
-  items: [
-    // { label: "EMR Patterns", id: "emr" },
-    { label: "Layouts", id: "layouts" },
-  ],
+  items: [] as { label: string; id: string }[],
 };
 
 function App() {
@@ -288,7 +287,9 @@ function App() {
               </a>
             );
           })}
-          {/* Patterns — right-aligned group with its title + per-item links. */}
+          {/* Patterns — right-aligned group with its title + per-item links.
+              Trailing prototype-page links open the self-contained HTML mocks
+              in a new tab (they live in apps/docs/public/). */}
           <div className="anchor-bar-right">
             <span className="anchor-bar-group-title">
               {PATTERNS_GROUP.icon}
@@ -304,6 +305,24 @@ function App() {
                 {item.label}
               </a>
             ))}
+            <a
+              href={`${import.meta.env.BASE_URL}login.html`}
+              target="_blank"
+              rel="noopener"
+              className="anchor-link anchor-link-external"
+              title="Open the login prototype in a new tab"
+            >
+              Login <ExternalLink size={12} />
+            </a>
+            <a
+              href={`${import.meta.env.BASE_URL}preference.html`}
+              target="_blank"
+              rel="noopener"
+              className="anchor-link anchor-link-external"
+              title="Open the preferences prototype in a new tab"
+            >
+              Preferences <ExternalLink size={12} />
+            </a>
           </div>
         </div>
 

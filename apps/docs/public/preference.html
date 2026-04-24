@@ -1,0 +1,1152 @@
+<!doctype html>
+<!--
+  Preferences — @vsee/ui prototype
+  ────────────────────────────────
+  Faithful reconstruction of va-main's src/components/preferences/PreferencesView.tsx
+  rebuilt with only @vsee/ui design-system classes. Structure mirrors the Phoenix
+  source: six-item left rail (General · Audio · Notifications · Video · Modules ·
+  Billing) and a right content pane. General + Notifications are fully built;
+  the remaining sections render the Phoenix "Coming soon" placeholder.
+
+  Self-contained — tokens + the subset of styles.css we use are inlined so the
+  file opens directly in a browser with no build step. A brand + light/dark
+  toolbar at the top drives the page via the same [data-theme] / [data-mode]
+  attributes the real design system uses.
+-->
+<html lang="en" data-mode="light" data-theme="green">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Preferences — @vsee/ui prototype</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    /* ═══════════════════════════════════════════════════════════════════════
+       @vsee/ui — Design Tokens (inlined from src/tokens.css)
+       ═══════════════════════════════════════════════════════════════════════ */
+    :root {
+      --vsee-font-sans: "Figtree", system-ui, -apple-system, sans-serif;
+      --vsee-mono: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+
+      --vsee-brand: #0D875C;
+      --vsee-brand-semidark: #096843;
+      --vsee-brand-dark: #0A6B49;
+      --vsee-brand-darker: #074D35;
+      --vsee-brand-light: #E6F5EE;
+      --vsee-brand-50: #F0FAF5;
+
+      --vsee-success: #367D17; --vsee-success-light: #F1F9E1;
+      --vsee-info: #196CD2; --vsee-info-light: #EBF7FE;
+      --vsee-warning: #FFCB5A; --vsee-warning-light: #FEF3C7;
+      --vsee-danger: #D31212; --vsee-danger-light: #FEE7E7;
+      --vsee-danger-dark: #991B1B;
+
+      --vsee-black: #111827;
+      --vsee-grey-900: #4B5563; --vsee-grey-800: #6B7280; --vsee-grey-700: #9CA3AF;
+      --vsee-grey-600: #B0B7C3; --vsee-grey-500: #C9CED6; --vsee-grey-400: #E8EAED;
+      --vsee-grey-300: #F1F2F4; --vsee-grey-200: #F8F9FA; --vsee-grey-100: #FCFCFD;
+      --vsee-white: #FFFFFF;
+
+      --vsee-text-primary: #111827; --vsee-text-secondary: #6B7280;
+      --vsee-border: #E5E7EB; --vsee-border-strong: #D1D5DB;
+
+      --vsee-text-overline-size: 12px; --vsee-text-caption-size: 13px; --vsee-text-body-size: 14px;
+      --vsee-text-body-lg-size: 16px; --vsee-text-h5-size: 16px; --vsee-text-h4-size: 20px;
+      --vsee-text-h3-size: 24px; --vsee-text-h2-size: 36px; --vsee-text-h1-size: 48px;
+
+      --vsee-sp-1: 4px; --vsee-sp-2: 8px; --vsee-sp-3: 12px; --vsee-sp-4: 16px;
+      --vsee-sp-5: 20px; --vsee-sp-6: 24px; --vsee-sp-8: 32px; --vsee-sp-10: 40px;
+      --vsee-sp-12: 48px;
+
+      --vsee-r-xs: 4px; --vsee-r-sm: 6px; --vsee-r-md: 8px; --vsee-r-lg: 12px;
+      --vsee-r-xl: 16px; --vsee-r-2xl: 24px; --vsee-r-full: 9999px;
+
+      --vsee-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --vsee-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --vsee-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+      --vsee-shadow-focus: 0 0 0 3px rgba(13,135,92,0.15);
+      --vsee-hover-overlay: linear-gradient(rgba(0,0,0,0.07), rgba(0,0,0,0.07));
+
+      --vsee-ease: cubic-bezier(0.4, 0, 0.2, 1);
+      --vsee-t-fast: 150ms var(--vsee-ease); --vsee-t-base: 200ms var(--vsee-ease);
+    }
+
+    [data-theme="blue"] {
+      --vsee-brand: #0891B2; --vsee-brand-semidark: #155E75;
+      --vsee-brand-dark: #0E7490; --vsee-brand-darker: #164E63;
+      --vsee-brand-light: #E0F7FA; --vsee-brand-50: #ECFEFF;
+      --vsee-shadow-focus: 0 0 0 3px rgba(8,145,178,0.15);
+    }
+    [data-theme="purple"] {
+      --vsee-brand: #7C3AED; --vsee-brand-semidark: #5E28BF;
+      --vsee-brand-dark: #6332C4; --vsee-brand-darker: #47248C;
+      --vsee-brand-light: #EDE9FE; --vsee-brand-50: #F5F3FF;
+      --vsee-shadow-focus: 0 0 0 3px rgba(124,58,237,0.15);
+    }
+
+    [data-mode="dark"] {
+      --vsee-brand-light: #0F2D22; --vsee-brand-50: #0A1F18; --vsee-brand-dark: #34D399;
+      --vsee-danger-light: #2D1212;
+      --vsee-black: #F9FAFB;
+      --vsee-grey-900: #F3F4F6; --vsee-grey-800: #E5E7EB; --vsee-grey-700: #D1D5DB;
+      --vsee-grey-600: #9CA3AF; --vsee-grey-500: #6B7280; --vsee-grey-400: #4B5563;
+      --vsee-grey-300: #1F2937; --vsee-grey-200: #111827; --vsee-grey-100: #0F172A;
+      --vsee-white: #0B1120;
+      --vsee-text-primary: #F9FAFB; --vsee-text-secondary: #9CA3AF;
+      --vsee-border: #1F2937; --vsee-border-strong: #374151;
+      --vsee-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+      --vsee-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.3);
+      color-scheme: dark;
+    }
+    [data-mode="dark"][data-theme="blue"]  { --vsee-brand-light: #0C1F2E; --vsee-brand-dark: #67E8F9; }
+    [data-mode="dark"][data-theme="purple"]{ --vsee-brand-light: #1A0F2E; --vsee-brand-dark: #C4B5FD; }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       Page chrome — toolbar + preferences stage
+       ═══════════════════════════════════════════════════════════════════════ */
+    * { box-sizing: border-box; }
+    button, input, select, textarea { font-family: inherit; font-size: inherit; }
+    body {
+      margin: 0;
+      font-family: var(--vsee-font-sans);
+      background: var(--vsee-grey-200);
+      color: var(--vsee-text-primary);
+      min-height: 100vh;
+    }
+    .toolbar {
+      position: sticky; top: 0; z-index: 10;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: var(--vsee-sp-3) var(--vsee-sp-6);
+      background: var(--vsee-white);
+      border-bottom: 1px solid var(--vsee-border);
+      font-size: var(--vsee-text-caption-size);
+    }
+    .toolbar strong { font-size: var(--vsee-text-body-lg-size); font-weight: 700; }
+    .toolbar .controls { display: flex; align-items: center; gap: var(--vsee-sp-4); }
+    .toolbar label { display: flex; align-items: center; gap: var(--vsee-sp-2); color: var(--vsee-text-secondary); }
+    .toolbar select, .toolbar button {
+      font-family: inherit; font-size: var(--vsee-text-body-size);
+      padding: 6px var(--vsee-sp-3);
+      background: var(--vsee-white); color: var(--vsee-text-primary);
+      border: 1px solid var(--vsee-border-strong); border-radius: var(--vsee-r-sm);
+      cursor: pointer;
+    }
+
+    .stage {
+      padding: var(--vsee-sp-6);
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    /* Top nav — uses design-system .navbar classes (copied verbatim from
+       src/styles.css so this file stays self-contained). Icon + label per
+       item, avatar + name + chevron on the right, mirrors the Phoenix
+       screenshot. */
+    .navbar { display: flex; align-items: center; height: 56px; padding: 0 var(--vsee-sp-6); background: var(--vsee-white); border: 1px solid var(--vsee-border); border-radius: var(--vsee-r-xl); }
+
+    /* Unified preferences surface — navbar on top, sidebar-layout below,
+       one shared border, one rounded outer shape. */
+    .preferences-surface {
+      border: 1px solid var(--vsee-border);
+      background: var(--vsee-white);
+      overflow: hidden;
+    }
+    .preferences-surface > .navbar {
+      border: none;
+      border-bottom: 1px solid var(--vsee-border);
+      border-radius: 0;
+    }
+    .preferences-surface > .sidebar-layout { border: none; }
+    .navbar-links { display: flex; gap: var(--vsee-sp-1); }
+    .navbar-link {
+      display: inline-flex; align-items: center; gap: var(--vsee-sp-2);
+      padding: var(--vsee-sp-2) 14px;
+      font-size: var(--vsee-text-caption-size); font-weight: 500;
+      color: var(--vsee-text-secondary);
+      border-radius: var(--vsee-r-md);
+      transition: all var(--vsee-t-fast); cursor: pointer;
+      background: transparent; border: none; font-family: inherit;
+    }
+    .navbar-link:hover { color: var(--vsee-text-primary); background-image: var(--vsee-hover-overlay); }
+    .navbar-link.active { color: var(--vsee-brand-dark); background: var(--vsee-brand-light); font-weight: 600; }
+    .navbar-right { margin-left: auto; display: flex; align-items: center; gap: var(--vsee-sp-2); }
+    .navbar-user {
+      display: inline-flex; align-items: center; gap: var(--vsee-sp-2);
+      padding: var(--vsee-sp-1) var(--vsee-sp-2);
+      border-radius: var(--vsee-r-md);
+      cursor: pointer;
+      background: transparent; border: none; font-family: inherit;
+      color: var(--vsee-text-primary); font-size: var(--vsee-text-caption-size); font-weight: 600;
+    }
+    .navbar-user:hover { background-image: var(--vsee-hover-overlay); }
+    .navbar-user .avatar { background: var(--vsee-brand); color: var(--vsee-white); position: relative; }
+    .navbar-user .avatar-dot { position: absolute; right: 0; bottom: 0; width: 8px; height: 8px; border-radius: 50%; background: var(--vsee-success); border: 1.5px solid var(--vsee-white); }
+    .navbar-right { position: relative; }
+    .navbar-user[aria-expanded="true"] .user-chevron { transform: rotate(180deg); }
+    .user-chevron { transition: transform var(--vsee-t-fast); }
+
+    /* Dropdown — copied verbatim from src/styles.css */
+    .dropdown-popover {
+      position: absolute; right: 0; top: calc(100% + 4px);
+      background: var(--vsee-white); border: 1px solid var(--vsee-border);
+      border-radius: var(--vsee-r-lg); box-shadow: var(--vsee-shadow-lg);
+      padding: var(--vsee-sp-1); min-width: 200px; z-index: 50; outline: none;
+    }
+    .dropdown-popover[hidden] { display: none; }
+    .dropdown-popover:not([hidden]) { animation: pop-in 150ms ease-out; }
+    .dropdown-menu { outline: none; max-height: 33vh; overflow-y: auto; }
+    .dropdown-item {
+      display: flex; align-items: center; gap: var(--vsee-sp-2);
+      width: 100%; box-sizing: border-box; min-height: 32px;
+      padding: var(--vsee-sp-2) var(--vsee-sp-3);
+      font-size: var(--vsee-text-body-size); color: var(--vsee-text-primary);
+      border-radius: var(--vsee-r-md); cursor: pointer; outline: none;
+      transition: background var(--vsee-t-fast);
+      background: transparent; border: none; font-family: inherit; text-align: left;
+    }
+    .dropdown-item:hover,
+    .dropdown-item[data-focused] { background: var(--vsee-brand-light); }
+    .dropdown-item-danger { color: var(--vsee-danger); }
+    .dropdown-item-danger:hover,
+    .dropdown-item-danger[data-focused] { background: var(--vsee-danger-light); }
+    .dropdown-separator { height: 1px; background: var(--vsee-border); margin: var(--vsee-sp-1) 0; }
+    /* Fixed-width icon slot so every row's text starts at the same x —
+       status dots (10px), gear icon (16px), and the empty placeholder on
+       Sign Out all share the same 16px bounding box. */
+    .dropdown-icon { width: 16px; height: 16px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .dropdown-item .status-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .dropdown-item .dropdown-check { margin-left: auto; color: var(--vsee-text-primary); }
+    .avatar { width: var(--vsee-sp-10); height: var(--vsee-sp-10); border-radius: 50%; background: var(--vsee-brand-light); display: flex; align-items: center; justify-content: center; font-size: var(--vsee-text-body-size); font-weight: 700; color: var(--vsee-brand-dark); flex-shrink: 0; }
+    .avatar-sm { width: var(--vsee-sp-8); height: var(--vsee-sp-8); font-size: var(--vsee-text-overline-size); }
+
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       @vsee/ui component classes (copied verbatim from src/styles.css)
+       ═══════════════════════════════════════════════════════════════════════ */
+
+    /* Sidebar layout */
+    .sidebar-layout { display: flex; border: 1px solid var(--vsee-border); overflow: hidden; background: var(--vsee-white); min-height: 540px; }
+    .sidebar-panel { width: 220px; min-width: 220px; border-right: 1px solid var(--vsee-border); background: var(--vsee-grey-100); padding-bottom: calc(var(--vsee-sp-4) + var(--vsee-sp-3) + var(--vsee-text-caption-size) * 1.4); }
+    .sidebar-heading { padding: var(--vsee-sp-4) var(--vsee-sp-4) var(--vsee-sp-3); font-weight: 700; font-size: var(--vsee-text-caption-size); line-height: 1.4; color: var(--vsee-text-primary); text-transform: uppercase; letter-spacing: 1px; }
+    .sidebar-menu-item { display: flex; align-items: center; gap: var(--vsee-sp-3); padding: var(--vsee-sp-3) var(--vsee-sp-4); font-size: var(--vsee-text-caption-size); font-weight: 500; color: var(--vsee-text-secondary); cursor: pointer; transition: all var(--vsee-t-fast); }
+    .sidebar-menu-item:hover { background-image: var(--vsee-hover-overlay); color: var(--vsee-text-primary); }
+    .sidebar-menu-item.active { background: var(--vsee-brand-light); color: var(--vsee-brand-dark); font-weight: 600; border-right: 3px solid var(--vsee-brand-dark); }
+    .sidebar-menu-item svg { flex-shrink: 0; }
+    .sidebar-content { flex: 1; padding: var(--vsee-sp-6); overflow-y: auto; }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: var(--vsee-sp-2); font-family: var(--vsee-font-sans); font-weight: 600;
+      font-size: var(--vsee-text-body-size); height: 38px;
+      padding: var(--vsee-sp-3) var(--vsee-sp-5);
+      border-radius: var(--vsee-r-md); border: 1px solid transparent;
+      cursor: pointer; transition: all var(--vsee-t-fast);
+      white-space: nowrap; outline: none;
+    }
+    .btn:focus-visible { box-shadow: var(--vsee-shadow-focus); outline: 2px solid var(--vsee-brand); outline-offset: 2px; }
+    .btn:disabled { background: var(--vsee-grey-300); color: var(--vsee-text-secondary); border-color: var(--vsee-border-strong); cursor: not-allowed; opacity: 0.5; }
+    .btn-primary { background: var(--vsee-brand); color: white; }
+    .btn-primary:hover { background-image: var(--vsee-hover-overlay); box-shadow: var(--vsee-shadow-sm); }
+    .btn-ghost { background: transparent; color: var(--vsee-text-primary); border: 2px solid var(--vsee-border); }
+    .btn-ghost:hover { background-image: var(--vsee-hover-overlay); border-color: var(--vsee-border-strong); }
+    .btn-danger-outline { background: var(--vsee-white); color: var(--vsee-danger); border: 2px solid var(--vsee-danger); }
+    .btn-danger-outline:hover { background-image: var(--vsee-hover-overlay); }
+    .btn-sm { font-size: var(--vsee-text-caption-size); height: 30px; padding: var(--vsee-sp-2) var(--vsee-sp-3); border-radius: var(--vsee-r-sm); }
+    .btn-pill { border-radius: var(--vsee-r-full); height: 30px; padding: 6px var(--vsee-sp-3); font-size: var(--vsee-text-caption-size); font-weight: 500; }
+    .btn-pill svg { margin-right: 2px; }
+
+    /* Form */
+    .form-group { margin-bottom: var(--vsee-sp-5); }
+    .form-label { display: block; font-size: var(--vsee-text-caption-size); font-weight: 600; color: var(--vsee-text-primary); margin-bottom: var(--vsee-sp-2); }
+    .field { display: flex; flex-direction: column; position: relative; }
+    .field-fixed { width: 220px; }
+    .input {
+      width: 100%; height: var(--vsee-sp-10);
+      padding: 0 var(--vsee-sp-2) 0 var(--vsee-sp-3);
+      font-family: var(--vsee-font-sans); font-size: var(--vsee-text-body-size);
+      color: var(--vsee-text-primary); background: var(--vsee-white);
+      border: 1px solid var(--vsee-border-strong); border-radius: var(--vsee-r-md);
+      transition: all var(--vsee-t-fast); outline: none;
+    }
+    .input:hover { border-color: var(--vsee-grey-500); }
+    .input:focus { border-color: var(--vsee-brand); box-shadow: var(--vsee-shadow-focus); }
+    .input:disabled { background: var(--vsee-grey-200); opacity: 0.7; cursor: not-allowed; }
+    .input-sm { height: 34px; padding: 0 var(--vsee-sp-2) 0 var(--vsee-sp-3); border-radius: var(--vsee-r-xs); }
+
+    /* Select (design-system component — button trigger + popover listbox) */
+    .select-trigger { display: flex; align-items: center; cursor: pointer; text-align: left; width: 100%; background: var(--vsee-white); gap: var(--vsee-sp-2); }
+    .select-trigger[aria-expanded="true"] { border-color: var(--vsee-brand); box-shadow: var(--vsee-shadow-focus); }
+    .select-chevron { margin-left: auto; color: var(--vsee-grey-600); flex-shrink: 0; transition: transform var(--vsee-t-fast); }
+    .select-trigger[aria-expanded="true"] .select-chevron { transform: rotate(180deg); }
+    .select-popover {
+      position: absolute; left: 0; top: calc(100% + 4px);
+      background: var(--vsee-white);
+      border: 1px solid var(--vsee-border);
+      border-radius: var(--vsee-r-lg);
+      box-shadow: var(--vsee-shadow-lg);
+      padding: var(--vsee-sp-1);
+      min-width: 100%;
+      width: max-content; max-width: min(320px, 90vw);
+      box-sizing: border-box; outline: none; z-index: 50;
+    }
+    .select-popover[hidden] { display: none; }
+    .select-popover:not([hidden]) { animation: pop-in 150ms ease-out; }
+    @keyframes pop-in { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+    .select-listbox { outline: none; padding: 0; max-height: 33vh; overflow-y: auto; }
+    .select-option {
+      font-size: var(--vsee-text-body-size);
+      padding: var(--vsee-sp-2) var(--vsee-sp-3);
+      border-radius: var(--vsee-r-md);
+      cursor: pointer; outline: none;
+      transition: background var(--vsee-t-fast);
+      white-space: nowrap;
+    }
+    .select-option[data-focused] { background: var(--vsee-brand-light); }
+    .select-option[data-selected] { background: var(--vsee-brand); color: white; }
+    .select-option[data-selected][data-focused] { background: var(--vsee-brand); color: white; }
+
+    /* Checkbox */
+    .check-item { display: flex; align-items: center; gap: 10px; font-size: var(--vsee-text-body-size); color: var(--vsee-text-primary); cursor: pointer; padding: 6px 0; }
+    .check-box { width: 18px; height: 18px; border: 1.5px solid var(--vsee-border-strong); border-radius: 4px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all var(--vsee-t-fast); }
+    .check-box.checked { background: var(--vsee-brand); border-color: var(--vsee-brand); color: white; }
+
+    /* Radio */
+    .radio-item { display: flex; align-items: center; gap: 10px; font-size: var(--vsee-text-body-size); color: var(--vsee-text-primary); cursor: pointer; padding: 4px 0; }
+    .radio-circle { width: 18px; height: 18px; border: 1.5px solid var(--vsee-border-strong); border-radius: 50%; flex-shrink: 0; transition: all var(--vsee-t-fast); }
+    .radio-item.selected .radio-circle { border-color: var(--vsee-brand); border-width: 5px; }
+
+    /* Switch (toggle) */
+    .toggle-wrap { display: inline-flex; align-items: center; gap: var(--vsee-sp-3); cursor: pointer; }
+    .toggle-track { width: 46px; height: 24px; background: var(--vsee-grey-700); border-radius: var(--vsee-r-full); position: relative; transition: background var(--vsee-t-fast); flex-shrink: 0; }
+    .toggle-track.on { background: var(--vsee-brand); }
+    .toggle-thumb { position: absolute; width: 16px; height: 16px; left: 4px; top: 4px; background: var(--vsee-white); border-radius: 50%; transition: transform var(--vsee-t-fast); box-shadow: var(--vsee-shadow-sm); }
+    .toggle-track.on .toggle-thumb { transform: translateX(22px); }
+    .toggle-wrap.disabled { cursor: not-allowed; }
+    .toggle-wrap.disabled .toggle-track { background: var(--vsee-grey-500); }
+    .toggle-wrap.disabled .toggle-thumb { background: var(--vsee-grey-300); }
+
+    /* Panel / card */
+    .panel { border: 1px solid var(--vsee-border); border-radius: var(--vsee-r-lg); background: var(--vsee-white); }
+    .panel-header { padding: var(--vsee-sp-4); font-weight: 600; font-size: var(--vsee-text-body-size); color: var(--vsee-text-primary); border-bottom: 1px solid var(--vsee-border); display: flex; align-items: center; gap: var(--vsee-sp-2); }
+    .panel-body { padding: var(--vsee-sp-4); }
+
+    /* Badge */
+    .badge { display: inline-flex; align-items: center; gap: var(--vsee-sp-1); height: 20px; padding: 0 var(--vsee-sp-3); border-radius: var(--vsee-r-full); font-size: var(--vsee-text-overline-size); font-weight: 600; line-height: 1; box-sizing: border-box; }
+    .badge-neutral { background: var(--vsee-grey-400); color: var(--vsee-grey-900); }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       Preferences-specific composition (patterns, not new components)
+       ═══════════════════════════════════════════════════════════════════════ */
+
+    .section-title { font-size: var(--vsee-text-h4-size); font-weight: 700; margin: 0 0 var(--vsee-sp-5); letter-spacing: -0.2px; }
+
+    /* Grouped subsection with a small uppercase header (Sound / Desktop) */
+    .subsection-heading {
+      font-size: var(--vsee-text-overline-size); font-weight: 700;
+      color: var(--vsee-text-secondary); letter-spacing: 1px; text-transform: uppercase;
+      margin: 0 0 var(--vsee-sp-4);
+    }
+
+    /* A 2-column checkbox grid for the General tab — matches Phoenix's
+       `grid grid-cols-2`. Collapses to single column under 640px. */
+    .check-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px var(--vsee-sp-6); margin-bottom: var(--vsee-sp-4); }
+    .check-stack { display: flex; flex-direction: column; }
+    .check-auto-sub { display: flex; flex-direction: column; margin-left: var(--vsee-sp-6); gap: 2px; margin-top: 2px; }
+    .check-auto-sub[hidden] { display: none; }
+    .check-auto-box { margin-left: 20px; height: 60px; background: var(--vsee-grey-100); border: 1px solid var(--vsee-border); border-radius: var(--vsee-r-sm); }
+
+    /* Select row: label (left) + Select (right) — mirrors Phoenix */
+    .select-row { display: flex; align-items: center; gap: var(--vsee-sp-3); margin-top: var(--vsee-sp-3); }
+    .select-row .label { font-weight: 600; font-size: var(--vsee-text-body-size); min-width: 110px; }
+    .select-row .field-fixed { width: 220px; }
+    .select-row .font-preview { font-size: var(--vsee-text-caption-size); color: var(--vsee-text-secondary); }
+
+    /* Notifications "row" — title + helper on the left, control on the right.
+       The .dim modifier marks a row as "not currently changeable" — either a
+       Coming-soon row or a row gated by a disabled master toggle. Instead of
+       dimming opacity, we lift the text to grey so the row stays legible but
+       reads as inactive. */
+    .setting-row { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--vsee-sp-4); padding: 4px 0; }
+    .setting-row .copy { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+    .setting-row .title-row { display: flex; align-items: center; gap: var(--vsee-sp-3); }
+    .setting-row .title { font-weight: 600; font-size: var(--vsee-text-body-size); }
+    .setting-row .helper { font-size: var(--vsee-text-caption-size); color: var(--vsee-text-secondary); line-height: 1.4; max-width: 540px; }
+    .setting-row.dim .title,
+    .setting-row.dim .helper { color: var(--vsee-grey-700); }
+
+    .sound-row { display: flex; align-items: center; gap: var(--vsee-sp-3); padding: 4px 0; }
+    .sound-row.dim { pointer-events: none; }
+    .sound-row .label { font-weight: 600; font-size: var(--vsee-text-body-size); min-width: 110px; }
+    .sound-row.dim .label { color: var(--vsee-grey-700); }
+    .sound-row .field-fixed { width: 240px; }
+
+    /* Volume slider — flanking speaker glyphs, percent readout */
+    .volume-row { display: flex; align-items: center; gap: var(--vsee-sp-3); padding: 4px 0; }
+    .volume-row .label { font-weight: 600; font-size: var(--vsee-text-body-size); min-width: 110px; }
+    .volume-row.dim .label,
+    .volume-row.dim .readout,
+    .volume-row.dim .speaker { color: var(--vsee-grey-700); }
+    .volume-row .slider-wrap { display: flex; align-items: center; gap: var(--vsee-sp-2); width: 320px; }
+    /* Custom-styled range — the default browser widget draws a darker
+       inset border on the track that accent-color can't strip. Resetting
+       appearance to none is the only reliable way to remove it; the
+       track + thumb below are deliberately minimal so the slider still
+       reads as a native control. */
+    .volume-row input[type="range"] {
+      flex: 1; cursor: pointer;
+      -webkit-appearance: none; appearance: none;
+      height: 8px;
+      background: var(--vsee-grey-400);
+      border: none; border-radius: var(--vsee-r-full);
+      outline: none;
+    }
+    .volume-row input[type="range"]:focus-visible { box-shadow: var(--vsee-shadow-focus); }
+
+    /* WebKit / Blink track + thumb */
+    .volume-row input[type="range"]::-webkit-slider-runnable-track {
+      height: 8px; background: transparent; border: none; border-radius: var(--vsee-r-full);
+    }
+    .volume-row input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none; appearance: none;
+      width: 16px; height: 16px; margin-top: -4px;
+      background: var(--vsee-brand); border: none; border-radius: 50%;
+      cursor: pointer;
+    }
+
+    /* Firefox — native ::-moz-range-progress paints the filled portion,
+       so no JS gradient is needed here. */
+    .volume-row input[type="range"]::-moz-range-track {
+      height: 8px; background: var(--vsee-grey-400); border: none; border-radius: var(--vsee-r-full);
+    }
+    .volume-row input[type="range"]::-moz-range-progress {
+      height: 8px; background: var(--vsee-brand); border: none; border-radius: var(--vsee-r-full);
+    }
+    .volume-row input[type="range"]::-moz-range-thumb {
+      width: 16px; height: 16px;
+      background: var(--vsee-brand); border: none; border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .volume-row input[type="range"]:disabled { cursor: not-allowed; }
+    .volume-row input[type="range"]:disabled::-webkit-slider-thumb { background: var(--vsee-grey-500); }
+    .volume-row input[type="range"]:disabled::-moz-range-thumb { background: var(--vsee-grey-500); }
+    .volume-row input[type="range"]:disabled::-moz-range-progress { background: var(--vsee-grey-500); }
+    .volume-row .readout { font-variant-numeric: tabular-nums; font-size: var(--vsee-text-caption-size); color: var(--vsee-text-secondary); min-width: 48px; text-align: right; }
+    .volume-row .speaker { color: var(--vsee-text-secondary); }
+
+    /* Coming-soon placeholder — matches Phoenix's ComingSoonPlaceholder */
+    .coming-soon {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; padding: var(--vsee-sp-12) var(--vsee-sp-6);
+      color: var(--vsee-text-secondary); gap: var(--vsee-sp-3);
+      min-height: 360px;
+    }
+    .coming-soon .icon {
+      width: 64px; height: 64px; border-radius: 50%;
+      background: var(--vsee-brand-light); color: var(--vsee-brand-dark);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .coming-soon .heading { font-size: var(--vsee-text-h5-size); font-weight: 700; color: var(--vsee-text-primary); }
+    .coming-soon .subhead { font-size: var(--vsee-text-caption-size); max-width: 320px; line-height: 1.5; }
+
+
+    /* Section swap — only the active section is visible */
+    .section { display: none; }
+    .section.active { display: block; }
+
+    @media (max-width: 720px) {
+      .stage { padding: var(--vsee-sp-3); }
+      .sidebar-layout { flex-direction: column; min-height: 0; }
+      .sidebar-panel { width: 100%; min-width: 0; border-right: none; border-bottom: 1px solid var(--vsee-border); padding-bottom: var(--vsee-sp-2); }
+      .check-grid { grid-template-columns: 1fr; }
+      .select-row { flex-direction: column; align-items: flex-start; gap: var(--vsee-sp-2); }
+      .select-row .field-fixed { width: 100%; }
+      .sound-row { flex-direction: column; align-items: flex-start; gap: var(--vsee-sp-2); }
+      .sound-row .field-fixed { width: 100%; }
+      .volume-row { flex-direction: column; align-items: flex-start; gap: var(--vsee-sp-2); }
+      .volume-row .slider-wrap { width: 100%; }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="toolbar">
+    <strong>Preferences — @vsee/ui prototype</strong>
+    <div class="controls">
+      <label>Brand
+        <select id="themeSelect">
+          <option value="green">Green (default)</option>
+          <option value="blue">Blue</option>
+          <option value="purple">Purple</option>
+        </select>
+      </label>
+      <label>Mode
+        <button id="modeToggle" type="button">Switch to dark</button>
+      </label>
+    </div>
+  </header>
+
+  <main class="stage">
+    <h1 class="page-title">Preferences</h1>
+
+    <div class="preferences-surface">
+    <nav class="navbar" aria-label="Primary">
+      <div class="navbar-links">
+        <button type="button" class="navbar-link active">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+          Chats
+        </button>
+        <button type="button" class="navbar-link">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+          Calls
+        </button>
+        <button type="button" class="navbar-link">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Contacts
+        </button>
+        <button type="button" class="navbar-link">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Clinic
+        </button>
+        <button type="button" class="navbar-link">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          Virtual Sitter
+        </button>
+        <button type="button" class="navbar-link">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8" y2="16"/><line x1="16" y1="16" x2="16" y2="16"/></svg>
+          Robot
+        </button>
+      </div>
+      <div class="navbar-right">
+        <button type="button" class="navbar-user" id="userMenuTrigger" aria-haspopup="menu" aria-expanded="false">
+          <span class="avatar avatar-sm">YL<span class="avatar-dot" aria-hidden="true"></span></span>
+          <span>Yun-Ting Lien</span>
+          <svg class="user-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="dropdown-popover" id="userMenu" role="menu" aria-labelledby="userMenuTrigger" hidden>
+          <div class="dropdown-menu">
+            <button type="button" class="dropdown-item" role="menuitemradio" data-status="available" aria-checked="true">
+              <span class="dropdown-icon"><span class="status-dot" style="background: var(--vsee-success);"></span></span>
+              <span>Available</span>
+              <svg class="dropdown-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            </button>
+            <button type="button" class="dropdown-item" role="menuitemradio" data-status="busy" aria-checked="false">
+              <span class="dropdown-icon"><span class="status-dot" style="background: var(--vsee-danger);"></span></span>
+              <span>Busy</span>
+            </button>
+            <button type="button" class="dropdown-item" role="menuitemradio" data-status="hide" aria-checked="false">
+              <span class="dropdown-icon"><span class="status-dot" style="background: var(--vsee-grey-800);"></span></span>
+              <span>Hide</span>
+            </button>
+            <div class="dropdown-separator" role="separator"></div>
+            <button type="button" class="dropdown-item" role="menuitem">
+              <svg class="dropdown-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+              <span>Preferences</span>
+            </button>
+            <div class="dropdown-separator" role="separator"></div>
+            <button type="button" class="dropdown-item dropdown-item-danger" role="menuitem">
+              <svg class="dropdown-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+              <span>Sign Out</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="sidebar-layout">
+      <!-- ── Left rail ── -->
+      <nav class="sidebar-panel" aria-label="Preferences sections">
+        <div class="sidebar-heading">Preferences</div>
+        <div class="sidebar-menu-item active" data-section="general">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6m-6 3h6m-6 3h4"/></svg>
+          General
+        </div>
+        <div class="sidebar-menu-item" data-section="audio">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
+          Audio
+        </div>
+        <div class="sidebar-menu-item" data-section="notifications">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          Notifications
+        </div>
+        <div class="sidebar-menu-item" data-section="video">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+          Video
+        </div>
+        <div class="sidebar-menu-item" data-section="modules">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          Modules
+        </div>
+        <div class="sidebar-menu-item" data-section="billing">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+          Billing &amp; plan
+        </div>
+      </nav>
+
+      <!-- ── Right content ── -->
+      <section class="sidebar-content" aria-live="polite">
+
+        <!-- GENERAL -->
+        <div class="section active" id="section-general">
+          <h2 class="section-title">General</h2>
+
+          <!-- Group 1: session & security -->
+          <div class="check-stack">
+            <label class="check-item"><span class="check-box checked" data-check><svg class="check-svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Keep me signed in</label>
+            <label class="check-item"><span class="check-box checked" data-check><svg class="check-svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Start app on login</label>
+            <label class="check-item"><span class="check-box" data-check></span>Require PIN to unlock app</label>
+          </div>
+
+          <!-- Group 2: display & call behavior (auto-accept last because its radio sub-options sit below) -->
+          <div class="check-stack" style="margin-top: var(--vsee-sp-5);">
+            <label class="check-item"><span class="check-box" data-check></span>Show network warnings</label>
+            <label class="check-item"><span class="check-box" data-check></span>Mute chat while in a call</label>
+            <label class="check-item"><span class="check-box checked" data-check><svg class="check-svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Hide offline contacts</label>
+            <label class="check-item" id="autoAcceptRow"><span class="check-box" data-check></span>Auto-accept incoming calls</label>
+          </div>
+
+          <div class="check-auto-sub" id="autoAcceptSub" hidden>
+            <div class="radio-item selected" data-radio="all"><span class="radio-circle"></span><span>All users</span></div>
+            <div class="radio-item" data-radio="selected"><span class="radio-circle"></span><span>Selected users:</span></div>
+            <div class="check-auto-box" id="autoAcceptList"></div>
+          </div>
+
+          <div class="select-row" style="margin-top: var(--vsee-sp-8);">
+            <span class="label">Appearance</span>
+            <div class="field field-fixed" data-select id="appearanceSelect">
+              <button type="button" class="input input-sm select-trigger" aria-haspopup="listbox" aria-expanded="false" aria-label="Appearance">
+                <span data-select-value>Light</span>
+                <svg class="select-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+              <div class="select-popover" role="listbox" hidden>
+                <div class="select-listbox">
+                  <div class="select-option" role="option" data-value="system">System</div>
+                  <div class="select-option" role="option" data-value="light" data-selected>Light</div>
+                  <div class="select-option" role="option" data-value="dark">Dark</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="select-row">
+            <span class="label">Font</span>
+            <div class="field field-fixed" data-select id="fontSelect">
+              <button type="button" class="input input-sm select-trigger" aria-haspopup="listbox" aria-expanded="false" aria-label="Font">
+                <span data-select-value>Figtree</span>
+                <svg class="select-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+              <div class="select-popover" role="listbox" hidden>
+                <div class="select-listbox">
+                  <div class="select-option" role="option" data-value="Figtree" data-selected>Figtree</div>
+                  <div class="select-option" role="option" data-value="Inter">Inter</div>
+                  <div class="select-option" role="option" data-value="system-ui">System default</div>
+                  <div class="select-option" role="option" data-value="Roboto">Roboto</div>
+                </div>
+              </div>
+            </div>
+            <span class="font-preview" id="fontPreview">Aa Bb Cc 123</span>
+          </div>
+
+          <div class="select-row">
+            <span class="label">Language</span>
+            <div class="field field-fixed" data-select id="langSelect">
+              <button type="button" class="input input-sm select-trigger" aria-haspopup="listbox" aria-expanded="false" aria-label="Language">
+                <span data-select-value>🇺🇸 English</span>
+                <svg class="select-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+              <div class="select-popover" role="listbox" hidden>
+                <div class="select-listbox">
+                  <div class="select-option" role="option" data-value="en" data-selected>🇺🇸 English</div>
+                  <div class="select-option" role="option" data-value="vi">🇻🇳 Tiếng Việt</div>
+                  <div class="select-option" role="option" data-value="es">🇪🇸 Español</div>
+                  <div class="select-option" role="option" data-value="fr">🇫🇷 Français</div>
+                  <div class="select-option" role="option" data-value="ja">🇯🇵 日本語</div>
+                  <div class="select-option" role="option" data-value="zh">🇨🇳 中文</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="select-row">
+            <span class="label">Navigation</span>
+            <div class="field field-fixed" data-select id="navSelect">
+              <button type="button" class="input input-sm select-trigger" aria-haspopup="listbox" aria-expanded="false" aria-label="Navigation layout">
+                <span data-select-value>Horizontal</span>
+                <svg class="select-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+              <div class="select-popover" role="listbox" hidden>
+                <div class="select-listbox">
+                  <div class="select-option" role="option" data-value="horizontal" data-selected>Horizontal</div>
+                  <div class="select-option" role="option" data-value="vertical">Vertical</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- AUDIO -->
+        <div class="section" id="section-audio">
+          <h2 class="section-title">Audio</h2>
+          <div class="coming-soon">
+            <div class="icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/></svg>
+            </div>
+            <div class="heading">Coming soon</div>
+            <div class="subhead">Microphone, speaker, and ringtone controls for calls are still under design.</div>
+          </div>
+        </div>
+
+        <!-- NOTIFICATIONS -->
+        <div class="section" id="section-notifications">
+          <h2 class="section-title">Notifications</h2>
+
+          <!-- ── Sound subsection ── -->
+          <div style="display: flex; flex-direction: column; gap: var(--vsee-sp-5); margin-bottom: var(--vsee-sp-8);">
+
+            <!-- Master enable -->
+            <div class="setting-row" id="masterSoundRow">
+              <div class="copy">
+                <div class="title-row">
+                  <span class="title">Enable message sound</span>
+                  <div class="toggle-wrap on" data-toggle="masterSound" role="switch" aria-checked="true" tabindex="0">
+                    <div class="toggle-track on"><div class="toggle-thumb"></div></div>
+                  </div>
+                </div>
+                <span class="helper">Play a chime when a new chat message arrives. Does not affect incoming-call ringtones.</span>
+              </div>
+            </div>
+
+            <!-- Sound picker + preview -->
+            <div class="sound-row" id="soundPickerRow">
+              <span class="label">Message sound</span>
+              <div class="field field-fixed" data-select id="soundPicker" style="width: 240px;">
+                <button type="button" class="input input-sm select-trigger" aria-haspopup="listbox" aria-expanded="false" aria-label="Message sound">
+                  <span data-select-value>Chime</span>
+                  <svg class="select-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="select-popover" role="listbox" hidden>
+                  <div class="select-listbox">
+                    <div class="select-option" role="option" data-value="chime" data-selected>Chime</div>
+                    <div class="select-option" role="option" data-value="ping">Ping</div>
+                    <div class="select-option" role="option" data-value="soft-bell">Soft bell</div>
+                    <div class="select-option" role="option" data-value="knock">Knock</div>
+                    <div class="select-option" role="option" data-value="pop">Pop</div>
+                  </div>
+                </div>
+              </div>
+              <button type="button" class="btn btn-ghost btn-pill" id="previewBtn">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                Preview
+              </button>
+            </div>
+
+            <!-- Priority alert — coming soon -->
+            <div class="setting-row dim">
+              <div class="copy">
+                <span class="title">Priority alert sound</span>
+                <span class="helper">Louder alert for escalated patient messages and urgent clinic pings.</span>
+              </div>
+              <span class="badge badge-neutral">Coming soon</span>
+            </div>
+
+            <!-- Waiting room — coming soon -->
+            <div class="setting-row dim">
+              <div class="copy">
+                <span class="title">Waiting-room sound</span>
+                <span class="helper">Chime when a patient arrives in your waiting room.</span>
+              </div>
+              <span class="badge badge-neutral">Coming soon</span>
+            </div>
+
+            <!-- @mention toggle -->
+            <div class="setting-row" id="mentionRow">
+              <div class="copy">
+                <div class="title-row">
+                  <span class="title">Play a sound when mentioned</span>
+                  <div class="toggle-wrap on" data-toggle="mention" role="switch" aria-checked="true" tabindex="0">
+                    <div class="toggle-track on"><div class="toggle-thumb"></div></div>
+                  </div>
+                </div>
+                <span class="helper">A second chime when someone @-mentions you in a chat. Respects the master toggle above.</span>
+              </div>
+            </div>
+
+            <!-- Volume -->
+            <div class="volume-row" id="volumeRow">
+              <span class="label">Volume</span>
+              <div class="slider-wrap">
+                <svg class="speaker" width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor"/></svg>
+                <input id="volumeSlider" type="range" min="0" max="1" step="0.05" value="0.7" aria-label="Volume" />
+                <svg class="speaker" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+                <span class="readout" id="volumeReadout">70%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Desktop subsection ── -->
+          <div style="display: flex; flex-direction: column; gap: var(--vsee-sp-4);">
+
+            <div class="setting-row" id="desktopRow">
+              <div class="copy">
+                <div class="title-row">
+                  <span class="title">Desktop notifications</span>
+                  <div class="toggle-wrap" data-toggle="desktop" role="switch" aria-checked="false" tabindex="0">
+                    <div class="toggle-track"><div class="toggle-thumb"></div></div>
+                  </div>
+                </div>
+                <span class="helper" id="desktopHelper">Show a system banner when a new chat or patient alert arrives — even if this tab is in the background.</span>
+              </div>
+            </div>
+
+            <div>
+              <button type="button" class="btn btn-ghost btn-pill" id="testNotifBtn" disabled title="Enable desktop notifications first">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                Send test notification
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- VIDEO -->
+        <div class="section" id="section-video">
+          <h2 class="section-title">Video</h2>
+          <div class="coming-soon">
+            <div class="icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+            </div>
+            <div class="heading">Coming soon</div>
+            <div class="subhead">Camera selection, bandwidth, and background-blur controls will live here.</div>
+          </div>
+        </div>
+
+        <!-- MODULES -->
+        <div class="section" id="section-modules">
+          <h2 class="section-title">Modules</h2>
+          <div class="coming-soon">
+            <div class="icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+            </div>
+            <div class="heading">Coming soon</div>
+            <div class="subhead">Enable and configure optional modules — Clinic, RPM, EMR — per-account.</div>
+          </div>
+        </div>
+
+        <!-- BILLING -->
+        <div class="section" id="section-billing">
+          <h2 class="section-title">Billing &amp; plan</h2>
+          <div class="coming-soon">
+            <div class="icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+            </div>
+            <div class="heading">Coming soon</div>
+            <div class="subhead">Review your plan, seats, invoices, and payment method.</div>
+          </div>
+        </div>
+
+      </section>
+    </div>
+    </div>
+  </main>
+
+  <script>
+    /* Toolbar — brand-theme + light/dark mode */
+    const root = document.documentElement;
+    document.getElementById('themeSelect').addEventListener('change', (e) => {
+      root.setAttribute('data-theme', e.target.value);
+    });
+    const modeBtn = document.getElementById('modeToggle');
+    modeBtn.addEventListener('click', () => {
+      const next = root.getAttribute('data-mode') === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-mode', next);
+      modeBtn.textContent = next === 'dark' ? 'Switch to light' : 'Switch to dark';
+    });
+
+    /* Section switcher — URL is the source of truth, same pattern as Phoenix
+       (/preferences/:section). We use the hash to keep a bookmarkable URL
+       without needing a router. */
+    const VALID = ['general','audio','notifications','video','modules','billing'];
+    const DEFAULT = 'general';
+    const menuItems = document.querySelectorAll('.sidebar-menu-item');
+
+    function showSection(id) {
+      if (!VALID.includes(id)) id = DEFAULT;
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.getElementById(`section-${id}`).classList.add('active');
+      menuItems.forEach(m => m.classList.toggle('active', m.dataset.section === id));
+      if (location.hash !== `#${id}`) history.replaceState(null, '', `#${id}`);
+    }
+    menuItems.forEach(m => m.addEventListener('click', () => showSection(m.dataset.section)));
+    window.addEventListener('hashchange', () => showSection(location.hash.slice(1) || DEFAULT));
+    showSection(location.hash.slice(1) || DEFAULT);
+
+    /* User dropdown — opens from the navbar avatar button. Clicking a status
+       row moves the check + updates the avatar dot color; Preferences +
+       Sign Out are stub actions (no-op alerts) so the menu reads as live. */
+    const userTrigger = document.getElementById('userMenuTrigger');
+    const userMenu = document.getElementById('userMenu');
+    const avatarDot = userTrigger.querySelector('.avatar-dot');
+    const STATUS_COLOR = {
+      available: 'var(--vsee-success)',
+      busy: 'var(--vsee-danger)',
+      hide: 'var(--vsee-grey-800)',
+    };
+    function openUserMenu() {
+      userMenu.hidden = false;
+      userTrigger.setAttribute('aria-expanded', 'true');
+    }
+    function closeUserMenu() {
+      userMenu.hidden = true;
+      userTrigger.setAttribute('aria-expanded', 'false');
+    }
+    userTrigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      userMenu.hidden ? openUserMenu() : closeUserMenu();
+    });
+    document.addEventListener('click', (e) => {
+      if (!userMenu.hidden && !userMenu.contains(e.target) && e.target !== userTrigger) closeUserMenu();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !userMenu.hidden) { closeUserMenu(); userTrigger.focus(); }
+    });
+    userMenu.querySelectorAll('[data-status]').forEach(item => {
+      item.addEventListener('click', () => {
+        userMenu.querySelectorAll('[data-status]').forEach(other => {
+          other.setAttribute('aria-checked', 'false');
+          const tick = other.querySelector('.dropdown-check');
+          if (tick) tick.remove();
+        });
+        item.setAttribute('aria-checked', 'true');
+        if (!item.querySelector('.dropdown-check')) {
+          item.insertAdjacentHTML('beforeend', '<svg class="dropdown-check" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>');
+        }
+        avatarDot.style.background = STATUS_COLOR[item.dataset.status];
+        closeUserMenu();
+      });
+    });
+
+    /* Checkbox toggle — click anywhere in the row flips the box. Matches the
+       design system's .check-box.checked class and toggles the inner <svg>
+       tick visibility via CSS of the parent class. */
+    const TICK = '<svg class="check-svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+    document.querySelectorAll('.check-item').forEach(row => {
+      row.addEventListener('click', (e) => {
+        e.preventDefault();
+        const box = row.querySelector('[data-check]');
+        if (!box) return;
+        const on = box.classList.toggle('checked');
+        box.innerHTML = on ? TICK : '';
+        if (row.id === 'autoAcceptRow') {
+          document.getElementById('autoAcceptSub').hidden = !on;
+        }
+      });
+    });
+
+    /* Radio — auto-accept sub-options */
+    document.querySelectorAll('[data-radio]').forEach(r => {
+      r.addEventListener('click', () => {
+        document.querySelectorAll('[data-radio]').forEach(x => x.classList.remove('selected'));
+        r.classList.add('selected');
+        const list = document.getElementById('autoAcceptList');
+        if (list) list.hidden = r.dataset.radio === 'all';
+      });
+    });
+
+    /* Switch / toggle — click or Space/Enter flips. Master sound toggle dims
+       its dependent rows so the user sees the "muted" state honestly. */
+    function wireToggle(el, onChange) {
+      const flip = () => {
+        const on = !el.classList.contains('on');
+        el.classList.toggle('on', on);
+        el.querySelector('.toggle-track').classList.toggle('on', on);
+        el.setAttribute('aria-checked', String(on));
+        if (onChange) onChange(on);
+      };
+      el.addEventListener('click', flip);
+      el.addEventListener('keydown', (e) => {
+        if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); flip(); }
+      });
+    }
+
+    /* Select — mirrors the React-Aria Select component: a button trigger,
+       a popover listbox, roving focus via data-focused. Fires a `change`
+       CustomEvent with { value, label } so consumer code reads exactly
+       like the native version (.value + change listener). */
+    function wireSelect(root) {
+      const trigger = root.querySelector('.select-trigger');
+      const popover = root.querySelector('.select-popover');
+      const valueEl = root.querySelector('[data-select-value]');
+      const options = Array.from(root.querySelectorAll('.select-option'));
+      let focusIdx = options.findIndex(o => o.hasAttribute('data-selected'));
+      if (focusIdx < 0) focusIdx = 0;
+
+      const setValue = (opt) => {
+        options.forEach(o => o.removeAttribute('data-selected'));
+        opt.setAttribute('data-selected', '');
+        valueEl.textContent = opt.textContent;
+        root.dataset.value = opt.dataset.value;
+        root.dispatchEvent(new CustomEvent('change', { detail: { value: opt.dataset.value, label: opt.textContent } }));
+      };
+      // Seed data-value from the pre-selected option so getters work
+      // before any user interaction.
+      const seeded = options.find(o => o.hasAttribute('data-selected'));
+      if (seeded) root.dataset.value = seeded.dataset.value;
+
+      const setFocused = (i) => {
+        options.forEach(o => o.removeAttribute('data-focused'));
+        options[i].setAttribute('data-focused', '');
+        options[i].scrollIntoView({ block: 'nearest' });
+        focusIdx = i;
+      };
+
+      const open = () => {
+        if (trigger.disabled) return;
+        // Close any other open selects first — only one listbox open at a time.
+        document.querySelectorAll('[data-select] .select-popover:not([hidden])').forEach(p => {
+          if (p !== popover) {
+            p.hidden = true;
+            p.parentElement.querySelector('.select-trigger').setAttribute('aria-expanded', 'false');
+          }
+        });
+        popover.hidden = false;
+        trigger.setAttribute('aria-expanded', 'true');
+        setFocused(Math.max(0, options.findIndex(o => o.hasAttribute('data-selected'))));
+      };
+      const close = () => {
+        popover.hidden = true;
+        trigger.setAttribute('aria-expanded', 'false');
+        options.forEach(o => o.removeAttribute('data-focused'));
+      };
+
+      trigger.addEventListener('click', () => {
+        popover.hidden ? open() : close();
+      });
+      // Focus stays on the trigger while the popover is open; all keys
+      // (open, navigate, commit, close) are handled here in one place.
+      trigger.addEventListener('keydown', (e) => {
+        if (popover.hidden) {
+          if (e.key === 'ArrowDown' || e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault(); open();
+          }
+          return;
+        }
+        if (e.key === 'Escape')    { e.preventDefault(); close(); return; }
+        if (e.key === 'ArrowDown') { e.preventDefault(); setFocused((focusIdx + 1) % options.length); return; }
+        if (e.key === 'ArrowUp')   { e.preventDefault(); setFocused((focusIdx - 1 + options.length) % options.length); return; }
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setValue(options[focusIdx]); close(); }
+      });
+      options.forEach((opt, i) => {
+        opt.addEventListener('mouseenter', () => setFocused(i));
+        opt.addEventListener('click', () => { setValue(opt); close(); trigger.focus(); });
+      });
+
+      // Expose a setDisabled method so dependent rows (master-sound → sound
+      // picker) can gate the trigger.
+      root.setSelectDisabled = (d) => { trigger.disabled = d; if (d) close(); };
+    }
+    document.querySelectorAll('[data-select]').forEach(wireSelect);
+    // Close any open popover on outside click.
+    document.addEventListener('click', (e) => {
+      document.querySelectorAll('[data-select]').forEach(root => {
+        if (!root.contains(e.target)) {
+          const pop = root.querySelector('.select-popover');
+          if (!pop.hidden) {
+            pop.hidden = true;
+            root.querySelector('.select-trigger').setAttribute('aria-expanded', 'false');
+          }
+        }
+      });
+    });
+
+    const masterToggle = document.querySelector('[data-toggle="masterSound"]');
+    const mentionToggle = document.querySelector('[data-toggle="mention"]');
+    const desktopToggle = document.querySelector('[data-toggle="desktop"]');
+    const soundPickerRow = document.getElementById('soundPickerRow');
+    const volumeRow = document.getElementById('volumeRow');
+    const mentionRow = document.getElementById('mentionRow');
+    const soundPicker = document.getElementById('soundPicker');
+    const volumeSlider = document.getElementById('volumeSlider');
+    const volumeReadout = document.getElementById('volumeReadout');
+    const testNotifBtn = document.getElementById('testNotifBtn');
+    const previewBtn = document.getElementById('previewBtn');
+
+    function updateVolumeDisplay() {
+      const masterOn = masterToggle.classList.contains('on');
+      const pct = Math.round(volumeSlider.value * 100);
+      volumeReadout.textContent = masterOn ? `${pct}%` : 'Muted';
+      // WebKit/Blink has no progress pseudo — paint the filled portion
+      // with a gradient on the input's own background. Firefox uses
+      // ::-moz-range-track (which overrides this) + ::-moz-range-progress.
+      const fill = masterOn ? 'var(--vsee-brand)' : 'var(--vsee-grey-500)';
+      volumeSlider.style.background = `linear-gradient(to right, ${fill} ${pct}%, var(--vsee-grey-400) ${pct}%)`;
+    }
+    // Paint the initial fill on load.
+    setTimeout(updateVolumeDisplay, 0);
+
+    function applyMasterSound(on) {
+      [soundPickerRow, volumeRow, mentionRow].forEach(r => r.classList.toggle('dim', !on));
+      soundPicker.setSelectDisabled(!on);
+      volumeSlider.disabled = !on;
+      previewBtn.disabled = !on;
+      mentionRow.querySelector('.toggle-wrap').classList.toggle('disabled', !on);
+      updateVolumeDisplay();
+    }
+
+    wireToggle(masterToggle, applyMasterSound);
+    wireToggle(mentionToggle);
+    wireToggle(desktopToggle, (on) => {
+      testNotifBtn.disabled = !on;
+      testNotifBtn.title = on ? '' : 'Enable desktop notifications first';
+    });
+
+    volumeSlider.addEventListener('input', updateVolumeDisplay);
+
+    previewBtn.addEventListener('click', () => {
+      // No audio file shipped with the prototype — flash the button to
+      // acknowledge the intent without a broken <audio> element.
+      previewBtn.style.transform = 'scale(0.96)';
+      setTimeout(() => previewBtn.style.transform = '', 120);
+    });
+
+    testNotifBtn.addEventListener('click', () => {
+      if (!('Notification' in window)) return alert('This browser does not support desktop notifications.');
+      if (Notification.permission === 'granted') {
+        new Notification('VSee Phoenix', { body: 'Test notification — looking good.' });
+      } else if (Notification.permission !== 'denied') {
+        Notification.requestPermission().then(p => {
+          if (p === 'granted') new Notification('VSee Phoenix', { body: 'Test notification — looking good.' });
+        });
+      } else {
+        alert('Desktop notifications are blocked for this site. Re-enable in your browser settings.');
+      }
+    });
+
+    /* Font preview — reflect the dropdown in the sample Aa Bb Cc text */
+    const fontSelect = document.getElementById('fontSelect');
+    const fontPreview = document.getElementById('fontPreview');
+    fontSelect.addEventListener('change', (e) => {
+      fontPreview.style.fontFamily = `'${e.detail.value}', sans-serif`;
+    });
+
+    /* Appearance — mirror the toolbar's light/dark state so the dropdown
+       actually does something. "System" follows the OS preference. */
+    const appearanceSelect = document.getElementById('appearanceSelect');
+    appearanceSelect.addEventListener('change', (e) => {
+      const v = e.detail.value;
+      if (v === 'dark' || v === 'light') {
+        root.setAttribute('data-mode', v);
+        modeBtn.textContent = v === 'dark' ? 'Switch to light' : 'Switch to dark';
+      } else {
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        root.setAttribute('data-mode', prefersDark ? 'dark' : 'light');
+        modeBtn.textContent = prefersDark ? 'Switch to light' : 'Switch to dark';
+      }
+    });
+  </script>
+</body>
+</html>
