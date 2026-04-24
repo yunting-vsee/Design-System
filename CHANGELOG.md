@@ -42,6 +42,29 @@ Apr 24
   - .gitignore: added /design-system.esproj, /design-system.esproj.user, /Design System.sln, /package-lock.json, .vscode/.
   - lefthook.yml: security (gitleaks) job routed through scripts/pre-commit-gitleaks.sh (from chore/remove-ide-files) so the optional-skip logic has a real shell on every platform.
 
+  Prototype pages (later on Apr 24)
+  - apps/docs/public/login.html + preference.html — shipped the self-contained HTML mocks from research/ into the docs site's public folder. Vite serves them at /login.html and /preference.html (and /Design-System/* after GH Pages deploy).
+  - Anchor-bar gained two external-page links next to Patterns: Login and Preferences. Each opens in a new tab via target="_blank" + rel="noopener", URL built from import.meta.env.BASE_URL so the links resolve correctly in dev and on the deployed base.
+  - New .anchor-link-external modifier (inline-flex + 4px gap) so the ExternalLink icon sits cleanly next to the label.
+  - PATTERNS_GROUP.items is now an empty typed array — Layouts was the only member and PatternsLayouts has no visible content. Comment flags how to re-enable when Patterns ships again.
+
+  Login prototype (apps/docs/public/login.html) polish
+  - Visible Email and Password labels (Email was sr-only; Password had none).
+  - Switched from the one-off .input-eye-wrap / .input-eye-btn classes to the design system's .input-icon-wrap / .input-icon-btn + .input-with-icon-right.
+  - Eye toggle now swaps between Eye and EyeOff (Lucide, 16×16, stroke 2, matches <Eye size={16} /> in the React <Login /> demo). Both SVGs ship inside the button, [hidden] attribute toggled via toggleAttribute (SVGElement's .hidden property isn't reliable); a scoped rule `.input-icon-btn svg[hidden] { display:none }` handles the flex-parent edge case.
+  - "Change email" link moved into a label-row above the email input, shown only when the email becomes readonly (signin step 2). Signup mode keeps the field editable and hides the link.
+  - Dropped the local .input-lg rule (removed from the design system on Apr 17) and the trailing .btn-lg on Continue / Google / Apple — buttons render at the default .btn height from the inlined .btn rule.
+  - Body pinned to height: 100vh with overflow: hidden + flex column so the page itself never scrolls; stage flexes to fill remaining height with overflow: auto as a safety net for very short viewports.
+
+  WCAG AA — dark-mode --vsee-danger
+  - Light-mode --vsee-danger stays at #D31212. In dark mode it now overrides to #F87171, giving ~6.5:1 against the --vsee-white body (#0B1120) — was ~3.36:1 and failed normal-text AA for .form-error-text, .dropdown-item-danger, .btn-danger-outline text, etc.
+  - Filled surfaces (.btn-danger, .btn-danger[data-pressed], .btn-loading.btn-danger[data-disabled], .badge-solid-danger) fall back to --vsee-danger-border (#991B1B) in dark mode so white text stays ~7.9:1 (AAA).
+  - Mirrored the dark-mode token override into login.html's inlined [data-mode="dark"] block per the prototype-drift convention.
+
+  Docs site — TS noUnusedLocals fixes
+  - Exported ComponentsDropdowns and PatternsLayouts. Both render calls are commented out but the functions are preserved for future re-home; exporting takes them out of the noUnusedLocals scope without a @ts-ignore or a throwaway void reference.
+  - Section's `children` prop is now optional (React.ReactNode → ?). PatternsLayouts renders an empty stub (label + description, no body) so a JSX comment is the only child; typing children as optional fixes the TS2741 that followed.
+
 Apr 23
   Repo housekeeping
   - Stopped tracking IDE project files — removed `Design System.sln` (root) and `apps/docs/design-system.esproj`.
