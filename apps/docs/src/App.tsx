@@ -129,17 +129,8 @@ const NAV = [
       { label: "Badges, Tags & Status", id: "badges" },
       { label: "Feedback & Notifications", id: "feedback" },
       { label: "Navigation", id: "navigation" },
-      { label: "Dropdowns", id: "dropdowns" },
       { label: "Overlays", id: "overlay" },
       { label: "Others", id: "data" },
-    ],
-  },
-  {
-    group: "Patterns",
-    icon: <Layers size={14} />,
-    items: [
-      // { label: "EMR Patterns", id: "emr" },
-      { label: "Layouts", id: "layouts" },
     ],
   },
   {
@@ -152,6 +143,16 @@ const NAV = [
     ],
   },
 ];
+
+// Patterns is rendered on the right of the anchor-bar, not the left sidebar.
+const PATTERNS_GROUP = {
+  group: "Patterns",
+  icon: <Layers size={14} />,
+  items: [
+    // { label: "EMR Patterns", id: "emr" },
+    { label: "Layouts", id: "layouts" },
+  ],
+};
 
 function App() {
   const [activeSection, setActiveSection] = useState("colors");
@@ -287,6 +288,23 @@ function App() {
               </a>
             );
           })}
+          {/* Patterns — right-aligned group with its title + per-item links. */}
+          <div className="anchor-bar-right">
+            <span className="anchor-bar-group-title">
+              {PATTERNS_GROUP.icon}
+              {PATTERNS_GROUP.group}
+            </span>
+            {PATTERNS_GROUP.items.map(item => (
+              <a
+                key={item.id}
+                href={`#${item.id}`}
+                className={`anchor-link ${activeSection === item.id ? "active" : ""}`}
+                onClick={(e) => { e.preventDefault(); scrollTo(item.id); }}
+              >
+                {item.label}
+              </a>
+            ))}
+          </div>
         </div>
 
         <FoundationsColors copy={toast.copy} />
@@ -297,11 +315,11 @@ function App() {
         <ComponentsBadges />
         <ComponentsFeedback />
         <ComponentsNavigation />
-        <ComponentsDropdowns />
+        {/* <ComponentsDropdowns /> — section hidden. Select Dropdown is the only remaining subsection; Dropdown Button moved to Overlays. Function kept for future use. */}
         <ComponentsOverlays />
         <ComponentsOthers />
         {/* <PatternsEMR /> */}
-        <PatternsLayouts />
+        {/* <PatternsLayouts /> — section is empty after Sidebar+Content and Modal/Dialog moved to Components → Others */}
         <EngineeringTokens />
         <PatternsTheming brandTheme={brandTheme} setBrandTheme={setBrandTheme} />
         <PatternsFormio />
@@ -329,19 +347,19 @@ function Section({ id, label, title, description, children }: {
   return (
     <section id={id} className="ds-section">
       <div className="section-label">{label}</div>
-      <div className="section-title">{title}</div>
+      {title && <div className="section-title">{title}</div>}
       <div className="section-desc">{description}</div>
       {children}
     </section>
   );
 }
 
-function SubSection({ title, description, children }: {
-  title: string; description?: string; children: React.ReactNode;
+function SubSection({ title, description, style, children }: {
+  title: string; description?: string; style?: React.CSSProperties; children: React.ReactNode;
 }) {
   return (
-    <div className="subsection">
-      <div className="sub-title">{title}</div>
+    <div className="subsection" style={style}>
+      {title && <div className="sub-title">{title}</div>}
       {description && <div className="sub-desc">{description}</div>}
       {children}
     </div>
@@ -398,13 +416,13 @@ function FoundationsColors({ copy }: { copy: (v: string) => void }) {
           <Swatch color="var(--vsee-success)" name="--vsee-success" hex="#367D17" onClick={() => copy("var(--vsee-success)")} />
           <Swatch color="var(--vsee-info)" name="--vsee-info" hex="#196CD2" onClick={() => copy("var(--vsee-info)")} />
           <Swatch color="var(--vsee-warning)" name="--vsee-warning" hex="#FFCB5A" onClick={() => copy("var(--vsee-warning)")} />
-          <Swatch color="var(--vsee-danger)" name="--vsee-danger" hex="#DC2626" onClick={() => copy("var(--vsee-danger)")} />
+          <Swatch color="var(--vsee-danger)" name="--vsee-danger" hex="#D31212" onClick={() => copy("var(--vsee-danger)")} />
         </div>
         <div className="swatch-row">
-          <Swatch color="var(--vsee-success-light)" name="--vsee-success-light" hex="#F9FEF6" onClick={() => copy("var(--vsee-success-light)")} />
-          <Swatch color="var(--vsee-info-light)" name="--vsee-info-light" hex="#E0F2FE" onClick={() => copy("var(--vsee-info-light)")} />
+          <Swatch color="var(--vsee-success-light)" name="--vsee-success-light" hex="#F1F9E1" onClick={() => copy("var(--vsee-success-light)")} />
+          <Swatch color="var(--vsee-info-light)" name="--vsee-info-light" hex="#EBF7FE" onClick={() => copy("var(--vsee-info-light)")} />
           <Swatch color="var(--vsee-warning-light)" name="--vsee-warning-light" hex="#FEF3C7" onClick={() => copy("var(--vsee-warning-light)")} />
-          <Swatch color="var(--vsee-danger-light)" name="--vsee-danger-light" hex="#FEE2E2" onClick={() => copy("var(--vsee-danger-light)")} />
+          <Swatch color="var(--vsee-danger-light)" name="--vsee-danger-light" hex="#FEE7E7" onClick={() => copy("var(--vsee-danger-light)")} />
         </div>
       </SubSection>
 
@@ -1820,14 +1838,63 @@ function ComponentsFeedback() {
         />
       </SubSection>
 
-      <SubSection title="Toast Notifications">
-        <div className="toast-stack">
-          <div className="toast toast-success"><div className="toast-body"><div className="toast-title">Appointment confirmed</div><div className="toast-msg">Feb 26, 2026 at 10:00 AM with Dr. Chen</div></div><span className="toast-close"><X size={16} /></span></div>
-          <div className="toast toast-danger"><div className="toast-body"><div className="toast-title">Connection lost</div><div className="toast-msg">Please check your internet connection.</div></div><span className="toast-close"><X size={16} /></span></div>
-          <div className="toast toast-info"><div className="toast-body"><div className="toast-title">New message</div><div className="toast-msg">You have 3 unread messages from patients.</div></div><span className="toast-close"><X size={16} /></span></div>
+      <SubSection title="Toast Notifications" style={{ marginBottom: "var(--vsee-sp-4)" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--vsee-sp-3)", maxWidth: 400 }}>
+          <div className="notification notification-success">
+            <div className="notification-icon"><CheckCircle size={18} /></div>
+            <div className="notification-content">
+              <div className="notification-title">Order Submitted</div>
+              <div className="notification-message">CBC lab order has been sent to the lab successfully.</div>
+            </div>
+            <button className="notification-close"><X size={14} /></button>
+          </div>
+          <div className="notification notification-error">
+            <div className="notification-icon"><XCircle size={18} /></div>
+            <div className="notification-content">
+              <div className="notification-title">Submission Failed</div>
+              <div className="notification-message">Unable to submit order. Please check the connection and try again.</div>
+            </div>
+            <button className="notification-close"><X size={14} /></button>
+          </div>
+          <div className="notification notification-warning">
+            <div className="notification-icon"><AlertTriangle size={18} /></div>
+            <div className="notification-content">
+              <div className="notification-title">Session Expiring</div>
+              <div className="notification-message">Your session will expire in 5 minutes. Save your work.</div>
+            </div>
+            <button className="notification-close"><X size={14} /></button>
+          </div>
+          <div className="notification notification-info">
+            <div className="notification-icon"><Info size={18} /></div>
+            <div className="notification-content">
+              <div className="notification-title">New Message</div>
+              <div className="notification-message">Dr. Chen has sent a message regarding patient Jane Doe.</div>
+            </div>
+            <button className="notification-close"><X size={14} /></button>
+          </div>
         </div>
         <CodeBlock
-          code={`<div className="toast toast-success">\n  <div className="toast-body">\n    <div className="toast-title">Appointment confirmed</div>\n    <div className="toast-msg">Feb 26, 2026 at 10:00 AM</div>\n  </div>\n  <span className="toast-close"><X size={16} /></span>\n</div>\n\n/* Variants: toast-success | toast-danger | toast-info */`}
+          code={`<div className="notification notification-success">\n  <div className="notification-icon"><CheckCircle size={18} /></div>\n  <div className="notification-content">\n    <div className="notification-title">Order Submitted</div>\n    <div className="notification-message">CBC lab order sent.</div>\n  </div>\n  <button className="notification-close"><X size={14} /></button>\n</div>\n\n/* Variants: notification-success | notification-error | notification-warning | notification-info */`}
+        />
+      </SubSection>
+
+      <SubSection title="" description="Toast-style notifications that appear in the corner. Used for system feedback — order confirmations, errors, warnings, and informational messages.">
+        <div style={{ display: "flex", gap: "var(--vsee-sp-3)", flexWrap: "wrap" }}>
+          <Button className="btn btn-primary" onPress={() => addNotification("success", "Order Submitted", "CBC lab order has been sent to the lab successfully.")}>
+            <CheckCircle size={16} /> Success
+          </Button>
+          <Button className="btn btn-danger" onPress={() => addNotification("error", "Submission Failed", "Unable to submit order. Please check the connection and try again.")}>
+            <XCircle size={16} /> Error
+          </Button>
+          <Button className="btn btn-warning" onPress={() => addNotification("warning", "Session Expiring", "Your session will expire in 5 minutes. Save your work.")}>
+            <AlertTriangle size={16} /> Warning
+          </Button>
+          <Button className="btn btn-info" onPress={() => addNotification("info", "New Message", "Dr. Chen has sent a message regarding patient Jane Doe.")}>
+            <Info size={16} /> Info
+          </Button>
+        </div>
+        <CodeBlock
+          code={`<div className="notification notification-success">\n  <div className="notification-icon"><CheckCircle size={18} /></div>\n  <div className="notification-content">\n    <div className="notification-title">Order Submitted</div>\n    <div className="notification-message">CBC lab order sent.</div>\n  </div>\n  <button className="notification-close"><X size={14} /></button>\n</div>\n\n/* Variants: notification-success | notification-error | notification-warning | notification-info */`}
         />
       </SubSection>
 
@@ -1848,26 +1915,6 @@ function ComponentsFeedback() {
         </div>
         <CodeBlock
           code={`<div className="empty-state">\n  <div className="empty-state-icon"><Inbox size={40} /></div>\n  <div className="empty-state-title">No Results Found</div>\n  <div className="empty-state-desc">Description text here.</div>\n  <Button className="btn btn-primary">Action</Button>\n</div>`}
-        />
-      </SubSection>
-
-      <SubSection title="Notifications" description="Toast-style notifications that appear in the corner. Used for system feedback — order confirmations, errors, warnings, and informational messages.">
-        <div style={{ display: "flex", gap: "var(--vsee-sp-3)", flexWrap: "wrap" }}>
-          <Button className="btn btn-primary" onPress={() => addNotification("success", "Order Submitted", "CBC lab order has been sent to the lab successfully.")}>
-            <CheckCircle size={16} /> Success
-          </Button>
-          <Button className="btn btn-danger" onPress={() => addNotification("error", "Submission Failed", "Unable to submit order. Please check the connection and try again.")}>
-            <XCircle size={16} /> Error
-          </Button>
-          <Button className="btn btn-warning" onPress={() => addNotification("warning", "Session Expiring", "Your session will expire in 5 minutes. Save your work.")}>
-            <AlertTriangle size={16} /> Warning
-          </Button>
-          <Button className="btn btn-info" onPress={() => addNotification("info", "New Message", "Dr. Chen has sent a message regarding patient Jane Doe.")}>
-            <Info size={16} /> Info
-          </Button>
-        </div>
-        <CodeBlock
-          code={`<div className="notification notification-success">\n  <div className="notification-icon"><CheckCircle size={18} /></div>\n  <div className="notification-content">\n    <div className="notification-title">Order Submitted</div>\n    <div className="notification-message">CBC lab order sent.</div>\n  </div>\n  <button className="notification-close"><X size={14} /></button>\n</div>\n\n/* Variants: notification-success | notification-error | notification-warning | notification-info */`}
         />
       </SubSection>
 
@@ -1897,6 +1944,13 @@ function ComponentsFeedback() {
    COMPONENTS — NAVIGATION
    ═══════════════════════════════════════════ */
 function ComponentsNavigation() {
+  const sidebarItems: Record<string, string> = {
+    Overview: "High-level summary of the patient's status, recent encounters, and upcoming appointments.",
+    Details: "Demographics, contact information, insurance details, and emergency contacts on file.",
+    Activity: "Chronological log of visits, messages, lab orders, and prescription changes.",
+  };
+  const [activeSidebarItem, setActiveSidebarItem] = useState("Overview");
+
   return (
     <Section id="navigation" label="Components" title="Navigation"
       description="Navigation patterns for consistent wayfinding across the application.">
@@ -1937,6 +1991,24 @@ function ComponentsNavigation() {
         </div>
         <CodeBlock
           code={`<Tabs>\n  <TabList className="tabs" aria-label="Clinic tabs">\n    <Tab id="patients" className="tab-item">Patients</Tab>\n    <Tab id="visits" className="tab-item">All Visits</Tab>\n    <Tab id="docs" className="tab-item">Documents</Tab>\n    <Tab id="labs" className="tab-item">Lab Results</Tab>\n  </TabList>\n  <TabPanel id="patients" className="tab-content">Content</TabPanel>\n  <TabPanel id="visits" className="tab-content">Content</TabPanel>\n  <TabPanel id="docs" className="tab-content">Content</TabPanel>\n  <TabPanel id="labs" className="tab-content">Content</TabPanel>\n</Tabs>`}
+        />
+      </SubSection>
+
+      <SubSection title="Sidebar">
+        <div className="sidebar-layout">
+          <div className="sidebar-panel">
+            <div className="sidebar-heading">Menu</div>
+            {Object.keys(sidebarItems).map((item) => (
+              <div key={item} className={`sidebar-menu-item ${activeSidebarItem === item ? "active" : ""}`} onClick={() => setActiveSidebarItem(item)}>{item}</div>
+            ))}
+          </div>
+          <div className="sidebar-content">
+            <div style={{fontSize:20,fontWeight:700,marginBottom:"var(--vsee-sp-4)"}}>{activeSidebarItem}</div>
+            <p style={{color:"var(--vsee-text-secondary)"}}>{sidebarItems[activeSidebarItem]}</p>
+          </div>
+        </div>
+        <CodeBlock
+          code={`const items = {\n  Overview: "High-level summary…",\n  Details: "Demographics, contact info…",\n  Activity: "Chronological log of visits…",\n};\nconst [active, setActive] = useState("Overview");\n\n<div className="sidebar-layout">\n  <div className="sidebar-panel">\n    <div className="sidebar-heading">Menu</div>\n    {Object.keys(items).map((item) => (\n      <div\n        key={item}\n        className={\`sidebar-menu-item \${active === item ? "active" : ""}\`}\n        onClick={() => setActive(item)}\n      >\n        {item}\n      </div>\n    ))}\n  </div>\n  <div className="sidebar-content">\n    <div style={{fontSize:20,fontWeight:700}}>{active}</div>\n    <p>{items[active]}</p>\n  </div>\n</div>`}
         />
       </SubSection>
 
@@ -1991,9 +2063,8 @@ function ComponentsNavigation() {
 /* ═══════════════════════════════════════════
    COMPONENTS — DROPDOWNS
    ═══════════════════════════════════════════ */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- render call is commented out above; function kept for future re-home of the Select Dropdown subsection.
 function ComponentsDropdowns() {
-  const [actionMsg, setActionMsg] = useState("");
-
   return (
     <Section id="dropdowns" label="Components" title="Dropdowns"
       description="Dropdown menus, select lists, and action menus. All dropdowns are capped at 1/3 screen height and scroll when content overflows.">
@@ -2021,64 +2092,6 @@ function ComponentsDropdowns() {
         />
       </SubSection>
 
-      <SubSection title="Dropdown Button" description="Action menus triggered by a button. Used for contextual actions on rows, cards, and toolbars.">
-        <div style={{ display: "flex", gap: "var(--vsee-sp-4)", flexWrap: "wrap", alignItems: "flex-start" }}>
-          <MenuTrigger>
-            <Button className="btn btn-secondary">
-              Actions <ChevronDown size={16} />
-            </Button>
-            <Popover className="dropdown-popover">
-              <Menu className="dropdown-menu" onAction={(key) => setActionMsg(`Action: ${key}`)}>
-                <MenuItem id="edit" className="dropdown-item"><Edit3 size={14} /> Edit Record</MenuItem>
-                <MenuItem id="copy" className="dropdown-item"><Copy size={14} /> Duplicate</MenuItem>
-                <MenuItem id="export" className="dropdown-item"><ExternalLink size={14} /> Export PDF</MenuItem>
-                <MenuItem id="archive" className="dropdown-item"><Archive size={14} /> Archive</MenuItem>
-                <Separator className="dropdown-separator" />
-                <MenuItem id="delete" className="dropdown-item dropdown-item-danger"><Trash2 size={14} /> Delete</MenuItem>
-              </Menu>
-            </Popover>
-          </MenuTrigger>
-
-          <MenuTrigger>
-            <Button className="btn btn-ghost btn-icon">
-              <MoreHorizontal size={18} />
-            </Button>
-            <Popover className="dropdown-popover">
-              <Menu className="dropdown-menu" onAction={(key) => setActionMsg(`Action: ${key}`)}>
-                <MenuItem id="view" className="dropdown-item">View Details</MenuItem>
-                <MenuItem id="assign" className="dropdown-item">Assign Provider</MenuItem>
-                <MenuItem id="flag" className="dropdown-item">Flag for Review</MenuItem>
-              </Menu>
-            </Popover>
-          </MenuTrigger>
-
-          <MenuTrigger>
-            <Button className="btn btn-primary">
-              New Order <ChevronDown size={16} />
-            </Button>
-            <Popover className="dropdown-popover">
-              <Menu className="dropdown-menu" onAction={(key) => setActionMsg(`Action: ${key}`)}>
-                <AriaSection>
-                  <Header className="dropdown-header">Lab Orders</Header>
-                  <MenuItem id="cbc" className="dropdown-item">Complete Blood Count</MenuItem>
-                  <MenuItem id="bmp" className="dropdown-item">Basic Metabolic Panel</MenuItem>
-                  <MenuItem id="lipid" className="dropdown-item">Lipid Panel</MenuItem>
-                </AriaSection>
-                <Separator className="dropdown-separator" />
-                <AriaSection>
-                  <Header className="dropdown-header">Imaging</Header>
-                  <MenuItem id="xray" className="dropdown-item">X-Ray</MenuItem>
-                  <MenuItem id="mri" className="dropdown-item">MRI</MenuItem>
-                </AriaSection>
-              </Menu>
-            </Popover>
-          </MenuTrigger>
-        </div>
-        {actionMsg && <div className="action-feedback"><CheckCircle2 size={14} /> {actionMsg}</div>}
-        <CodeBlock
-          code={`<MenuTrigger>\n  <Button className="btn btn-secondary">\n    Actions <ChevronDown size={16} />\n  </Button>\n  <Popover className="dropdown-popover">\n    <Menu className="dropdown-menu" onAction={handleAction}>\n      <MenuItem id="edit" className="dropdown-item">\n        <Edit3 size={14} /> Edit Record\n      </MenuItem>\n      <Separator className="dropdown-separator" />\n      <MenuItem id="delete" className="dropdown-item dropdown-item-danger">\n        <Trash2 size={14} /> Delete\n      </MenuItem>\n    </Menu>\n  </Popover>\n</MenuTrigger>`}
-        />
-      </SubSection>
     </Section>
   );
 }
@@ -2087,6 +2100,8 @@ function ComponentsDropdowns() {
    COMPONENTS — OTHERS
    ═══════════════════════════════════════════ */
 function ComponentsOthers() {
+  const [sliderValue, setSliderValue] = useState(0.7);
+  const sliderPct = Math.round(sliderValue * 100);
   // commented out: Collapse / Accordion is commented out
   // const [openPanels, setOpenPanels] = useState<Set<string>>(new Set(["vitals"]));
   // const togglePanel = (id: string) => {
@@ -2185,6 +2200,42 @@ function ComponentsOthers() {
         />
       </SubSection> */}
 
+      <SubSection title="Slider" description="Continuous-value range control (volume, opacity, zoom). Track chrome is reset for a consistent look across Chromium/Firefox/Safari. The filled portion paints via ::-moz-range-progress on Firefox; on WebKit, set a linear-gradient on the input's background so the fill tracks the value.">
+        <div className="card" style={{maxWidth:500}}>
+          <div style={{display:"flex",alignItems:"center",gap:"var(--vsee-sp-3)"}}>
+            <input
+              type="range"
+              className="slider"
+              min={0}
+              max={1}
+              step={0.01}
+              value={sliderValue}
+              aria-label="Example slider"
+              onChange={(e) => setSliderValue(Number(e.target.value))}
+              style={{
+                background: `linear-gradient(to right, var(--vsee-brand) ${sliderPct}%, var(--vsee-grey-400) ${sliderPct}%)`,
+              }}
+            />
+            <span style={{fontVariantNumeric:"tabular-nums",minWidth:40,textAlign:"right",fontSize:"var(--vsee-text-caption-size)",color:"var(--vsee-text-secondary)"}}>{sliderPct}%</span>
+          </div>
+          <div style={{marginTop:"var(--vsee-sp-6)"}}>
+            <input
+              type="range"
+              className="slider"
+              min={0}
+              max={1}
+              step={0.01}
+              defaultValue={0.3}
+              disabled
+              aria-label="Disabled slider"
+            />
+          </div>
+        </div>
+        <CodeBlock
+          code={`const [value, setValue] = useState(0.7);\nconst pct = Math.round(value * 100);\n\n<input\n  type="range"\n  className="slider"\n  min={0} max={1} step={0.01}\n  value={value}\n  onChange={(e) => setValue(Number(e.target.value))}\n  style={{\n    // WebKit has no ::-webkit-slider-progress pseudo — paint the fill\n    // via a gradient on the input's own background. Firefox ignores it\n    // (its ::-moz-range-track wins) and uses ::-moz-range-progress.\n    background: \`linear-gradient(to right, var(--vsee-brand) \${pct}%, var(--vsee-grey-400) \${pct}%)\`,\n  }}\n/>`}
+        />
+      </SubSection>
+
       <SubSection title="Progress Bars">
         <div className="card" style={{maxWidth:500}}>
           <div className="progress-item">
@@ -2235,6 +2286,25 @@ function ComponentsOthers() {
           code={`<div className="collapse-group">\n  <div className="collapse-item open">\n    <button className="collapse-trigger">\n      <span className="collapse-trigger-text">Vitals</span>\n      <ChevronUp size={16} />\n    </button>\n    <div className="collapse-content">BP: 120/80 mmHg · HR: 72 bpm</div>\n  </div>\n  <div className="collapse-item">\n    <button className="collapse-trigger">\n      <span className="collapse-trigger-text">Allergies</span>\n      <ChevronDown size={16} />\n    </button>\n  </div>\n</div>`}
         />
       </SubSection> */}
+
+      {/* Sidebar + Content moved from PatternsLayouts — pending future
+          re-home. Uncomment and re-add the sidebarPages state (Dashboard,
+          Patients, Appointments, Messages, Lab Results, Settings) and the
+          activePage useState to re-enable. */}
+      {/* <SubSection title="Sidebar + Content">
+        <div className="sidebar-layout">
+          <div className="sidebar-panel">
+            <div className="sidebar-heading">Menu</div>
+            {Object.keys(sidebarPages).map((item) => (
+              <div key={item} className={`sidebar-menu-item ${activePage === item ? "active" : ""}`} onClick={() => setActivePage(item)}>{item}</div>
+            ))}
+          </div>
+          <div className="sidebar-content">
+            <div style={{fontSize:20,fontWeight:700,marginBottom:"var(--vsee-sp-4)"}}>{page.title}</div>
+            {page.content}
+          </div>
+        </div>
+      </SubSection> */}
     </Section>
   );
 }
@@ -2244,45 +2314,66 @@ function ComponentsOthers() {
    ═══════════════════════════════════════════ */
 function ComponentsOverlays() {
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [actionMsg, setActionMsg] = useState("");
 
   return (
     <Section id="overlay" label="Components" title="Overlays"
       description="Modals, tooltips, and drawer patterns for focused interactions.">
 
-      <SubSection title="Modal / Dialog">
-        <div className="modal-backdrop-preview">
-          <div className="modal-box">
-            <div className="modal-head">
-              <h3>Cancel Appointment</h3>
-              <Button className="modal-close"><X size={20} /></Button>
-            </div>
-            <div className="modal-content">
-              <p style={{color:"var(--vsee-text-secondary)",marginBottom:"var(--vsee-sp-4)"}}>
-                Are you sure you want to cancel this appointment with <strong>Dr. Sarah Chen</strong> on Feb 26, 2026?
-              </p>
-              <div className="form-group">
-                <Select className="field">
-                  <Label className="form-label">Reason for cancellation</Label>
-                  <Button className="input select-trigger">
-                    <SelectValue>{({isPlaceholder, selectedText}) => isPlaceholder ? "Select a reason..." : selectedText}</SelectValue>
-                    <ChevronDown size={16} className="select-chevron" />
-                  </Button>
-                  <Popover className="select-popover">
-                    <ListBox className="select-listbox">
-                      <ListBoxItem id="conflict" className="select-option">Schedule conflict</ListBoxItem>
-                      <ListBoxItem id="better" className="select-option">Feeling better</ListBoxItem>
-                      <ListBoxItem id="other" className="select-option">Other</ListBoxItem>
-                    </ListBox>
-                  </Popover>
-                </Select>
+      <SubSection title="Modal / Dialog" description="A centered dialog that captures focus for a single decision. Triggered by a button; closed by the × button, the Keep/Cancel actions, or clicking the backdrop.">
+        <Button className="btn btn-primary" onPress={() => setModalOpen(true)}>
+          Cancel Appointment
+        </Button>
+
+        {modalOpen && (
+          <div
+            onClick={() => setModalOpen(false)}
+            style={{
+              position: "fixed", inset: 0,
+              background: "rgba(0,0,0,0.4)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              padding: "var(--vsee-sp-6)",
+              zIndex: 100,
+              animation: "fadeIn 200ms ease",
+            }}
+          >
+            <div className="modal-box" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-head">
+                <h3>Cancel Appointment</h3>
+                <Button className="modal-close" onPress={() => setModalOpen(false)}><X size={20} /></Button>
+              </div>
+              <div className="modal-content">
+                <p style={{color:"var(--vsee-text-secondary)",marginBottom:"var(--vsee-sp-4)"}}>
+                  Are you sure you want to cancel this appointment with <strong>Dr. Sarah Chen</strong> on Feb 26, 2026?
+                </p>
+                <div className="form-group">
+                  <Select className="field">
+                    <Label className="form-label">Reason for cancellation</Label>
+                    <Button className="input select-trigger">
+                      <SelectValue>{({isPlaceholder, selectedText}) => isPlaceholder ? "Select a reason..." : selectedText}</SelectValue>
+                      <ChevronDown size={16} className="select-chevron" />
+                    </Button>
+                    <Popover className="select-popover">
+                      <ListBox className="select-listbox">
+                        <ListBoxItem id="conflict" className="select-option">Schedule conflict</ListBoxItem>
+                        <ListBoxItem id="better" className="select-option">Feeling better</ListBoxItem>
+                        <ListBoxItem id="other" className="select-option">Other</ListBoxItem>
+                      </ListBox>
+                    </Popover>
+                  </Select>
+                </div>
+              </div>
+              <div className="modal-actions">
+                <Button className="btn btn-ghost" onPress={() => setModalOpen(false)}>Keep Appointment</Button>
+                <Button className="btn btn-danger" onPress={() => setModalOpen(false)}>Cancel Appointment</Button>
               </div>
             </div>
-            <div className="modal-actions">
-              <Button className="btn btn-ghost">Keep Appointment</Button>
-              <Button className="btn btn-danger">Cancel Appointment</Button>
-            </div>
           </div>
-        </div>
+        )}
+        <CodeBlock
+          code={`const [open, setOpen] = useState(false);\n\n<Button className="btn btn-primary" onPress={() => setOpen(true)}>\n  Cancel Appointment\n</Button>\n\n{open && (\n  <div\n    onClick={() => setOpen(false)}\n    style={{\n      position: "fixed", inset: 0,\n      background: "rgba(0,0,0,0.4)",\n      display: "flex", alignItems: "center", justifyContent: "center",\n      padding: "var(--vsee-sp-6)", zIndex: 100,\n    }}\n  >\n    <div className="modal-box" onClick={(e) => e.stopPropagation()}>\n      <div className="modal-head">\n        <h3>Cancel Appointment</h3>\n        <Button className="modal-close" onPress={() => setOpen(false)}>\n          <X size={20} />\n        </Button>\n      </div>\n      <div className="modal-content">...</div>\n      <div className="modal-actions">\n        <Button className="btn btn-ghost" onPress={() => setOpen(false)}>\n          Keep Appointment\n        </Button>\n      </div>\n    </div>\n  </div>\n)}`}
+        />
       </SubSection>
 
       <SubSection title="Tooltips">
@@ -2298,6 +2389,65 @@ function ComponentsOverlays() {
         </div>
         <CodeBlock
           code={`<TooltipTrigger delay={300}>\n  <Button className="btn btn-ghost">Hover target</Button>\n  <AriaTooltip placement="top" className="tooltip-bubble">\n    This is a tooltip\n  </AriaTooltip>\n</TooltipTrigger>`}
+        />
+      </SubSection>
+
+      <SubSection title="Dropdown Button" description="Action menus triggered by a button. Used for contextual actions on rows, cards, and toolbars.">
+        <div style={{ display: "flex", gap: "var(--vsee-sp-4)", flexWrap: "wrap", alignItems: "flex-start" }}>
+          <MenuTrigger>
+            <Button className="btn btn-secondary">
+              Actions <ChevronDown size={16} />
+            </Button>
+            <Popover className="dropdown-popover">
+              <Menu className="dropdown-menu" onAction={(key) => setActionMsg(`Action: ${key}`)}>
+                <MenuItem id="edit" className="dropdown-item"><Edit3 size={14} /> Edit Record</MenuItem>
+                <MenuItem id="copy" className="dropdown-item"><Copy size={14} /> Duplicate</MenuItem>
+                <MenuItem id="export" className="dropdown-item"><ExternalLink size={14} /> Export PDF</MenuItem>
+                <MenuItem id="archive" className="dropdown-item"><Archive size={14} /> Archive</MenuItem>
+                <Separator className="dropdown-separator" />
+                <MenuItem id="delete" className="dropdown-item dropdown-item-danger"><Trash2 size={14} /> Delete</MenuItem>
+              </Menu>
+            </Popover>
+          </MenuTrigger>
+
+          <MenuTrigger>
+            <Button className="btn btn-ghost btn-icon">
+              <MoreHorizontal size={18} />
+            </Button>
+            <Popover className="dropdown-popover">
+              <Menu className="dropdown-menu" onAction={(key) => setActionMsg(`Action: ${key}`)}>
+                <MenuItem id="view" className="dropdown-item">View Details</MenuItem>
+                <MenuItem id="assign" className="dropdown-item">Assign Provider</MenuItem>
+                <MenuItem id="flag" className="dropdown-item">Flag for Review</MenuItem>
+              </Menu>
+            </Popover>
+          </MenuTrigger>
+
+          <MenuTrigger>
+            <Button className="btn btn-primary">
+              New Order <ChevronDown size={16} />
+            </Button>
+            <Popover className="dropdown-popover">
+              <Menu className="dropdown-menu" onAction={(key) => setActionMsg(`Action: ${key}`)}>
+                <AriaSection>
+                  <Header className="dropdown-header">Lab Orders</Header>
+                  <MenuItem id="cbc" className="dropdown-item">Complete Blood Count</MenuItem>
+                  <MenuItem id="bmp" className="dropdown-item">Basic Metabolic Panel</MenuItem>
+                  <MenuItem id="lipid" className="dropdown-item">Lipid Panel</MenuItem>
+                </AriaSection>
+                <Separator className="dropdown-separator" />
+                <AriaSection>
+                  <Header className="dropdown-header">Imaging</Header>
+                  <MenuItem id="xray" className="dropdown-item">X-Ray</MenuItem>
+                  <MenuItem id="mri" className="dropdown-item">MRI</MenuItem>
+                </AriaSection>
+              </Menu>
+            </Popover>
+          </MenuTrigger>
+        </div>
+        {actionMsg && <div className="action-feedback"><CheckCircle2 size={14} /> {actionMsg}</div>}
+        <CodeBlock
+          code={`<MenuTrigger>\n  <Button className="btn btn-secondary">\n    Actions <ChevronDown size={16} />\n  </Button>\n  <Popover className="dropdown-popover">\n    <Menu className="dropdown-menu" onAction={handleAction}>\n      <MenuItem id="edit" className="dropdown-item">\n        <Edit3 size={14} /> Edit Record\n      </MenuItem>\n      <Separator className="dropdown-separator" />\n      <MenuItem id="delete" className="dropdown-item dropdown-item-danger">\n        <Trash2 size={14} /> Delete\n      </MenuItem>\n    </Menu>\n  </Popover>\n</MenuTrigger>`}
         />
       </SubSection>
 
@@ -2404,85 +2554,13 @@ function ComponentsOverlays() {
 /* ═══════════════════════════════════════════
    PATTERNS — LAYOUTS
    ═══════════════════════════════════════════ */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- render call is commented out above; function kept so the "layouts" anchor id + Section wrapper are ready to re-enable when Phase-2 Patterns ships.
 function PatternsLayouts() {
-  const sidebarPages: Record<string, { title: string; content: React.ReactNode }> = {
-    Dashboard: {
-      title: "Dashboard",
-      content: (
-        <>
-          <p style={{color:"var(--vsee-text-secondary)", marginBottom:"var(--vsee-sp-4)"}}>Welcome back, Dr. Chen. Here's your overview for today.</p>
-          <div style={{display:"grid", gridTemplateColumns:"repeat(3, 1fr)", gap:"var(--vsee-sp-3)"}}>
-            {[{label:"Patients Today",val:"12"},{label:"Pending Orders",val:"5"},{label:"Messages",val:"3"}].map(s=>(
-              <div key={s.label} style={{background:"var(--vsee-grey-100)",borderRadius:"var(--vsee-r-md)",padding:"var(--vsee-sp-4)",textAlign:"center"}}>
-                <div style={{fontSize:"var(--vsee-text-h4-size)",fontWeight:700,color:"var(--vsee-brand)"}}>{s.val}</div>
-                <div style={{fontSize:"var(--vsee-text-caption-size)",color:"var(--vsee-text-secondary)"}}>{s.label}</div>
-              </div>
-            ))}
-          </div>
-        </>
-      ),
-    },
-    Patients: {
-      title: "Patients",
-      content: (
-        <div style={{display:"flex",flexDirection:"column",gap:"var(--vsee-sp-3)"}}>
-          {[{name:"Michelle Doe",id:"10042",status:"Active"},{name:"John Smith",id:"10089",status:"Pending"},{name:"Alice Wong",id:"10115",status:"Inactive"}].map(p=>(
-            <div key={p.id} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"var(--vsee-sp-3)",background:"var(--vsee-grey-100)",borderRadius:"var(--vsee-r-md)"}}>
-              <div><div style={{fontWeight:600}}>{p.name}</div><div style={{fontSize:"var(--vsee-text-caption-size)",color:"var(--vsee-text-secondary)"}}>ID: {p.id}</div></div>
-              <span className={`badge ${p.status==="Active"?"badge-success":p.status==="Pending"?"badge-warning":"badge-neutral"}`}><span className="badge-dot" /> {p.status}</span>
-            </div>
-          ))}
-        </div>
-      ),
-    },
-    Appointments: {
-      title: "Appointments",
-      content: (
-        <div style={{display:"flex",flexDirection:"column",gap:"var(--vsee-sp-3)"}}>
-          {[{time:"9:00 AM",patient:"Michelle Doe",type:"Follow-up"},{time:"10:30 AM",patient:"John Smith",type:"New Patient"},{time:"2:00 PM",patient:"Alice Wong",type:"Telemedicine"}].map(a=>(
-            <div key={a.time} style={{display:"flex",gap:"var(--vsee-sp-4)",alignItems:"center",padding:"var(--vsee-sp-3)",background:"var(--vsee-grey-100)",borderRadius:"var(--vsee-r-md)"}}>
-              <div style={{fontWeight:600,color:"var(--vsee-brand)",minWidth:70}}>{a.time}</div>
-              <div><div style={{fontWeight:600}}>{a.patient}</div><div style={{fontSize:"var(--vsee-text-caption-size)",color:"var(--vsee-text-secondary)"}}>{a.type}</div></div>
-            </div>
-          ))}
-        </div>
-      ),
-    },
-    Messages: {
-      title: "Messages",
-      content: <p style={{color:"var(--vsee-text-secondary)"}}>You have 3 unread messages from patients. Check your inbox for the latest updates.</p>,
-    },
-    "Lab Results": {
-      title: "Lab Results",
-      content: <p style={{color:"var(--vsee-text-secondary)"}}>2 new lab results are ready for review. Click a result to view the full report.</p>,
-    },
-    Settings: {
-      title: "Settings",
-      content: <p style={{color:"var(--vsee-text-secondary)"}}>Manage your profile, notification preferences, and clinic configuration.</p>,
-    },
-  };
-
-  const [activePage, setActivePage] = useState("Dashboard");
-  const page = sidebarPages[activePage];
-
   return (
-    <Section id="layouts" label="Patterns" title="Layouts"
+    <Section id="layouts" label="Patterns" title=""
       description="Common layout patterns used across the VSee Clinic application.">
-
-      <SubSection title="Sidebar + Content">
-        <div className="sidebar-layout">
-          <div className="sidebar-panel">
-            <div className="sidebar-heading">Menu</div>
-            {Object.keys(sidebarPages).map((item) => (
-              <div key={item} className={`sidebar-menu-item ${activePage === item ? "active" : ""}`} onClick={() => setActivePage(item)}>{item}</div>
-            ))}
-          </div>
-          <div className="sidebar-content">
-            <div style={{fontSize:20,fontWeight:700,marginBottom:"var(--vsee-sp-4)"}}>{page.title}</div>
-            {page.content}
-          </div>
-        </div>
-      </SubSection>
+      {/* Sidebar + Content and Modal / Dialog subsections have been moved to
+          Components → Others and commented out there pending future split. */}
     </Section>
   );
 }
@@ -2916,10 +2994,10 @@ function EngineeringTokens() {
         {"  "}<span className="p">--vsee-brand-light</span>{": "}<span className="v">#E6F5EE</span>{";\n"}
         {"  "}<span className="p">--vsee-brand-50</span>{": "}<span className="v">#F0FAF5</span>{";\n\n"}
         {"  "}<span className="c">{"/* Semantic (AA-compliant for white foreground) */"}</span>{"\n"}
-        {"  "}<span className="p">--vsee-success</span>{": "}<span className="v">#367D17</span>{"; "}<span className="p">--vsee-success-light</span>{": "}<span className="v">#F9FEF6</span>{";\n"}
-        {"  "}<span className="p">--vsee-info</span>{": "}<span className="v">#196CD2</span>{"; "}<span className="p">--vsee-info-light</span>{": "}<span className="v">#E0F2FE</span>{";\n"}
+        {"  "}<span className="p">--vsee-success</span>{": "}<span className="v">#367D17</span>{"; "}<span className="p">--vsee-success-light</span>{": "}<span className="v">#F1F9E1</span>{";\n"}
+        {"  "}<span className="p">--vsee-info</span>{": "}<span className="v">#196CD2</span>{"; "}<span className="p">--vsee-info-light</span>{": "}<span className="v">#EBF7FE</span>{";\n"}
         {"  "}<span className="p">--vsee-warning</span>{": "}<span className="v">#FFCB5A</span>{"; "}<span className="p">--vsee-warning-light</span>{": "}<span className="v">#FEF3C7</span>{";\n"}
-        {"  "}<span className="p">--vsee-danger</span>{": "}<span className="v">#DC2626</span>{"; "}<span className="p">--vsee-danger-light</span>{": "}<span className="v">#FEE2E2</span>{";\n\n"}
+        {"  "}<span className="p">--vsee-danger</span>{": "}<span className="v">#D31212</span>{"; "}<span className="p">--vsee-danger-light</span>{": "}<span className="v">#FEE7E7</span>{";\n\n"}
         {"  "}<span className="c">{"/* Semantic dark text (AA on matching -light bg) */"}</span>{"\n"}
         {"  "}<span className="p">--vsee-success-dark</span>{": "}<span className="v">#265C10</span>{";\n"}
         {"  "}<span className="p">--vsee-info-dark</span>{": "}<span className="v">#075985</span>{";\n"}
