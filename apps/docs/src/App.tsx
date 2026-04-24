@@ -361,7 +361,7 @@ function App() {
    SECTION WRAPPERS
    ═══════════════════════════════════════════ */
 function Section({ id, label, title, description, children }: {
-  id: string; label: string; title: string; description: React.ReactNode; children: React.ReactNode;
+  id: string; label: string; title: string; description: React.ReactNode; children?: React.ReactNode;
 }) {
   return (
     <section id={id} className="ds-section">
@@ -2082,8 +2082,10 @@ function ComponentsNavigation() {
 /* ═══════════════════════════════════════════
    COMPONENTS — DROPDOWNS
    ═══════════════════════════════════════════ */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars -- render call is commented out above; function kept for future re-home of the Select Dropdown subsection.
-function ComponentsDropdowns() {
+// Render call is commented out above; exported so noUnusedLocals doesn't
+// flag it, and so the function stays reachable for the Select Dropdown
+// subsection to re-home later.
+export function ComponentsDropdowns() {
   return (
     <Section id="dropdowns" label="Components" title="Dropdowns"
       description="Dropdown menus, select lists, and action menus. All dropdowns are capped at 1/3 screen height and scroll when content overflows.">
@@ -2573,8 +2575,10 @@ function ComponentsOverlays() {
 /* ═══════════════════════════════════════════
    PATTERNS — LAYOUTS
    ═══════════════════════════════════════════ */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars -- render call is commented out above; function kept so the "layouts" anchor id + Section wrapper are ready to re-enable when Phase-2 Patterns ships.
-function PatternsLayouts() {
+// Render call is commented out above; exported so noUnusedLocals doesn't
+// flag it. The "layouts" anchor id + Section wrapper are ready to
+// re-enable when Phase-2 Patterns ships.
+export function PatternsLayouts() {
   return (
     <Section id="layouts" label="Patterns" title=""
       description="Common layout patterns used across the VSee Clinic application.">
