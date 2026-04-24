@@ -262,7 +262,7 @@
 @keyframes pop-out { from { opacity:1; transform:translateY(0); } to { opacity:0; transform:translateY(-4px); } }
 .select-listbox { outline: none; padding: 0; max-height: 33vh; overflow-y: auto; }
 .select-option { font-size: var(--vsee-text-body-size); padding: var(--vsee-sp-2) var(--vsee-sp-3); border-radius: var(--vsee-r-md); cursor: pointer; outline: none; transition: background var(--vsee-t-fast); }
-.select-option[data-focused] { background: var(--vsee-brand-light); color: var(--vsee-brand-dark); }
+.select-option[data-focused] { background: var(--vsee-brand-light); }
 .select-option[data-selected] { background: var(--vsee-brand); color: white; }
 .native-select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%236B7280' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 36px; }
 
@@ -283,7 +283,7 @@
 .phone-input-group .input:last-child, .phone-input.input { border-radius: 0 var(--vsee-r-md) var(--vsee-r-md) 0 !important; }
 .phone-input-middle { border-right: none !important; }
 .phone-ext { display: flex; align-items: center; }
-.phone-ext-label { height: 38px; display: flex; align-items: center; padding: 0 var(--vsee-sp-2); font-size: var(--vsee-text-caption-size); font-weight: 500; color: var(--vsee-text-secondary); background: var(--vsee-white); border-left: 1px solid var(--vsee-border-strong); white-space: nowrap; }
+.phone-ext-label { height: 38px; display: flex; align-items: center; padding: 0 var(--vsee-sp-2); font-size: var(--vsee-text-caption-size); font-weight: 500; color: var(--vsee-text-primary); background: var(--vsee-white); border-left: 1px solid var(--vsee-border-strong); white-space: nowrap; }
 .phone-ext-input.input { border-radius: 0 var(--vsee-r-md) var(--vsee-r-md) 0 !important; padding-left: 0; padding-right: var(--vsee-sp-2); }
 
 /* Date Picker */
@@ -437,9 +437,48 @@ input::-webkit-credentials-auto-fill-button { display: none; }
 .toggle-track-labeled.on .toggle-text-off { opacity: 0; }
 
 /* ═══════════════════════════════════════════
+   SLIDER (<input type="range">)
+   ═══════════════════════════════════════════
+   Cross-browser-consistent range control. Native track chrome (accent-color
+   alone still leaves a subtle inset border) is reset via -webkit-appearance:
+   none + vendor-pseudo overrides. The filled portion of the track is painted
+   by Firefox's ::-moz-range-progress automatically; WebKit has no equivalent
+   pseudo, so consumers paint it via a linear-gradient on the input's own
+   background (see the docs demo for the pattern). */
+.slider {
+  -webkit-appearance: none; appearance: none;
+  width: 100%; height: 8px;
+  background: var(--vsee-grey-400);
+  border: none; border-radius: var(--vsee-r-full);
+  outline: none; cursor: pointer;
+}
+.slider:focus-visible { box-shadow: var(--vsee-shadow-focus); }
+
+.slider::-webkit-slider-runnable-track { height: 8px; background: transparent; border: none; border-radius: var(--vsee-r-full); }
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 16px; height: 16px; margin-top: -4px;
+  background: var(--vsee-brand); border: none; border-radius: 50%;
+  cursor: pointer;
+}
+
+.slider::-moz-range-track { height: 8px; background: var(--vsee-grey-400); border: none; border-radius: var(--vsee-r-full); }
+.slider::-moz-range-progress { height: 8px; background: var(--vsee-brand); border: none; border-radius: var(--vsee-r-full); }
+.slider::-moz-range-thumb {
+  width: 16px; height: 16px;
+  background: var(--vsee-brand); border: none; border-radius: 50%;
+  cursor: pointer;
+}
+
+.slider:disabled { cursor: not-allowed; opacity: 0.6; }
+.slider:disabled::-webkit-slider-thumb { background: var(--vsee-grey-500); }
+.slider:disabled::-moz-range-thumb { background: var(--vsee-grey-500); }
+.slider:disabled::-moz-range-progress { background: var(--vsee-grey-500); }
+
+/* ═══════════════════════════════════════════
    BADGES
    ═══════════════════════════════════════════ */
-.badge { display: inline-flex; align-items: center; gap: var(--vsee-sp-1); padding: 2px 14px; border-radius: var(--vsee-r-full); font-size: var(--vsee-text-overline-size); font-weight: 600; line-height: 20px; }
+.badge { display: inline-flex; align-items: center; gap: var(--vsee-sp-1); height: 20px; padding: 0 var(--vsee-sp-3); border-radius: var(--vsee-r-full); font-size: var(--vsee-text-overline-size); font-weight: 600; line-height: 1; box-sizing: border-box; }
 .badge-dot { width: 6px; height: 6px; border-radius: 50%; }
 .badge-success { background: var(--vsee-success-light); color: var(--vsee-success-dark); }
 .badge-success .badge-dot { background: var(--vsee-success-dark); }
@@ -607,9 +646,9 @@ input::-webkit-credentials-auto-fill-button { display: none; }
 /* ═══════════════════════════════════════════
    PATTERNS — LAYOUTS
    ═══════════════════════════════════════════ */
-.sidebar-layout { display: flex; border: 1px solid var(--vsee-border); border-radius: var(--vsee-r-xl); overflow: hidden; background: var(--vsee-white); min-height: 300px; }
-.sidebar-panel { width: 200px; min-width: 200px; border-right: 1px solid var(--vsee-border); background: var(--vsee-grey-100); }
-.sidebar-heading { padding: var(--vsee-sp-4) var(--vsee-sp-4) var(--vsee-sp-3); font-weight: 700; font-size: var(--vsee-text-caption-size); color: var(--vsee-text-primary); }
+.sidebar-layout { display: flex; border: 1px solid var(--vsee-border); overflow: hidden; background: var(--vsee-white); }
+.sidebar-panel { width: 200px; min-width: 200px; border-right: 1px solid var(--vsee-border); background: var(--vsee-grey-100); padding-bottom: calc(var(--vsee-sp-4) + var(--vsee-sp-3) + var(--vsee-text-caption-size) * 1.4); }
+.sidebar-heading { padding: var(--vsee-sp-4) var(--vsee-sp-4) var(--vsee-sp-3); font-weight: 700; font-size: var(--vsee-text-caption-size); line-height: 1.4; color: var(--vsee-text-primary); }
 .sidebar-menu-item { display: flex; align-items: center; gap: var(--vsee-sp-3); padding: var(--vsee-sp-3) var(--vsee-sp-4); font-size: var(--vsee-text-caption-size); font-weight: 500; color: var(--vsee-text-secondary); cursor: pointer; transition: all var(--vsee-t-fast); }
 .sidebar-menu-item:hover { background-image: var(--vsee-hover-overlay); color: var(--vsee-text-primary); }
 .sidebar-menu-item.active { background: var(--vsee-brand-light); color: var(--vsee-brand-dark); font-weight: 600; border-right: 3px solid var(--vsee-brand-dark); }
@@ -675,6 +714,9 @@ input::-webkit-credentials-auto-fill-button { display: none; }
 .anchor-link { padding: 6px 14px; font-size: var(--vsee-text-body-size); font-weight: 500; color: var(--vsee-text-secondary); border-radius: var(--vsee-r-full); text-decoration: none; white-space: nowrap; transition: all var(--vsee-t-fast); }
 .anchor-link:hover { color: var(--vsee-text-primary); background-image: var(--vsee-hover-overlay); }
 .anchor-link.active { color: var(--vsee-brand-dark); background: var(--vsee-brand-light); font-weight: 600; }
+/* Right-aligned group inside the anchor-bar — holds the Patterns title + items. */
+.anchor-bar-right { margin-left: auto; display: flex; align-items: center; gap: var(--vsee-sp-1); }
+.anchor-bar-group-title { display: inline-flex; align-items: center; gap: 6px; font-size: var(--vsee-text-body-size); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--vsee-text-secondary); padding: 0 var(--vsee-sp-2); white-space: nowrap; }
 
 /* ═══════════════════════════════════════════
    EMR PAGE — DROPDOWN
@@ -684,7 +726,7 @@ input::-webkit-credentials-auto-fill-button { display: none; }
 .dropdown-popover[data-exiting] { animation: fadeOut 100ms ease; }
 .dropdown-menu { outline: none; max-height: 33vh; overflow-y: auto; }
 .dropdown-item { display: flex; align-items: center; gap: var(--vsee-sp-2); padding: var(--vsee-sp-2) var(--vsee-sp-3); font-size: var(--vsee-text-body-size); color: var(--vsee-text-primary); border-radius: var(--vsee-r-md); cursor: pointer; outline: none; transition: background var(--vsee-t-fast); }
-.dropdown-item[data-focused] { background: var(--vsee-brand-light); color: var(--vsee-brand-dark); }
+.dropdown-item[data-focused] { background: var(--vsee-brand-light); }
 .dropdown-item[data-pressed] { background: var(--vsee-grey-200); }
 .dropdown-item-danger { color: var(--vsee-danger); }
 .dropdown-item-danger[data-focused] { background: var(--vsee-danger-light); }
