@@ -1,5 +1,46 @@
 ﻿# Changelog
 
+Apr 24
+  Color tokens
+  - --vsee-success-light #F9FEF6 → #F1F9E1 (warmer, more saturated light-green).
+  - --vsee-info-light #E0F2FE → #EBF7FE (lighter/cooler).
+  - --vsee-danger #DC2626 → #D31212; --vsee-danger-light #FEE2E2 → #FEE7E7.
+
+  Slider (new primitive)
+  - Added .slider — custom-styled <input type="range"> with no native track chrome. 8px track, 16px brand thumb, cross-browser via -webkit-appearance:none + ::-webkit-slider-runnable-track/::-webkit-slider-thumb + ::-moz-range-track/::-moz-range-progress/::-moz-range-thumb. Disabled state greys thumb + fill (no opacity).
+  - Docs demo in Components → Others with a live value + disabled example. WebKit fill is painted via a linear-gradient on the input's own background; Firefox uses native ::-moz-range-progress.
+
+  Badge
+  - Height 20px; padding 0 var(--vsee-sp-3) (12px); line-height: 1; box-sizing: border-box — total box is exactly 20×auto regardless of consumer box-sizing.
+
+  Sidebar layout
+  - .sidebar-layout: removed border-radius + min-height so the card fits its content.
+  - .sidebar-panel: padding-bottom now = calc(sp-4 + sp-3 + caption-size × 1.4), matching the .sidebar-heading height for symmetric top/bottom gutters.
+  - .sidebar-heading: line-height 1.4 (deterministic height for the padding calc).
+
+  Dropdown + Select hover
+  - .dropdown-item[data-focused] and .select-option[data-focused] now only change background (was also swapping color to --brand-dark). Text/icon color stays put on hover; [data-selected] on .select-option still inverts to white on brand.
+
+  Phone field
+  - .phone-ext-label color --text-secondary → --text-primary.
+
+  Anchor bar (new helpers, currently unused)
+  - .anchor-bar-right + .anchor-bar-group-title added for a right-aligned group within the anchor bar. Left in place for a future patterns/right-nav iteration; no current consumer.
+
+  Docs site (App.tsx)
+  - Overlays: Modal / Dialog moved here from PatternsLayouts; now button-triggered with a fixed-position backdrop (fadeIn). Dropdown Button moved in full (3 live demos — Actions secondary, MoreHorizontal icon, New Order with grouped Lab Orders / Imaging sections) from the Dropdowns section.
+  - Dropdowns: section hidden (NAV entry removed; <ComponentsDropdowns /> render commented). Function + Select Dropdown subsection preserved for future re-home.
+  - PatternsLayouts: simplified to an empty stub; render call commented. Sidebar + Content preserved as a commented block in Components → Others.
+  - Feedback & Notifications: Notifications subsection moved above Empty State and its title cleared. Toast Notifications preview replaced with 4 permanent .notification variants (success / error / warning / info) at max-width 400, matching the button-triggered version below. Trimmed the margin between Toast Notifications and the trigger buttons via a new optional `style` prop on SubSection.
+  - Section and SubSection helpers skip the title <div> when title is empty.
+  - Others: new Slider subsection (live value + disabled example).
+
+  Roadmap
+  - Phase 2 PatternsLayouts item now flags the Sidebar split: extract a SidebarNav primitive + SidebarLayout composition so the rail is standalone-usable; move .sidebar-panel border-right onto the composed-layout selector.
+
+  Tooling
+  - .gitignore: added /design-system.esproj, /design-system.esproj.user, /Design System.sln, /package-lock.json, .vscode/.
+
 Apr 17
   Typography
   - System font switched from Plus Jakarta Sans to Figtree (loaded via Google Fonts).

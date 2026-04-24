@@ -47,7 +47,7 @@ Each extraction:
 
 ## Phase 2 — patterns + compositions (~4–6 weeks)
 
-- [ ] `PatternsLayouts` (Sidebar + Content, Header + Content, etc.)
+- [ ] `PatternsLayouts` (Sidebar + Content, Header + Content, etc.) — split Sidebar into `SidebarNav` primitive + `SidebarLayout` composition so the nav rail is reusable standalone (drawer, settings rail); move `.sidebar-panel` border-right onto the composed-layout selector so the primitive has no assumed neighbor.
 - [ ] `PatternsTheming` (brand theme switcher)
 - [ ] `PatternsFormio` (Form.io + React Aria integration)
 - [ ] `PatientCard`, `OrdersTable` — composed medical patterns
