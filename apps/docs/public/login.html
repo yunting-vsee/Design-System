@@ -112,10 +112,17 @@
       font-family: var(--vsee-font-sans);
       background: var(--vsee-grey-200);
       color: var(--vsee-text-primary);
-      min-height: 100vh;
+      /* Pin the body to the viewport height so the page itself never
+         scrolls. The stage gets the remaining space via flex; if the
+         card still overflows on very short viewports, the stage
+         scrolls internally — not the whole page. */
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
     }
     .toolbar {
-      position: sticky; top: 0; z-index: 10;
+      flex-shrink: 0;
       display: flex; align-items: center; justify-content: space-between;
       padding: var(--vsee-sp-3) var(--vsee-sp-6);
       background: var(--vsee-white);
@@ -134,9 +141,10 @@
     }
 
     .stage {
+      flex: 1; min-height: 0;
       display: flex; align-items: center; justify-content: center;
-      min-height: calc(100vh - 57px);
-      padding: var(--vsee-sp-8);
+      padding: var(--vsee-sp-6);
+      overflow: auto;
     }
 
     /* VSee wordmark stand-in */
@@ -184,16 +192,26 @@
     .input:focus { border-color: var(--vsee-brand); box-shadow: var(--vsee-shadow-focus); }
     .input::placeholder { color: var(--vsee-text-secondary); }
     .input.error { border-color: var(--vsee-danger); }
-    .input-lg { height: 48px; font-size: var(--vsee-text-body-lg-size); padding: 0 var(--vsee-sp-4); }
 
-    .input-eye-wrap { position: relative; }
-    .input-eye-wrap .input { padding-right: 40px; }
-    .input-eye-btn {
-      position: absolute; top: 50%; right: 10px; transform: translateY(-50%);
-      background: transparent; border: none; padding: 4px; cursor: pointer;
-      color: var(--vsee-grey-800);
+    /* Icon-inside-input pattern — same classes as src/styles.css. The
+       design system's .input-lg variant has been removed; use default
+       .input (40px) everywhere instead. */
+    .input-icon-wrap { position: relative; display: flex; align-items: center; width: 100%; }
+    .input-with-icon-right { padding-right: 42px !important; }
+    .input-icon-btn {
+      position: absolute; right: 1px; top: 1px; bottom: 1px;
+      width: var(--vsee-sp-10);
+      display: flex; align-items: center; justify-content: center;
+      background: transparent; border: none;
+      border-radius: 0 var(--vsee-r-md) var(--vsee-r-md) 0;
+      color: var(--vsee-text-secondary); cursor: pointer; outline: none;
+      transition: all var(--vsee-t-fast);
     }
-    .input-eye-btn:hover { color: var(--vsee-text-primary); }
+    .input-icon-btn:hover { background-image: var(--vsee-hover-overlay); color: var(--vsee-text-primary); }
+    /* The eye-toggle has two SVGs; only the one without [hidden] renders.
+       Explicit rule because the HTML `hidden` attribute doesn't reliably
+       hide SVG children of a flex container in every browser. */
+    .input-icon-btn svg[hidden] { display: none; }
 
     .btn {
       display: inline-flex; align-items: center; justify-content: center;
@@ -210,7 +228,7 @@
     .btn-primary:hover { background-image: var(--vsee-hover-overlay); box-shadow: var(--vsee-shadow-sm); }
     .btn-ghost { background: transparent; color: var(--vsee-text-primary); border: 2px solid var(--vsee-border); }
     .btn-ghost:hover { background-image: var(--vsee-hover-overlay); border-color: var(--vsee-border-strong); }
-    .btn-lg { font-size: var(--vsee-text-body-lg-size); height: 48px; padding: var(--vsee-sp-4) var(--vsee-sp-6); }
+    .btn-lg { font-size: var(--vsee-text-body-lg-size); height: 40px; padding: var(--vsee-sp-4) var(--vsee-sp-6); }
     .btn-block { display: flex; width: 100%; }
     .btn-link { background: transparent; color: var(--vsee-brand); padding: 0; border: none; font-weight: 600; font-size: var(--vsee-text-caption-size); cursor: pointer; }
     .btn-link:hover { text-decoration: underline; }
@@ -223,8 +241,11 @@
     .divider-row span { font-size: var(--vsee-text-caption-size); color: var(--vsee-text-secondary); }
 
     .sso-row { display: flex; flex-direction: column; gap: var(--vsee-sp-3); width: 100%; }
-    .welcome-row { display: flex; justify-content: space-between; width: 100%; margin-bottom: var(--vsee-sp-2); }
-    .welcome-row span.hint { color: var(--vsee-text-secondary); font-size: var(--vsee-text-caption-size); }
+    /* Label row: form-label on the left, small "Change email" link on the
+       right. Sits above the email input; link only shown once the email
+       is locked (signin step 2). */
+    .label-row { display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: var(--vsee-sp-2); }
+    .label-row .form-label { margin-bottom: 0; }
     .toggle-row { margin-top: var(--vsee-sp-6); font-size: var(--vsee-text-caption-size); color: var(--vsee-text-secondary); text-align: center; }
     .version { margin-top: var(--vsee-sp-8); font-size: var(--vsee-text-overline-size); color: var(--vsee-text-secondary); font-family: var(--vsee-mono); text-align: center; }
 
@@ -256,25 +277,32 @@
       <div class="logo">vsee<span class="dot">.</span></div>
 
       <div class="form-group">
-        <label class="form-label sr-only" for="email">Email</label>
-        <input class="input input-lg" id="email" type="email"
-               placeholder="Work email" autocomplete="email" />
+        <div class="label-row">
+          <label class="form-label" for="email">Email</label>
+          <button type="button" class="btn-link" id="changeEmail" hidden>Change email</button>
+        </div>
+        <input class="input" id="email" type="email"
+               placeholder="you@example.com" autocomplete="email" />
         <div class="form-error-text" id="errEmail" hidden></div>
       </div>
 
       <div class="form-group" id="pwGroup" hidden>
-        <div class="welcome-row">
-          <span class="hint">Welcome back</span>
-          <button type="button" class="btn-link" id="changeEmail">Change email</button>
-        </div>
-        <div class="input-eye-wrap">
-          <input class="input input-lg" id="pw" type="password"
-                 placeholder="Password" autocomplete="current-password" />
-          <button type="button" class="input-eye-btn" id="eye" aria-label="Show password">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                 stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <label class="form-label" for="pw">Password</label>
+        <div class="input-icon-wrap">
+          <input class="input input-with-icon-right" id="pw" type="password"
+                 placeholder="Enter password" autocomplete="current-password" />
+          <button type="button" class="input-icon-btn" id="eye" aria-label="Show password">
+            <svg class="eye-show" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
               <circle cx="12" cy="12" r="3"/>
+            </svg>
+            <svg class="eye-hide" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" hidden>
+              <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/>
+              <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 11 7 11 7a13.16 13.16 0 0 1-1.67 2.68"/>
+              <path d="M6.61 6.61A13.526 13.526 0 0 0 1 12s4 7 11 7a9.74 9.74 0 0 0 5.39-1.61"/>
+              <line x1="2" y1="2" x2="22" y2="22"/>
             </svg>
           </button>
         </div>
@@ -370,12 +398,16 @@
       step = 'password';
       pwGroup.hidden = false;
       emailInput.readOnly = (mode === 'signin');
+      // "Change email" link is only meaningful when the email is locked;
+      // in signup mode the field stays editable so no link is needed.
+      changeBtn.hidden = !emailInput.readOnly;
       pwInput.focus();
     }
     function rewindToEmail() {
       step = 'email';
       pwGroup.hidden = true;
       emailInput.readOnly = false;
+      changeBtn.hidden = true;
       pwInput.value = '';
       clearAll();
       emailInput.focus();
@@ -420,6 +452,10 @@
       pwVisible = !pwVisible;
       pwInput.type = pwVisible ? 'text' : 'password';
       eyeBtn.setAttribute('aria-label', pwVisible ? 'Hide password' : 'Show password');
+      // Swap the eye icon — toggleAttribute is more reliable than the
+      // `.hidden` property setter on SVGElement across browsers.
+      eyeBtn.querySelector('.eye-show').toggleAttribute('hidden', pwVisible);
+      eyeBtn.querySelector('.eye-hide').toggleAttribute('hidden', !pwVisible);
     });
 
     toggleAuthBtn.addEventListener('click', () => {
