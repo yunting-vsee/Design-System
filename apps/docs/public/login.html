@@ -150,13 +150,13 @@
       overflow: auto;
     }
 
-    /* VSee wordmark stand-in */
-    .logo {
-      font-family: var(--vsee-font-sans); font-weight: 800; letter-spacing: -1.5px;
-      font-size: 36px; line-height: 1;
-      color: var(--vsee-brand);
-    }
-    .logo .dot { color: var(--vsee-brand-light); }
+    /* VSee wordmark — same PNG assets the Phoenix login uses
+       (`vsee-logo-brand.png` for light, `vsee-logo.png` for dark).
+       Swapped via [data-mode] so the mark always reads against its surface. */
+    .logo { height: 48px; display: block; }
+    .logo-dark { display: none; }
+    [data-mode="dark"] .logo-light { display: none; }
+    [data-mode="dark"] .logo-dark  { display: block; }
 
     .sr-only {
       position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
@@ -276,7 +276,8 @@
 
   <main class="stage">
     <form class="login-card" id="login" autocomplete="off" novalidate>
-      <div class="logo">vsee<span class="dot">.</span></div>
+      <img class="logo logo-light" src="vsee-logo-brand.png" alt="VSee" />
+      <img class="logo logo-dark"  src="vsee-logo.png"       alt=""     aria-hidden="true" />
 
       <div class="form-group">
         <div class="label-row">
