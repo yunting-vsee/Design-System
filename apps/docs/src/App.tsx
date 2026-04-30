@@ -66,6 +66,7 @@ import {
   Layers,
   Settings,
   MoreHorizontal,
+  MessageSquare,
   Edit3,
   Trash2,
   Copy,
@@ -95,6 +96,9 @@ import {
 } from "lucide-react";
 
 // Component visual styles come from `@vsee/ui/styles.css`, loaded via `src/index.css`.
+
+// Pages section — kitchen-sink showcase. Lives under apps/docs/src/patterns/.
+import { KitchenSink } from "./patterns/KitchenSink";
 
 /* ─── Copy-to-clipboard helper ─── */
 function useCopyToast() {
@@ -140,6 +144,13 @@ const NAV = [
       { label: "Design Tokens", id: "tokens" },
       { label: "White-Label", id: "theming" },
       { label: "Form.io Integration", id: "formio" },
+    ],
+  },
+  {
+    group: "Pages",
+    icon: <MessageSquare size={14} />,
+    items: [
+      { label: "Kitchen Sink", id: "pages" },
     ],
   },
 ];
@@ -342,6 +353,7 @@ function App() {
         <EngineeringTokens />
         <PatternsTheming brandTheme={brandTheme} setBrandTheme={setBrandTheme} />
         <PatternsFormio />
+        <KitchenSink />
 
         {/* Footer */}
         <div className="ds-footer">
