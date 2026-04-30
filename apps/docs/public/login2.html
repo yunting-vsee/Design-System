@@ -1,0 +1,641 @@
+<!doctype html>
+<!--
+  Login2 — Phoenix login re-skinned through @vsee/ui v0.1.0
+  ─────────────────────────────────────────────────────────
+  This prototype takes the content/flow from va-main's
+  src/components/Login.tsx (Phoenix) and re-skins it through the design
+  system's `@vsee/ui` tokens and component classes — the same styling
+  vocabulary used by ./login.html.
+
+  Tracking: docs/roadmap/npm-extraction-plan.md.
+  - Phase 0 already shipped tokens + base CSS as v0.1.0.
+  - This file is the migration artifact for the Phase-0→Phase-1 handoff:
+    Phoenix's component is reproduced statically against @vsee/ui to prove
+    every Phoenix-only token (`--vsee-text-3`, `--vsee-text-4`, …, the
+    gradient continue-button background) maps onto a design-system
+    semantic name (`--vsee-text-secondary`, `--vsee-grey-700`, …, the
+    solid `.btn-primary`). When Phase 1 lands a real <Login> in
+    @vsee/ui's `src/components/`, this prototype is the visual contract.
+
+  Self-contained: tokens + the @vsee/ui component-class subset are inlined
+  so the file opens directly from disk with no build step (Google Fonts
+  via CDN is the only network dependency). React Aria, JSX, zustand,
+  XMPP, Tauri — none of the runtime wiring from Phoenix is here. The
+  Continue button is `setTimeout + alert()`, like login.html.
+-->
+<html lang="en" data-mode="light" data-theme="green">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login2 — Phoenix re-skinned through @vsee/ui</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    /* ═══════════════════════════════════════════════════════════════════════
+       @vsee/ui — Design Tokens (inlined from src/tokens.css)
+       Copied verbatim from login.html so the two prototypes share an
+       identical token surface and any drift is purely structural.
+       ═══════════════════════════════════════════════════════════════════════ */
+    :root {
+      --vsee-font-sans: "Figtree", system-ui, -apple-system, sans-serif;
+      --vsee-mono: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+
+      --vsee-brand: #0D875C;
+      --vsee-brand-semidark: #096843;
+      --vsee-brand-dark: #0A6B49;
+      --vsee-brand-darker: #074D35;
+      --vsee-brand-light: #E6F5EE;
+      --vsee-brand-50: #F0FAF5;
+
+      --vsee-success: #367D17; --vsee-success-light: #F9FEF6;
+      --vsee-info: #196CD2; --vsee-info-light: #E0F2FE;
+      --vsee-warning: #FFCB5A; --vsee-warning-light: #FEF3C7;
+      --vsee-danger: #D31212; --vsee-danger-light: #FEE7E7;
+      --vsee-danger-dark: #991B1B;
+
+      --vsee-black: #111827;
+      --vsee-grey-900: #4B5563; --vsee-grey-800: #6B7280; --vsee-grey-700: #9CA3AF;
+      --vsee-grey-600: #B0B7C3; --vsee-grey-500: #C9CED6; --vsee-grey-400: #E8EAED;
+      --vsee-grey-300: #F1F2F4; --vsee-grey-200: #F8F9FA; --vsee-grey-100: #FCFCFD;
+      --vsee-white: #FFFFFF;
+
+      --vsee-text-primary: #111827; --vsee-text-secondary: #6B7280;
+      --vsee-border: #E5E7EB; --vsee-border-strong: #D1D5DB;
+
+      --vsee-text-overline-size: 12px; --vsee-text-caption-size: 13px; --vsee-text-body-size: 14px;
+      --vsee-text-body-lg-size: 16px; --vsee-text-h5-size: 16px; --vsee-text-h4-size: 20px;
+      --vsee-text-h3-size: 24px; --vsee-text-h2-size: 36px; --vsee-text-h1-size: 48px;
+
+      --vsee-sp-1: 4px; --vsee-sp-2: 8px; --vsee-sp-3: 12px; --vsee-sp-4: 16px;
+      --vsee-sp-5: 20px; --vsee-sp-6: 24px; --vsee-sp-8: 32px; --vsee-sp-10: 40px;
+      --vsee-sp-12: 48px;
+
+      --vsee-r-xs: 4px; --vsee-r-sm: 6px; --vsee-r-md: 8px; --vsee-r-lg: 12px;
+      --vsee-r-xl: 16px; --vsee-r-2xl: 24px; --vsee-r-full: 9999px;
+
+      --vsee-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --vsee-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --vsee-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+      --vsee-shadow-focus: 0 0 0 3px rgba(13,135,92,0.15);
+      --vsee-hover-overlay: linear-gradient(rgba(0,0,0,0.07), rgba(0,0,0,0.07));
+
+      --vsee-ease: cubic-bezier(0.4, 0, 0.2, 1);
+      --vsee-t-fast: 150ms var(--vsee-ease); --vsee-t-base: 200ms var(--vsee-ease);
+    }
+
+    [data-theme="blue"] {
+      --vsee-brand: #0891B2; --vsee-brand-semidark: #155E75;
+      --vsee-brand-dark: #0E7490; --vsee-brand-darker: #164E63;
+      --vsee-brand-light: #E0F7FA; --vsee-brand-50: #ECFEFF;
+      --vsee-shadow-focus: 0 0 0 3px rgba(8,145,178,0.15);
+    }
+    [data-theme="purple"] {
+      --vsee-brand: #7C3AED; --vsee-brand-semidark: #5E28BF;
+      --vsee-brand-dark: #6332C4; --vsee-brand-darker: #47248C;
+      --vsee-brand-light: #EDE9FE; --vsee-brand-50: #F5F3FF;
+      --vsee-shadow-focus: 0 0 0 3px rgba(124,58,237,0.15);
+    }
+
+    [data-mode="dark"] {
+      --vsee-brand-light: #0F2D22; --vsee-brand-50: #0A1F18; --vsee-brand-dark: #34D399;
+      /* Brightened in dark mode so error text (form errors, input error
+         border) passes WCAG AA 4.5:1 against the dark body (~6.5:1). */
+      --vsee-danger: #F87171;
+      --vsee-danger-light: #2D1212;
+      --vsee-black: #F9FAFB;
+      --vsee-grey-900: #F3F4F6; --vsee-grey-800: #E5E7EB; --vsee-grey-700: #D1D5DB;
+      --vsee-grey-600: #9CA3AF; --vsee-grey-500: #6B7280; --vsee-grey-400: #4B5563;
+      --vsee-grey-300: #1F2937; --vsee-grey-200: #111827; --vsee-grey-100: #0F172A;
+      --vsee-white: #0B1120;
+      --vsee-text-primary: #F9FAFB; --vsee-text-secondary: #9CA3AF;
+      --vsee-border: #1F2937; --vsee-border-strong: #374151;
+      --vsee-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+      --vsee-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.3);
+      color-scheme: dark;
+    }
+    [data-mode="dark"][data-theme="blue"]  { --vsee-brand-light: #0C1F2E; --vsee-brand-dark: #67E8F9; }
+    [data-mode="dark"][data-theme="purple"]{ --vsee-brand-light: #1A0F2E; --vsee-brand-dark: #C4B5FD; }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       Page chrome — toolbar + centered login stage
+       ═══════════════════════════════════════════════════════════════════════ */
+    * { box-sizing: border-box; }
+    button, input, select, textarea { font-family: inherit; font-size: inherit; }
+    body {
+      margin: 0;
+      font-family: var(--vsee-font-sans);
+      background: var(--vsee-grey-200);
+      color: var(--vsee-text-primary);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+    .toolbar {
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: var(--vsee-sp-3) var(--vsee-sp-6);
+      background: var(--vsee-white);
+      border-bottom: 1px solid var(--vsee-border);
+      font-size: var(--vsee-text-caption-size);
+      position: relative;
+      z-index: 2;
+    }
+    .toolbar strong { font-size: var(--vsee-text-body-lg-size); font-weight: 700; }
+    .toolbar .controls { display: flex; align-items: center; gap: var(--vsee-sp-4); }
+    .toolbar label { display: flex; align-items: center; gap: var(--vsee-sp-2); color: var(--vsee-text-secondary); }
+    .toolbar select, .toolbar button {
+      font-family: inherit; font-size: var(--vsee-text-body-size);
+      padding: 6px var(--vsee-sp-3);
+      background: var(--vsee-white); color: var(--vsee-text-primary);
+      border: 1px solid var(--vsee-border-strong); border-radius: var(--vsee-r-sm);
+      cursor: pointer;
+    }
+    .toolbar select:focus-visible,
+    .toolbar button:focus-visible { box-shadow: var(--vsee-shadow-focus); outline: 2px solid var(--vsee-brand); outline-offset: 2px; }
+
+    .stage {
+      flex: 1; min-height: 0;
+      display: flex; align-items: center; justify-content: center;
+      padding: var(--vsee-sp-2);
+      overflow: auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Decorative dot patterns — Phoenix anchors these to the body corners,
+       not the card. We pin them to the viewport with `position: fixed` so
+       they decorate the page surface around the centered card. `pointer-
+       events: none` keeps them from intercepting clicks on the toolbar/card,
+       and z-index: 0 stacks them below both. */
+    .corner-dots {
+      position: fixed;
+      width: 120px; height: auto;
+      opacity: 0.2;
+      pointer-events: none;
+      z-index: 0;
+      user-select: none;
+    }
+    .corner-dots-left  { bottom: var(--vsee-sp-4); left:  var(--vsee-sp-4); }
+    .corner-dots-right { top:    var(--vsee-sp-4); right: var(--vsee-sp-4); }
+    /* In dark mode the colored dots get a small brightness lift so the
+       decoration doesn't disappear into the near-black surface. */
+    [data-mode="dark"] .corner-dots { opacity: 0.28; filter: brightness(1.4); }
+
+    /* VSee wordmark — same swap pattern as login.html. Brand-green on the
+       light surface, white on the dark one. */
+    .logo { height: 48px; display: block; }
+    .logo-dark { display: none; }
+    [data-mode="dark"] .logo-light { display: none; }
+    [data-mode="dark"] .logo-dark  { display: block; }
+
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════════
+       @vsee/ui component classes (copied verbatim from src/styles.css /
+       login.html). These are the visual contract this prototype enforces:
+       boxed inputs, solid .btn-primary (no gradient), bordered card.
+       ═══════════════════════════════════════════════════════════════════════ */
+    .login-card {
+      width: 400px; padding: var(--vsee-sp-10);
+      background: var(--vsee-white);
+      border: 1px solid var(--vsee-border);
+      border-radius: var(--vsee-r-xl);
+      box-shadow: var(--vsee-shadow-md);
+      display: flex; flex-direction: column; align-items: center;
+    }
+    .login-card .logo { margin-bottom: var(--vsee-sp-8); }
+
+    .field { display: flex; flex-direction: column; position: relative; width: 100%; }
+    .form-group { margin-bottom: var(--vsee-sp-5); width: 100%; }
+    .form-label { display: block; font-size: var(--vsee-text-caption-size); font-weight: 600; color: var(--vsee-text-primary); margin-bottom: var(--vsee-sp-2); }
+    .form-error-text { font-size: var(--vsee-text-overline-size); color: var(--vsee-danger); margin-top: var(--vsee-sp-1); }
+
+    .input {
+      width: 100%; height: var(--vsee-sp-10);
+      padding: 0 var(--vsee-sp-2) 0 var(--vsee-sp-3);
+      font-family: var(--vsee-font-sans); font-size: var(--vsee-text-body-size);
+      color: var(--vsee-text-primary); background: var(--vsee-white);
+      border: 1px solid var(--vsee-border-strong); border-radius: var(--vsee-r-md);
+      transition: all var(--vsee-t-fast); outline: none;
+    }
+    .input:hover { border-color: var(--vsee-grey-500); }
+    .input:focus { border-color: var(--vsee-brand); box-shadow: var(--vsee-shadow-focus); }
+    .input::placeholder { color: var(--vsee-text-secondary); }
+    .input.error { border-color: var(--vsee-danger); }
+    /* Read-only state on the email input during the password step (Phoenix
+       mirror): the value stays visible/copyable and focusable but greyed
+       to signal "locked, use Change email to rewind". */
+    .input[readonly] {
+      background: var(--vsee-grey-200);
+      color: var(--vsee-text-secondary);
+      cursor: default;
+    }
+    .input[readonly]:focus { box-shadow: none; border-color: var(--vsee-border-strong); }
+
+    .input-icon-wrap { position: relative; display: flex; align-items: center; width: 100%; }
+    .input-with-icon-right { padding-right: 42px !important; }
+    .input-icon-btn {
+      position: absolute; right: 1px; top: 1px; bottom: 1px;
+      width: var(--vsee-sp-10);
+      display: flex; align-items: center; justify-content: center;
+      background: transparent; border: none;
+      border-radius: 0 var(--vsee-r-md) var(--vsee-r-md) 0;
+      color: var(--vsee-text-secondary); cursor: pointer; outline: none;
+      transition: all var(--vsee-t-fast);
+    }
+    .input-icon-btn:hover { background-image: var(--vsee-hover-overlay); color: var(--vsee-text-primary); }
+    .input-icon-btn:focus-visible { box-shadow: var(--vsee-shadow-focus); outline: 2px solid var(--vsee-brand); outline-offset: -2px; }
+    .input-icon-btn svg[hidden] { display: none; }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: var(--vsee-sp-2); font-family: var(--vsee-font-sans); font-weight: 600;
+      font-size: var(--vsee-text-body-size); height: 38px;
+      padding: var(--vsee-sp-3) var(--vsee-sp-5);
+      border-radius: var(--vsee-r-md); border: 1px solid transparent;
+      cursor: pointer; transition: all var(--vsee-t-fast);
+      white-space: nowrap; outline: none;
+    }
+    .btn:focus-visible { box-shadow: var(--vsee-shadow-focus); outline: 2px solid var(--vsee-brand); outline-offset: 2px; }
+    .btn:disabled { background: var(--vsee-grey-300); color: var(--vsee-text-secondary); border-color: var(--vsee-border-strong); cursor: not-allowed; }
+    .btn-primary { background: var(--vsee-brand); color: white; }
+    .btn-primary:hover:not(:disabled) { background-image: var(--vsee-hover-overlay); box-shadow: var(--vsee-shadow-sm); }
+    .btn-ghost { background: transparent; color: var(--vsee-text-primary); border: 2px solid var(--vsee-border); }
+    .btn-ghost:hover:not(:disabled) { background-image: var(--vsee-hover-overlay); border-color: var(--vsee-border-strong); }
+    .btn-block { display: flex; width: 100%; }
+    .btn-link { background: transparent; color: var(--vsee-brand); padding: 0; border: none; font-weight: 600; font-size: var(--vsee-text-caption-size); cursor: pointer; }
+    .btn-link:hover { text-decoration: underline; }
+    .btn-link:focus-visible { box-shadow: var(--vsee-shadow-focus); outline: 2px solid var(--vsee-brand); outline-offset: 2px; border-radius: var(--vsee-r-xs); }
+
+    .divider-row {
+      display: flex; align-items: center; width: 100%;
+      gap: var(--vsee-sp-4); margin: var(--vsee-sp-6) 0;
+    }
+    .divider-row .rule { flex: 1; height: 1px; background: var(--vsee-border-strong); }
+    .divider-row span { font-size: var(--vsee-text-caption-size); color: var(--vsee-text-secondary); }
+
+    .sso-row { display: flex; flex-direction: column; gap: var(--vsee-sp-3); width: 100%; }
+
+    /* Welcome-back hint row — sits BETWEEN the email field and the password
+       field on the password step. Phoenix puts the "Change email" link on
+       the right of this same row (deliberate UX choice — not above the
+       email input itself). */
+    .welcome-row {
+      display: flex; justify-content: space-between; align-items: center;
+      width: 100%;
+      margin-bottom: var(--vsee-sp-2);
+      font-size: var(--vsee-text-caption-size);
+    }
+    .welcome-row .welcome-hint { color: var(--vsee-text-secondary); }
+
+    .toggle-row { margin-top: var(--vsee-sp-6); font-size: var(--vsee-text-caption-size); color: var(--vsee-text-secondary); text-align: center; }
+    .version { margin-top: var(--vsee-sp-8); font-size: var(--vsee-text-overline-size); color: var(--vsee-text-secondary); font-family: var(--vsee-mono); text-align: center; }
+
+    /* Reduced motion — kill input/button transitions for users who opt out
+       of motion. The page has no auto-animations to gate, so this is a
+       conservative belt-and-braces step. */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        transition-duration: 0.001ms !important;
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .login-card { width: 100%; padding: var(--vsee-sp-6); }
+      .corner-dots { width: 80px; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Decorative dot patterns — fixed to viewport corners, behind toolbar
+       and card. alt="" + aria-hidden so SR users don't hear them. -->
+  <img class="corner-dots corner-dots-left"  src="login-dots-left.png"  alt="" aria-hidden="true" />
+  <img class="corner-dots corner-dots-right" src="login-dots-right.png" alt="" aria-hidden="true" />
+
+  <header class="toolbar">
+    <strong>Login2 — Phoenix re-skinned through @vsee/ui</strong>
+    <div class="controls">
+      <label>Brand
+        <select id="themeSelect">
+          <option value="green">Green (default)</option>
+          <option value="blue">Blue</option>
+          <option value="purple">Purple</option>
+        </select>
+      </label>
+      <label>Mode
+        <button id="modeToggle" type="button">Switch to dark</button>
+      </label>
+    </div>
+  </header>
+
+  <main class="stage">
+    <form class="login-card" id="login" autocomplete="off" novalidate>
+      <img class="logo logo-light" src="vsee-logo-brand.png" alt="VSee" />
+      <img class="logo logo-dark"  src="vsee-logo.png"       alt=""     aria-hidden="true" />
+
+      <!-- Email field. In sign-in mode the label is plain "Email"; on the
+           password step the input becomes readonly and the "Change email"
+           link appears in the welcome-row below (Phoenix UX). In sign-up
+           mode the field stays editable. -->
+      <div class="form-group">
+        <label class="form-label" for="email">Email</label>
+        <input class="input" id="email" type="email"
+               placeholder="you@example.com"
+               autocomplete="email"
+               autocapitalize="none"
+               autocorrect="off"
+               spellcheck="false" />
+        <div class="form-error-text" id="errEmail" role="alert" hidden></div>
+      </div>
+
+      <!-- Welcome-back hint — only shown on the password step of sign-in.
+           "Change email" link is anchored to the right of this row, exactly
+           as Phoenix renders it. -->
+      <div class="welcome-row" id="welcomeRow" hidden>
+        <span class="welcome-hint">Welcome back</span>
+        <button type="button" class="btn-link" id="changeEmail">Change email</button>
+      </div>
+
+      <div class="form-group" id="pwGroup" hidden>
+        <label class="form-label" for="pw">Password</label>
+        <div class="input-icon-wrap">
+          <input class="input input-with-icon-right" id="pw" type="password"
+                 placeholder="Enter password" autocomplete="current-password" />
+          <button type="button" class="input-icon-btn" id="eye" aria-label="Show password">
+            <!-- Eye-show / eye-hide SVGs — same paths as Phoenix Login.tsx.
+                 The visible one swaps via [hidden] on click. -->
+            <svg class="eye-show" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+            <svg class="eye-hide" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" hidden>
+              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+              <line x1="1" y1="1" x2="23" y2="23"/>
+            </svg>
+          </button>
+        </div>
+        <div class="form-error-text" id="errPw" role="alert" hidden></div>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block" id="continueBtn">
+        Continue
+      </button>
+
+      <div class="toggle-row">
+        <span id="toggleLabel">Don't have an account? </span>
+        <button type="button" class="btn-link" id="toggleAuth">Sign up</button>
+      </div>
+
+      <!-- Divider + SSO — only rendered in sign-in mode (Phoenix hides this
+           whole region during sign-up). We toggle visibility via JS below. -->
+      <div id="ssoBlock">
+        <div class="divider-row">
+          <div class="rule"></div><span>or</span><div class="rule"></div>
+        </div>
+
+        <div class="sso-row">
+          <button type="button" class="btn btn-ghost btn-block" disabled aria-label="Continue with Google (coming soon)">
+            <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
+              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+            </svg>
+            Continue with Google
+          </button>
+          <!-- Apple — Phoenix only mounts the button on iOS/macOS via
+               canUseNativeAppleSignIn(). We do the equivalent UA sniff in
+               JS at boot; the element is removed entirely on non-Apple
+               platforms so SR users don't hear an unusable affordance. -->
+          <button type="button" class="btn btn-block" id="appleBtn" hidden
+                  style="background:#000;color:#fff;border:1px solid #000;"
+                  aria-label="Continue with Apple">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
+            </svg>
+            Continue with Apple
+          </button>
+        </div>
+      </div>
+
+      <div class="version">v0.1.0 · @vsee/ui · login2 prototype</div>
+    </form>
+  </main>
+
+  <script>
+    /* ─────────────────────────────────────────────────────────────────────
+       Toolbar wiring — same as login.html: brand-theme select + light/dark
+       toggle. Both drive the [data-theme] / [data-mode] attributes on the
+       <html> root that the token override blocks above key off.
+       ──────────────────────────────────────────────────────────────────── */
+    const root = document.documentElement;
+    document.getElementById('themeSelect').addEventListener('change', (e) => {
+      root.setAttribute('data-theme', e.target.value);
+    });
+    const modeBtn = document.getElementById('modeToggle');
+    modeBtn.addEventListener('click', () => {
+      const next = root.getAttribute('data-mode') === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-mode', next);
+      modeBtn.textContent = next === 'dark' ? 'Switch to light' : 'Switch to dark';
+    });
+
+    /* ─────────────────────────────────────────────────────────────────────
+       Apple SSO platform gate — Phoenix's canUseNativeAppleSignIn() returns
+       true only on iOS/macOS hosts where the Tauri plugin can drive the
+       native AuthenticationServices sheet. Mirror that with a UA sniff so
+       Windows/Android/Linux users don't see an affordance that can't fire.
+       ──────────────────────────────────────────────────────────────────── */
+    const isApplePlatform = /Mac|iPhone|iPad|iPod/.test(navigator.userAgent);
+    const appleBtn = document.getElementById('appleBtn');
+    if (isApplePlatform) appleBtn.hidden = false;
+
+    /* ─────────────────────────────────────────────────────────────────────
+       Login flow — mirrors va-main's src/components/Login.tsx state machine:
+         - sign-in: email step → password step (Continue advances)
+         - sign-up: email + password together (no advanceToPassword)
+         - field-scoped error bubbles (email vs password vs form)
+         - email becomes readonly on the password step; "Change email"
+           rewinds (Phoenix UX — keeps the user from editing in place)
+         - eye toggle for password visibility
+         - toggleAuth resets stale errors (Harry's bug 2026-04-20)
+         - pw === "fail" simulates an auth failure
+         - Continue → 800ms "Connecting…" → alert(), like login.html
+       ──────────────────────────────────────────────────────────────────── */
+    const EMAIL_SHAPE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    const emailInput   = document.getElementById('email');
+    const pwInput      = document.getElementById('pw');
+    const pwGroup      = document.getElementById('pwGroup');
+    const continueBtn  = document.getElementById('continueBtn');
+    const changeBtn    = document.getElementById('changeEmail');
+    const welcomeRow   = document.getElementById('welcomeRow');
+    const eyeBtn       = document.getElementById('eye');
+    const eyeShow      = eyeBtn.querySelector('.eye-show');
+    const eyeHide      = eyeBtn.querySelector('.eye-hide');
+    const errEmail     = document.getElementById('errEmail');
+    const errPw        = document.getElementById('errPw');
+    const toggleAuthBtn= document.getElementById('toggleAuth');
+    const toggleLabel  = document.getElementById('toggleLabel');
+    const ssoBlock     = document.getElementById('ssoBlock');
+
+    let step = 'email';   // 'email' | 'password' (only meaningful in signin)
+    let mode = 'signin';  // 'signin' | 'signup'
+    let pwVisible = false;
+
+    function showError(slot, input, msg) {
+      slot.textContent = msg; slot.hidden = false;
+      if (input) input.classList.add('error');
+    }
+    function clearError(slot, input) {
+      slot.hidden = true; slot.textContent = '';
+      if (input) input.classList.remove('error');
+    }
+    function clearAll() {
+      clearError(errEmail, emailInput);
+      clearError(errPw, pwInput);
+    }
+
+    /* signin step 1 → 2: lock email, reveal welcome-row + password input. */
+    function advanceToPassword() {
+      step = 'password';
+      pwGroup.hidden = false;
+      welcomeRow.hidden = false;
+      emailInput.readOnly = true;
+      pwInput.focus();
+    }
+    /* signin step 2 → 1: clear password + errors, refocus email. Phoenix
+       keeps the typed email so the user can correct a typo without retyping. */
+    function rewindToEmail() {
+      step = 'email';
+      pwGroup.hidden = true;
+      welcomeRow.hidden = true;
+      emailInput.readOnly = false;
+      pwInput.value = '';
+      // Reset the eye toggle too — wouldn't want a "Hide password" pill
+      // hanging around when there's no password field on screen.
+      pwVisible = false;
+      pwInput.type = 'password';
+      eyeShow.removeAttribute('hidden');
+      eyeHide.setAttribute('hidden', '');
+      eyeBtn.setAttribute('aria-label', 'Show password');
+      clearAll();
+      emailInput.focus();
+    }
+
+    /* Sign-up shows email + password from the start; no two-step dance.
+       Phoenix's `isLogin === false` branch in handleContinue. */
+    function enterSignupLayout() {
+      step = 'email';        // Step value irrelevant in signup; reset for cleanliness.
+      pwGroup.hidden = false;
+      welcomeRow.hidden = true;
+      emailInput.readOnly = false;
+      ssoBlock.hidden = true; // Phoenix only renders SSO in sign-in mode.
+      toggleLabel.textContent = 'Already have an account? ';
+      toggleAuthBtn.textContent = 'Sign in';
+      continueBtn.textContent = 'Sign up';
+    }
+    function enterSigninLayout() {
+      mode = 'signin';
+      step = 'email';
+      pwGroup.hidden = true;
+      welcomeRow.hidden = true;
+      emailInput.readOnly = false;
+      ssoBlock.hidden = false;
+      toggleLabel.textContent = "Don't have an account? ";
+      toggleAuthBtn.textContent = 'Sign up';
+      continueBtn.textContent = 'Continue';
+    }
+
+    /* Continue handler — single entry point for both modes. Form validation
+       is intentionally per-field so the error pill renders against the
+       offending input, not under the button (Phoenix Harry-bug fix). */
+    continueBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const email = emailInput.value.trim();
+
+      // Sign-in step 1 — validate email shape, advance.
+      if (mode === 'signin' && step === 'email') {
+        if (!email)                   return showError(errEmail, emailInput, 'Please enter your email.');
+        if (!EMAIL_SHAPE.test(email)) return showError(errEmail, emailInput, "That doesn't look like a valid email.");
+        clearAll(); advanceToPassword(); return;
+      }
+
+      // Sign-up — validate email inline before checking password.
+      if (mode === 'signup') {
+        if (!email)                   return showError(errEmail, emailInput, 'Please enter your email.');
+        if (!EMAIL_SHAPE.test(email)) return showError(errEmail, emailInput, "That doesn't look like a valid email.");
+      }
+
+      const pw = pwInput.value;
+      if (!pw.trim())   return showError(errPw, pwInput, 'Please enter your password.');
+      // Auth-failure simulation — same sentinel as login.html. Surfaces
+      // a "form-level" error in the password slot so the user doesn't lose
+      // context while we wait for the real backend.
+      if (pw === 'fail') return showError(errPw, pwInput, 'Sign-in failed. Please check your credentials.');
+
+      // Connecting state — disable the button so the user can't double-fire
+      // the request while the (simulated) connect runs.
+      continueBtn.disabled = true;
+      const previousLabel = continueBtn.textContent;
+      continueBtn.textContent = 'Connecting...';
+      setTimeout(() => {
+        continueBtn.disabled = false;
+        continueBtn.textContent = previousLabel;
+        alert('Would sign in: ' + email);
+      }, 800);
+    });
+
+    /* Field listeners — clearing the error pill on input matches Phoenix's
+       onChange contract. Enter on either input fires the Continue button. */
+    emailInput.addEventListener('input', () => clearError(errEmail, emailInput));
+    pwInput.addEventListener('input',    () => clearError(errPw, pwInput));
+    emailInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); continueBtn.click(); } });
+    pwInput.addEventListener('keydown',    (e) => { if (e.key === 'Enter') { e.preventDefault(); continueBtn.click(); } });
+
+    changeBtn.addEventListener('click', rewindToEmail);
+
+    /* Eye toggle — flips the input type, swaps the SVG, and updates the
+       aria-label so screen readers always announce the action that's
+       actually about to happen. */
+    eyeBtn.addEventListener('click', () => {
+      pwVisible = !pwVisible;
+      pwInput.type = pwVisible ? 'text' : 'password';
+      eyeBtn.setAttribute('aria-label', pwVisible ? 'Hide password' : 'Show password');
+      eyeShow.toggleAttribute('hidden', pwVisible);
+      eyeHide.toggleAttribute('hidden', !pwVisible);
+    });
+
+    /* Sign-in ↔ sign-up toggle. Resets the form layout AND clears any stale
+       error from the previous mode — Phoenix bug Harry reported 2026-04-20
+       (a "Please enter your password" pill from a Sign-Up attempt survived
+       the click and sat under the Sign-In email input). */
+    toggleAuthBtn.addEventListener('click', () => {
+      clearAll();
+      pwInput.value = '';
+      pwVisible = false;
+      pwInput.type = 'password';
+      eyeShow.removeAttribute('hidden');
+      eyeHide.setAttribute('hidden', '');
+      eyeBtn.setAttribute('aria-label', 'Show password');
+
+      if (mode === 'signin') {
+        mode = 'signup';
+        enterSignupLayout();
+      } else {
+        enterSigninLayout();
+      }
+    });
+  </script>
+</body>
+</html>
