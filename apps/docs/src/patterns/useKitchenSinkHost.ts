@@ -6,15 +6,23 @@
  * state are wired identically — the only difference is the chrome
  * around them.
  *
+ * Mocks are now state-backed (was useMemo) so simulation actions like
+ * "+ New Chat" / "Clear All" can mutate them. The pattern still
+ * remounts on `${pattern.id}:${recordState}` (host responsibility), so
+ * flipping records gives each pattern fresh internal state — but
+ * actions don't trigger a remount, just a re-render with new mocks.
+ *
  * Lives in its own .ts file (not a .tsx with a component) so the
  * `react-refresh/only-export-components` lint rule stays clean.
  */
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { PATTERNS } from "./registry";
 import {
   defaultFlagValues,
   type AnyPattern,
   type FlagValues,
+  type PatternHostApi,
+  type PatternSimulationAction,
   type RecordState,
 } from "./types";
 
@@ -27,6 +35,11 @@ export interface KitchenSinkHostState {
   mocks: unknown;
   flags: FlagValues;
   setFlag: (id: string, value: boolean) => void;
+  /** Read a pattern-supplied counter against the current host state. */
+  readCounter: (counterId: string) => string | number | undefined;
+  /** Invoke a pattern-supplied simulation action. No-op if the id is
+      unknown or doesn't belong to the active pattern. */
+  runAction: (actionId: string) => void;
 }
 
 export function useKitchenSinkHostState(): KitchenSinkHostState {
@@ -60,12 +73,48 @@ export function useKitchenSinkHostState(): KitchenSinkHostState {
     }));
   };
 
-  // Memoise the mock factory invocation so children that depend on
-  // `mocks` identity (e.g. ChatPattern's selection-reset effect) don't
-  // re-run on unrelated re-renders.
-  const mocks = useMemo(
-    () => pattern.getMocks(recordState),
-    [pattern, recordState],
+  // Mocks are state-backed so simulation actions can mutate them.
+  // Reset to the pattern factory whenever the pattern or record-state
+  // flips — the host's pattern remount key (`${pattern.id}:${recordState}`)
+  // gives the pattern's internal state a clean slate at the same moment.
+  const [mocks, setMocks] = useState<unknown>(() =>
+    pattern.getMocks(recordState),
+  );
+
+  useEffect(() => {
+    setMocks(pattern.getMocks(recordState));
+  }, [pattern, recordState]);
+
+  // Build the host API that simulation actions/counters consume. Stable
+  // identity per render so consumers can pass it to a memoised child.
+  const hostApi: PatternHostApi<unknown> = useMemo(
+    () => ({
+      getMocks: () => mocks,
+      setMocks: (next: unknown) => setMocks(next),
+      recordState,
+      setRecordState,
+    }),
+    [mocks, recordState],
+  );
+
+  const readCounter = useCallback(
+    (counterId: string): string | number | undefined => {
+      const counter = pattern.simulationCounters?.find((c) => c.id === counterId);
+      if (!counter) return undefined;
+      return counter.read(hostApi);
+    },
+    [pattern, hostApi],
+  );
+
+  const runAction = useCallback(
+    (actionId: string) => {
+      const action = pattern.simulationActions?.find(
+        (a: PatternSimulationAction<unknown>) => a.id === actionId,
+      );
+      if (!action) return;
+      action.onRun(hostApi);
+    },
+    [pattern, hostApi],
   );
 
   return {
@@ -77,5 +126,7 @@ export function useKitchenSinkHostState(): KitchenSinkHostState {
     mocks,
     flags,
     setFlag,
+    readCounter,
+    runAction,
   };
 }

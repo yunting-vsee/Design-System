@@ -9,6 +9,10 @@
 import { ChatPattern } from "./chat/ChatPattern";
 import { CHAT_PATTERN_FLAGS } from "./chat/flags";
 import { getChatMocks } from "./chat/mocks";
+import {
+  CHAT_SIMULATION_ACTIONS,
+  CHAT_SIMULATION_COUNTERS,
+} from "./chat/simulation";
 import type { AnyPattern, Pattern } from "./types";
 
 /* ─── Registry ─── */
@@ -21,6 +25,9 @@ const ChatPatternEntry: Pattern<ReturnType<typeof getChatMocks>> = {
   Component: ChatPattern,
   getMocks: getChatMocks,
   flags: CHAT_PATTERN_FLAGS,
+  simulationLabel: "Chat simulation",
+  simulationCounters: CHAT_SIMULATION_COUNTERS,
+  simulationActions: CHAT_SIMULATION_ACTIONS,
 };
 
 export const PATTERNS: AnyPattern[] = [
