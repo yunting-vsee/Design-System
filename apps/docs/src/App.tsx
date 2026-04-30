@@ -99,6 +99,8 @@ import {
 
 // Pages section — kitchen-sink showcase. Lives under apps/docs/src/patterns/.
 import { KitchenSink } from "./patterns/KitchenSink";
+import { STANDALONE_HASH, isStandaloneHash } from "./patterns/registry";
+import { StandaloneKitchenSink } from "./patterns/StandaloneKitchenSink";
 
 /* ─── Copy-to-clipboard helper ─── */
 function useCopyToast() {
@@ -170,6 +172,47 @@ function App() {
   const [brandTheme, setBrandTheme] = useState("");
   const [darkMode, setDarkMode] = useState(false);
   const toast = useCopyToast();
+  // Standalone kitchen-sink mode is hash-driven. We track the flag in
+  // state + listen on `hashchange` so deep-linking, refreshing, and the
+  // global Cmd/Ctrl+Shift+K shortcut all flow through the same toggle.
+  const [standalone, setStandalone] = useState<boolean>(() => isStandaloneHash());
+
+  useEffect(() => {
+    const sync = () => setStandalone(isStandaloneHash());
+    window.addEventListener("hashchange", sync);
+    return () => window.removeEventListener("hashchange", sync);
+  }, []);
+
+  // Global keyboard shortcut: Cmd/Ctrl+Shift+K toggles full-screen kitchen
+  // sink. Adopted from the va-main convention of grouping debug-style
+  // affordances behind Shift-modified shortcuts; K = "Kitchen sink".
+  // Doesn't conflict with browser bindings (Cmd+Shift+K is Firefox web
+  // console, but the docs site is for designers running Chrome/Edge — and
+  // we still leave Cmd+Shift+I / Cmd+Opt+I for devtools).
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      const mod = e.ctrlKey || e.metaKey;
+      if (mod && e.shiftKey && (e.key === "K" || e.key === "k")) {
+        e.preventDefault();
+        const next = !isStandaloneHash();
+        if (next) {
+          window.location.hash = STANDALONE_HASH;
+        } else {
+          // Use history.replaceState so the back-button doesn't trap users
+          // in the standalone toggle.
+          history.replaceState(null, "", window.location.pathname + window.location.search);
+          setStandalone(false);
+        }
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
+  const exitStandalone = useCallback(() => {
+    history.replaceState(null, "", window.location.pathname + window.location.search);
+    setStandalone(false);
+  }, []);
 
   /* apply brand theme to root element */
   useEffect(() => {
@@ -209,6 +252,21 @@ function App() {
     setNavOpen(false);
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   };
+
+  // Hash-based standalone mode — replaces the docs chrome entirely.
+  // Brand + dark mode state lifts up to App so toggling them inside the
+  // standalone toolbar persists when the user clicks "Back to docs".
+  if (standalone) {
+    return (
+      <StandaloneKitchenSink
+        brandTheme={brandTheme}
+        setBrandTheme={setBrandTheme}
+        darkMode={darkMode}
+        setDarkMode={setDarkMode}
+        onExit={exitStandalone}
+      />
+    );
+  }
 
   return (
     <div className="ds-root">
