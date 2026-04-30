@@ -12,6 +12,25 @@ See:
 - [ADR 0002 — Package naming `@vsee/ui`](../adr/0002-package-naming.md)
 - [ADR 0003 — Versioning policy](../adr/0003-versioning-policy.md)
 
+## Cross-cutting requirement — WCAG 2.1 AA compliance
+
+**Every change to this design system must meet WCAG 2.1 Level AA.** This is non-negotiable and applies to all phases below — tokens, components, patterns, and docs-site demos alike.
+
+Before a change is considered done, verify:
+
+- **Color contrast (1.4.3, 1.4.11)** — text ≥ 4.5:1 against its background; large text (≥18pt or 14pt bold) and UI/graphics ≥ 3:1. Check both light and dark modes plus every `[data-theme="*"]` brand override. New tokens added to `src/tokens.css` must be contrast-checked against the surfaces they're used on.
+- **Keyboard operability (2.1.1, 2.1.2, 2.4.3)** — all interactive elements reachable and operable via keyboard, with a logical tab order and no traps. Prefer React Aria Components — they handle this — but verify after composition.
+- **Visible focus (2.4.7, 2.4.11)** — every focusable element shows a focus indicator with ≥ 3:1 contrast against adjacent colors. Don't suppress focus rings; restyle them if needed.
+- **Names, roles, states (4.1.2)** — controls expose accessible names (label, `aria-label`, or `aria-labelledby`), correct roles, and current state. Icon-only buttons need an accessible name.
+- **Target size (2.5.8)** — interactive targets ≥ 24×24 CSS px (preferably 44×44 for primary touch targets).
+- **Motion + reduced motion (2.3.3)** — respect `prefers-reduced-motion`; no content flashes more than 3×/sec (2.3.1).
+- **Forms (3.3.1, 3.3.2, 3.3.3)** — every input has a visible label; errors are announced and described, not signaled by color alone (1.4.1).
+- **Reflow + zoom (1.4.10, 1.4.4)** — content reflows at 320 CSS px wide and at 200% text zoom without loss of functionality.
+
+**How to verify:** axe DevTools or Lighthouse pass on the demo for the changed component; manual keyboard walk; manual contrast check on any new color pairing. Note any AAA-level extras separately — they're nice-to-have, not required.
+
+If a change can't meet AA without a follow-up (e.g. a token whose contrast fails on one brand theme), open a tracking issue and flag it in the PR — don't merge silently.
+
 ## Phase 0 — ship tokens + base CSS (~2 days)
 
 **Goal:** Phoenix imports tokens from `@vsee/ui` instead of duplicating them locally.
