@@ -605,6 +605,12 @@ const CHAT_PATTERN_CSS = `
 .chat-pattern {
   display: grid;
   grid-template-columns: 280px 1fr;
+  /* Single full-height row track — without this, implicit grid rows size
+     to max-content, so when the message stream overflows the clamp the
+     rail + main columns expand past the .chat-pattern box, hiding the
+     rail header and chat header above the visible frame. minmax(0,1fr)
+     pins the row to the container height + permits inner overflow. */
+  grid-template-rows: minmax(0, 1fr);
   height: clamp(560px, 70vh, 760px);
   background: var(--vsee-white);
   border: 1px solid var(--vsee-border);
@@ -626,6 +632,9 @@ const CHAT_PATTERN_CSS = `
   border-right: 1px solid var(--vsee-border);
   background: var(--vsee-grey-100);
   min-width: 0;
+  /* Match the grid row's full height + clamp inner scroll regions. */
+  min-height: 0;
+  overflow: hidden;
 }
 .chat-rail-header {
   padding: var(--vsee-sp-4);
@@ -780,6 +789,10 @@ const CHAT_PATTERN_CSS = `
   flex-direction: column;
   background: var(--vsee-white);
   min-width: 0;
+  /* Allow the inner stream to scroll without pushing the header/composer
+     out of the viewport. */
+  min-height: 0;
+  overflow: hidden;
 }
 
 /* Header */
