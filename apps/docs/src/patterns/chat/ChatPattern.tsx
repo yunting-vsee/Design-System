@@ -51,17 +51,29 @@ import {
 } from "lucide-react";
 import { Avatar } from "./components/Avatar";
 import type { ChatMocks, Conversation, Message } from "./mocks";
+import type { FlagValues } from "../types";
 
 export interface ChatPatternProps {
   mocks: ChatMocks;
+  /** Per-pattern flag values from the kitchen-sink toolbar. Optional so
+      consumers outside the kitchen-sink (Phoenix, tests) can render
+      ChatPattern without threading flags. The flag shape is published
+      alongside the component in `chat/flags.ts`. */
+  flags?: FlagValues;
 }
 
-export function ChatPattern({ mocks }: ChatPatternProps) {
+export function ChatPattern({ mocks, flags }: ChatPatternProps) {
   // Selection + draft are plain local state. The host (KitchenSink)
   // re-mounts this component via a `key` prop on record-state toggle,
   // so these initialisers re-run with the fresh mocks — no sync effect.
   const [selectedId, setSelectedId] = useState<string | null>(mocks.selectedId);
   const [draft, setDraft] = useState("");
+
+  // Resolve flag values with sensible fallbacks — keeps ChatPattern
+  // standalone-and-reusable without the kitchen-sink wiring.
+  const showTypingFlag = flags?.typing ?? true;
+  const showReadReceipts = flags?.readReceipts ?? true;
+  const isRtl = flags?.rtl ?? false;
 
   const selected = useMemo<Conversation | null>(
     () => mocks.conversations.find((c) => c.id === selectedId) ?? null,
@@ -72,8 +84,11 @@ export function ChatPattern({ mocks }: ChatPatternProps) {
     ? mocks.messagesByConversation[selectedId] ?? []
     : [];
 
+  const isTypingHere =
+    showTypingFlag && mocks.typingConversationId === selected?.id;
+
   return (
-    <div className="chat-pattern">
+    <div className="chat-pattern" dir={isRtl ? "rtl" : undefined}>
       <ConversationRail
         conversations={mocks.conversations}
         selectedId={selectedId}
@@ -84,13 +99,12 @@ export function ChatPattern({ mocks }: ChatPatternProps) {
           <>
             <ChatHeader
               conversation={selected}
-              isTyping={
-                mocks.typingConversationId === selected.id ? true : false
-              }
+              isTyping={isTypingHere}
             />
             <MessageStream
               messages={messages}
-              showTyping={mocks.typingConversationId === selected.id}
+              showTyping={isTypingHere}
+              showReadReceipts={showReadReceipts}
             />
             <Composer
               draft={draft}
@@ -312,9 +326,12 @@ function ChatHeader({
 function MessageStream({
   messages,
   showTyping,
+  showReadReceipts,
 }: {
   messages: Message[];
   showTyping: boolean;
+  /** When false, the last own bubble's status glyph is suppressed. */
+  showReadReceipts: boolean;
 }) {
   const endRef = useRef<HTMLDivElement>(null);
 
@@ -374,7 +391,7 @@ function MessageStream({
             ) : (
               <MessageBubble
                 message={m}
-                showStatus={i === lastOwnIdx}
+                showStatus={showReadReceipts && i === lastOwnIdx}
               />
             )}
           </div>

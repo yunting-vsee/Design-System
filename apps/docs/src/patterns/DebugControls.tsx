@@ -1,11 +1,16 @@
 /**
  * DebugControls — the kitchen-sink toolbar.
  *
- * Pattern picker (RAC <Select>) on the left, record-state radio (RAC
- * <RadioGroup>) on the right. Reusable: any future host that wants to
- * toggle between "0 / 1 / many" record states + a pattern from a
- * registry can drop this in.
+ * Pattern picker (RAC <Select>) → record-state radio (RAC <RadioGroup>)
+ * → per-pattern flag toggles (RAC <Switch>) → optional trailing slot for
+ * host-supplied actions (e.g. "Open in full screen", "Back to docs").
+ *
+ * Reusable: any future host that wants to toggle between "0 / 1 / many"
+ * record states + a pattern from a registry can drop this in. Flags +
+ * trailing slot are both optional, so the simplest call site stays
+ * three props long.
  */
+import type { ReactNode } from "react";
 import {
   Select,
   SelectValue,
@@ -15,6 +20,7 @@ import {
   ListBoxItem,
   RadioGroup,
   Radio,
+  Switch,
   Label,
 } from "react-aria-components";
 import { ChevronDown } from "lucide-react";
@@ -22,6 +28,8 @@ import {
   RECORD_STATES,
   RECORD_STATE_LABELS,
   type AnyPattern,
+  type FlagValues,
+  type PatternFlag,
   type RecordState,
 } from "./types";
 
@@ -31,6 +39,14 @@ export interface DebugControlsProps {
   onSelectPattern: (id: string) => void;
   recordState: RecordState;
   onChangeRecordState: (state: RecordState) => void;
+  /** Per-pattern flags published by the active pattern. */
+  flags?: PatternFlag[];
+  /** Current flag values, keyed by `PatternFlag.id`. */
+  flagValues?: FlagValues;
+  /** Called when a flag toggle flips. */
+  onChangeFlag?: (id: string, value: boolean) => void;
+  /** Optional trailing slot — host-supplied actions on the right edge. */
+  trailing?: ReactNode;
 }
 
 export function DebugControls({
@@ -39,7 +55,12 @@ export function DebugControls({
   onSelectPattern,
   recordState,
   onChangeRecordState,
+  flags,
+  flagValues,
+  onChangeFlag,
+  trailing,
 }: DebugControlsProps) {
+  const hasFlags = !!flags && flags.length > 0 && !!onChangeFlag;
   return (
     <div className="ks-toolbar" role="toolbar" aria-label="Pattern controls">
       <div className="ks-toolbar-group">
@@ -89,6 +110,34 @@ export function DebugControls({
           </div>
         </RadioGroup>
       </div>
+
+      {hasFlags && (
+        <div className="ks-toolbar-group ks-toolbar-flags">
+          <span className="ks-toolbar-label" aria-hidden="true">Flags</span>
+          <div className="ks-flag-list" role="group" aria-label="Pattern flags">
+            {flags!.map((f) => {
+              const checked = flagValues?.[f.id] ?? f.default;
+              return (
+                <Switch
+                  key={f.id}
+                  isSelected={checked}
+                  onChange={(v) => onChangeFlag!(f.id, v)}
+                  className="ks-flag-switch"
+                >
+                  <span className="ks-flag-track" aria-hidden="true">
+                    <span className="ks-flag-thumb" />
+                  </span>
+                  <span className="ks-flag-label" title={f.description}>
+                    {f.label}
+                  </span>
+                </Switch>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {trailing && <div className="ks-toolbar-trailing">{trailing}</div>}
 
       <ToolbarStyles />
     </div>
@@ -203,5 +252,70 @@ const TOOLBAR_CSS = `
 .ks-radio-pill[data-focus-visible] {
   outline: 2px solid var(--vsee-brand);
   outline-offset: 2px;
+}
+
+/* Per-pattern flag toggles */
+.ks-toolbar-flags { gap: var(--vsee-sp-3); }
+.ks-flag-list {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: var(--vsee-sp-3);
+  align-items: center;
+}
+.ks-flag-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--vsee-sp-2);
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+  /* Target size: track 32×18 + label — full hit zone on the row >= 24px tall. */
+  min-height: 24px;
+}
+.ks-flag-track {
+  position: relative;
+  display: inline-block;
+  width: 32px;
+  height: 18px;
+  background: var(--vsee-grey-500);
+  border-radius: var(--vsee-r-full);
+  transition: background var(--vsee-t-fast);
+  flex-shrink: 0;
+}
+.ks-flag-thumb {
+  position: absolute;
+  top: 2px;
+  inset-inline-start: 2px;
+  width: 14px;
+  height: 14px;
+  background: var(--vsee-white);
+  border-radius: var(--vsee-r-full);
+  box-shadow: var(--vsee-shadow-sm);
+  transition: inset-inline-start var(--vsee-t-fast);
+}
+.ks-flag-switch[data-selected] .ks-flag-track { background: var(--vsee-brand); }
+.ks-flag-switch[data-selected] .ks-flag-thumb { inset-inline-start: 16px; }
+.ks-flag-switch[data-focus-visible] .ks-flag-track {
+  outline: 2px solid var(--vsee-brand);
+  outline-offset: 2px;
+}
+.ks-flag-label {
+  font-size: var(--vsee-text-caption-size);
+  font-weight: 500;
+  color: var(--vsee-text-primary);
+  white-space: nowrap;
+}
+
+/* Trailing slot — host-supplied actions (e.g. full-screen / back-to-docs) */
+.ks-toolbar-trailing {
+  margin-inline-start: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--vsee-sp-2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ks-flag-track,
+  .ks-flag-thumb { transition: none; }
 }
 `;

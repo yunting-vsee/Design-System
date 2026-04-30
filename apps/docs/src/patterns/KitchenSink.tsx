@@ -7,11 +7,16 @@
  *
  *   1. A registry of patterns (data-driven — to add a second pattern,
  *      import its component + getMocks and append a registry entry).
- *   2. A toolbar (DebugControls) that picks a pattern + record state.
+ *   2. A toolbar (DebugControls) that picks a pattern + record state +
+ *      per-pattern flags.
  *   3. A live preview frame that renders the selected pattern with the
  *      mocks for that record state. Mocks flow as a prop, so the
  *      record-state toggle re-renders the pattern with new data — no
  *      remount hack required.
+ *
+ * Two host modes share the registry:
+ *   - <KitchenSink />           — embedded, in-section (under "Pages")
+ *   - <StandaloneKitchenSink /> — full-screen, hash-based route
  *
  * Architecture call: each pattern owns its own `getMocks(state)` so the
  * host doesn't need to know any pattern-specific shape. The registry
@@ -19,49 +24,23 @@
  * thunk hands the pattern its own mocks back through its declared
  * Component prop type.
  */
-import { useMemo, useState } from "react";
+import { Maximize2 } from "lucide-react";
 import { DebugControls } from "./DebugControls";
-import { ChatPattern } from "./chat/ChatPattern";
-import { getChatMocks } from "./chat/mocks";
-import type { AnyPattern, Pattern, RecordState } from "./types";
+import { PATTERNS, STANDALONE_HASH } from "./registry";
+import { useKitchenSinkHostState } from "./useKitchenSinkHost";
 
-/* ─── Registry ─── */
-
-const ChatPatternEntry: Pattern<ReturnType<typeof getChatMocks>> = {
-  id: "chat",
-  label: "Chat",
-  description:
-    "Two-pane chat surface: conversation rail on the left, header / message stream / composer on the right. Mirrors the Phoenix chat layout using only @vsee/ui tokens.",
-  Component: ChatPattern,
-  getMocks: getChatMocks,
-};
-
-const PATTERNS: AnyPattern[] = [
-  ChatPatternEntry as unknown as AnyPattern,
-];
-
-/* ─── Host ─── */
+/* ─── Host (embedded, in-section) ─── */
 
 export function KitchenSink() {
-  const [selectedPatternId, setSelectedPatternId] = useState<string>(
-    PATTERNS[0].id,
-  );
-  const [recordState, setRecordState] = useState<RecordState>("many");
-
-  const pattern = useMemo(
-    () => PATTERNS.find((p) => p.id === selectedPatternId) ?? PATTERNS[0],
-    [selectedPatternId],
-  );
-
-  // Memoise the mock factory invocation so children that depend on
-  // `mocks` identity (e.g. ChatPattern's selection-reset effect) don't
-  // re-run on unrelated re-renders.
-  const mocks = useMemo(
-    () => pattern.getMocks(recordState),
-    [pattern, recordState],
-  );
-
+  const host = useKitchenSinkHostState();
+  const { pattern, mocks, flags } = host;
   const PatternComponent = pattern.Component;
+
+  const openFullScreen = () => {
+    // Switch into the standalone hash route. App.tsx listens for
+    // `hashchange` and swaps in <StandaloneKitchenSink />.
+    window.location.hash = STANDALONE_HASH;
+  };
 
   return (
     <section
@@ -81,9 +60,24 @@ export function KitchenSink() {
       <DebugControls
         patterns={PATTERNS}
         selectedPatternId={pattern.id}
-        onSelectPattern={setSelectedPatternId}
-        recordState={recordState}
-        onChangeRecordState={setRecordState}
+        onSelectPattern={host.setSelectedPatternId}
+        recordState={host.recordState}
+        onChangeRecordState={host.setRecordState}
+        flags={pattern.flags}
+        flagValues={flags}
+        onChangeFlag={host.setFlag}
+        trailing={
+          <button
+            type="button"
+            className="ks-fullscreen-btn"
+            onClick={openFullScreen}
+            aria-label="Open kitchen sink in full screen"
+            title="Open kitchen sink in full screen"
+          >
+            <Maximize2 size={14} aria-hidden="true" />
+            <span>Full screen</span>
+          </button>
+        }
       />
 
       <div className="ks-pattern-meta">
@@ -95,7 +89,11 @@ export function KitchenSink() {
         {/* key forces a fresh mount on record-state toggle so each pattern
             can keep its own selection/draft state in plain useState
             without an opt-in reset effect. */}
-        <PatternComponent key={`${pattern.id}:${recordState}`} mocks={mocks} />
+        <PatternComponent
+          key={`${pattern.id}:${host.recordState}`}
+          mocks={mocks}
+          flags={flags}
+        />
       </div>
 
       <KitchenSinkStyles />
@@ -135,5 +133,32 @@ const KITCHEN_SINK_CSS = `
 }
 @media (max-width: 720px) {
   .ks-pattern-frame { padding: var(--vsee-sp-2); }
+}
+
+/* "Open in full screen" button — sits on the trailing edge of the toolbar.
+   Reuses the brand outline aesthetic without depending on the .btn class. */
+.ks-fullscreen-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--vsee-sp-2);
+  height: 34px;
+  padding: 0 var(--vsee-sp-3);
+  background: var(--vsee-white);
+  color: var(--vsee-brand-dark);
+  border: 1px solid var(--vsee-brand);
+  border-radius: var(--vsee-r-md);
+  font-family: var(--vsee-font-sans);
+  font-size: var(--vsee-text-caption-size);
+  font-weight: 600;
+  cursor: pointer;
+  outline: none;
+  transition: background var(--vsee-t-fast), color var(--vsee-t-fast),
+    box-shadow var(--vsee-t-fast);
+}
+.ks-fullscreen-btn:hover { background: var(--vsee-brand-light); }
+.ks-fullscreen-btn:focus-visible {
+  outline: 2px solid var(--vsee-brand);
+  outline-offset: 2px;
+  box-shadow: var(--vsee-shadow-focus);
 }
 `;
