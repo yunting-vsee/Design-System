@@ -15,7 +15,7 @@
  * Lives in its own .ts file (not a .tsx with a component) so the
  * `react-refresh/only-export-components` lint rule stays clean.
  */
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { PATTERNS } from "./registry";
 import {
   defaultFlagValues,
@@ -74,16 +74,23 @@ export function useKitchenSinkHostState(): KitchenSinkHostState {
   };
 
   // Mocks are state-backed so simulation actions can mutate them.
-  // Reset to the pattern factory whenever the pattern or record-state
-  // flips — the host's pattern remount key (`${pattern.id}:${recordState}`)
-  // gives the pattern's internal state a clean slate at the same moment.
+  // Reset to the pattern factory synchronously during render whenever
+  // pattern or record-state flips. Tracking the session key in a state
+  // slot (rather than a ref) sidesteps the `react-hooks/refs` lint rule
+  // and follows the React docs' "deriving state from props" pattern:
+  // when the prior key differs, queue a setState during render — React
+  // discards the tentative tree and re-renders with the fresh value, so
+  // a freshly-remounted pattern sees the current mocks on its first
+  // render rather than a one-render-stale snapshot.
+  const sessionKey = `${pattern.id}:${recordState}`;
   const [mocks, setMocks] = useState<unknown>(() =>
     pattern.getMocks(recordState),
   );
-
-  useEffect(() => {
+  const [trackedSessionKey, setTrackedSessionKey] = useState<string>(sessionKey);
+  if (trackedSessionKey !== sessionKey) {
+    setTrackedSessionKey(sessionKey);
     setMocks(pattern.getMocks(recordState));
-  }, [pattern, recordState]);
+  }
 
   // Build the host API that simulation actions/counters consume. Stable
   // identity per render so consumers can pass it to a memoised child.
