@@ -30,6 +30,8 @@ import {
   type AnyPattern,
   type FlagValues,
   type PatternFlag,
+  type PatternSimulationAction,
+  type PatternSimulationCounter,
   type RecordState,
 } from "./types";
 
@@ -45,6 +47,14 @@ export interface DebugControlsProps {
   flagValues?: FlagValues;
   /** Called when a flag toggle flips. */
   onChangeFlag?: (id: string, value: boolean) => void;
+  /** Optional simulation counters published by the active pattern. */
+  simulationCounters?: PatternSimulationCounter<unknown>[];
+  /** Optional simulation actions published by the active pattern. */
+  simulationActions?: PatternSimulationAction<unknown>[];
+  /** Reads a counter id against the host's current state. */
+  readCounter?: (id: string) => string | number | undefined;
+  /** Invokes a simulation action by id. */
+  runAction?: (id: string) => void;
   /** Optional trailing slot — host-supplied actions on the right edge. */
   trailing?: ReactNode;
 }
@@ -58,9 +68,17 @@ export function DebugControls({
   flags,
   flagValues,
   onChangeFlag,
+  simulationCounters,
+  simulationActions,
+  readCounter,
+  runAction,
   trailing,
 }: DebugControlsProps) {
   const hasFlags = !!flags && flags.length > 0 && !!onChangeFlag;
+  const hasSimulation =
+    !!runAction &&
+    ((!!simulationCounters && simulationCounters.length > 0) ||
+      (!!simulationActions && simulationActions.length > 0));
   return (
     <div className="ks-toolbar" role="toolbar" aria-label="Pattern controls">
       <div className="ks-toolbar-group">
@@ -134,6 +152,36 @@ export function DebugControls({
               );
             })}
           </div>
+        </div>
+      )}
+
+      {hasSimulation && (
+        <div className="ks-toolbar-group ks-toolbar-simulation">
+          {simulationCounters?.map((c) => {
+            const value = readCounter?.(c.id);
+            return (
+              <span key={c.id} className="ks-toolbar-counter" data-counter-id={c.id}>
+                <span className="ks-toolbar-counter-label">{c.label}:</span>
+                <span
+                  className="ks-toolbar-counter-value"
+                  data-testid={`counter-${c.id}`}
+                >
+                  {value ?? 0}
+                </span>
+              </span>
+            );
+          })}
+          {simulationActions?.map((a) => (
+            <button
+              key={a.id}
+              type="button"
+              className={`ks-toolbar-action${a.variant === "destructive" ? " ks-toolbar-action-danger" : ""}`}
+              onClick={() => runAction?.(a.id)}
+              aria-label={a.label}
+            >
+              {a.label}
+            </button>
+          ))}
         </div>
       )}
 
@@ -304,6 +352,70 @@ const TOOLBAR_CSS = `
   font-weight: 500;
   color: var(--vsee-text-primary);
   white-space: nowrap;
+}
+
+/* Simulation slot — counters + action buttons. Sits before the trailing
+   slot so "+ New Chat" / "Clear All" appear in document order alongside
+   the controls they affect. Counter style mirrors va-main DebugPanel:
+   monospace value, secondary-text label. */
+.ks-toolbar-simulation {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--vsee-sp-3);
+  flex-wrap: wrap;
+}
+.ks-toolbar-counter {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--vsee-sp-1);
+  font-size: var(--vsee-text-caption-size);
+  font-weight: 500;
+}
+.ks-toolbar-counter-label {
+  color: var(--vsee-text-secondary);
+}
+.ks-toolbar-counter-value {
+  font-family: var(--vsee-mono);
+  font-weight: 700;
+  color: var(--vsee-brand);
+}
+.ks-toolbar-action {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 var(--vsee-sp-3);
+  background: var(--vsee-white);
+  color: var(--vsee-text-primary);
+  border: 1px solid var(--vsee-border-strong);
+  border-radius: var(--vsee-r-full);
+  font-family: var(--vsee-font-sans);
+  font-size: var(--vsee-text-caption-size);
+  font-weight: 600;
+  cursor: pointer;
+  outline: none;
+  transition: background var(--vsee-t-fast), border-color var(--vsee-t-fast),
+    color var(--vsee-t-fast);
+}
+.ks-toolbar-action:hover {
+  background: var(--vsee-grey-200);
+  border-color: var(--vsee-grey-500);
+}
+.ks-toolbar-action:focus-visible {
+  outline: 2px solid var(--vsee-brand);
+  outline-offset: 2px;
+}
+.ks-toolbar-action-danger {
+  color: var(--vsee-danger);
+  border-color: var(--vsee-danger);
+  background: transparent;
+}
+.ks-toolbar-action-danger:hover {
+  background: var(--vsee-danger-light);
+  color: var(--vsee-danger);
+  border-color: var(--vsee-danger);
+}
+.ks-toolbar-action-danger:focus-visible {
+  outline-color: var(--vsee-danger);
 }
 
 /* Trailing slot — host-supplied actions (e.g. full-screen / back-to-docs) */

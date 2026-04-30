@@ -66,6 +66,10 @@ export function KitchenSink() {
         flags={pattern.flags}
         flagValues={flags}
         onChangeFlag={host.setFlag}
+        simulationCounters={pattern.simulationCounters}
+        simulationActions={pattern.simulationActions}
+        readCounter={host.readCounter}
+        runAction={host.runAction}
         trailing={
           <button
             type="button"
