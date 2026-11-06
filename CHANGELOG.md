@@ -1,529 +1,538 @@
 ﻿# Changelog
 
-Nov 3
-  CLAUDE.md
-  - New rule under Styling: don't add new styles (classes, selectors, tokens, utility classes) or change existing ones beyond what was asked, unless the team says so explicitly; reuse existing classes and tokens, and ask first if a new style seems needed. The Tailwind note no longer says to promote repeated patterns to classes on your own.
-  - Naming rules: for repeated styling in existing work, ask the team to name a CSS class; for a new component the team asked for, new classes may be created and named only when the styling repeats and no existing class or token covers it (check styles.css / tokens.css first, and list the new classes).
+## Nov 5
+### Changelog
+- CHANGELOG.md is now real Markdown, so it renders properly: dates are `##` headings, topics `###` headings, changes `-` bullets (no leading indent). Older entries in other styles (`- Apr 8`, `- **285c971**`) use the same headings. HTML tags and names with `*` (e.g. `<select>`, `.step-progress*`) are in code formatting so they show as written. Fixed a few entries that were mis-formatted (a commit written as "- **676f00d** - …", two bullets on one line, a wrapped line read as a heading).
+### CLAUDE.md
+- New Changelog section: Markdown format — `## Apr 22` date headings (newest first), `### Topic` headings, `- ` bullets at column 0; tags and `*` names in backticks. Replaces the old "topic indented two spaces" format (still described on the docs/changelog-discipline branch).
 
-  Docs site
-  - Login, Preferences and Steppers pages: "‹ Back to docs" link at the top left of the top bar, before the page name (login.html / preference.html: new local .toolbar-left + .back-link styles, link to ./). Steppers gets the same top bar as the login prototype: page name left, Brand select + Mode button right (wired to the docs' brand / dark mode), wrapping on narrow screens.
-  - Buttons → "Button Group" renamed "Switch Button" (component ButtonGroup → SwitchButton; CSS class stays .btn-group). It can now also be controlled (value + onChange), names its group (ariaLabel → role="group"), and marks the chosen button with aria-pressed.
-  - Steppers, Login and Preferences top bars, trimmed: the title is just the page name (no "— @vsee/ui prototype"); "Back to docs" is a chevron icon only (named "Back to docs" for screen readers, with a tooltip on Login / Preferences); the Page, Brand, Mode and View labels are hidden on screen (.sr-only) but still name each control.
-  - Steppers, Login and Preferences pages: "Page" dropdown first in the top bar's controls — Steppers, Login, Preferences (the side menu's Pages minus Kitchen Sink); picking one opens it in the same tab. All Page and Brand dropdowns are the design-system Select (trigger .input.input-sm.select-trigger + .select-popover listbox), not the browser's native <select>: Steppers uses the React Aria Select; Login / Preferences use the HTML version preference.html already had (Login gets a copy of its CSS + script). The old .toolbar label / .toolbar select, .toolbar button styles are removed.
-  - Steppers, Login and Preferences pages: the top bar's Mode (Light / Dark) and new View (Desktop / Mobile) controls are Switch Buttons. Each option has a 16px Lucide icon before its label (Sun / Moon, Monitor / Smartphone); SwitchButton gains an optional icons prop for this. Login / Preferences carry a copy of the .btn-group CSS (they are self-contained HTML) and share public/page-toolbar.js. Mobile shows the page itself at 375px wide in a frame (?frame in the URL hides the frame's top bar), so the page's real phone layout shows; Brand and Mode changes reach the frame. Steppers: DeviceFrame in App.tsx (the frame shows just the flow). Login / Preferences: public/page-toolbar.js. No new CSS classes (frame styles are inline).
-  - Kitchen Sink is its own page: no longer embedded at the bottom of the docs or listed under "Pages" in the sidebar. The top bar's right-hand "Patterns" group moved to the side menu as "Pages" (after Engineering): Kitchen Sink, Steppers, Login, Preferences — plain side-menu links (no external-link icon), each opening in the same tab (no target="_blank"); every page has a "Back to docs" link. The One Question per Page flow moved out of Form Elements onto its own page, Steppers (#steppers), with a "Back to docs" link. Kitchen Sink opens the existing full-screen page (#kitchen-sink-fullscreen); its "Back to docs" goes to the docs. Ctrl/Cmd+Shift+K still works.
-  - Navigation → Pagination: selected page uses a light brand background (--vsee-brand-50) with brand text (--vsee-brand-dark, 6.1:1 — plain --vsee-brand would be 4.25:1, below AA for 13px text) instead of a solid brand fill. Previous / next are 16px ChevronLeft / ChevronRight icons (named "Previous page" / "Next page" for screen readers), together on the right after the page numbers. New "With Labels" example ("‹ Prev" / "Next ›") using a new modifier .page-btn-label (4px icon gap, 8px side padding). Prev + Next are grouped in .pagination-nav (8px from the numbers) with a .pagination-divider between them (1px × 16px, --vsee-border-strong).
-  - Foundations → Shadows: .shadow-card 120px → 160px wide, so the token names fit inside; .shadow-stack fits as many 160px blocks per row as there's room for.
-  - Foundations → Spacing Scale + Shadows now use .g2 (even two columns) instead of an inline 1fr 2fr, so Shadows wraps under Spacing Scale at ≤1024px.
-  - Foundations → Spacing Scale: .space-label has a fixed width (12ch, fits "--vsee-sp-32") instead of min-width 80px, so every bar starts at the same point.
-  - Buttons section: Choice Buttons, then Choice Cards, then Switch Button and Toggles at the end.
-  - Sub-headings inside demo cards (Icon on Right, Icon Only, Sizes with Icons, Phone Number, Date Picker, Input with Action Icon, Payment Input, Input with Unit, Login Form, Inline Inputs) use .text-h5 with 12px below instead of .sub-title.
-  - Others section now also holds File Upload, Selection List, Calendar + Time Slots (moved from Form Elements) and Empty State (moved from Feedback & Notifications), in that order after Slider.
-  - .ds-main gets min-width: 0 so the main column shrinks with the screen instead of staying as wide as its widest content (it stayed 915px on a 375px screen, so nothing inside could respond to small screens).
+## Nov 3
+### CLAUDE.md
+- New rule under Styling: don't add new styles (classes, selectors, tokens, utility classes) or change existing ones beyond what was asked, unless the team says so explicitly; reuse existing classes and tokens, and ask first if a new style seems needed. The Tailwind note no longer says to promote repeated patterns to classes on your own.
+- Naming rules: for repeated styling in existing work, ask the team to name a CSS class; for a new component the team asked for, new classes may be created and named only when the styling repeats and no existing class or token covers it (check styles.css / tokens.css first, and list the new classes).
 
-  Typography
-  - New --vsee-text-micro-size (10px) + .text-micro (500, line-height 1.2, tabular numbers). For tiny status readouts only (e.g. upload %), never body copy. Shown in Foundations → Typography and the Design Tokens reference.
+### Docs site
+- Login, Preferences and Steppers pages: "‹ Back to docs" link at the top left of the top bar, before the page name (login.html / preference.html: new local .toolbar-left + .back-link styles, link to ./). Steppers gets the same top bar as the login prototype: page name left, Brand select + Mode button right (wired to the docs' brand / dark mode), wrapping on narrow screens.
+- Buttons → "Button Group" renamed "Switch Button" (component ButtonGroup → SwitchButton; CSS class stays .btn-group). It can now also be controlled (value + onChange), names its group (ariaLabel → role="group"), and marks the chosen button with aria-pressed.
+- Steppers, Login and Preferences top bars, trimmed: the title is just the page name (no "— @vsee/ui prototype"); "Back to docs" is a chevron icon only (named "Back to docs" for screen readers, with a tooltip on Login / Preferences); the Page, Brand, Mode and View labels are hidden on screen (.sr-only) but still name each control.
+- Steppers, Login and Preferences pages: "Page" dropdown first in the top bar's controls — Steppers, Login, Preferences (the side menu's Pages minus Kitchen Sink); picking one opens it in the same tab. All Page and Brand dropdowns are the design-system Select (trigger .input.input-sm.select-trigger + .select-popover listbox), not the browser's native `<select>`: Steppers uses the React Aria Select; Login / Preferences use the HTML version preference.html already had (Login gets a copy of its CSS + script). The old .toolbar label / .toolbar select, .toolbar button styles are removed.
+- Steppers, Login and Preferences pages: the top bar's Mode (Light / Dark) and new View (Desktop / Mobile) controls are Switch Buttons. Each option has a 16px Lucide icon before its label (Sun / Moon, Monitor / Smartphone); SwitchButton gains an optional icons prop for this. Login / Preferences carry a copy of the .btn-group CSS (they are self-contained HTML) and share public/page-toolbar.js. Mobile shows the page itself at 375px wide in a frame (?frame in the URL hides the frame's top bar), so the page's real phone layout shows; Brand and Mode changes reach the frame. Steppers: DeviceFrame in App.tsx (the frame shows just the flow). Login / Preferences: public/page-toolbar.js. No new CSS classes (frame styles are inline).
+- Kitchen Sink is its own page: no longer embedded at the bottom of the docs or listed under "Pages" in the sidebar. The top bar's right-hand "Patterns" group moved to the side menu as "Pages" (after Engineering): Kitchen Sink, Steppers, Login, Preferences — plain side-menu links (no external-link icon), each opening in the same tab (no target="_blank"); every page has a "Back to docs" link. The One Question per Page flow moved out of Form Elements onto its own page, Steppers (#steppers), with a "Back to docs" link. Kitchen Sink opens the existing full-screen page (#kitchen-sink-fullscreen); its "Back to docs" goes to the docs. Ctrl/Cmd+Shift+K still works.
+- Navigation → Pagination: selected page uses a light brand background (--vsee-brand-50) with brand text (--vsee-brand-dark, 6.1:1 — plain --vsee-brand would be 4.25:1, below AA for 13px text) instead of a solid brand fill. Previous / next are 16px ChevronLeft / ChevronRight icons (named "Previous page" / "Next page" for screen readers), together on the right after the page numbers. New "With Labels" example ("‹ Prev" / "Next ›") using a new modifier .page-btn-label (4px icon gap, 8px side padding). Prev + Next are grouped in .pagination-nav (8px from the numbers) with a .pagination-divider between them (1px × 16px, --vsee-border-strong).
+- Foundations → Shadows: .shadow-card 120px → 160px wide, so the token names fit inside; .shadow-stack fits as many 160px blocks per row as there's room for.
+- Foundations → Spacing Scale + Shadows now use .g2 (even two columns) instead of an inline 1fr 2fr, so Shadows wraps under Spacing Scale at ≤1024px.
+- Foundations → Spacing Scale: .space-label has a fixed width (12ch, fits "--vsee-sp-32") instead of min-width 80px, so every bar starts at the same point.
+- Buttons section: Choice Buttons, then Choice Cards, then Switch Button and Toggles at the end.
+- Sub-headings inside demo cards (Icon on Right, Icon Only, Sizes with Icons, Phone Number, Date Picker, Input with Action Icon, Payment Input, Input with Unit, Login Form, Inline Inputs) use .text-h5 with 12px below instead of .sub-title.
+- Others section now also holds File Upload, Selection List, Calendar + Time Slots (moved from Form Elements) and Empty State (moved from Feedback & Notifications), in that order after Slider.
+- .ds-main gets min-width: 0 so the main column shrinks with the screen instead of staying as wide as its widest content (it stayed 915px on a 375px screen, so nothing inside could respond to small screens).
 
-  Steppers (new page — was "One Question per Page")
-  - Pages → Steppers (its own page, #steppers, opened from the side menu): Patient Portal v2 "See a provider" flow; desktop layout, mobile layout on screens ≤640px. Join Queue skips the provider step (5 steps, not 6).
-  - Page indicator: desktop labelled step bars (.step-progress*); mobile "Step X of N" + pips (.step-pips*, .step-pip[data-done]).
-  - Flow actions: .flow-actions, .flow-actions-mobile (48px buttons), .flow-cancel-icon. Unanswered Continue is dimmed via .btn[data-blocked] and explains what's missing.
-  - Your health history: each group's None / Add choice uses small Choice Buttons (.btn.btn-choice.btn-sm) instead of small text-only choice cards.
-  - Added .question-title, .question-hint, .question-section, .form-section-divided, .history-*, .chip-row.
+### Typography
+- New --vsee-text-micro-size (10px) + .text-micro (500, line-height 1.2, tabular numbers). For tiny status readouts only (e.g. upload %), never body copy. Shown in Foundations → Typography and the Design Tokens reference.
 
-  Choice Cards (new primitive)
-  - Buttons → Choice Cards: RadioGroup cards with optional icon, title, hint and meta line. Variants shown: default (icon, title, hint, meta), compact with icon (side by side in .choice-grid, stacking when narrow; also works in .choice-list / .choice-cols-2), text only (compact, no icon, 20px left padding like the default card), 4px between title and description in compact cards, states (default / selected / disabled, in the default card design). Compact cards in grid layouts use a 12px gap. Grid layouts (.choice-grid, .choice-cols-1/2, .choice-row) give every card in a group the same width and height (grid-auto-rows: 1fr); card content is vertically centred (full and compact cards). (.choice-card-sm, a tighter card, stays for the one-question flow.)
-  - Added .choice-card (+ -compact, -sm, -icon, -body, -title, -hint, -meta) and layouts .choice-grid, .choice-list, .choice-cols-1/2, .choice-row, .choice-inline.
+### Steppers (new page — was "One Question per Page")
+- Pages → Steppers (its own page, #steppers, opened from the side menu): Patient Portal v2 "See a provider" flow; desktop layout, mobile layout on screens ≤640px. Join Queue skips the provider step (5 steps, not 6).
+- Page indicator: desktop labelled step bars (`.step-progress*`); mobile "Step X of N" + pips (`.step-pips*`, .step-pip[data-done]).
+- Flow actions: .flow-actions, .flow-actions-mobile (48px buttons), .flow-cancel-icon. Unanswered Continue is dimmed via .btn[data-blocked] and explains what's missing.
+- Your health history: each group's None / Add choice uses small Choice Buttons (.btn.btn-choice.btn-sm) instead of small text-only choice cards.
+- Added .question-title, .question-hint, .question-section, .form-section-divided, `.history-*`, .chip-row.
 
-  Step Progress (new docs component)
-  - Others → Step Progress (after Progress Bars): StepProgress component — "bars" (one labelled bar per step, desktop) or "pips" (flow name, "Step X of N", a row of pips; mobile). Props: steps, current (0-based), variant, title (required). Demo with Back / Next.
-  - title is required: the flow name is always shown above the bars / pips, with "Step X of N" (bars: right after the title, using the pips .step-pips-head / -title / -count row packed to the left; pips: count on the right). The Steppers page now shows "See a provider" on desktop too.
-  - No new CSS: uses the existing .step-progress* and .step-pips* classes. The Steppers page now renders its page indicator with StepProgress.
+### Choice Cards (new primitive)
+- Buttons → Choice Cards: RadioGroup cards with optional icon, title, hint and meta line. Variants shown: default (icon, title, hint, meta), compact with icon (side by side in .choice-grid, stacking when narrow; also works in .choice-list / .choice-cols-2), text only (compact, no icon, 20px left padding like the default card), 4px between title and description in compact cards, states (default / selected / disabled, in the default card design). Compact cards in grid layouts use a 12px gap. Grid layouts (.choice-grid, .choice-cols-1/2, .choice-row) give every card in a group the same width and height (grid-auto-rows: 1fr); card content is vertically centred (full and compact cards). (.choice-card-sm, a tighter card, stays for the one-question flow.)
+- Added .choice-card (+ -compact, -sm, -icon, -body, -title, -hint, -meta) and layouts .choice-grid, .choice-list, .choice-cols-1/2, .choice-row, .choice-inline.
 
-  Choice Buttons (new docs component)
-  - Buttons → Choice Buttons: radio buttons (React Aria Radio) that look like normal buttons — size, shape and text from .btn, .btn-sm (30px), default (38px), .btn-lg (48px) — with Choice Card colours and states. Label only, no description. Demos: default (with a disabled option), with icon (16px Lucide icon before the label, no extra CSS; with a disabled option), icon only (.btn-icon, named with aria-label); the code sample shows the size classes.
-  - New variant class .btn-choice: white background, 1px --vsee-border; hover --vsee-border-strong; [data-selected] --vsee-brand border + --vsee-brand-50 tint; [data-disabled] 50% opacity (overrides the grey .btn disabled fill). Laid out with the existing .choice-inline.
+### Step Progress (new docs component)
+- Others → Step Progress (after Progress Bars): StepProgress component — "bars" (one labelled bar per step, desktop) or "pips" (flow name, "Step X of N", a row of pips; mobile). Props: steps, current (0-based), variant, title (required). Demo with Back / Next.
+- title is required: the flow name is always shown above the bars / pips, with "Step X of N" (bars: right after the title, using the pips .step-pips-head / -title / -count row packed to the left; pips: count on the right). The Steppers page now shows "See a provider" on desktop too.
+- No new CSS: uses the existing `.step-progress*` and `.step-pips*` classes. The Steppers page now renders its page indicator with StepProgress.
 
-  Calendar + Time Slots (new primitive)
-  - Others → Calendar + Time Slots: SlotPicker — month calendar, then open times for the picked day. Days without open times can't be picked. Stacks by itself on screens ≤640px (the stacked prop can still force it on/off); the docs show one example instead of separate desktop and mobile ones. Time slots are Choice Buttons (RadioGroup of .btn.btn-choice: arrow keys, read as radios), and the selected calendar day uses the same selected look (brand-50 tint, 1px brand line, dark text); the old .slot-time styles are removed. On desktop every slot is 104px wide (fits "22:22 PM") and slots don't stretch; when stacked (mobile) they fill the width, at most 4 per row and never narrower than 104px. Month arrows reuse .calendar-nav-btn (borderless, same as the Date Picker) and keep their 32px (.slot-cal-head .calendar-nav-btn { flex-shrink: 0 }). The month and year are dropdowns: React Aria Select with link-style triggers (.btn.btn-link: brand text, no border, underline on hover); and the existing .select-popover list; the year list is this year + next 2 (plus the shown year if the arrows go further); the month always shows its full name; when stacked neither button shows the ▾ chevron, to save room. The ▾ sits 4px from the text (.slot-cal-month .btn { gap: --sp-1 }; .btn alone gives 8px). Month and year are 16px apart (--sp-4, was 8px). The summary ("Pick a day to see open time slots." → "Pick a time slot." → "Schedule at …") is built into SlotPicker (bottom right, .text-caption) instead of each page's panel footer. Optional onCancel / onConfirm props add Cancel (.btn-secondary, bottom left) and Confirm (.btn-primary, bottom right after the summary, enabled once a day and time are picked); when stacked (mobile) the summary sits on top, with Cancel as an X icon far left (reuses .flow-cancel-icon) and Confirm on the right below it, both 48px tall (Confirm uses .btn-lg); the page decides what they do.  - Added .slot-picker (+ -stacked, -title), .slot-cal*, .slot-cal-day[data-open|data-outside|data-selected], .slot-times (grid for the Choice Button time slots).
+### Choice Buttons (new docs component)
+- Buttons → Choice Buttons: radio buttons (React Aria Radio) that look like normal buttons — size, shape and text from .btn, .btn-sm (30px), default (38px), .btn-lg (48px) — with Choice Card colours and states. Label only, no description. Demos: default (with a disabled option), with icon (16px Lucide icon before the label, no extra CSS; with a disabled option), icon only (.btn-icon, named with aria-label); the code sample shows the size classes.
+- New variant class .btn-choice: white background, 1px --vsee-border; hover --vsee-border-strong; [data-selected] --vsee-brand border + --vsee-brand-50 tint; [data-disabled] 50% opacity (overrides the grey .btn disabled fill). Laid out with the existing .choice-inline.
 
-  File Upload (new primitive)
-  - Others → File Upload: FileUpload on DropZone + FileTrigger. Plain 32px FilePlus icon on the left (no box), light grey (--vsee-grey-500). Box border and the dashed line above the file list match Empty State: 2px dashed --vsee-border. Drop prompt padding 20px; on screens ≤640px 24px top/bottom, 16px sides, 4px between the icon and the title, 8px between the title and the hint, 12px above Choose files. Attached files list inside the same dashed box, under the prompt; the whole box accepts drops.
-  - Field errors as red alert bars (.alert.alert-danger), one bar per message, inside the box under the drop prompt, each dismissible: wrong type (drag & drop skips the picker filter), empty file, over size (20 MB), over maxFiles.
-  - Per-row upload states via file status: uploading (spinner in line with the name, 10px % in line with the progress bar, Cancel), uploaded, failed (message + Retry via onRetry), blocked (security check, Remove only). Failed and blocked share one round error icon (AlertCircle), centred on the row. Row error text overridable.
-  - Optional note (e.g. who can see the files) sits top right, opposite the label; wraps below it on narrow widths.
-  - Responsive by screen width (≤640px): the drop prompt wraps into a centred stack (icon, title + hint, Choose files); Choose files also wraps at any width once the text would drop below 220px; side spacing tightens, and row buttons move below the text with rows sized to their content. The row-button drop also applies when the box itself is under 480px wide (container query), e.g. in narrow columns — WCAG 2.1 1.4.10 Reflow. Row lines grow instead of being fixed height (1.4.12 Text Spacing). Long names truncate with the full name in a tooltip.
-  - Added .upload-head, .upload-note, .upload-zone-action, .upload-zone-alert (+ -slot, -text), .upload-zone (+ [data-drop-target] brand tint), .upload-zone-main, .upload-zone-*, .file-list, .file-row (+ [data-status]), .file-row-lead/-icon/-main/-top/-progress-line/-progress/-percent/-error/-actions.
-  - One-question flow's Reason step uses it.
+### Calendar + Time Slots (new primitive)
+- Others → Calendar + Time Slots: SlotPicker — month calendar, then open times for the picked day. Days without open times can't be picked. Stacks by itself on screens ≤640px (the stacked prop can still force it on/off); the docs show one example instead of separate desktop and mobile ones. Time slots are Choice Buttons (RadioGroup of .btn.btn-choice: arrow keys, read as radios), and the selected calendar day uses the same selected look (brand-50 tint, 1px brand line, dark text); the old .slot-time styles are removed. On desktop every slot is 104px wide (fits "22:22 PM") and slots don't stretch; when stacked (mobile) they fill the width, at most 4 per row and never narrower than 104px. Month arrows reuse .calendar-nav-btn (borderless, same as the Date Picker) and keep their 32px (.slot-cal-head .calendar-nav-btn { flex-shrink: 0 }). The month and year are dropdowns: React Aria Select with link-style triggers (.btn.btn-link: brand text, no border, underline on hover); and the existing .select-popover list; the year list is this year + next 2 (plus the shown year if the arrows go further); the month always shows its full name; when stacked neither button shows the ▾ chevron, to save room. The ▾ sits 4px from the text (.slot-cal-month .btn { gap: --sp-1 }; .btn alone gives 8px). Month and year are 16px apart (--sp-4, was 8px). The summary ("Pick a day to see open time slots." → "Pick a time slot." → "Schedule at …") is built into SlotPicker (bottom right, .text-caption) instead of each page's panel footer. Optional onCancel / onConfirm props add Cancel (.btn-secondary, bottom left) and Confirm (.btn-primary, bottom right after the summary, enabled once a day and time are picked); when stacked (mobile) the summary sits on top, with Cancel as an X icon far left (reuses .flow-cancel-icon) and Confirm on the right below it, both 48px tall (Confirm uses .btn-lg); the page decides what they do.
+- Added .slot-picker (+ -stacked, -title), `.slot-cal*`, .slot-cal-day[data-open|data-outside|data-selected], .slot-times (grid for the Choice Button time slots).
 
-  Selection List (new primitive)
-  - Others → Selection List: SelectionList on CheckboxGroup — all options visible, multi-select. One bordered box: optional search on top, scrollable options in the middle, picks at the bottom as removable tags.
-  - Added .option-box (+ -search, -input, -selected), .option-list, .option-list-item, .option-list-hint, .option-list-empty.
-  - The selected strip shows the removable tags only (no "N selected" heading; the tag group is named "<label>: selected" for screen readers).
-  - Health history editor uses it.
+### File Upload (new primitive)
+- Others → File Upload: FileUpload on DropZone + FileTrigger. Plain 32px FilePlus icon on the left (no box), light grey (--vsee-grey-500). Box border and the dashed line above the file list match Empty State: 2px dashed --vsee-border. Drop prompt padding 20px; on screens ≤640px 24px top/bottom, 16px sides, 4px between the icon and the title, 8px between the title and the hint, 12px above Choose files. Attached files list inside the same dashed box, under the prompt; the whole box accepts drops.
+- Field errors as red alert bars (.alert.alert-danger), one bar per message, inside the box under the drop prompt, each dismissible: wrong type (drag & drop skips the picker filter), empty file, over size (20 MB), over maxFiles.
+- Per-row upload states via file status: uploading (spinner in line with the name, 10px % in line with the progress bar, Cancel), uploaded, failed (message + Retry via onRetry), blocked (security check, Remove only). Failed and blocked share one round error icon (AlertCircle), centred on the row. Row error text overridable.
+- Optional note (e.g. who can see the files) sits top right, opposite the label; wraps below it on narrow widths.
+- Responsive by screen width (≤640px): the drop prompt wraps into a centred stack (icon, title + hint, Choose files); Choose files also wraps at any width once the text would drop below 220px; side spacing tightens, and row buttons move below the text with rows sized to their content. The row-button drop also applies when the box itself is under 480px wide (container query), e.g. in narrow columns — WCAG 2.1 1.4.10 Reflow. Row lines grow instead of being fixed height (1.4.12 Text Spacing). Long names truncate with the full name in a tooltip.
+- Added .upload-head, .upload-note, .upload-zone-action, .upload-zone-alert (+ -slot, -text), .upload-zone (+ [data-drop-target] brand tint), .upload-zone-main, `.upload-zone-*`, .file-list, .file-row (+ [data-status]), .file-row-lead/-icon/-main/-top/-progress-line/-progress/-percent/-error/-actions.
+- One-question flow's Reason step uses it.
 
-  Removable Tags
-  - Disabled state: .chip[data-disabled] (via TagGroup disabledKeys) — --grey-300 fill, --text-secondary text, no × remove button. Dark-mode override included.
-  - Badges → Removable Tags gains a disabled example.
+### Selection List (new primitive)
+- Others → Selection List: SelectionList on CheckboxGroup — all options visible, multi-select. One bordered box: optional search on top, scrollable options in the middle, picks at the bottom as removable tags.
+- Added .option-box (+ -search, -input, -selected), .option-list, .option-list-item, .option-list-hint, .option-list-empty.
+- The selected strip shows the removable tags only (no "N selected" heading; the tag group is named "`<label>`: selected" for screen readers).
+- Health history editor uses it.
 
-Apr 24
-  Color tokens
-  - --vsee-success-light #F9FEF6 → #F1F9E1 (warmer, more saturated light-green).
-  - --vsee-info-light #E0F2FE → #EBF7FE (lighter/cooler).
-  - --vsee-danger #DC2626 → #D31212; --vsee-danger-light #FEE2E2 → #FEE7E7.
+### Removable Tags
+- Disabled state: .chip[data-disabled] (via TagGroup disabledKeys) — --grey-300 fill, --text-secondary text, no × remove button. Dark-mode override included.
+- Badges → Removable Tags gains a disabled example.
 
-  Slider (new primitive)
-  - Added .slider — custom-styled <input type="range"> with no native track chrome. 8px track, 16px brand thumb, cross-browser via -webkit-appearance:none + ::-webkit-slider-runnable-track/::-webkit-slider-thumb + ::-moz-range-track/::-moz-range-progress/::-moz-range-thumb. Disabled state greys thumb + fill (no opacity).
-  - Docs demo in Components → Others with a live value + disabled example. WebKit fill is painted via a linear-gradient on the input's own background; Firefox uses native ::-moz-range-progress.
+## Apr 24
+### Color tokens
+- --vsee-success-light #F9FEF6 → #F1F9E1 (warmer, more saturated light-green).
+- --vsee-info-light #E0F2FE → #EBF7FE (lighter/cooler).
+- --vsee-danger #DC2626 → #D31212; --vsee-danger-light #FEE2E2 → #FEE7E7.
 
-  Badge
-  - Height 20px; padding 0 var(--vsee-sp-3) (12px); line-height: 1; box-sizing: border-box — total box is exactly 20×auto regardless of consumer box-sizing.
+### Slider (new primitive)
+- Added .slider — custom-styled `<input type="range">` with no native track chrome. 8px track, 16px brand thumb, cross-browser via -webkit-appearance:none + ::-webkit-slider-runnable-track/::-webkit-slider-thumb + ::-moz-range-track/::-moz-range-progress/::-moz-range-thumb. Disabled state greys thumb + fill (no opacity).
+- Docs demo in Components → Others with a live value + disabled example. WebKit fill is painted via a linear-gradient on the input's own background; Firefox uses native ::-moz-range-progress.
 
-  Sidebar layout
-  - .sidebar-layout: removed border-radius + min-height so the card fits its content.
-  - .sidebar-panel: padding-bottom now = calc(sp-4 + sp-3 + caption-size × 1.4), matching the .sidebar-heading height for symmetric top/bottom gutters.
-  - .sidebar-heading: line-height 1.4 (deterministic height for the padding calc).
+### Badge
+- Height 20px; padding 0 var(--vsee-sp-3) (12px); line-height: 1; box-sizing: border-box — total box is exactly 20×auto regardless of consumer box-sizing.
 
-  Dropdown + Select hover
-  - .dropdown-item[data-focused] and .select-option[data-focused] now only change background (was also swapping color to --brand-dark). Text/icon color stays put on hover; [data-selected] on .select-option still inverts to white on brand.
+### Sidebar layout
+- .sidebar-layout: removed border-radius + min-height so the card fits its content.
+- .sidebar-panel: padding-bottom now = calc(sp-4 + sp-3 + caption-size × 1.4), matching the .sidebar-heading height for symmetric top/bottom gutters.
+- .sidebar-heading: line-height 1.4 (deterministic height for the padding calc).
 
-  Phone field
-  - .phone-ext-label color --text-secondary → --text-primary.
+### Dropdown + Select hover
+- .dropdown-item[data-focused] and .select-option[data-focused] now only change background (was also swapping color to --brand-dark). Text/icon color stays put on hover; [data-selected] on .select-option still inverts to white on brand.
 
-  Anchor bar (new helpers, currently unused)
-  - .anchor-bar-right + .anchor-bar-group-title added for a right-aligned group within the anchor bar. Left in place for a future patterns/right-nav iteration; no current consumer.
+### Phone field
+- .phone-ext-label color --text-secondary → --text-primary.
 
-  Docs site (App.tsx)
-  - Overlays: Modal / Dialog moved here from PatternsLayouts; now button-triggered with a fixed-position backdrop (fadeIn). Dropdown Button moved in full (3 live demos — Actions secondary, MoreHorizontal icon, New Order with grouped Lab Orders / Imaging sections) from the Dropdowns section.
-  - Dropdowns: section hidden (NAV entry removed; <ComponentsDropdowns /> render commented). Function + Select Dropdown subsection preserved for future re-home.
-  - PatternsLayouts: simplified to an empty stub; render call commented. Sidebar + Content preserved as a commented block in Components → Others.
-  - Feedback & Notifications: Notifications subsection moved above Empty State and its title cleared. Toast Notifications preview replaced with 4 permanent .notification variants (success / error / warning / info) at max-width 400, matching the button-triggered version below. Trimmed the margin between Toast Notifications and the trigger buttons via a new optional `style` prop on SubSection.
-  - Section and SubSection helpers skip the title <div> when title is empty.
-  - Others: new Slider subsection (live value + disabled example).
+### Anchor bar (new helpers, currently unused)
+- .anchor-bar-right + .anchor-bar-group-title added for a right-aligned group within the anchor bar. Left in place for a future patterns/right-nav iteration; no current consumer.
 
-  Roadmap
-  - Phase 2 PatternsLayouts item now flags the Sidebar split: extract a SidebarNav primitive + SidebarLayout composition so the rail is standalone-usable; move .sidebar-panel border-right onto the composed-layout selector.
+### Docs site (App.tsx)
+- Overlays: Modal / Dialog moved here from PatternsLayouts; now button-triggered with a fixed-position backdrop (fadeIn). Dropdown Button moved in full (3 live demos — Actions secondary, MoreHorizontal icon, New Order with grouped Lab Orders / Imaging sections) from the Dropdowns section.
+- Dropdowns: section hidden (NAV entry removed; `<ComponentsDropdowns />` render commented). Function + Select Dropdown subsection preserved for future re-home.
+- PatternsLayouts: simplified to an empty stub; render call commented. Sidebar + Content preserved as a commented block in Components → Others.
+- Feedback & Notifications: Notifications subsection moved above Empty State and its title cleared. Toast Notifications preview replaced with 4 permanent .notification variants (success / error / warning / info) at max-width 400, matching the button-triggered version below. Trimmed the margin between Toast Notifications and the trigger buttons via a new optional `style` prop on SubSection.
+- Section and SubSection helpers skip the title `<div>` when title is empty.
+- Others: new Slider subsection (live value + disabled example).
 
-  Tooling
-  - .gitignore: added /design-system.esproj, /design-system.esproj.user, /Design System.sln, /package-lock.json, .vscode/.
-  - lefthook.yml: security (gitleaks) job routed through scripts/pre-commit-gitleaks.sh (from chore/remove-ide-files) so the optional-skip logic has a real shell on every platform.
+### Roadmap
+- Phase 2 PatternsLayouts item now flags the Sidebar split: extract a SidebarNav primitive + SidebarLayout composition so the rail is standalone-usable; move .sidebar-panel border-right onto the composed-layout selector.
 
-  Prototype pages (later on Apr 24)
-  - apps/docs/public/login.html + preference.html — shipped the self-contained HTML mocks from research/ into the docs site's public folder. Vite serves them at /login.html and /preference.html (and /Design-System/* after GH Pages deploy).
-  - Anchor-bar gained two external-page links next to Patterns: Login and Preferences. Each opens in a new tab via target="_blank" + rel="noopener", URL built from import.meta.env.BASE_URL so the links resolve correctly in dev and on the deployed base.
-  - New .anchor-link-external modifier (inline-flex + 4px gap) so the ExternalLink icon sits cleanly next to the label.
-  - PATTERNS_GROUP.items is now an empty typed array — Layouts was the only member and PatternsLayouts has no visible content. Comment flags how to re-enable when Patterns ships again.
+### Tooling
+- .gitignore: added /design-system.esproj, /design-system.esproj.user, /Design System.sln, /package-lock.json, .vscode/.
+- lefthook.yml: security (gitleaks) job routed through scripts/pre-commit-gitleaks.sh (from chore/remove-ide-files) so the optional-skip logic has a real shell on every platform.
 
-  Login prototype (apps/docs/public/login.html) polish
-  - Visible Email and Password labels (Email was sr-only; Password had none).
-  - Switched from the one-off .input-eye-wrap / .input-eye-btn classes to the design system's .input-icon-wrap / .input-icon-btn + .input-with-icon-right.
-  - Eye toggle now swaps between Eye and EyeOff (Lucide, 16×16, stroke 2, matches <Eye size={16} /> in the React <Login /> demo). Both SVGs ship inside the button, [hidden] attribute toggled via toggleAttribute (SVGElement's .hidden property isn't reliable); a scoped rule `.input-icon-btn svg[hidden] { display:none }` handles the flex-parent edge case.
-  - "Change email" link moved into a label-row above the email input, shown only when the email becomes readonly (signin step 2). Signup mode keeps the field editable and hides the link.
-  - Dropped the local .input-lg rule (removed from the design system on Apr 17) and the trailing .btn-lg on Continue / Google / Apple — buttons render at the default .btn height from the inlined .btn rule.
-  - Body pinned to height: 100vh with overflow: hidden + flex column so the page itself never scrolls; stage flexes to fill remaining height with overflow: auto as a safety net for very short viewports.
+### Prototype pages (later on Apr 24)
+- apps/docs/public/login.html + preference.html — shipped the self-contained HTML mocks from research/ into the docs site's public folder. Vite serves them at /login.html and /preference.html (and `/Design-System/*` after GH Pages deploy).
+- Anchor-bar gained two external-page links next to Patterns: Login and Preferences. Each opens in a new tab via target="_blank" + rel="noopener", URL built from import.meta.env.BASE_URL so the links resolve correctly in dev and on the deployed base.
+- New .anchor-link-external modifier (inline-flex + 4px gap) so the ExternalLink icon sits cleanly next to the label.
+- PATTERNS_GROUP.items is now an empty typed array — Layouts was the only member and PatternsLayouts has no visible content. Comment flags how to re-enable when Patterns ships again.
 
-  WCAG AA — dark-mode --vsee-danger
-  - Light-mode --vsee-danger stays at #D31212. In dark mode it now overrides to #F87171, giving ~6.5:1 against the --vsee-white body (#0B1120) — was ~3.36:1 and failed normal-text AA for .form-error-text, .dropdown-item-danger, .btn-danger-outline text, etc.
-  - Filled surfaces (.btn-danger, .btn-danger[data-pressed], .btn-loading.btn-danger[data-disabled], .badge-solid-danger) fall back to --vsee-danger-border (#991B1B) in dark mode so white text stays ~7.9:1 (AAA).
-  - Mirrored the dark-mode token override into login.html's inlined [data-mode="dark"] block per the prototype-drift convention.
+### Login prototype (apps/docs/public/login.html) polish
+- Visible Email and Password labels (Email was sr-only; Password had none).
+- Switched from the one-off .input-eye-wrap / .input-eye-btn classes to the design system's .input-icon-wrap / .input-icon-btn + .input-with-icon-right.
+- Eye toggle now swaps between Eye and EyeOff (Lucide, 16×16, stroke 2, matches `<Eye size={16} />` in the React `<Login />` demo). Both SVGs ship inside the button, [hidden] attribute toggled via toggleAttribute (SVGElement's .hidden property isn't reliable); a scoped rule `.input-icon-btn svg[hidden] { display:none }` handles the flex-parent edge case.
+- "Change email" link moved into a label-row above the email input, shown only when the email becomes readonly (signin step 2). Signup mode keeps the field editable and hides the link.
+- Dropped the local .input-lg rule (removed from the design system on Apr 17) and the trailing .btn-lg on Continue / Google / Apple — buttons render at the default .btn height from the inlined .btn rule.
+- Body pinned to height: 100vh with overflow: hidden + flex column so the page itself never scrolls; stage flexes to fill remaining height with overflow: auto as a safety net for very short viewports.
 
-  Docs site — TS noUnusedLocals fixes
-  - Exported ComponentsDropdowns and PatternsLayouts. Both render calls are commented out but the functions are preserved for future re-home; exporting takes them out of the noUnusedLocals scope without a @ts-ignore or a throwaway void reference.
-  - Section's `children` prop is now optional (React.ReactNode → ?). PatternsLayouts renders an empty stub (label + description, no body) so a JSX comment is the only child; typing children as optional fixes the TS2741 that followed.
+### WCAG AA — dark-mode --vsee-danger
+- Light-mode --vsee-danger stays at #D31212. In dark mode it now overrides to #F87171, giving ~6.5:1 against the --vsee-white body (#0B1120) — was ~3.36:1 and failed normal-text AA for .form-error-text, .dropdown-item-danger, .btn-danger-outline text, etc.
+- Filled surfaces (.btn-danger, .btn-danger[data-pressed], .btn-loading.btn-danger[data-disabled], .badge-solid-danger) fall back to --vsee-danger-border (#991B1B) in dark mode so white text stays ~7.9:1 (AAA).
+- Mirrored the dark-mode token override into login.html's inlined [data-mode="dark"] block per the prototype-drift convention.
 
-Apr 23
-  Repo housekeeping
-  - Stopped tracking IDE project files — removed `Design System.sln` (root) and `apps/docs/design-system.esproj`.
-  - `.gitignore`: added `.vscode/`, `/package-lock.json`, `/design-system.esproj`; reordered `.claude/` below `dist/`.
-  - lefthook.yml: security job invokes `bash scripts/pre-commit-gitleaks.sh` — inline shell syntax doesn't survive on Windows Git Bash.
+### Docs site — TS noUnusedLocals fixes
+- Exported ComponentsDropdowns and PatternsLayouts. Both render calls are commented out but the functions are preserved for future re-home; exporting takes them out of the noUnusedLocals scope without a @ts-ignore or a throwaway void reference.
+- Section's `children` prop is now optional (React.ReactNode → ?). PatternsLayouts renders an empty stub (label + description, no body) so a JSX comment is the only child; typing children as optional fixes the TS2741 that followed.
 
-Apr 17
-  Typography
-  - System font switched from Plus Jakarta Sans to Figtree (loaded via Google Fonts).
-  - Composite text tokens (--text-display, --text-h1…h5, --text-body-lg, --text-body, --text-caption, --text-overline) removed — use size + weight
+## Apr 23
+### Repo housekeeping
+- Stopped tracking IDE project files — removed `Design System.sln` (root) and `apps/docs/design-system.esproj`.
+- `.gitignore`: added `.vscode/`, `/package-lock.json`, `/design-system.esproj`; reordered `.claude/` below `dist/`.
+- lefthook.yml: security job invokes `bash scripts/pre-commit-gitleaks.sh` — inline shell syntax doesn't survive on Windows Git Bash.
+
+## Apr 17
+### Typography
+- System font switched from Plus Jakarta Sans to Figtree (loaded via Google Fonts).
+- Composite text tokens (--text-display, --text-h1…h5, --text-body-lg, --text-body, --text-caption, --text-overline) removed — use size + weight
   directly.
 
-  Color tokens
-  - Removed: --brand-hover, --danger-hover, all --status-* (EMR), and the shadcn-style @theme block (--color-primary*, --color-background,
-  --color-foreground, --color-secondary*, --color-muted*, --color-accent*, --color-destructive*, --color-success*, --color-info*, --color-warning*,
-  --color-border, --color-input, --color-ring, --color-card*, oklch radii).
-  - Semantic values retuned: success greener (#367D17), success-light lighter (#F9FEF6), info #196CD2, warning #FFCB5A, plus success-dark /
+### Color tokens
+- Removed: --brand-hover, --danger-hover, all `--status-*` (EMR), and the shadcn-style @theme block (`--color-primary*`, --color-background,
+  --color-foreground, `--color-secondary*`, `--color-muted*`, `--color-accent*`, `--color-destructive*`, `--color-success*`, `--color-info*`, `--color-warning*`,
+  --color-border, --color-input, --color-ring, `--color-card*`, oklch radii).
+- Semantic values retuned: success greener (#367D17), success-light lighter (#F9FEF6), info #196CD2, warning #FFCB5A, plus success-dark /
   warning-on-solid / success-border adjustments.
-  - Grey scale re-tuned across all 9 stops (softer/warmer).
-  - --link-hover now resolves to --brand-semidark (was --brand-hover).
+- Grey scale re-tuned across all 9 stops (softer/warmer).
+- --link-hover now resolves to --brand-semidark (was --brand-hover).
 
-  Buttons
-  - .btn-group now has an animated sliding pill (::before positioned via --slider-x/--slider-w, measured in useLayoutEffect).
-  - New .btn-group-square modifier (square corners via --r-sm).
-  - .btn-warning text uses --warning-on-solid.
-  - .btn[data-disabled] uses --text-secondary + --border-strong; no longer sets pointer-events:none.
-  - .btn padding tokenized (var(--sp-3) var(--sp-5)); .btn-sm 30px, .btn-lg 48px.
+### Buttons
+- .btn-group now has an animated sliding pill (::before positioned via --slider-x/--slider-w, measured in useLayoutEffect).
+- New .btn-group-square modifier (square corners via --r-sm).
+- .btn-warning text uses --warning-on-solid.
+- .btn[data-disabled] uses --text-secondary + --border-strong; no longer sets pointer-events:none.
+- .btn padding tokenized (var(--sp-3) var(--sp-5)); .btn-sm 30px, .btn-lg 48px.
 
-  Inputs
-  - .input-lg removed; .input-sm added (34px, --r-xs).
-  - New .input-icon-btn-sm and .input-sm.input-with-icon-right.
-  - Forms demo: "Large & Disabled" card replaced with "Small & Disabled" SearchField.
+### Inputs
+- .input-lg removed; .input-sm added (34px, --r-xs).
+- New .input-icon-btn-sm and .input-sm.input-with-icon-right.
+- Forms demo: "Large & Disabled" card replaced with "Small & Disabled" SearchField.
 
-  Toggles
-  - Thumb 20×20 → 16×16 (both plain and labeled variants).
-  - Labeled track 62 → 56px; plain track 44 → 46px.
-  - Disabled state now greys thumb (--grey-300) and track (--grey-500) instead of using opacity: 0.5.
-  - .toggle-text weight 700 → 500.
-  - Typography demo's "Unavailable" switch now uses labeled variant.
+### Toggles
+- Thumb 20×20 → 16×16 (both plain and labeled variants).
+- Labeled track 62 → 56px; plain track 44 → 46px.
+- Disabled state now greys thumb (--grey-300) and track (--grey-500) instead of using opacity: 0.5.
+- .toggle-text weight 700 → 500.
+- Typography demo's "Unavailable" switch now uses labeled variant.
 
-  Other
-  - [data-focus-visible] outline → var(--brand) (ring token removed).
-  - README: "all 7 brand variables" → "all 6"; --brand-hover row deleted from custom-theme template.
-  - Deleted local .claude/settings.local.json.
+### Other
+- [data-focus-visible] outline → var(--brand) (ring token removed).
+- README: "all 7 brand variables" → "all 6"; --brand-hover row deleted from custom-theme template.
+- Deleted local .claude/settings.local.json.
 
-Apr 16
-  Color tokens
-  - --brand-active → --brand-semidark (renamed across :root, blue, purple themes; hex unchanged).                                                            - Removed --text-tertiary (#6F7787) — use --text-secondary instead.
-  - Removed --text-brand — use --brand directly.
-  - --success decoupled from --brand: #0D875C → #367D17 (olive green).
-  - --success-light #E6F5EE → #F9FEF6; --success-dark #065F46 → #265C10; --success-border #A7F3D0 → #DAF1C1.
+## Apr 16
+### Color tokens
+- --brand-active → --brand-semidark (renamed across :root, blue, purple themes; hex unchanged).
+- Removed --text-tertiary (#6F7787) — use --text-secondary instead.
+- Removed --text-brand — use --brand directly.
+- --success decoupled from --brand: #0D875C → #367D17 (olive green).
+- --success-light #E6F5EE → #F9FEF6; --success-dark #065F46 → #265C10; --success-border #A7F3D0 → #DAF1C1.
 
-  New: universal hover overlay
-  - Added --hover-overlay: linear-gradient(rgba(0,0,0,0.07), rgba(0,0,0,0.07)).
-  - ~20 hover rules converted from hardcoded background: var(--grey-100|200|brand-hover|danger-hover|...) to background-image: var(--hover-overlay).
-  Affected selectors: .ds-nav-link, .st-row, all .btn-*[data-hovered], .btn-group .btn.active-group[data-hovered], .phone-country-btn, .calendar-nav-btn,
+### New: universal hover overlay
+- Added --hover-overlay: linear-gradient(rgba(0,0,0,0.07), rgba(0,0,0,0.07)).
+- ~20 hover rules converted from hardcoded background: var(--grey-100|200|brand-hover|danger-hover|...) to background-image: var(--hover-overlay).
+- Affected selectors: .ds-nav-link, .st-row, all `.btn-*[data-hovered]`, .btn-group .btn.active-group[data-hovered], .phone-country-btn, .calendar-nav-btn,
   .calendar-cell, .input-icon-btn, .navbar-link, .page-btn, .table tr:hover td, .modal-close, .sidebar-menu-item, .anchor-link, .drawer-close,
   .notification-close, .code-toggle.
 
-  Spacing/radius tokenization (~50 sites)
-  - 40px → var(--sp-10), 32px → var(--sp-8), 20px → var(--sp-5), 16px → var(--sp-4), 12px → var(--sp-3), 8px → var(--sp-2), 4px → var(--sp-1) across
+### Spacing/radius tokenization (~50 sites)
+- 40px → var(--sp-10), 32px → var(--sp-8), 20px → var(--sp-5), 16px → var(--sp-4), 12px → var(--sp-3), 8px → var(--sp-2), 4px → var(--sp-1) across
   avatar, input, calendar-nav, navbar-link, theme-btn, copy-toast, tag-list, multiselect, tooltip, status, dropdown-item, code-toggle, etc.
-  - border-radius: 8px → var(--r-md); 4px → var(--r-xs).
+- border-radius: 8px → var(--r-md); 4px → var(--r-xs).
 
-  Components
-  - Removed .btn-xl variant (lg/default/sm remain); demos and CodeBlock strings updated.
-  - .btn-warning color reverted --warning-on-solid → --text-primary (light + dark).
-  - .section-label color --text-brand → --brand.
-  - --text-tertiary → --text-secondary across ~30 selectors (swatches, nav, form hints, calendar headers, payment fields, drawer labels, empty states,
+### Components
+- Removed .btn-xl variant (lg/default/sm remain); demos and CodeBlock strings updated.
+- .btn-warning color reverted --warning-on-solid → --text-primary (light + dark).
+- .section-label color --text-brand → --brand.
+- --text-tertiary → --text-secondary across ~30 selectors (swatches, nav, form hints, calendar headers, payment fields, drawer labels, empty states,
   dropdown header, etc.) and ~10 inline style props in App.tsx.
 
-  Dark mode
-  - Added [data-mode="dark"] .copy-toast (grey-900 bg, white text).
-  - Added [data-mode="dark"] .section-label (--brand-dark).
+### Dark mode
+- Added [data-mode="dark"] .copy-toast (grey-900 bg, white text).
+- Added [data-mode="dark"] .section-label (--brand-dark).
 
-  Repo housekeeping
-  - .gitignore: added .claude/.
-  - .claude/settings.local.json: added 14 permission entries (Gmail/Asana MCP, Bash patterns, Read scope).
+### Repo housekeeping
+- .gitignore: added .claude/.
+- .claude/settings.local.json: added 14 permission entries (Gmail/Asana MCP, Bash patterns, Read scope).
 
-Apr 9
-  - Added a live date/time format preview line under the Typography section that detects the user's browser language
-    and displays the corresponding date format (e.g., MM/DD/YYYY for en-US, DD/MM/YYYY for en-GB, YYYY/MM/DD for ja-JP, etc.).
+## Apr 9
+- Added a live date/time format preview line under the Typography section that detects the user's browser language
+  and displays the corresponding date format (e.g., MM/DD/YYYY for en-US, DD/MM/YYYY for en-GB, YYYY/MM/DD for ja-JP, etc.).
 
-Apr 9
-  Font System
-  - Consolidated --font and --font-sans into a single --font-sans variable, removing the redundant --font declaration from :root and updating all 16 references across App.css and index.c
-  UI Fixes
-  - Changed .payment-label color from --text-tertiary to --text-primary for better readability
+## Apr 9
+### Font System
+- Consolidated --font and --font-sans into a single --font-sans variable, removing the redundant --font declaration from :root and updating all 16 references across App.css and index.c
+### UI Fixes
+- Changed .payment-label color from --text-tertiary to --text-primary for better readability
 
-- Apr 8
-  - Add dropdown unit example to Input with Unit code block
-  - Fix unequal card widths in form grid by adding min-width: 0 to .card
+## Apr 8
+- Add dropdown unit example to Input with Unit code block
+- Fix unequal card widths in form grid by adding min-width: 0 to .card
 
-- Apr 8
-  Foundations — Typography
+## Apr 8
+### Foundations — Typography
 
-  - Added --r-xs (4px) square to Border Radius display
-  - Moved Shadows next to Spacing (right column), moved Border Radius below Spacing (full width)
-  - Renamed all typography size tokens from generic (--text-xs, --text-sm, --text-base, etc.) to semantic names (--text-overline-size,
+- Added --r-xs (4px) square to Border Radius display
+- Moved Shadows next to Spacing (right column), moved Border Radius below Spacing (full width)
+- Renamed all typography size tokens from generic (--text-xs, --text-sm, --text-base, etc.) to semantic names (--text-overline-size,
   --text-caption-size, --text-body-size, --text-h5-size, --text-h4-size, --text-h3-size, --text-h2-size, --text-h1-size, --text-display-size)
-  - Added --text-body-lg-size (16px) as separate token from --text-h5-size
-  - Added --text-subtitle-size (18px) for subtitles/modal headers
-  - Created utility classes: .text-display, .text-h1, .text-h2, .text-h3, .text-h4, .text-h5, .text-body-lg, .text-body, .text-caption,
+- Added --text-body-lg-size (16px) as separate token from --text-h5-size
+- Added --text-subtitle-size (18px) for subtitles/modal headers
+- Created utility classes: .text-display, .text-h1, .text-h2, .text-h3, .text-h4, .text-h5, .text-body-lg, .text-body, .text-caption,
   .text-overline — each bundles font-size, font-weight, line-height, and letter-spacing
-  - Typography section now displays class names (e.g. .text-h1) and font sizes (e.g. 48px) as labels
-  - Added --sp-32: 128px spacing token
-  - Added "Date Format" subsection showing US format (MMM D, YYYY at h:mm A) with live current time and code example
+- Typography section now displays class names (e.g. .text-h1) and font sizes (e.g. 48px) as labels
+- Added --sp-32: 128px spacing token
+- Added "Date Format" subsection showing US format (MMM D, YYYY at h:mm A) with live current time and code example
 
-  Foundations — Colors (Dark Mode)
+### Foundations — Colors (Dark Mode)
 
-  - Fixed --brand-dark for non-green themes in dark mode:
-    - Blue theme: #67E8F9
-    - Purple theme: #C4B5FD
+- Fixed --brand-dark for non-green themes in dark mode:
+  - Blue theme: #67E8F9
+  - Purple theme: #C4B5FD
 
-  Components — Form Elements
+### Components — Form Elements
 
-  - Restructured form section layout: removed grid g2 form-grid wrappers
-  - Row 1: Text Inputs + Select & Textarea (side by side) with dedicated CodeBlock
-  - Row 2: Checkboxes & Radios + Large & Disabled (side by side) with dedicated CodeBlock
+- Restructured form section layout: removed grid g2 form-grid wrappers
+- Row 1: Text Inputs + Select & Textarea (side by side) with dedicated CodeBlock
+- Row 2: Checkboxes & Radios + Large & Disabled (side by side) with dedicated CodeBlock
 
-  Components — Advanced Inputs
+### Components — Advanced Inputs
 
-  - Restructured into rows of 2 cards, each with its own CodeBlock:
-    - Row 1: Phone Number + Date Picker
-    - Row 2: Input with Action Icon + Input with Unit
-    - Row 3: Payment Input + Login Form
-    - Row 4: Inline Inputs (existing)
+- Restructured into rows of 2 cards, each with its own CodeBlock:
+  - Row 1: Phone Number + Date Picker
+  - Row 2: Input with Action Icon + Input with Unit
+  - Row 3: Payment Input + Login Form
+  - Row 4: Inline Inputs (existing)
 
-  Components — Payment Input (new)
+### Components — Payment Input (new)
 
-  - Created reusable PaymentInput component with props:
-    - cardPlaceholder, expiryPlaceholder, cvvPlaceholder
-    - onCardChange, onExpiryChange, onCvvChange (all optional)
-  - Card number row: credit card icon + "Card" label + auto-formatted input (groups of 4)
-  - Card number masking: digits 5–12 show as • when blurred, visible when focused
-  - Expiry row: calendar icon + "Expiry" label + auto-formatted MM / YY input
-  - CVV row: lock icon + "CVV" label + type="password" input (max 3 digits)
-  - Stripe-like single bordered box with --r-md radius matching other inputs
+- Created reusable PaymentInput component with props:
+  - cardPlaceholder, expiryPlaceholder, cvvPlaceholder
+  - onCardChange, onExpiryChange, onCvvChange (all optional)
+- Card number row: credit card icon + "Card" label + auto-formatted input (groups of 4)
+- Card number masking: digits 5–12 show as • when blurred, visible when focused
+- Expiry row: calendar icon + "Expiry" label + auto-formatted MM / YY input
+- CVV row: lock icon + "CVV" label + type="password" input (max 3 digits)
+- Stripe-like single bordered box with --r-md radius matching other inputs
 
-  Components — Signature Pad (new)
+### Components — Signature Pad (new)
 
-  - Created reusable SignaturePad component with props:
-    - onSign(dataUrl, timestamp), onClear
-    - placeholder, width, height, strokeWidth, strokeColor (all optional)
-  - Canvas-based drawing with mouse and touch support
-  - 2x canvas resolution for crisp lines
-  - Quadratic curve interpolation for smooth strokes
-  - States: empty (pencil icon + placeholder), drawing (Clear + Confirm buttons), signed (locked with timestamp)
-  - Clear button inside the box (top-right) with X icon + "Clear" text
-  - Confirm button on the right, timestamp on the left
-  - Once confirmed, signature is locked — no editing or clearing
-  - onSign returns PNG data URL and Date object
-  - SignaturePadDemo wrapper for design system page with pre-signed example
-  - Fixed footer min-height: 28px to prevent layout shift
+- Created reusable SignaturePad component with props:
+  - onSign(dataUrl, timestamp), onClear
+  - placeholder, width, height, strokeWidth, strokeColor (all optional)
+- Canvas-based drawing with mouse and touch support
+- 2x canvas resolution for crisp lines
+- Quadratic curve interpolation for smooth strokes
+- States: empty (pencil icon + placeholder), drawing (Clear + Confirm buttons), signed (locked with timestamp)
+- Clear button inside the box (top-right) with X icon + "Clear" text
+- Confirm button on the right, timestamp on the left
+- Once confirmed, signature is locked — no editing or clearing
+- onSign returns PNG data URL and Date object
+- SignaturePadDemo wrapper for design system page with pre-signed example
+- Fixed footer min-height: 28px to prevent layout shift
 
-- Apr 7
-  - feat: expand form components with units, steppers, and inline patterns General Configuration
-   - .claude/settings.local.json: Added Bash(echo "exit: $?") to the list of allowed commands.
-   - CHANGELOG.md: Updated with a new entry for April 7th regarding the addition of a placeholder for disabled input fields.
+## Apr 7
+- feat: expand form components with units, steppers, and inline patterns General Configuration
+- .claude/settings.local.json: Added Bash(echo "exit: $?") to the list of allowed commands.
+- CHANGELOG.md: Updated with a new entry for April 7th regarding the addition of a placeholder for disabled input fields.
 
-  Design System Improvements
-  Foundations & Tokens
-   - index.css: Introduced a new border-radius token --r-xs: 4px.
-   - App.css:
-     - Renamed .radius-demo to .radius-preview for better naming consistency.
-     - Increased the opacity of disabled input fields (.input[disabled]) from 0.5 to 0.7 for better readability.
+### Design System Improvements
+### Foundations & Tokens
+- index.css: Introduced a new border-radius token --r-xs: 4px.
+- App.css:
+  - Renamed .radius-demo to .radius-preview for better naming consistency.
+  - Increased the opacity of disabled input fields (.input[disabled]) from 0.5 to 0.7 for better readability.
 
-  New Components & Features
-   - Unit & Number Inputs: Added a new UnitInputs component that demonstrates:
-     - Inputs with static units (e.g., "ml").
-     - Inputs with dropdown unit selection (e.g., "kg/lb").
-     - Number stepper functionality using NumberField.
-   - Inline Inputs: Implemented a comprehensive "Inline Inputs" section in the forms demo, showing how inputs, selects, and date pickers can be
-     used within text sentences or compact rows.
-   - Add a placeholder for the disabled input field
+### New Components & Features
+- Unit & Number Inputs: Added a new UnitInputs component that demonstrates:
+  - Inputs with static units (e.g., "ml").
+  - Inputs with dropdown unit selection (e.g., "kg/lb").
+  - Number stepper functionality using NumberField.
+- Inline Inputs: Implemented a comprehensive "Inline Inputs" section in the forms demo, showing how inputs, selects, and date pickers can be
+  used within text sentences or compact rows.
+- Add a placeholder for the disabled input field
 
-  Code Refactoring & Cleanup
-   - Component Renaming: Refactored several "Demo" components to standard names for a cleaner structure:
-     - ToggleDemo → Toggle
-     - ButtonGroupDemo → ButtonGroup
-     - PhoneInputDemo → PhoneInput
-     - InputWithIconDemo → InputWithIcon
-     - LoginDemo → Login
-   - UI Enhancements:
-     - Added a placeholder to the disabled field in the Forms section.
-  Technical Changes
-   - Imports: Added NumberField, ChevronUp, and Minus to the react-aria-components and lucide-react imports in App.tsx.
+### Code Refactoring & Cleanup
+- Component Renaming: Refactored several "Demo" components to standard names for a cleaner structure:
+  - ToggleDemo → Toggle
+  - ButtonGroupDemo → ButtonGroup
+  - PhoneInputDemo → PhoneInput
+  - InputWithIconDemo → InputWithIcon
+  - LoginDemo → Login
+- UI Enhancements:
+  - Added a placeholder to the disabled field in the Forms section.
+### Technical Changes
+- Imports: Added NumberField, ChevronUp, and Minus to the react-aria-components and lucide-react imports in App.tsx.
 
-- Apr 7
-  - style: update toggle button off-state color and unify track styles
-  - Change toggle-track off-state from --grey-400 to --grey-700 to match toggle-track-labeled (Auto-save) off-state color
-  - Add dark mode override for both toggle off states using --grey-500 for better contrast on dark backgrounds
+## Apr 7
+- style: update toggle button off-state color and unify track styles
+- Change toggle-track off-state from --grey-400 to --grey-700 to match toggle-track-labeled (Auto-save) off-state color
+- Add dark mode override for both toggle off states using --grey-500 for better contrast on dark backgrounds
 
-- Apr 7
-  - feat: add dark mode with toggle switcher and elevated surface system
-  - Add dark mode toggle (Sun/Moon switcher) in sidebar
-  - Add [data-mode="dark"] CSS variables in index.css that invert
-    neutral scale, text, border, and semantic color tokens
-  - Override -dark tokens (success, info, warning, danger, brand) to
-    light values for readable contrast on dark backgrounds
-  - Increase shadow opacity (0.3–0.4) for visibility on dark surfaces
-  - Add --surface-elevated token for cards, modals, popovers, drawers,
-    toasts, dropdowns, and notifications
-  - Pin light-mode colors for btn-warning, badge-solid-warning,
-    badge-solid-neutral, chip, and tooltip in dark mode
-  - Replace hardcoded `background: white` with `var(--white)` in App.css
-  - Support combined brand theme + dark mode (green, blue, purple)
-  - Update White-Label Theming section with dark mode docs and code examples
-  - Update Design Tokens section description to mention dark mode support
+## Apr 7
+- feat: add dark mode with toggle switcher and elevated surface system
+- Add dark mode toggle (Sun/Moon switcher) in sidebar
+- Add [data-mode="dark"] CSS variables in index.css that invert
+  neutral scale, text, border, and semantic color tokens
+- Override -dark tokens (success, info, warning, danger, brand) to
+  light values for readable contrast on dark backgrounds
+- Increase shadow opacity (0.3–0.4) for visibility on dark surfaces
+- Add --surface-elevated token for cards, modals, popovers, drawers,
+  toasts, dropdowns, and notifications
+- Pin light-mode colors for btn-warning, badge-solid-warning,
+  badge-solid-neutral, chip, and tooltip in dark mode
+- Replace hardcoded `background: white` with `var(--white)` in App.css
+- Support combined brand theme + dark mode (green, blue, purple)
+- Update White-Label Theming section with dark mode docs and code examples
+- Update Design Tokens section description to mention dark mode support
 
-- Apr 7
-  - style: docs: update changelog to reflect all updates
+## Apr 7
+- style: docs: update changelog to reflect all updates
 
-- Apr 7
-  - style: update global font family and references
-  - Updated global font family definitions and associated references across the project.
+## Apr 7
+- style: update global font family and references
+- Updated global font family definitions and associated references across the project.
 
-- **285c971**
-  - refactor: update color tokens, add click-to-copy, and fix UI components
-  - Added `--link` and `--link-hover` CSS tokens in `index.css` that reference `var(--brand)` and `var(--brand-hover)` to dynamically adapt across all themes.
-  - Applied global `<a>` tag styling using the new link tokens (incorporating color, hover state, transition, and text-decoration removal).
-  - Updated all color swatches to display both the CSS token name and its corresponding hex value.
-  - Added click-to-copy functionality to all design token rows (`st-row`).
-  - Applied hover styling and pointer cursors to the token elements.
-  - Added an `isDisabled` state to the "In-person" radio button.
-  - Applied `[data-disabled]` CSS styling (reduced opacity, muted circle, and not-allowed cursor) to disabled radio inputs.
-  - Performed a Code Block audit and applied 6 distinct fixes.
+## `285c971`
+- refactor: update color tokens, add click-to-copy, and fix UI components
+- Added `--link` and `--link-hover` CSS tokens in `index.css` that reference `var(--brand)` and `var(--brand-hover)` to dynamically adapt across all themes.
+- Applied global `<a>` tag styling using the new link tokens (incorporating color, hover state, transition, and text-decoration removal).
+- Updated all color swatches to display both the CSS token name and its corresponding hex value.
+- Added click-to-copy functionality to all design token rows (`st-row`).
+- Applied hover styling and pointer cursors to the token elements.
+- Added an `isDisabled` state to the "In-person" radio button.
+- Applied `[data-disabled]` CSS styling (reduced opacity, muted circle, and not-allowed cursor) to disabled radio inputs.
+- Performed a Code Block audit and applied 6 distinct fixes.
 
-- **85d9934**
-  - style: fix grey text contrast in typography section
-  - Fixed grey text color contrast in the typography section to ensure readability.
+## `85d9934`
+- style: fix grey text contrast in typography section
+- Fixed grey text color contrast in the typography section to ensure readability.
 
-- **21eeb54**
-  - docs: add comprehensive README and update brand color tokens
-  - Added a comprehensive `README.md` file outlining project documentation.
-  - Updated brand color tokens across the styling definitions.
+## `21eeb54`
+- docs: add comprehensive README and update brand color tokens
+- Added a comprehensive `README.md` file outlining project documentation.
+- Updated brand color tokens across the styling definitions.
 
-- **5a52d54**
-  - style: adjust button dimensions and padding
-  - Adjusted global button dimensions and internal padding for better proportions.
+## `5a52d54`
+- style: adjust button dimensions and padding
+- Adjusted global button dimensions and internal padding for better proportions.
 
-- **172d11f**
-  - style: update phone extension input width
-  - Updated the width of the phone extension input field to align better with standard form layouts.
+## `172d11f`
+- style: update phone extension input width
+- Updated the width of the phone extension input field to align better with standard form layouts.
 
-- **e8c6039**
-  - fix: resolve react component errors for deployment
-  - Resolved React component errors and warnings to ensure successful deployment builds.
+## `e8c6039`
+- fix: resolve react component errors for deployment
+- Resolved React component errors and warnings to ensure successful deployment builds.
 
-- **676f00d** - feat: implement dynamic brand theming and restyle components
-  - Added two new brand color themes: Ocean Blue (`#0891B2`) and Royal Purple (`#7C3AED`).
-  - Introduced theme switcher dots in the sidebar, located beneath the logo.
-  - Enabled clickable theme cards in the White-Label section to switch themes dynamically.
-  - Updated the Design Tokens section to include theme override code blocks.
-  - Expanded the White-Label section to include explicit instructions (HTML, JS, React) for theme implementation.
-  - Lightened the entire greyscale palette by two steps, excluding `--black` (`#111827`).
-  - Updated brand color swatches to utilize CSS variables instead of hardcoded hex strings.
-  - Applied `badge-success` colors to multiple active states across the app (anchor links, nav links, avatars, select options, dropdown items, and action feedback).
-  - Standardized button heights to 38px, including icon buttons (`38px` x `38px`).
-  - Updated border thickness to 2px for secondary, ghost, and danger-outline buttons.
-  - Set the background of `btn-danger-outline` to white.
-  - Updated disabled buttons to feature a `--grey-400` background, `--grey-800` text, and a `--grey-500` border.
-  - Darkened the background and text colors of neutral badges.
-  - Increased the avatar text size for default (`--text-base`) and large (`--text-xl`) variants.
-  - Darkened the toggle track to `--grey-600` for unavailable toggles.
-  - Added an "Always On" disabled toggle variant to the toggle demo.
-  - Capped all dropdown popovers at one-third of the screen height (`33vh`) and ensured they are scrollable.
-  - Created a dedicated "Dropdowns" navigation section, migrating the Dropdown Menu from "Overlays".
-  - Restyled the Country dropdown to match the Specialty dropdown's design.
-  - Applied `width: var(--trigger-width)` to `select-popover` elements to ensure precise width matching.
-  - Removed dividers from the modal component (`border-bottom` on `.modal-head` and `border-top` on `.modal-actions`).
-  - Removed the CodeBlock from the modal demo.
-  - Removed dividers between items and surrounding content within the Collapse/Accordion component.
-  - Applied a persistent grey background to the Collapse trigger and removed its hover state.
-  - Added two data lines to the Vitals display.
-  - Commented out the entire Collapse/Accordion subsection under "Others".
-  - Reordered sections: moved Tooltips to "Overlays" and positioned "Overlays" above "Others" in both navigation and the main page.
-  - Updated the phone extension input: reduced width to 48px, decreased label padding to 4px, and adjusted input padding (0px left, 8px right).
-  - Commented out the Dividers subsection under "Spacing & Layout" (preserving the underlying code).
+## `676f00d`
+- feat: implement dynamic brand theming and restyle components
+- Added two new brand color themes: Ocean Blue (`#0891B2`) and Royal Purple (`#7C3AED`).
+- Introduced theme switcher dots in the sidebar, located beneath the logo.
+- Enabled clickable theme cards in the White-Label section to switch themes dynamically.
+- Updated the Design Tokens section to include theme override code blocks.
+- Expanded the White-Label section to include explicit instructions (HTML, JS, React) for theme implementation.
+- Lightened the entire greyscale palette by two steps, excluding `--black` (`#111827`).
+- Updated brand color swatches to utilize CSS variables instead of hardcoded hex strings.
+- Applied `badge-success` colors to multiple active states across the app (anchor links, nav links, avatars, select options, dropdown items, and action feedback).
+- Standardized button heights to 38px, including icon buttons (`38px` x `38px`).
+- Updated border thickness to 2px for secondary, ghost, and danger-outline buttons.
+- Set the background of `btn-danger-outline` to white.
+- Updated disabled buttons to feature a `--grey-400` background, `--grey-800` text, and a `--grey-500` border.
+- Darkened the background and text colors of neutral badges.
+- Increased the avatar text size for default (`--text-base`) and large (`--text-xl`) variants.
+- Darkened the toggle track to `--grey-600` for unavailable toggles.
+- Added an "Always On" disabled toggle variant to the toggle demo.
+- Capped all dropdown popovers at one-third of the screen height (`33vh`) and ensured they are scrollable.
+- Created a dedicated "Dropdowns" navigation section, migrating the Dropdown Menu from "Overlays".
+- Restyled the Country dropdown to match the Specialty dropdown's design.
+- Applied `width: var(--trigger-width)` to `select-popover` elements to ensure precise width matching.
+- Removed dividers from the modal component (`border-bottom` on `.modal-head` and `border-top` on `.modal-actions`).
+- Removed the CodeBlock from the modal demo.
+- Removed dividers between items and surrounding content within the Collapse/Accordion component.
+- Applied a persistent grey background to the Collapse trigger and removed its hover state.
+- Added two data lines to the Vitals display.
+- Commented out the entire Collapse/Accordion subsection under "Others".
+- Reordered sections: moved Tooltips to "Overlays" and positioned "Overlays" above "Others" in both navigation and the main page.
+- Updated the phone extension input: reduced width to 48px, decreased label padding to 4px, and adjusted input padding (0px left, 8px right).
+- Commented out the Dividers subsection under "Spacing & Layout" (preserving the underlying code).
 
-- **eb59268**
-  - refactor: rename Data Display to Others, unify input icon pattern
-  - Renamed the "Data Display" section to "Others".
-  - Temporarily commented out the Patient Card, Data Table, and EMR Patterns subsections.
-  - Moved Progress Bars to the "Others" section.
-  - Redesigned the search, select, and date/time fields to follow a unified `.input-icon-wrap` pattern.
-  - Fixed the `MultiSelect` selection behavior (resolving `selectedKey={null}`).
-  - Added a max-height scrolling behavior to the dropdown menu.
-  - Commented out the `PatternsEMR` function definition to prevent deployment build errors.
+## `eb59268`
+- refactor: rename Data Display to Others, unify input icon pattern
+- Renamed the "Data Display" section to "Others".
+- Temporarily commented out the Patient Card, Data Table, and EMR Patterns subsections.
+- Moved Progress Bars to the "Others" section.
+- Redesigned the search, select, and date/time fields to follow a unified `.input-icon-wrap` pattern.
+- Fixed the `MultiSelect` selection behavior (resolving `selectedKey={null}`).
+- Added a max-height scrolling behavior to the dropdown menu.
+- Commented out the `PatternsEMR` function definition to prevent deployment build errors.
 
-- **44813ff**
-  - refactor: simplify badges and tags, remove EMR status variants
-  - Updated badge dots to utilize darker color variants and increased their padding.
-  - Removed the EMR Order Status section (7 status classes).
-  - Removed the Tag Variants section (6 colored tag classes).
-  - Redesigned chips to use a rounded rectangle shape with a `--brand-50` background and no border.
-  - Restyled the tags container to resemble an input field.
-  - Removed legacy EMR status tokens from `index.css`.
+## `44813ff`
+- refactor: simplify badges and tags, remove EMR status variants
+- Updated badge dots to utilize darker color variants and increased their padding.
+- Removed the EMR Order Status section (7 status classes).
+- Removed the Tag Variants section (6 colored tag classes).
+- Redesigned chips to use a rounded rectangle shape with a `--brand-50` background and no border.
+- Restyled the tags container to resemble an input field.
+- Removed legacy EMR status tokens from `index.css`.
 
-- **293e501**
-  - chore: remove unused icon imports
-  - Removed unused `lucide-react` imports (Phone, Lock, and Link2) to clean up the codebase.
+## `293e501`
+- chore: remove unused icon imports
+- Removed unused `lucide-react` imports (Phone, Lock, and Link2) to clean up the codebase.
 
-- **f2516a9**
-  - feat: add Phone Input, Date/Time Pickers, Action Icons, and Login Form
-  - Added a Phone Input component with 3 variants: country code, country code + extension, and simple.
-  - Implemented Date Picker, Time Picker, and combined Date+Time Picker components featuring a calendar popover.
-  - Added an Input component with Action Icons (such as copy buttons and external links).
-  - Introduced a comprehensive Login Form demo (including email, password with show/hide functionality, and remember me).
-  - Added `@internationalized/date` as a project dependency.
-  - Enabled the `CodeBlock` component to be collapsible via a "Show code" / "Hide code" toggle.
-  - Moved the search icon positioning to the right side of the input.
-  - Replaced the native `<select>` element in the modal with a React Aria `<Select>`.
-  - Updated the error field label from "Phone" to "Full Name".
+## `f2516a9`
+- feat: add Phone Input, Date/Time Pickers, Action Icons, and Login Form
+- Added a Phone Input component with 3 variants: country code, country code + extension, and simple.
+- Implemented Date Picker, Time Picker, and combined Date+Time Picker components featuring a calendar popover.
+- Added an Input component with Action Icons (such as copy buttons and external links).
+- Introduced a comprehensive Login Form demo (including email, password with show/hide functionality, and remember me).
+- Added `@internationalized/date` as a project dependency.
+- Enabled the `CodeBlock` component to be collapsible via a "Show code" / "Hide code" toggle.
+- Moved the search icon positioning to the right side of the input.
+- Replaced the native `<select>` element in the modal with a React Aria `<Select>`.
+- Updated the error field label from "Phone" to "Full Name".
 
-- **f9550ce**
-  - refactor: rename emr-* classes, add loading buttons and labeled toggles
-  - Renamed all `emr-*` CSS classes to generic names (e.g., `emr-tag` to `chip`, `emr-divider` to `divider`).
-  - Redesigned the button group into a pill-shaped segmented control with a brand-colored active state.
-  - Added loading button styles featuring a spinner animation.
-  - Improved toggle switches: updated row layout, implemented a disabled state, and added a new labeled On/Off variant.
-  - Moved toggle components from the Forms section to the Buttons section.
-  - Applied `.form-grid` background styling.
-  - Updated `index.css` semantic color values (`--info` to `#196CD2`, `--warning` to `#FFCB5A`).
+## `f9550ce`
+- refactor: rename `emr-*` classes, add loading buttons and labeled toggles
+- Renamed all `emr-*` CSS classes to generic names (e.g., `emr-tag` to `chip`, `emr-divider` to `divider`).
+- Redesigned the button group into a pill-shaped segmented control with a brand-colored active state.
+- Added loading button styles featuring a spinner animation.
+- Improved toggle switches: updated row layout, implemented a disabled state, and added a new labeled On/Off variant.
+- Moved toggle components from the Forms section to the Buttons section.
+- Applied `.form-grid` background styling.
+- Updated `index.css` semantic color values (`--info` to `#196CD2`, `--warning` to `#FFCB5A`).
 
-- **1e77bfc**
-  - feat: add CodeBlock component with usage snippets for all sections
-  - Created a reusable `CodeBlock` helper component.
-  - Added `<CodeBlock>` usage snippets to all component sections (Buttons, Forms, Badges, Feedback, Navigation, Data Display, and Overlays).
-  - Changed the shadow layout to a 3-column grid structure.
-  - Updated border-radius and shadow labels to display their exact token names (e.g., `--r-sm`, `--shadow-xs`).
+## `1e77bfc`
+- feat: add CodeBlock component with usage snippets for all sections
+- Created a reusable `CodeBlock` helper component.
+- Added `<CodeBlock>` usage snippets to all component sections (Buttons, Forms, Badges, Feedback, Navigation, Data Display, and Overlays).
+- Changed the shadow layout to a 3-column grid structure.
+- Updated border-radius and shadow labels to display their exact token names (e.g., `--r-sm`, `--shadow-xs`).
 
-- **a08ec4a**
-  - style: add disabled input/button styles and redesign pagination
-  - Added specific `.input[disabled]` CSS styling (grey background, 0.5 opacity, and not-allowed cursor).
-  - Removed the wrapping `.card` div around the Form.io installation code block.
-  - Updated disabled buttons to display explicit grey colors rather than relying solely on reduced opacity.
-  - Redesigned pagination controls to feature borderless transparent buttons, a reduced 28x28 size, and the brand color for the active page.
+## `a08ec4a`
+- style: add disabled input/button styles and redesign pagination
+- Added specific `.input[disabled]` CSS styling (grey background, 0.5 opacity, and not-allowed cursor).
+- Removed the wrapping `.card` div around the Form.io installation code block.
+- Updated disabled buttons to display explicit grey colors rather than relying solely on reduced opacity.
+- Redesigned pagination controls to feature borderless transparent buttons, a reduced 28x28 size, and the brand color for the active page.
 
-- **cdf4f9e**
-  - feat: add interactive sidebar layout demo and update white-label theming
-  - Replaced the static sidebar demo with an interactive version featuring 6 pages (Dashboard, Patients, Appointments, Messages, Lab Results, and Settings).
-  - Reduced the sidebar width from 260px to 200px.
-  - Updated the White-Label theme code (renamed to "blue-variant", added OKLCH format with hex comments, and included additional variable overrides).
+## `cdf4f9e`
+- feat: add interactive sidebar layout demo and update white-label theming
+- Replaced the static sidebar demo with an interactive version featuring 6 pages (Dashboard, Patients, Appointments, Messages, Lab Results, and Settings).
+- Reduced the sidebar width from 260px to 200px.
+- Updated the White-Label theme code (renamed to "blue-variant", added OKLCH format with hex comments, and included additional variable overrides).
 
-- **de56d02**
-  - fix: expand Design Tokens reference, update radius scale, improve mobile nav
-  - Split the mobile navigation into separate open/close buttons with proper positioning.
-  - Removed the "Block & Icon" button subsection.
-  - Expanded the Design Tokens code block significantly to include all font, color, radius, shadow, spacing, and status tokens.
-  - Increased the `index.css` border-radius values by one step and introduced a `--shadow-xl` token.
+## `de56d02`
+- fix: expand Design Tokens reference, update radius scale, improve mobile nav
+- Split the mobile navigation into separate open/close buttons with proper positioning.
+- Removed the "Block & Icon" button subsection.
+- Expanded the Design Tokens code block significantly to include all font, color, radius, shadow, spacing, and status tokens.
+- Increased the `index.css` border-radius values by one step and introduced a `--shadow-xl` token.
 
-- **3f4dc8f**
-  - refactor: integrate EMR components into main page, add anchor bar
-  - Eliminated the standalone EMR Page and integrated all components into the main page sections.
-  - Added a sticky anchor navigation bar to the top of the main page.
-  - Implemented a full mobile-responsive layout with 1024px, 768px, and 480px breakpoints.
-  - Moved "White-Label" and "Form.io" sections from "Patterns" to "Engineering".
-  - Renamed multiple sections (e.g., "Badges & Status" is now "Badges, Tags & Status").
-  - Updated button state terminology from "Active" to "Pressed" and added a "With Icons" subsection.
-  - Rewrote the Design Tokens code block to display full `@theme` and `:root` configurations.
-  - Replaced hardcoded colors with semantic design tokens.
+## `3f4dc8f`
+- refactor: integrate EMR components into main page, add anchor bar
+- Eliminated the standalone EMR Page and integrated all components into the main page sections.
+- Added a sticky anchor navigation bar to the top of the main page.
+- Implemented a full mobile-responsive layout with 1024px, 768px, and 480px breakpoints.
+- Moved "White-Label" and "Form.io" sections from "Patterns" to "Engineering".
+- Renamed multiple sections (e.g., "Badges & Status" is now "Badges, Tags & Status").
+- Updated button state terminology from "Active" to "Pressed" and added a "With Icons" subsection.
+- Rewrote the Design Tokens code block to display full `@theme` and `:root` configurations.
+- Replaced hardcoded colors with semantic design tokens.
 
-- **a15a55b**
-  - feat: normalize font sizes to base and add 9 new components
-  - Normalized all small text from `--text-xs`/`--text-sm` to `--text-base` to improve readability.
-  - Added a comprehensive EMR Page featuring 9 new component demos: Dropdown Menu, Drawer, Collapse/Accordion, Tags, MultiSelect, Empty State, Dividers, Anchor Navigation, and Notifications.
-  - Converted Form.io code samples to syntax-highlighted JSX.
-  - Added `white-space: nowrap` styling to `.btn` classes.
-  - Renamed the sidebar title from "Design System v4.0" to "Design System".
+## `a15a55b`
+- feat: normalize font sizes to base and add 9 new components
+- Normalized all small text from `--text-xs`/`--text-sm` to `--text-base` to improve readability.
+- Added a comprehensive EMR Page featuring 9 new component demos: Dropdown Menu, Drawer, Collapse/Accordion, Tags, MultiSelect, Empty State, Dividers, Anchor Navigation, and Notifications.
+- Converted Form.io code samples to syntax-highlighted JSX.
+- Added `white-space: nowrap` styling to `.btn` classes.
+- Renamed the sidebar title from "Design System v4.0" to "Design System".
 
-- **01e3e57**
-  - chore: remove unused imports and fix SelectValue rendering
-  - Removed the unused `useRef` import.
-  - Removed approximately 20 unused component and icon imports (e.g., ProgressBar, Table, Dialog, NumberField, and various Lucide icons).
-  - Fixed the `SelectValue` rendering pattern.
+## `01e3e57`
+- chore: remove unused imports and fix SelectValue rendering
+- Removed the unused `useRef` import.
+- Removed approximately 20 unused component and icon imports (e.g., ProgressBar, Table, Dialog, NumberField, and various Lucide icons).
+- Fixed the `SelectValue` rendering pattern.
 
-- **e042212**
-  - ci: move deploy workflow to repo root and update config
-  - Updated the GitHub Actions deployment workflow configuration.
-  - Moved `deploy.yml` from `design-system/.github/` to the repository root `.github/` to ensure correct GitHub Actions detection.
+## `e042212`
+- ci: move deploy workflow to repo root and update config
+- Updated the GitHub Actions deployment workflow configuration.
+- Moved `deploy.yml` from `design-system/.github/` to the repository root `.github/` to ensure correct GitHub Actions detection.
 
-- **92c39d5**
-  - feat: improve accessibility, UI components, and add CI/CD deployment
-  - Ensured all color contrast meets WCAG AA standards.
-  - Implemented design tokens globally.
-  - Fixed tooltip positioning and interaction.
-  - Improved the Form.io section layout.
+## `92c39d5`
+- feat: improve accessibility, UI components, and add CI/CD deployment
+- Ensured all color contrast meets WCAG AA standards.
+- Implemented design tokens globally.
+- Fixed tooltip positioning and interaction.
+- Improved the Form.io section layout.
 
-- **4feab2d**
-  - Initial commit
-  - Initialized standard project structure.
+## `4feab2d`
+- Initial commit
+- Initialized standard project structure.
 
-- **7d27459**
-  - Setup attributes
-  - Configured `.gitattributes` and `.gitignore` files.
+## `7d27459`
+- Setup attributes
+- Configured `.gitattributes` and `.gitignore` files.
