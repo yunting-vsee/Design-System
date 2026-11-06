@@ -1,6 +1,9 @@
 ﻿# Changelog
 
 ## Nov 6
+### Buttons
+- Switch Button: 24px between the round and square examples (was 12px). New "With Icons" (Desktop / Mobile) and "Icon Only" (Light / Dark) examples, round and square; the code sample now shows the SwitchButton component with icons, iconOnly and controlled use. Each example group is named for screen readers (ariaLabel).
+
 ### Docs site
 - Steppers, Login and Preferences top bars: the page title is replaced by the Page dropdown, which now sits at the top left after the back chevron (it shows the current page's name). Brand and the Mode / View switches stay on the right.
 - Steppers, Login and Preferences top bars: Brand is picked with color circles (green, blue, purple) instead of a dropdown — the same .ds-theme-dot circles as the docs sidebar's Brand Color. Each circle is a button named for its color, with aria-pressed on the chosen one. Login / Preferences carry a copy of the .ds-theme-* CSS.

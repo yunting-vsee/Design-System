@@ -1108,12 +1108,27 @@ function ComponentsButtons() {
       <ChoiceCardsDemo />
 
       <SubSection title="Switch Button">
-        <div className="preview">
-          <SwitchButton labels={["Today", "Week", "Month"]} defaultActive="Week" />
-          <SwitchButton labels={["Day", "Week", "Month", "Year"]} defaultActive="Month" className="btn-group-square" />
+        {/* 24px between the round and square switches */}
+        <div className="preview" style={{ gap: "var(--vsee-sp-6)" }}>
+          <SwitchButton ariaLabel="Range" labels={["Today", "Week", "Month"]} defaultActive="Week" />
+          <SwitchButton ariaLabel="Range" labels={["Day", "Week", "Month", "Year"]} defaultActive="Month" className="btn-group-square" />
+        </div>
+        <div className="text-h5 mb-[var(--vsee-sp-3)]" style={{ marginTop: "var(--vsee-sp-6)" }}>With Icons</div>
+        <div className="preview" style={{ gap: "var(--vsee-sp-6)" }}>
+          <SwitchButton ariaLabel="View" labels={["Desktop", "Mobile"]}
+            icons={{ Desktop: <Monitor size={16} aria-hidden="true" />, Mobile: <Smartphone size={16} aria-hidden="true" /> }} />
+          <SwitchButton ariaLabel="View" labels={["Desktop", "Mobile"]} className="btn-group-square"
+            icons={{ Desktop: <Monitor size={16} aria-hidden="true" />, Mobile: <Smartphone size={16} aria-hidden="true" /> }} />
+        </div>
+        <div className="text-h5 mb-[var(--vsee-sp-3)]" style={{ marginTop: "var(--vsee-sp-6)" }}>Icon Only</div>
+        <div className="preview" style={{ gap: "var(--vsee-sp-6)" }}>
+          <SwitchButton ariaLabel="Mode" iconOnly labels={["Light", "Dark"]}
+            icons={{ Light: <Sun size={16} aria-hidden="true" />, Dark: <Moon size={16} aria-hidden="true" /> }} />
+          <SwitchButton ariaLabel="Mode" iconOnly labels={["Light", "Dark"]} className="btn-group-square"
+            icons={{ Light: <Sun size={16} aria-hidden="true" />, Dark: <Moon size={16} aria-hidden="true" /> }} />
         </div>
         <CodeBlock
-          code={`const [active, setActive] = useState("Week");\n\n<div className="btn-group" role="group" aria-label="Range">\n  {["Today", "Week", "Month"].map(label => (\n    <Button\n      key={label}\n      className={\`btn \${active === label ? "active-group" : ""}\`}\n      aria-pressed={active === label}\n      onPress={() => setActive(label)}\n    >{label}</Button>\n  ))}\n</div>\n\n{/* Square variant */}\n<div className="btn-group btn-group-square">...</div>`}
+          code={`const [active, setActive] = useState("Week");\n\n<div className="btn-group" role="group" aria-label="Range">\n  {["Today", "Week", "Month"].map(label => (\n    <Button\n      key={label}\n      className={\`btn \${active === label ? "active-group" : ""}\`}\n      aria-pressed={active === label}\n      onPress={() => setActive(label)}\n    >{label}</Button>\n  ))}\n</div>\n\n{/* Square variant */}\n<div className="btn-group btn-group-square">...</div>\n\n/* Component: SwitchButton (renders the markup above) */\n<SwitchButton ariaLabel="Range" labels={["Today", "Week", "Month"]} defaultActive="Week" />\n\n/* With icons — an icon before each label */\n<SwitchButton ariaLabel="View" labels={["Desktop", "Mobile"]}\n  icons={{ Desktop: <Monitor size={16} aria-hidden="true" />, Mobile: <Smartphone size={16} aria-hidden="true" /> }} />\n\n/* Icon only — no text; each label becomes the button's accessible name + tooltip */\n<SwitchButton ariaLabel="Mode" iconOnly labels={["Light", "Dark"]}\n  icons={{ Light: <Sun size={16} aria-hidden="true" />, Dark: <Moon size={16} aria-hidden="true" /> }} />\n\n/* Controlled: value + onChange */\n<SwitchButton ariaLabel="Mode" iconOnly labels={["Light", "Dark"]} value={dark ? "Dark" : "Light"} onChange={l => setDark(l === "Dark")} icons={…} />`}
         />
       </SubSection>
 
