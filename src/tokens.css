@@ -53,6 +53,7 @@
 
   /* Typography scale */
   --vsee-mono: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+  --vsee-text-micro-size: 10px; /* tiny status readouts only (e.g. upload %), never body copy */
   --vsee-text-overline-size: 12px; --vsee-text-caption-size: 13px; --vsee-text-body-size: 14px;
   --vsee-text-h5-size: 16px; --vsee-text-body-lg-size: 16px; --vsee-text-subtitle-size: 18px;
   --vsee-text-h4-size: 20px; --vsee-text-h3-size: 24px; --vsee-text-h2-size: 36px; --vsee-text-h1-size: 48px; --vsee-text-display-size: 60px;

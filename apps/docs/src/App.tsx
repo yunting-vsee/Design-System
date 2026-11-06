@@ -1,5 +1,5 @@
+import { useState, useEffect, useRef, useCallback, useLayoutEffect, useId, useSyncExternalStore } from "react";
 import type { ReactNode } from "react";
-import { useState, useEffect, useRef, useCallback, useLayoutEffect } from "react";
 import {
   Button,
   TextField,
@@ -50,7 +50,12 @@ import {
   Dialog,
   TimeField,
   NumberField,
+  CheckboxGroup,
+  Text,
+  DropZone,
+  FileTrigger,
 } from "react-aria-components";
+import type { DropZoneProps, FileDropItem } from "react-aria-components";
 import { today, getLocalTimeZone, Time, CalendarDateTime } from "@internationalized/date";
 import {
   AlertCircle,
@@ -68,6 +73,9 @@ import {
   Settings,
   MoreHorizontal,
   MessageSquare,
+  Phone,
+  Mail,
+  Video,
   Edit3,
   Trash2,
   Copy,
@@ -85,6 +93,7 @@ import {
   Pencil,
   Calendar,
   Upload,
+  FilePlus,
   Loader2,
   ChevronLeft,
   Eye,
@@ -94,6 +103,9 @@ import {
   Moon,
   CreditCard,
   Lock,
+  Stethoscope,
+  Zap,
+  Lightbulb,
 } from "lucide-react";
 
 // Component visual styles come from `@vsee/ui/styles.css`, loaded via `src/index.css`.
@@ -158,6 +170,18 @@ const NAV = [
   },
 ];
 
+// Hash route for the Steppers page (rendered by SteppersPage).
+const STEPPERS_HASH = "#steppers";
+
+/** Current location.hash; re-renders on hashchange. */
+function useLocationHash() {
+  return useSyncExternalStore(
+    onChange => { window.addEventListener("hashchange", onChange); return () => window.removeEventListener("hashchange", onChange); },
+    () => window.location.hash,
+    () => "",
+  );
+}
+
 // Patterns is rendered on the right of the anchor-bar, not the left sidebar.
 // Layouts is commented out for now — PatternsLayouts has no visible content
 // after its subsections moved to Components → Others.
@@ -177,6 +201,7 @@ function App() {
   // state + listen on `hashchange` so deep-linking, refreshing, and the
   // global Cmd/Ctrl+Shift+K shortcut all flow through the same toggle.
   const [standalone, setStandalone] = useState<boolean>(() => isStandaloneHash());
+  const hash = useLocationHash();
 
   useEffect(() => {
     const sync = () => setStandalone(isStandaloneHash());
@@ -257,6 +282,19 @@ function App() {
   // Hash-based standalone mode — replaces the docs chrome entirely.
   // Brand + dark mode state lifts up to App so toggling them inside the
   // standalone toolbar persists when the user clicks "Back to docs".
+  // Steppers — its own page. "Back to docs" clears the hash.
+  if (hash === STEPPERS_HASH) {
+    return (
+      <SteppersPage
+        brandTheme={brandTheme} setBrandTheme={setBrandTheme}
+        darkMode={darkMode} setDarkMode={setDarkMode}
+        onExit={() => {
+          history.replaceState(null, "", window.location.pathname + window.location.search);
+          window.dispatchEvent(new HashChangeEvent("hashchange"));
+        }} />
+    );
+  }
+
   if (standalone) {
     return (
       <StandaloneKitchenSink
@@ -563,7 +601,7 @@ function FoundationsColors({ copy }: { copy: (v: string) => void }) {
 function FoundationsTypography() {
   return (
     <Section id="typography" label="Foundation" title="Typography"
-      description="Figtree is our system font — clean, legible, and optimized for UI. The type scale uses a harmonious progression from 12px to 60px.">
+      description="Figtree is our system font — clean, legible, and optimized for UI. The type scale uses a harmonious progression from 12px to 60px, plus a 10px micro size for tiny status readouts such as upload progress.">
 
       <div className="card" style={{marginBottom:"var(--vsee-sp-8)"}}>
         {[
@@ -577,6 +615,7 @@ function FoundationsTypography() {
           { cls: "text-body", size: "14px", text: "Standard body text used throughout the application." },
           { cls: "text-caption", size: "13px", text: "Helper text, timestamps, and metadata" },
           { cls: "text-overline", size: "12px", text: "Section Label" },
+          { cls: "text-micro", size: "10px", text: "60% · tiny status readouts only, never body copy" },
         ].map((t) => (
           <div key={t.cls} className="type-row">
             <div className="type-meta">
@@ -802,6 +841,137 @@ function SwitchButton({ labels, defaultActive, value, onChange, ariaLabel, icons
 /* ═══════════════════════════════════════════
    COMPONENTS — BUTTONS
    ═══════════════════════════════════════════ */
+/* Choice cards — large radio buttons with an optional icon, title and
+   description. Used by the Steppers page (step-by-step forms). */
+function ChoiceCardsDemo() {
+  const [room, setRoom] = useState("urgent");
+  const [roomMobile, setRoomMobile] = useState("urgent");
+  const [mode, setMode] = useState("video");
+  const [type, setType] = useState("schedule");
+  const rooms = [
+    { id: "primary", name: "Primary Care", hint: "Check-ups, follow-ups, and ongoing conditions.", meta: "Next open today", icon: Stethoscope },
+    { id: "urgent", name: "Urgent Care", hint: "Something new that can't wait.", meta: "4 min wait", icon: Zap },
+    { id: "behavioral", name: "Behavioral Health", hint: "Support for stress, mood, and sleep.", meta: "Next open Thursday", icon: Lightbulb },
+  ];
+  return (
+    <SubSection title="Choice Cards" description="Large radio buttons for answering a question with one tap. Each card can carry an icon, a title, a description, and a status line. Selected cards get a brand border and tint. Built on React Aria RadioGroup + Radio, so arrow keys move between options.">
+      <div className="text-h5 mb-[var(--vsee-sp-3)]">Default</div>
+      <RadioGroup aria-label="Room" value={room} onChange={setRoom}>
+        <div className="choice-grid">
+          {rooms.map(r => (
+            <Radio key={r.id} value={r.id} className="choice-card">
+              <span className="choice-card-icon"><r.icon size={20} /></span>
+              <span className="choice-card-title">{r.name}</span>
+              <span className="choice-card-hint">{r.hint}</span>
+              <span className="choice-card-meta">{r.meta}</span>
+            </Radio>
+          ))}
+        </div>
+      </RadioGroup>
+
+      <div className="text-h5 mb-[var(--vsee-sp-3)]" style={{ marginTop: "var(--vsee-sp-6)" }}>Compact with Icon</div>
+      <RadioGroup aria-label="Room (compact)" value={roomMobile} onChange={setRoomMobile}>
+        <div className="choice-grid">
+          {rooms.map(r => (
+            <Radio key={r.id} value={r.id} className="choice-card choice-card-compact">
+              <span className="choice-card-icon"><r.icon size={18} /></span>
+              <span className="choice-card-body">
+                <span className="choice-card-title">{r.name}</span>
+                <span className="choice-card-hint">{r.meta}</span>
+              </span>
+            </Radio>
+          ))}
+        </div>
+      </RadioGroup>
+
+      <div className="text-h5 mb-[var(--vsee-sp-3)]" style={{ marginTop: "var(--vsee-sp-6)" }}>Text Only</div>
+      <RadioGroup aria-label="How would you like to be seen?" value={mode} onChange={setMode}>
+        <div className="choice-grid">
+          <Radio value="video" className="choice-card choice-card-compact">
+            <span className="choice-card-body">
+              <span className="choice-card-title">Online</span>
+              <span className="choice-card-hint">Join by video or send a secure message from your phone, tablet, or computer. A provider usually replies within the hour, and you can share photos of your symptoms during the visit so they can take a closer look.</span>
+            </span>
+          </Radio>
+          <Radio value="inperson" className="choice-card choice-card-compact">
+            <span className="choice-card-body">
+              <span className="choice-card-title">In person</span>
+              <span className="choice-card-hint">Come to Riverbend Health.</span>
+            </span>
+          </Radio>
+        </div>
+      </RadioGroup>
+
+      <div className="text-h5 mb-[var(--vsee-sp-3)]" style={{ marginTop: "var(--vsee-sp-6)" }}>States</div>
+      <RadioGroup aria-label="What kind of visit?" value={type} onChange={setType}>
+        <div className="choice-grid">
+          <Radio value="walkIn" className="choice-card">
+            <span className="choice-card-icon"><Clock size={20} /></span>
+            <span className="choice-card-title">Default</span>
+            <span className="choice-card-hint">Join the queue and be seen next.</span>
+            <span className="choice-card-meta">4 min wait</span>
+          </Radio>
+          <Radio value="schedule" className="choice-card">
+            <span className="choice-card-icon"><Calendar size={20} /></span>
+            <span className="choice-card-title">Selected</span>
+            <span className="choice-card-hint">Pick a time that works for you.</span>
+            <span className="choice-card-meta">Next open today</span>
+          </Radio>
+          <Radio value="econsult" isDisabled className="choice-card">
+            <span className="choice-card-icon"><MessageSquare size={20} /></span>
+            <span className="choice-card-title">Disabled</span>
+            <span className="choice-card-hint">Not offered in this room.</span>
+            <span className="choice-card-meta">Unavailable</span>
+          </Radio>
+        </div>
+      </RadioGroup>
+
+      <CodeBlock
+        code={`<RadioGroup value={room} onChange={setRoom}>\n  <Label className="question-title">Which room?</Label>\n  <div className="choice-grid">        {/* or .choice-list · .choice-cols-2 · .choice-cols-1 · .choice-row */}\n    <Radio value="urgent" className="choice-card">\n      <span className="choice-card-icon"><Zap size={20} /></span>   {/* optional */}\n      <span className="choice-card-title">Urgent Care</span>\n      <span className="choice-card-hint">Something new that can't wait.</span>\n      <span className="choice-card-meta">4 min wait</span>            {/* optional */}\n    </Radio>\n  </div>\n</RadioGroup>\n\n{/* Compact: icon (optional) left, text right. Works in any layout:\n   .choice-grid / .choice-cols-2 = side by side, .choice-list = stacked rows */}\n<div className="choice-grid">\n  <Radio value="urgent" className="choice-card choice-card-compact">\n    <span className="choice-card-icon"><Zap size={18} /></span>   {/* omit for text only */}\n    <span className="choice-card-body">\n      <span className="choice-card-title">Urgent Care</span>\n      <span className="choice-card-hint">4 min wait</span>\n    </span>\n  </Radio>\n</div>\n\n{/* Disabled */}\n<Radio value="econsult" isDisabled className="choice-card">...</Radio>`}
+      />
+    </SubSection>
+  );
+}
+
+/* Choice buttons — radio buttons that look like normal buttons (size, shape,
+   text from .btn + .btn-sm / .btn-lg) with Choice Card colours and states
+   (.btn-choice). Label only, no description. */
+const CONTACT_OPTIONS = [["phone", "Phone call"], ["text", "Text message"], ["email", "Email"], ["video", "Video visit"]];
+const CONTACT_ICONS: Record<string, typeof Phone> = { phone: Phone, text: MessageSquare, email: Mail, video: Video };
+function ChoiceButtonsDemo() {
+  const [contact, setContact] = useState("text");
+  const [contactIcon, setContactIcon] = useState("text");
+  const [contactIconOnly, setContactIconOnly] = useState("text");
+  return (
+    <SubSection title="Choice Buttons" description="Radio buttons that look like normal buttons — same sizes, shape and text — with Choice Card colours and states. A label with an optional icon, no description. Pick exactly one; arrow keys move between options.">
+      <div className="text-h5 mb-[var(--vsee-sp-3)]">Default</div>
+      <RadioGroup aria-label="How should we contact you?" value={contact} onChange={setContact}>
+        <div className="choice-inline">
+          {CONTACT_OPTIONS.map(([v, l]) => <Radio key={v} value={v} isDisabled={v === "video"} className="btn btn-choice">{l}</Radio>)}
+        </div>
+      </RadioGroup>
+
+      <div className="text-h5 mb-[var(--vsee-sp-3)]" style={{ marginTop: "var(--vsee-sp-6)" }}>With Icon</div>
+      <RadioGroup aria-label="How should we contact you? (with icons)" value={contactIcon} onChange={setContactIcon}>
+        <div className="choice-inline">
+          {CONTACT_OPTIONS.map(([v, l]) => { const Icon = CONTACT_ICONS[v]; return <Radio key={v} value={v} isDisabled={v === "video"} className="btn btn-choice"><Icon size={16} aria-hidden="true" /> {l}</Radio>; })}
+        </div>
+      </RadioGroup>
+
+      <div className="text-h5 mb-[var(--vsee-sp-3)]" style={{ marginTop: "var(--vsee-sp-6)" }}>Icon Only</div>
+      <RadioGroup aria-label="How should we contact you? (icon only)" value={contactIconOnly} onChange={setContactIconOnly}>
+        <div className="choice-inline">
+          {CONTACT_OPTIONS.map(([v, l]) => { const Icon = CONTACT_ICONS[v]; return <Radio key={v} value={v} aria-label={l} className="btn btn-choice btn-icon"><span title={l} style={{ display: "contents" }}><Icon size={16} aria-hidden="true" /></span></Radio>; })}
+        </div>
+      </RadioGroup>
+
+      <CodeBlock
+        code={`<RadioGroup value={contact} onChange={setContact}>\n  <Label className="question-title">How should we contact you?</Label>\n  <div className="choice-inline">          {/* wraps when needed */}\n    <Radio value="phone" className="btn btn-choice">Phone call</Radio>\n    <Radio value="text" className="btn btn-choice">Text message</Radio>\n    <Radio value="video" isDisabled className="btn btn-choice">Video visit</Radio>\n  </div>\n</RadioGroup>\n\n{/* With icon: put a 16px Lucide icon before the label (14px with btn-sm, 18px with btn-lg) */}\n<Radio value="phone" className="btn btn-choice"><Phone size={16} /> Phone call</Radio>\n\n{/* Icon only: add .btn-icon (38px square) and name it with aria-label */}\n<Radio value="phone" aria-label="Phone call" className="btn btn-choice btn-icon"><Phone size={16} /></Radio>\n\n{/* Sizes: same as normal buttons */}\n<Radio value="phone" className="btn btn-choice btn-sm">Phone call</Radio>   {/* 30px */}\n<Radio value="phone" className="btn btn-choice">Phone call</Radio>          {/* 38px */}\n<Radio value="phone" className="btn btn-choice btn-lg">Phone call</Radio>   {/* 48px */}\n\n/* .btn-choice: white, 1px grey border · hover: darker border\n   [data-selected]: brand border + brand-50 tint · [data-disabled]: 50% opacity */`}
+      />
+    </SubSection>
+  );
+}
+
 function ComponentsButtons() {
   return (
     <Section id="buttons" label="Components" title="Buttons"
@@ -901,6 +1071,10 @@ function ComponentsButtons() {
           code={`/* Icon left */\n<Button className="btn btn-primary"><Plus size={16} /> New Patient</Button>\n\n/* Icon right */\n<Button className="btn btn-primary">Send <Send size={16} /></Button>\n\n/* Icon only */\n<Button className="btn btn-primary btn-icon"><Plus size={18} /></Button>`}
         />
       </SubSection>
+
+      <ChoiceButtonsDemo />
+
+      <ChoiceCardsDemo />
 
       <SubSection title="Switch Button">
         <div className="preview">
@@ -1400,6 +1574,1030 @@ function SignaturePadDemo({ label, preSigned }: { label: string; preSigned?: boo
 /* ═══════════════════════════════════════════
    COMPONENTS — FORM ELEMENTS
    ═══════════════════════════════════════════ */
+/* ═══════════════════════════════════════════
+   FILE UPLOAD — from the Patient Portal "Reason for your visit" step
+   Drop files on the dashed zone or press "Choose files". Files are checked
+   for type, empty files, size and the max file count; rejected ones are
+   listed under the button. Accepted files appear in a list where each row
+   shows its upload state: uploading (progress + Cancel), uploaded (Remove),
+   failed (message + Retry + Remove) or blocked (message + Remove).
+   ═══════════════════════════════════════════ */
+
+type DropEvent = Parameters<NonNullable<DropZoneProps["onDrop"]>>[0];
+
+/** No status = uploaded. "failed" can be retried; "blocked" (e.g. security scan) can only be removed. */
+type UploadStatus = "uploading" | "uploaded" | "failed" | "blocked";
+type UploadedFile = {
+  id: string; name: string; size: string; file?: File;
+  status?: UploadStatus;
+  /** 0–100 while uploading. */
+  progress?: number;
+  /** Overrides the default message for "failed" / "blocked". */
+  error?: string;
+};
+
+const UPLOAD_FAILED_MSG = "Upload failed. Check your connection and try again.";
+const UPLOAD_BLOCKED_MSG = "This file didn't pass our security check and can't be uploaded.";
+
+const formatSize = (bytes: number) =>
+  bytes >= 1024 * 1024 ? `${(bytes / (1024 * 1024)).toFixed(1)} MB` : `${Math.max(1, Math.round(bytes / 1024))} KB`;
+
+function FileUpload({
+  label = "Photos or documents",
+  title = "Drag & drop files here",
+  hint = "JPG, PNG, or PDF up to 20 MB each.",
+  note,
+  files,
+  onChange,
+  acceptedFileTypes = ["image/jpeg", "image/png", "application/pdf"],
+  maxSizeMB = 20,
+  maxFiles,
+  onRetry,
+  isDisabled,
+  initialErrors = [],
+}: {
+  label?: string; title?: string; hint?: string; note?: string;
+  files: UploadedFile[]; onChange: (files: UploadedFile[]) => void;
+  acceptedFileTypes?: string[]; maxSizeMB?: number;
+  /** Most files the field holds; extra files are turned away with a message. */
+  maxFiles?: number;
+  /** Shows a Retry button on failed uploads. */
+  onRetry?: (id: string) => void;
+  isDisabled?: boolean;
+  /** Demo only: start with these error messages showing. */
+  initialErrors?: string[];
+}) {
+  const labelId = useId();
+  const noteId = useId();
+  const [errors, setErrors] = useState<string[]>(initialErrors);
+
+  const add = (incoming: File[]) => {
+    const ok: UploadedFile[] = [];
+    const bad: string[] = [];
+    for (const f of incoming) {
+      // The picker filters by type, but drag & drop and "All files" in the dialog don't.
+      if (acceptedFileTypes.length && !acceptedFileTypes.includes(f.type)) bad.push(`${f.name} isn't a supported file type.`);
+      else if (f.size === 0) bad.push(`${f.name} is empty.`);
+      else if (f.size > maxSizeMB * 1024 * 1024) bad.push(`${f.name} is larger than ${maxSizeMB} MB.`);
+      else ok.push({ id: `${f.name}-${f.size}-${f.lastModified}-${Math.random().toString(36).slice(2, 7)}`, name: f.name, size: formatSize(f.size), file: f });
+    }
+    if (maxFiles !== undefined && files.length + ok.length > maxFiles) {
+      const room = Math.max(0, maxFiles - files.length);
+      const left = ok.length - room;
+      ok.splice(room);
+      bad.push(`You can add up to ${maxFiles} files. ${left} ${left === 1 ? "file wasn't" : "files weren't"} added.`);
+    }
+    setErrors(bad);
+    if (ok.length) onChange([...files, ...ok]);
+  };
+
+  const onDrop = async (e: DropEvent) => {
+    const items = e.items.filter((i): i is FileDropItem => i.kind === "file");
+    add(await Promise.all(items.map(i => i.getFile())));
+  };
+
+  return (
+    <div className="form-group" role="group" aria-labelledby={labelId} aria-describedby={note ? noteId : undefined}>
+      <div className="upload-head">
+        <div id={labelId} className="form-label">{label}</div>
+        {note && <div id={noteId} className="upload-note">{note}</div>}
+      </div>
+      <DropZone className="upload-zone" isDisabled={isDisabled} onDrop={onDrop}
+        getDropOperation={() => (isDisabled ? "cancel" : "copy")}
+        aria-label={`${label}: drop files here`}>
+        <div className="upload-zone-main">
+          <FilePlus size={32} className="upload-zone-icon" aria-hidden="true" />
+          <span className="upload-zone-text">
+            <span className="upload-zone-title">{title}</span>
+            <span className="upload-zone-hint">{hint}</span>
+          </span>
+          <span className="upload-zone-action">
+            <FileTrigger allowsMultiple acceptedFileTypes={acceptedFileTypes} onSelect={list => list && add(Array.from(list))}>
+              <Button className="btn btn-secondary" isDisabled={isDisabled}>Choose files</Button>
+            </FileTrigger>
+          </span>
+        </div>
+        {/* Files turned away before upload (type, empty, size, count) — design-system danger alert as a bar */}
+        <div role="alert" className="upload-zone-alert-slot">
+          {errors.map(m => (
+            <div key={m} className="alert alert-danger upload-zone-alert">
+              <AlertCircle size={16} className="alert-icon" aria-hidden="true" />
+              <span className="upload-zone-alert-text">{m}</span>
+              <Button className="notification-close" aria-label={`Dismiss: ${m}`} onPress={() => setErrors(es => es.filter(e => e !== m))}><X size={14} /></Button>
+            </div>
+          ))}
+        </div>
+        {files.length > 0 && (
+          <ul className="file-list" aria-label="Attached files">
+            {files.map(f => {
+              const status = f.status ?? "uploaded";
+              const remove = () => onChange(files.filter(x => x.id !== f.id));
+              const Icon = status === "uploading" ? Loader2 : status === "failed" || status === "blocked" ? AlertCircle : FileText;
+              return (
+                <li key={f.id} className="file-row" data-status={status}>
+                  <span className="file-row-lead">
+                    <Icon size={16} className="file-row-icon" aria-hidden="true" />
+                    {status === "uploading" && <span className="file-row-percent" aria-hidden="true">{Math.round(f.progress ?? 0)}%</span>}
+                  </span>
+                  <span className="file-row-main">
+                    <span className="file-row-top">
+                      <span className="file-row-name" title={f.name}>{f.name}</span>
+                      <span className="file-row-size">{f.size}</span>
+                    </span>
+                    {status === "uploading" && (
+                      <span className="file-row-progress-line">
+                        <span className="progress-track file-row-progress" role="progressbar" aria-label={`Uploading ${f.name}`}
+                          aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(f.progress ?? 0)}>
+                          <span className="progress-bar progress-bar-brand" style={{ width: `${f.progress ?? 0}%` }} />
+                        </span>
+                      </span>
+                    )}
+                    {(status === "failed" || status === "blocked") && (
+                      <span className="file-row-error" role="alert">
+                        {f.error ?? (status === "failed" ? UPLOAD_FAILED_MSG : UPLOAD_BLOCKED_MSG)}
+                      </span>
+                    )}
+                  </span>
+                  <span className="file-row-actions">
+                    {status === "failed" && onRetry && (
+                      <Button className="btn btn-secondary btn-sm" aria-label={`Retry ${f.name}`} isDisabled={isDisabled}
+                        onPress={() => onRetry(f.id)}>Retry</Button>
+                    )}
+                    <Button className="btn btn-ghost btn-sm" aria-label={`${status === "uploading" ? "Cancel" : "Remove"} ${f.name}`} isDisabled={isDisabled}
+                      onPress={remove}>{status === "uploading" ? "Cancel" : "Remove"}</Button>
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </DropZone>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════
+   SELECTION LIST — from the Patient Portal "Update your health history" editor
+   One bordered box: an optional search field on top, every option shown
+   directly in the scrollable middle (tap rows to check as many as apply),
+   and the picked items summarised at the bottom as removable tags.
+   ═══════════════════════════════════════════ */
+
+function SelectionList({
+  label,
+  hint,
+  options,
+  value,
+  onChange,
+  searchPlaceholder,
+  showSelectedTags = true,
+  emptyText = "No match.",
+  maxHeight = 260,
+  isDisabled,
+  hideLabel,
+}: {
+  label: string;
+  /** Keep the label for screen readers only (when a heading above already names the list). */
+  hideLabel?: boolean;
+  hint?: string;
+  options: string[];
+  value: string[];
+  onChange: (value: string[]) => void;
+  /** Shows a search field at the top of the box when set. */
+  searchPlaceholder?: string;
+  /** Show the "N selected" removable tags at the bottom of the box. */
+  showSelectedTags?: boolean;
+  /** Shown when the search matches nothing. */
+  emptyText?: string;
+  maxHeight?: number;
+  isDisabled?: boolean;
+}) {
+  const [query, setQuery] = useState("");
+  const q = query.trim().toLowerCase();
+  const matches = q ? options.filter(o => o.toLowerCase().includes(q)) : options;
+
+  return (
+    <CheckboxGroup className="form-group" value={value} onChange={onChange} isDisabled={isDisabled}>
+      <Label className={hideLabel ? "sr-only" : "form-label"}>{label}</Label>
+      {hint && <Text slot="description" className="form-hint option-list-hint">{hint}</Text>}
+      {/* One bordered box: search on top, options in the middle, selected items at the bottom */}
+      <div className="option-box">
+        {searchPlaceholder && (
+          <label className="option-box-search">
+            <Search size={16} aria-hidden="true" />
+            <input className="option-box-input" type="search" placeholder={searchPlaceholder} aria-label={searchPlaceholder}
+              value={query} onChange={e => setQuery(e.target.value)} disabled={isDisabled} />
+          </label>
+        )}
+        <div className="option-list" style={{ maxHeight }}>
+          {matches.map(o => (
+            <Checkbox key={o} value={o} className="option-list-item">
+              {({ isSelected }) => (
+                <>
+                  <span className={`check-box${isSelected ? " checked" : ""}`}>
+                    {isSelected && <svg className="check-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5" /></svg>}
+                  </span>
+                  {o}
+                </>
+              )}
+            </Checkbox>
+          ))}
+          {matches.length === 0 && <div className="option-list-empty">{emptyText}</div>}
+        </div>
+        {showSelectedTags && value.length > 0 && (
+          <TagGroup selectionMode="none" className="option-box-selected" aria-label={`${label}: selected`}
+            disabledKeys={isDisabled ? value : undefined}
+            onRemove={keys => onChange(value.filter(v => !keys.has(v)))}>
+            <TagList className="tag-list">
+              {value.map(v => (
+                <Tag key={v} id={v} className="chip" textValue={v}>
+                  {v}
+                  <Button slot="remove" className="tag-remove" aria-label={`Remove ${v}`}><X size={12} /></Button>
+                </Tag>
+              ))}
+            </TagList>
+          </TagGroup>
+        )}
+      </div>
+    </CheckboxGroup>
+  );
+}
+
+/* ═══════════════════════════════════════════
+   ONE QUESTION PER PAGE — "See a provider" flow
+   Follows Patient Portal v2 (Patient Portal v2.dc.html): Room → Visit type →
+   Provider (and time) → Reason → Health history → Confirm. Join Queue skips
+   the provider step, so that flow has 5 steps instead of 6.
+   Desktop page indicator = labelled step bars; mobile = "Step X of N" + pips.
+   ═══════════════════════════════════════════ */
+
+/* ── Data (from the design) ─────────────────── */
+const CLINIC = "Riverbend Health";
+const HOME_STATE = "Oregon";
+const PATIENT = "Maya Chen (you)";
+
+type Mode = "video" | "inperson";
+type Flow = "walkIn" | "schedule" | "econsult";
+type StepId = "room" | "type" | "provider" | "reason" | "history" | "confirm";
+
+const ICON_PATHS: Record<string, string> = {
+  primary: "M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21l8.84-8.61a5.5 5.5 0 0 0 0-7.78Z",
+  urgent: "M13 2 3 14h9l-1 8 10-12h-9l1-8Z",
+  behavioral: "M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2Z",
+  womens: "M12 2a5 5 0 1 0 0 10 5 5 0 0 0 0-10ZM12 12v10M9 19h6",
+};
+const RoomIcon = ({ id, size }: { id: string; size: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={ICON_PATHS[id]} /></svg>
+);
+
+const ROOMS = [
+  { id: "primary", name: "Primary Care", hint: "Your own provider for check-ups, follow-ups, and ongoing conditions.", wait: "Next open today", providers: ["DR", "SO"], walkIn: true, schedule: true, econsult: true },
+  { id: "urgent", name: "Urgent Care", hint: "Something new that can't wait. Open until 11pm.", wait: "4 min wait", providers: ["JL", "DR", "SO"], walkIn: true, schedule: true, econsult: true },
+  { id: "behavioral", name: "Behavioral Health", hint: "Therapy and medication support for stress, mood, and sleep.", wait: "Next open Thursday", providers: ["NW"], walkIn: false, schedule: true, econsult: true },
+  { id: "womens", name: "Women's Health", hint: "Annual exams, contraception, and pregnancy care.", wait: "Next open Friday", providers: ["HM"], walkIn: false, schedule: true, econsult: true },
+];
+const CARE_TEAM = [
+  { initials: "DR", name: "Dr. Dana Reyes", role: "Family medicine" },
+  { initials: "SO", name: "Dr. Samuel Okafor", role: "Internal medicine" },
+  { initials: "JL", name: "Jamie Liu, NP", role: "Urgent care · 8 yrs" },
+  { initials: "NW", name: "Nadia Weiss, LCSW", role: "Behavioral health" },
+  { initials: "HM", name: "Dr. Hana Moore", role: "Women's health" },
+];
+const VISIT_TYPES = [
+  { id: "urgent", label: "Something new or urgent", hint: "Cold, rash, infection, minor injury" },
+  { id: "followup", label: "Follow-up with my provider", hint: "Check in on an existing issue" },
+  { id: "refill", label: "Medication or refill question", hint: "Usually resolved without a visit" },
+  { id: "annual", label: "Annual physical", hint: "45 minutes, in person" },
+];
+const SLOT_POOL = [["9:00 AM", "11:00 AM", "3:00 PM"], ["8:30 AM", "1:00 PM"], ["10:00 AM", "2:15 PM", "4:00 PM"], ["11:30 AM"], ["8:00 AM", "9:30 AM", "11:15 AM", "1:45 PM", "4:30 PM"]];
+const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+const HISTORY_GROUPS = [
+  { key: "conditions", label: "Past and current medical conditions", hint: "Search or pick anything that applies.", searchPlaceholder: "Search conditions, e.g. diabetes", otherLabel: "Other conditions", otherPlaceholder: "e.g. hypothyroidism", noneLabel: "None", addLabel: "I have conditions",
+    options: ["Arthritis", "Diabetes", "High blood pressure", "Irritable bowel", "Osteoporosis", "Cancer", "Depression/anxiety", "Heart problems", "High cholesterol", "Lung problems", "Thyroid problems"] },
+  { key: "allergies", label: "Drug allergies", hint: "Search or pick the medicines you react to.", searchPlaceholder: "Search medicines, e.g. penicillin", otherLabel: "Other drug allergies", otherPlaceholder: "e.g. contrast dye — hives", noneLabel: "No known drug allergies", addLabel: "I have drug allergies",
+    options: ["Penicillin", "Amoxicillin", "Cephalexin (Keflex)", "Sulfa drugs (Bactrim)", "Azithromycin (Z-Pak)", "Ciprofloxacin", "Levofloxacin", "Clindamycin", "Doxycycline", "Vancomycin", "Nitrofurantoin (Macrobid)", "Metronidazole (Flagyl)", "Aspirin", "Ibuprofen (Advil, Motrin)", "Naproxen (Aleve)", "Celecoxib (Celebrex)", "Acetaminophen (Tylenol)", "Codeine", "Morphine", "Oxycodone", "Hydrocodone", "Tramadol", "Lidocaine", "Local anesthetics", "General anesthesia", "Contrast dye (iodinated)", "Latex", "Adhesive tape", "Statins", "ACE inhibitors (lisinopril)", "Metformin", "Prednisone", "Phenytoin", "Carbamazepine", "Lamotrigine", "Lithium", "Allopurinol", "Heparin", "Warfarin", "Insulin", "Influenza vaccine", "Egg-based vaccines", "Sulfites"] },
+  { key: "medications", label: "Current medications", hint: "Search or pick anything you take regularly, prescription or not.", searchPlaceholder: "Search medicines, e.g. lisinopril", otherLabel: "Other medications", otherPlaceholder: "e.g. metformin 500mg twice daily", noneLabel: "None", addLabel: "I take medications",
+    options: ["Lisinopril", "Losartan", "Amlodipine", "Metoprolol", "Carvedilol", "Hydrochlorothiazide", "Atorvastatin (Lipitor)", "Rosuvastatin (Crestor)", "Simvastatin", "Ezetimibe", "Metformin", "Insulin (any type)", "Semaglutide (Ozempic, Wegovy)", "Empagliflozin (Jardiance)", "Glipizide", "Levothyroxine (Synthroid)", "Methimazole", "Omeprazole (Prilosec)", "Pantoprazole (Protonix)", "Famotidine (Pepcid)", "Albuterol inhaler", "Fluticasone inhaler (Flovent)", "Montelukast (Singulair)", "Cetirizine (Zyrtec)", "Loratadine (Claritin)", "Fexofenadine (Allegra)", "Sertraline (Zoloft)", "Escitalopram (Lexapro)", "Fluoxetine (Prozac)", "Bupropion (Wellbutrin)", "Duloxetine (Cymbalta)", "Trazodone", "Alprazolam (Xanax)", "Lorazepam (Ativan)", "Aripiprazole (Abilify)", "Quetiapine (Seroquel)", "Lamotrigine", "Lithium", "Adderall or amphetamine salts", "Methylphenidate (Ritalin, Concerta)", "Gabapentin", "Pregabalin (Lyrica)", "Sumatriptan (Imitrex)", "Topiramate", "Ibuprofen (Advil, Motrin)", "Naproxen (Aleve)", "Acetaminophen (Tylenol)", "Meloxicam", "Prednisone", "Aspirin (low dose)", "Clopidogrel (Plavix)", "Apixaban (Eliquis)", "Warfarin", "Allopurinol", "Tamsulosin (Flomax)", "Finasteride", "Sildenafil (Viagra)", "Birth control pill", "Estradiol", "Alendronate (Fosamax)", "Vitamin D", "Multivitamin", "Iron supplement", "Fish oil", "Magnesium", "Probiotic"] },
+  { key: "surgeries", label: "Past surgical history", hint: "Search or pick any surgery or procedure you have had.", searchPlaceholder: "Search procedures, e.g. appendectomy", otherLabel: "Other surgeries or procedures", otherPlaceholder: "e.g. rotator cuff repair, 2019", noneLabel: "No past surgeries", addLabel: "I have had surgery",
+    options: ["Appendectomy", "Gallbladder removal (cholecystectomy)", "Hernia repair", "Tonsillectomy", "Adenoidectomy", "Wisdom teeth extraction", "Cesarean section", "Hysterectomy", "Tubal ligation", "Vasectomy", "Knee arthroscopy", "Knee replacement", "Hip replacement", "Shoulder surgery", "Spine or back surgery", "Carpal tunnel release", "ACL repair", "Cardiac bypass (CABG)", "Coronary stent or angioplasty", "Pacemaker or defibrillator", "Heart valve surgery", "Cataract surgery", "LASIK or refractive surgery", "Sinus surgery", "Thyroid surgery", "Bariatric or weight loss surgery", "Colon resection", "Colonoscopy with polyp removal", "Breast surgery or lumpectomy", "Mastectomy", "Prostate surgery", "Kidney stone removal", "Skin cancer excision", "Cosmetic or plastic surgery", "Amputation", "Organ transplant"] },
+  { key: "social", label: "Social history", hint: "Pick whatever describes you now. This helps your provider give better advice.", searchPlaceholder: "Search, e.g. smoking", otherLabel: "Anything else about your daily life", otherPlaceholder: "e.g. night shift work, caring for a parent", noneLabel: "Nothing to report", addLabel: "I have things to share",
+    options: ["Never smoked", "Former smoker", "Current smoker", "Vape or e-cigarettes", "Chewing tobacco", "Trying to quit tobacco", "No alcohol", "Alcohol occasionally", "Alcohol weekly", "Alcohol daily", "Cannabis use", "Recreational drug use", "In recovery", "Exercise rarely", "Exercise 1–2 times a week", "Exercise 3 or more times a week", "Mostly sitting during the day", "Physically demanding work", "Sleep under 6 hours most nights", "Trouble sleeping", "High stress at home or work", "Feeling isolated or lonely", "Live alone", "Live with family or partner", "Caregiver for someone else", "Employed full time", "Employed part time", "Student", "Retired", "Not currently working", "Military service history", "Trouble affording food", "Trouble affording medications", "Unstable housing", "No reliable transportation", "Vegetarian or vegan diet", "Pregnant or trying to conceive"] },
+  { key: "vaccinations", label: "Vaccination history", hint: "Pick the vaccines you have received.", searchPlaceholder: "Search vaccines, e.g. tetanus", otherLabel: "Other vaccines", otherPlaceholder: "e.g. yellow fever, 2023", noneLabel: "No vaccinations on record", addLabel: "I have had vaccinations",
+    options: ["COVID-19, primary series", "COVID-19, most recent booster", "Influenza (this season)", "Tdap or tetanus booster", "Shingles (Shingrix)", "Pneumococcal (Prevnar or Pneumovax)", "RSV vaccine", "Hepatitis A", "Hepatitis B", "HPV (Gardasil)", "MMR (measles, mumps, rubella)", "Varicella (chickenpox)", "Polio (IPV)", "Meningococcal (MenACWY)", "Meningococcal B", "Haemophilus influenzae type b (Hib)", "Rotavirus", "Typhoid", "Yellow fever", "Japanese encephalitis", "Rabies", "Tuberculosis (BCG)", "Anthrax or smallpox (military or occupational)"] },
+];
+
+type History = { picked: Record<string, string[]>; none: Record<string, boolean>; other: Record<string, string> };
+const INITIAL_HISTORY: History = {
+  none: { conditions: false, allergies: true, medications: false, surgeries: false, social: false, vaccinations: false },
+  picked: {
+    conditions: ["High blood pressure", "Thyroid problems"],
+    allergies: [],
+    medications: ["Lisinopril", "Levothyroxine (Synthroid)", "Iron supplement", "Vitamin D"],
+    surgeries: ["Appendectomy", "Wisdom teeth extraction", "Cesarean section"],
+    social: ["Never smoked", "Alcohol occasionally", "Exercise 1–2 times a week", "Live with family or partner", "Employed full time"],
+    vaccinations: ["COVID-19, primary series", "COVID-19, most recent booster", "Influenza (this season)", "Tdap or tetanus booster", "HPV (Gardasil)"],
+  },
+  other: { conditions: "Iron deficiency anemia, diagnosed 2024", medications: "Ferrous sulfate 325mg every other day" },
+};
+
+/* ── Helpers ────────────────────────────────── */
+const startOfToday = () => { const d = new Date(); return new Date(d.getFullYear(), d.getMonth(), d.getDate()); };
+const sameDay = (a: Date, b: Date) => a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+const openTimes = (d: Date) => {
+  const dow = d.getDay();
+  if (dow === 0 || dow === 6 || d < startOfToday()) return [];
+  return SLOT_POOL[(d.getDate() + dow) % SLOT_POOL.length];
+};
+/** Month grid starting on Sunday, trimmed after the last week of the month. */
+function monthDays(offset: number) {
+  const t = startOfToday();
+  const y = new Date(t.getFullYear(), t.getMonth() + offset, 1).getFullYear();
+  const m = new Date(t.getFullYear(), t.getMonth() + offset, 1).getMonth();
+  const first = new Date(y, m, 1);
+  const days: Date[] = [];
+  for (let i = 0; i < 42; i++) {
+    const d = new Date(y, m, 1 - first.getDay() + i);
+    if (i > 0 && i % 7 === 0 && d.getMonth() !== m && d > first) break;
+    days.push(d);
+  }
+  return { label: `${MONTHS[m]} ${y}`, month: m, year: y, days };
+}
+const slotLabel =(d: Date, t: string) => `${t} ${MONTHS[d.getMonth()].slice(0, 3)} ${d.getDate()}, ${d.getFullYear()}`;
+
+/** Calendar + time slots. Days with no open times (weekends, past days) are
+    disabled; picking a day shows its open times beside it (below when stacked). */
+/** True while the media query matches; re-renders when it changes. */
+function useMediaQuery(query: string) {
+  return useSyncExternalStore(
+    onChange => { const m = window.matchMedia(query); m.addEventListener("change", onChange); return () => m.removeEventListener("change", onChange); },
+    () => window.matchMedia(query).matches,
+    () => false,
+  );
+}
+
+function SlotPicker({ date, slot, onDateChange, onSlotChange, stacked: stackedProp, timesFor = openTimes, onConfirm, onCancel }: {
+  date: Date | null; slot: string | null;
+  onDateChange: (d: Date) => void; onSlotChange: (t: string) => void;
+  /** Force the stacked (mobile) layout on or off. Leave it out to stack automatically on screens 640px wide or less. */
+  stacked?: boolean; timesFor?: (d: Date) => string[];
+  /** Shows a Confirm button in the summary row (enabled once a day and time are picked). */
+  onConfirm?: (date: Date, slot: string) => void;
+  /** Shows a Cancel button in the summary row; the page decides what it does. */
+  onCancel?: () => void;
+}) {
+  const [offset, setOffset] = useState(0);
+  const narrowScreen = useMediaQuery("(max-width: 640px)");
+  const stacked = stackedProp ?? narrowScreen;
+  const cal = monthDays(offset);
+  const times = date ? timesFor(date) : [];
+  // Month / year dropdowns move the view by changing the month offset from today
+  const today = startOfToday();
+  const goTo = (year: number, month: number) => setOffset((year - today.getFullYear()) * 12 + month - today.getMonth());
+  const years = [0, 1, 2].map(n => today.getFullYear() + n);
+  if (!years.includes(cal.year)) years.push(cal.year); // the ‹ › arrows can step outside the list
+  years.sort((a, b) => a - b);
+  return (
+    <div>
+      <div className={`slot-picker${stacked ? " slot-picker-stacked" : ""}`}>
+        <div className="slot-cal">
+          <div className="slot-cal-head">
+            <Button className="calendar-nav-btn" aria-label="Previous month" onPress={() => setOffset(o => o - 1)}><ChevronLeft size={16} /></Button>
+            <div className="slot-cal-month" style={{ display: "flex", alignItems: "center", gap: "var(--vsee-sp-4)" }}>
+              <Select aria-label="Month" selectedKey={cal.month} onSelectionChange={k => goTo(cal.year, Number(k))}>
+                <Button className="btn btn-link">
+                  <SelectValue />
+                  {!stacked && <ChevronDown size={14} aria-hidden="true" />}{/* no chevron when stacked, to save room */}
+                </Button>
+                <Popover className="select-popover">
+                  <ListBox className="select-listbox">
+                    {MONTHS.map((name, i) => <ListBoxItem key={name} id={i} className="select-option">{name}</ListBoxItem>)}
+                  </ListBox>
+                </Popover>
+              </Select>
+              <Select aria-label="Year" selectedKey={cal.year} onSelectionChange={k => goTo(Number(k), cal.month)}>
+                <Button className="btn btn-link"><SelectValue />{!stacked && <ChevronDown size={14} aria-hidden="true" />}</Button>
+                <Popover className="select-popover">
+                  <ListBox className="select-listbox">
+                    {years.map(y => <ListBoxItem key={y} id={y} className="select-option">{String(y)}</ListBoxItem>)}
+                  </ListBox>
+                </Popover>
+              </Select>
+            </div>
+            <Button className="calendar-nav-btn" aria-label="Next month" onPress={() => setOffset(o => o + 1)}><ChevronRight size={16} /></Button>
+          </div>
+          <div className="slot-cal-grid slot-cal-weekdays" aria-hidden="true">
+            {["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"].map(w => <div key={w} className="slot-cal-weekday">{w}</div>)}
+          </div>
+          <div className="slot-cal-grid">
+            {cal.days.map(d => {
+              const open = timesFor(d).length > 0;
+              const selected = !!date && sameDay(date, d);
+              return (
+                <button key={d.toISOString()} type="button" className="slot-cal-day" disabled={!open}
+                  data-open={open || undefined} data-outside={d.getMonth() !== cal.month || undefined} data-selected={selected || undefined}
+                  aria-pressed={selected} aria-label={d.toDateString() + (open ? "" : ", no open times")}
+                  onClick={() => onDateChange(d)}>
+                  {d.getDate()}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+        <div>
+          {date && times.length > 0 && (
+            /* Time slots are Choice Buttons (radio group of .btn.btn-choice) laid out in the .slot-times grid */
+            <RadioGroup aria-label="Open times" value={slot ?? ""} onChange={onSlotChange}>
+              <div className="slot-times">
+                {times.map(t => <Radio key={t} value={t} className="btn btn-choice">{t}</Radio>)}
+              </div>
+            </RadioGroup>
+          )}
+          {date && times.length === 0 && <div className="text-caption" style={{ color: "var(--vsee-text-secondary)" }}>No open times on this day. Try another date.</div>}
+        </div>
+      </div>
+      {/* Summary row — part of the component, not the surrounding panel.
+          Desktop: optional Cancel bottom left; summary text + optional Confirm bottom right.
+          Stacked (mobile): summary text, then a row with an X-icon Cancel far left and Confirm on the right. */}
+      {(() => {
+        const summaryText = (
+          <div className="text-caption" aria-live="polite" style={{ textAlign: "right", color: "var(--vsee-text-secondary)" }}>
+            {!date ? "Pick a day to see open time slots."
+              : !slot ? "Pick a time slot."
+              : <>Schedule at <span style={{ color: "var(--vsee-brand-dark)", fontWeight: 600 }}>{slotLabel(date, slot)}</span></>}
+          </div>
+        );
+        const cancelBtn = onCancel && <Button className="btn btn-secondary" onPress={onCancel}>Cancel</Button>;
+        // Stacked (mobile): large 48px Confirm, matching the 48px X-icon Cancel beside it
+        const confirmBtn = onConfirm && <Button className={`btn btn-primary${stacked ? " btn-lg" : ""}`} isDisabled={!date || !slot} onPress={() => date && slot && onConfirm(date, slot)}>Confirm</Button>;
+        return stacked ? (
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "var(--vsee-sp-3)", marginTop: "var(--vsee-sp-4)" }}>
+            {summaryText}
+            {(onCancel || onConfirm) && (
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", alignSelf: "stretch", gap: "var(--vsee-sp-3)" }}>
+                {onCancel && <Button className="btn btn-ghost flow-cancel-icon" aria-label="Cancel" onPress={onCancel}><X size={20} /></Button>}
+                {onConfirm && <span style={{ marginLeft: "auto" }}>{confirmBtn}</span>}
+              </div>
+            )}
+          </div>
+        ) : (
+          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "var(--vsee-sp-3)", marginTop: "var(--vsee-sp-4)" }}>
+            {cancelBtn}
+            <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "flex-end", gap: "var(--vsee-sp-3)", marginLeft: "auto" }}>
+              {summaryText}
+              {confirmBtn}
+            </div>
+          </div>
+        );
+      })()}
+    </div>
+  );
+}
+
+type Choice = { id: string; name: string; hint?: string; meta?: string; icon?: ReactNode; disabled?: boolean };
+
+/** One question answered by picking a card (React Aria radio group). */
+function ChoiceQuestion({ label, hint, options, value, onChange, layout, compact, small }: {
+  label: string; hint?: string; options: Choice[]; value: string | null; onChange: (v: string) => void;
+  layout: string; compact?: boolean; small?: boolean;
+}) {
+  return (
+    <RadioGroup value={value} onChange={onChange}>
+      <Label className="question-title">{label}</Label>
+      {hint && <div className="question-hint">{hint}</div>}
+      <div className={layout}>
+        {options.map(o => (
+          <Radio key={o.id} value={o.id} isDisabled={o.disabled}
+            className={`choice-card${compact ? " choice-card-compact" : ""}${small ? " choice-card-sm" : ""}`}>
+            {o.icon && <span className="choice-card-icon">{o.icon}</span>}
+            {compact ? (
+              <span className="choice-card-body">
+                <span className="choice-card-title">{o.name}</span>
+                {(o.meta || o.hint) && <span className="choice-card-hint">{o.meta || o.hint}</span>}
+              </span>
+            ) : (
+              <>
+                <span className="choice-card-title">{o.name}</span>
+                {o.hint && <span className="choice-card-hint">{o.hint}</span>}
+                {o.meta && <span className="choice-card-meta">{o.meta}</span>}
+              </>
+            )}
+          </Radio>
+        ))}
+      </div>
+    </RadioGroup>
+  );
+}
+
+/* ── The flow ───────────────────────────────── */
+function OneQuestionFlow({ layout }: { layout: "desktop" | "mobile" }) {
+  const mobile = layout === "mobile";
+
+  const [stepId, setStepId] = useState<StepId>("room");
+  const [roomId, setRoomId] = useState("primary");
+  const [mode, setMode] = useState<Mode | null>(null);
+  const [type, setType] = useState<Flow | null>(null);
+  const [providerId, setProviderId] = useState<string | null>(null);
+  const [date, setDate] = useState<Date | null>(null);
+  const [slot, setSlot] = useState<string | null>(null);
+  const [reason, setReason] = useState<string | null>(null);
+  const [complaint, setComplaint] = useState("");
+  const [files, setFiles] = useState<UploadedFile[]>([]);
+  const [history, setHistory] = useState<History>(INITIAL_HISTORY);
+  const [histSaved, setHistSaved] = useState<History | null>(null); // snapshot while editing
+  const [reminder, setReminder] = useState(true);
+  const [notice, setNotice] = useState<{ text: string; warn: boolean } | null>(null);
+  const [result, setResult] = useState<{ title: string; line: string } | null>(null);
+
+  /* Derived state — mirrors the design's rules */
+  const room = ROOMS.find(r => r.id === roomId)!;
+  const team = room.providers.map(i => CARE_TEAM.find(p => p.initials === i)!);
+  const provider = team.find(p => p.initials === providerId) ?? team[0];
+  const inPersonOnly = mode === "inperson";
+  const flow: Flow | null = type ?? (inPersonOnly ? "schedule" : null);
+  const steps: StepId[] = flow === "walkIn" ? ["room", "type", "reason", "history", "confirm"] : ["room", "type", "provider", "reason", "history", "confirm"];
+  const labels = flow === "walkIn"
+    ? ["Room", "Visit type", "Reason", "Health history", "Confirm"]
+    : ["Room", "Visit type", flow === "econsult" ? "Provider" : "Provider and time", "Reason", "Health history", "Confirm"];
+  const idx = steps.indexOf(stepId);
+  const modeLabel = mode === "inperson" ? "In person" : "Online";
+  const editingHistory = histSaved !== null;
+  const hasHistoryRecord = HISTORY_GROUPS.some(g => (history.picked[g.key] || []).length > 0 || history.none[g.key]);
+  const historyCount = ["conditions", "allergies", "medications"].reduce((n, k) =>
+    n + (history.none[k] ? 0 : (history.picked[k] || []).length + (history.other[k]?.trim() ? 1 : 0)), 0);
+  const historySummary = historyCount ? `${historyCount} item${historyCount === 1 ? "" : "s"} noted` : "Nothing noted";
+  const scheduled = date && slot ? slotLabel(date, slot) : null;
+
+  const warn = (text: string) => setNotice({ text, warn: true });
+  const goTo = (s: StepId) => { setNotice(null); setStepId(s); };
+  const reset = () => {
+    setStepId("room"); setRoomId("primary"); setMode(null); setType(null); setProviderId(null); setDate(null); setSlot(null);
+    setReason(null); setComplaint(""); setFiles([]); setHistory(INITIAL_HISTORY); setHistSaved(null); setReminder(true); setNotice(null); setResult(null);
+  };
+
+  /* Why Continue can't proceed yet (null = it can) */
+  const blocker = (): string | null => {
+    if (stepId === "type") {
+      if (!mode) return "Pick how you'd like to be seen first.";
+      if (!flow) return "Pick how you'd like to start.";
+    }
+    if (stepId === "provider" && flow === "schedule") {
+      if (!date) return "Pick a date to continue.";
+      if (!slot) return "Pick a time to continue.";
+    }
+    return null;
+  };
+  const next = () => {
+    const why = blocker();
+    if (why) return warn(why);
+    if (stepId === "confirm") return confirm();
+    goTo(steps[idx + 1]);
+  };
+  const back = () => (idx === 0 ? reset() : goTo(steps[idx - 1]));
+  const confirm = () => {
+    setNotice(null);
+    if (flow === "walkIn") {
+      const m = /(\d+)\s*min/.exec(room.wait);
+      return setResult({ title: "You're next in line", line: `${provider.name} is finishing another visit.${m ? ` About ${m[1]} minutes.` : ""}` });
+    }
+    if (flow === "econsult") return setResult({ title: "Request sent", line: `Asynchronous request sent to ${provider.name}. You'll get a reply within one business day.` });
+    setResult({ title: "Booked", line: `${provider.name} in ${room.name} · ${scheduled}.${reminder ? " We texted you a reminder." : ""}` });
+  };
+
+  /* Health history editing */
+  const setGroup = (key: string, patch: Partial<{ picked: string[]; none: boolean; other: string }>) =>
+    setHistory(h => ({
+      picked: patch.picked !== undefined ? { ...h.picked, [key]: patch.picked } : h.picked,
+      none: patch.none !== undefined ? { ...h.none, [key]: patch.none } : h.none,
+      other: patch.other !== undefined ? { ...h.other, [key]: patch.other } : h.other,
+    }));
+
+  /* ── Pieces ── */
+  const pageIndicator = <StepProgress steps={labels} current={idx} variant={mobile ? "pips" : "bars"} title="See a provider" />;
+
+  const footerNote = (text: ReactNode) => (
+    <div className="panel-footer" style={{ justifyContent: "flex-end" }}>
+      <span className="text-caption" style={{ textAlign: "right", color: "var(--vsee-text-secondary)" }}>{text}</span>
+    </div>
+  );
+
+  const primaryLabel = stepId === "confirm" ? "Confirm" : stepId === "history" && !mobile ? "Review" : "Continue";
+  const blocked = blocker() !== null;
+  const actions = mobile ? (
+    <div className="flow-actions flow-actions-mobile">
+      <Button className="btn btn-ghost flow-cancel-icon" aria-label="Cancel" onPress={reset}><X size={20} /></Button>
+      <div className="flow-actions-group">
+        {idx > 0 && <Button className="btn btn-secondary" onPress={back}>Back</Button>}
+        <Button className="btn btn-primary" data-blocked={blocked || undefined} onPress={next}>{primaryLabel}</Button>
+      </div>
+    </div>
+  ) : (
+    <div className="flow-actions">
+      <Button className="btn btn-ghost" onPress={reset}>Cancel</Button>
+      <div className="flow-actions-group">
+        <Button className="btn btn-secondary" onPress={back}>Back</Button>
+        <Button className="btn btn-primary" data-blocked={blocked || undefined} onPress={next}>{primaryLabel}</Button>
+      </div>
+    </div>
+  );
+
+  /* ── Steps ── */
+  const roomStep = (
+    <div className="panel">
+      <div className="panel-header">Pick a room</div>
+      <div className="panel-body">
+        <ChoiceQuestion label="Which room?" hint={`Choose the kind of care you need at ${CLINIC}.`}
+          layout={mobile ? "choice-list" : "choice-grid"} compact={mobile} value={roomId}
+          onChange={v => { setRoomId(v); setMode(null); setType(null); setProviderId(null); setDate(null); setSlot(null); }}
+          options={ROOMS.map(r => ({ id: r.id, name: r.name, hint: r.hint, meta: r.wait, icon: <RoomIcon id={r.id} size={mobile ? 18 : 20} /> }))} />
+      </div>
+      {footerNote(`${room.name} selected`)}
+    </div>
+  );
+
+  const typeSummary = !mode ? "Pick how you'd like to be seen."
+    : !flow ? `${room.name} · ${modeLabel} — now pick how to start.`
+    : `${room.name} · ${type === "econsult" ? "Message" : modeLabel} · ${flow === "walkIn" ? "Join Queue" : flow === "schedule" ? "Schedule" : "Asynchronous"}`;
+  const typeOptions: Choice[] = [
+    { id: "walkIn", name: "Join Queue", hint: "Join the queue and be seen next.", ok: room.walkIn, hide: false },
+    { id: "schedule", name: "Schedule", hint: "Pick a time that works for you.", ok: room.schedule, hide: false },
+    { id: "econsult", name: "Asynchronous", hint: "Send a message and photos instead.", ok: room.econsult, hide: mode === "inperson" },
+  ].filter(t => !t.hide).map(t => ({ id: t.id, name: t.name, hint: t.ok ? t.hint : "Not offered in this room.", disabled: !t.ok }));
+  const typeStep = (
+    <div className="panel">
+      <div className="panel-header">Start a visit</div>
+      <div className="panel-body">
+        <ChoiceQuestion label="How would you like to be seen?" layout={mobile ? "choice-cols-1" : "choice-cols-2"} value={mode}
+          onChange={v => { setMode(v as Mode); setType(null); setNotice(null); }}
+          options={[
+            { id: "video", name: "Online", hint: "Join by video or send a message from your phone or computer." },
+            { id: "inperson", name: "In person", hint: `Come to ${CLINIC}.` },
+          ]} />
+        {mode && !inPersonOnly && (
+          <div className="question-section">
+            <ChoiceQuestion label="What kind of visit?" layout={mobile ? "choice-cols-1" : "choice-row"} value={type}
+              onChange={v => { setType(v as Flow); setNotice(null); }} options={typeOptions} />
+          </div>
+        )}
+      </div>
+      {footerNote(typeSummary)}
+    </div>
+  );
+
+  const providerStep = flow === "schedule" ? (
+    <div className="panel">
+      <div className="panel-header">Pick a provider and time</div>
+      <div className="panel-body">
+        <div className="form-group" style={{ maxWidth: 520 }}>
+          <Select className="field" selectedKey={providerId ?? "any"} onSelectionChange={k => setProviderId(k === "any" ? null : String(k))}>
+            <Label className="form-label">Provider</Label>
+            <Button className="input select-trigger">
+              <SelectValue />
+              <ChevronDown size={16} className="select-chevron" />
+            </Button>
+            <Popover className="select-popover">
+              <ListBox className="select-listbox">
+                <ListBoxItem id="any" className="select-option">Any Provider</ListBoxItem>
+                {team.map(p => <ListBoxItem key={p.initials} id={p.initials} className="select-option">{`${p.name} · ${p.role}`}</ListBoxItem>)}
+              </ListBox>
+            </Popover>
+          </Select>
+        </div>
+        <div className="slot-picker-title">Choose the time for the visit</div>
+        <SlotPicker stacked={mobile} date={date} slot={slot}
+          onDateChange={d => { setDate(d); setSlot(null); setNotice(null); }}
+          onSlotChange={t => { setSlot(t); setNotice(null); }} />
+      </div>
+    </div>
+  ) : (
+    <div className="panel">
+      <div className="panel-header">Pick a provider</div>
+      <div className="panel-body">
+        <ChoiceQuestion label="Who should get your request?" layout="choice-list" compact value={provider.initials}
+          onChange={setProviderId}
+          options={team.map(p => ({ id: p.initials, name: p.name, hint: `${p.role} · ${room.wait}`, icon: <span className="avatar avatar-sm">{p.initials}</span> }))} />
+      </div>
+    </div>
+  );
+
+  const reasonStep = (
+    <div className="panel">
+      <div className="panel-header">Reason for your visit</div>
+      <div className="panel-body">
+        <ChoiceQuestion label="What brings you in?" hint="Pick the closest match. Your provider will confirm during the visit."
+          layout={mobile ? "choice-cols-1" : "choice-cols-2"} small value={reason} onChange={setReason}
+          options={VISIT_TYPES.map(v => ({ id: v.id, name: v.label, hint: v.hint }))} />
+        <div className="form-group form-section-divided">
+          <TextField value={complaint} onChange={setComplaint} className="field">
+            <Label className="form-label">Chief Complaint</Label>
+            <TextArea className="input textarea" placeholder="Tell your provider what's going on — e.g. sore throat for three days, mild fever last night." />
+          </TextField>
+          <div className="form-hint">Optional, but it helps them prepare.</div>
+        </div>
+        <div className="form-section-divided">
+          <FileUpload files={files} onChange={setFiles} note="Only your care team at this clinic can see these." />
+        </div>
+      </div>
+    </div>
+  );
+
+  const historySummaryView = (
+    <>
+      {HISTORY_GROUPS.map(g => {
+        const parts = [...(history.picked[g.key] || []), ...(history.other[g.key]?.trim() ? [history.other[g.key].trim()] : [])];
+        const empty = history.none[g.key] || parts.length === 0;
+        return (
+          <div key={g.key} className="history-summary-group">
+            <div style={{ fontWeight: 600, marginBottom: "var(--vsee-sp-3)" }}>{g.label}</div>
+            {empty
+              ? <div style={{ color: "var(--vsee-text-secondary)" }}>{g.noneLabel}</div>
+              : <div className="chip-row">{parts.map(p => <span key={p} className="chip">{p}</span>)}</div>}
+          </div>
+        );
+      })}
+      <div className="history-summary-group">
+        <Button className="btn btn-link" style={{ fontSize: "var(--vsee-text-caption-size)", fontWeight: 600 }} onPress={() => setHistSaved(history)}>Update health history</Button>
+      </div>
+    </>
+  );
+  const historyEditView = (
+    <>
+      <div className="panel-body">
+        <div className="text-body" style={{ color: "var(--vsee-text-secondary)", marginBottom: "var(--vsee-sp-6)" }}>This carries over to your next visit, so you only fill it in once.</div>
+        {HISTORY_GROUPS.map(g => {
+          const none = !!history.none[g.key];
+          const picked = history.picked[g.key] || [];
+          return (
+            <div key={g.key} className="history-group" role="group" aria-labelledby={`hg-${layout}-${g.key}`}>
+              <div id={`hg-${layout}-${g.key}`} className="question-title">{g.label}</div>
+              <div className="question-hint">{g.hint}</div>
+              {/* Small Choice Buttons (Buttons → Choice Buttons, .btn-sm) */}
+              <RadioGroup aria-labelledby={`hg-${layout}-${g.key}`} value={none ? "none" : "add"} className="history-toggle"
+                onChange={v => setGroup(g.key, v === "none" ? { none: true, picked: [], other: "" } : { none: false })}>
+                <div className="choice-inline">
+                  <Radio value="none" className="btn btn-choice btn-sm">{g.noneLabel}</Radio>
+                  <Radio value="add" className="btn btn-choice btn-sm">{g.addLabel}</Radio>
+                </div>
+              </RadioGroup>
+              {!none && (
+                <>
+                  {/* Design-system Selection List (CheckboxGroup + .option-list) */}
+                  <SelectionList label={g.label} hideLabel options={g.options} value={picked}
+                    onChange={v => setGroup(g.key, { picked: v })}
+                    searchPlaceholder={g.searchPlaceholder} emptyText={`No match. Add it under ${g.otherLabel} below.`} />
+                  <TextField className="field" style={{ marginTop: "var(--vsee-sp-4)" }} value={history.other[g.key] || ""} onChange={v => setGroup(g.key, { other: v })}>
+                    <Label className="form-label">{g.otherLabel}</Label>
+                    <Input className="input" placeholder={g.otherPlaceholder} />
+                  </TextField>
+                </>
+              )}
+            </div>
+          );
+        })}
+      </div>
+      {hasHistoryRecord && (
+        <div className="panel-footer" style={{ justifyContent: "flex-end", flexDirection: mobile ? "column-reverse" : "row" }}>
+          {editingHistory && (
+            <Button className="btn btn-ghost" style={{ width: mobile ? "100%" : "auto", minHeight: 44 }}
+              onPress={() => { setHistory(histSaved!); setHistSaved(null); }}>Discard changes</Button>
+          )}
+          <Button className="btn btn-secondary" style={{ width: mobile ? "100%" : "auto", minHeight: 44 }}
+            onPress={() => { setHistSaved(null); setNotice({ text: "Health history saved.", warn: false }); }}>Save changes</Button>
+        </div>
+      )}
+    </>
+  );
+  const historyStep = (
+    <div className="panel">
+      <div className="panel-header">Your health history</div>
+      {editingHistory || !hasHistoryRecord ? historyEditView : historySummaryView}
+    </div>
+  );
+
+  const confirmStep = (
+    <div className="panel">
+      <div className="panel-header">{flow === "walkIn" ? "Confirm joining the queue" : flow === "econsult" ? "Confirm your asynchronous request" : "Confirm your visit"}</div>
+      <div className="panel-body">
+        {([
+          ["Patient", PATIENT],
+          ["Room", room.name],
+          ["Reason", (VISIT_TYPES.find(v => v.id === reason) ?? VISIT_TYPES[0]).label],
+          flow !== "walkIn" ? ["Provider", providerId ? `${provider.name} · ${provider.role}` : "Any Provider"] : null,
+          ["Your state", HOME_STATE],
+          ["Health history", historySummary],
+          flow === "schedule" ? ["When", scheduled ?? "Pick a day and time"] : null,
+          ["Visit type", flow === "econsult" ? "Asynchronous · Message" : `${flow === "walkIn" ? "Join Queue" : "Scheduled"} · ${modeLabel}`],
+        ].filter(Boolean) as [string, string][]).map(([k, v]) => (
+          <div key={k} className="drawer-field"><span className="drawer-label">{k}</span><span style={{ fontWeight: 600, textAlign: "right" }}>{v}</span></div>
+        ))}
+        {flow === "schedule" && (
+          <>
+            <div className="divider" />
+            <Checkbox className="check-item" isSelected={reminder} onChange={setReminder}>
+              <span className={`check-box${reminder ? " checked" : ""}`}>
+                {reminder && <svg className="check-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5" /></svg>}
+              </span>
+              Text me a reminder an hour before
+            </Checkbox>
+          </>
+        )}
+      </div>
+    </div>
+  );
+
+  if (result) {
+    return (
+      <div className="panel">
+        <div className="panel-body" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "var(--vsee-sp-3)", padding: "var(--vsee-sp-8) var(--vsee-sp-6)", textAlign: "center" }}>
+          <CheckCircle2 size={40} style={{ color: "var(--vsee-brand)" }} />
+          <div className="text-h5">{result.title}</div>
+          <div className="text-caption" style={{ color: "var(--vsee-text-secondary)", maxWidth: 420 }}>{result.line}</div>
+          <Button className="btn btn-ghost btn-sm" onPress={reset}>Start over</Button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      {pageIndicator}
+      {{ room: roomStep, type: typeStep, provider: providerStep, reason: reasonStep, history: historyStep, confirm: confirmStep }[stepId]}
+      {notice && (
+        <div className={`alert ${notice.warn ? "alert-warning" : "alert-success"}`} role={notice.warn ? "alert" : "status"} style={{ marginTop: "var(--vsee-sp-4)" }}>
+          {notice.text}
+        </div>
+      )}
+      {actions}
+    </div>
+  );
+}
+
+/* Step progress — shows where the user is in a multi-step flow.
+   "bars": one labelled bar per step (desktop). "pips": flow title, "Step X of N"
+   and a row of pips (mobile). Steps up to and including the current one are filled. */
+function StepProgress({ steps, current, variant = "bars", title }: {
+  steps: string[];
+  /** 0-based index of the current step */
+  current: number;
+  variant?: "bars" | "pips";
+  /** Flow name, always shown above the bars / pips (with "Step X of N") and used as the accessible name */
+  title: string;
+}) {
+  if (variant === "pips") {
+    return (
+      <div className="step-pips-wrap">
+        <div className="step-pips-head">
+          <span className="step-pips-title">{title}</span>
+          <span className="step-pips-count">Step {current + 1} of {steps.length}</span>
+        </div>
+        <div className="step-pips" role="progressbar" aria-label={title} aria-valuemin={1} aria-valuemax={steps.length} aria-valuenow={current + 1}
+          aria-valuetext={`Step ${current + 1} of ${steps.length}: ${steps[current]}`}>
+          {steps.map((s, i) => <span key={s} className="step-pip" data-done={i <= current || undefined} />)}
+        </div>
+      </div>
+    );
+  }
+  return (
+    <>
+    <div className="step-pips-head" style={{ justifyContent: "flex-start" }}>{/* pips title row, count right after the title */}
+      <span className="step-pips-title">{title}</span>
+      <span className="step-pips-count">Step {current + 1} of {steps.length}</span>
+    </div>
+    <ol className="step-progress" aria-label={title} style={{ listStyle: "none", padding: 0 }}>
+      {steps.map((s, i) => (
+        <li key={s} className="step-progress-item" aria-current={i === current ? "step" : undefined}>
+          <div className="progress-track"><div className="progress-bar progress-bar-brand" style={{ width: i <= current ? "100%" : "0%" }} /></div>
+          <span className="step-progress-label">{s}</span>
+        </li>
+      ))}
+    </ol>
+    </>
+  );
+}
+
+/* Step progress demo: both variants, with Back / Next to move through the steps. */
+const DEMO_STEPS = ["Room", "Visit type", "Provider and time", "Reason", "Health history", "Confirm"];
+function StepProgressDemo() {
+  const [step, setStep] = useState(1);
+  const nav = (
+    <div style={{ display: "flex", gap: "var(--vsee-sp-2)", marginTop: "var(--vsee-sp-4)" }}>
+      <Button className="btn btn-secondary btn-sm" isDisabled={step === 0} onPress={() => setStep(s => Math.max(0, s - 1))}>Back</Button>
+      <Button className="btn btn-primary btn-sm" isDisabled={step === DEMO_STEPS.length - 1} onPress={() => setStep(s => Math.min(DEMO_STEPS.length - 1, s + 1))}>Next</Button>
+    </div>
+  );
+  return (
+    <>
+      <div className="text-h5 mb-[var(--vsee-sp-3)]">Bars</div>
+      <div className="card">
+        <StepProgress steps={DEMO_STEPS} current={step} title="See a provider" />
+        {nav}
+      </div>
+      <div className="text-h5 mb-[var(--vsee-sp-3)]" style={{ marginTop: "var(--vsee-sp-6)" }}>Pips</div>
+      <div className="card" style={{ maxWidth: 375 }}>
+        <StepProgress steps={DEMO_STEPS} current={step} variant="pips" title="See a provider" />
+        {nav}
+      </div>
+    </>
+  );
+}
+
+/* Calendar + time slots. One example: it switches to the stacked (mobile)
+   layout by itself on screens 640px wide or less. The "Schedule at …"
+   summary is part of SlotPicker itself. */
+function SlotPickerDemo() {
+  const [date, setDate] = useState<Date | null>(null);
+  const [slot, setSlot] = useState<string | null>(null);
+  return (
+    <div className="panel" style={{ marginBottom: "var(--vsee-sp-4)" }}>
+      <div className="panel-body">
+        <SlotPicker date={date} slot={slot} onDateChange={d => { setDate(d); setSlot(null); }} onSlotChange={setSlot}
+          onCancel={() => { setDate(null); setSlot(null); }} onConfirm={() => {}} />
+      </div>
+    </div>
+  );
+}
+
+/* Demo-only stand-in for a real upload: files added (or retried) here count up
+   to 100% and then show as uploaded. A real app sets status/progress itself. */
+function useSimulatedUploads(initial: UploadedFile[] = []) {
+  const [files, setFiles] = useState<UploadedFile[]>(initial);
+  const active = useRef(new Set<string>());
+  useEffect(() => {
+    const t = setInterval(() => {
+      setFiles(fs => {
+        let changed = false;
+        const next = fs.map(f => {
+          if (f.status !== "uploading" || !active.current.has(f.id)) return f;
+          changed = true;
+          const p = Math.min(100, (f.progress ?? 0) + 8 + Math.random() * 10);
+          // Keep the updater pure (React may run it twice): no ref changes here.
+          if (p >= 100) return { ...f, status: "uploaded" as const, progress: undefined };
+          return { ...f, progress: p };
+        });
+        return changed ? next : fs;
+      });
+    }, 250);
+    return () => clearInterval(t);
+  }, []);
+  const onChange = (next: UploadedFile[]) => {
+    const known = new Set(files.map(f => f.id));
+    setFiles(next.map(f => {
+      if (known.has(f.id)) return f;
+      active.current.add(f.id);
+      return { ...f, status: "uploading" as const, progress: 0 };
+    }));
+  };
+  const retry = (id: string) => {
+    active.current.add(id);
+    setFiles(fs => fs.map(f => (f.id === id ? { ...f, status: "uploading" as const, progress: 0, error: undefined } : f)));
+  };
+  return { files, onChange, retry };
+}
+
+/* File upload: live default, every upload state + field errors, disabled. */
+function FileUploadDemo() {
+  const live = useSimulatedUploads();
+  const states = useSimulatedUploads([
+    { id: "s1", name: "rash-left-forearm.jpg", size: "2.4 MB" },
+    { id: "s2", name: "lab-results-march.pdf", size: "1.1 MB", status: "uploading", progress: 60 },
+    { id: "s3", name: "insurance-card-back.jpg", size: "3.2 MB", status: "failed" },
+    { id: "s4", name: "old-scan.pdf", size: "640 KB", status: "blocked" },
+  ]);
+  return (
+    <>
+      <FileUpload label="Default" files={live.files} onChange={live.onChange} onRetry={live.retry} maxFiles={5}
+        hint="JPG, PNG, or PDF up to 20 MB each. Up to 5 files."
+        note="Only your care team at this clinic can see these." />
+      <div style={{ marginTop: "var(--vsee-sp-6)" }} />
+      <FileUpload label="Upload States and Errors" files={states.files} onChange={states.onChange} onRetry={states.retry} maxFiles={5}
+        hint="JPG, PNG, or PDF up to 20 MB each. Up to 5 files."
+        initialErrors={["scan.heic isn't a supported file type.", "You can add up to 5 files. 1 file wasn't added."]}
+        note="Only your care team at this clinic can see these." />
+      <div style={{ marginTop: "var(--vsee-sp-6)" }} />
+      <FileUpload label="Disabled" isDisabled files={[]} onChange={() => {}} />
+    </>
+  );
+}
+
+const SL_CONDITIONS = ["Asthma", "Anxiety", "Depression", "Diabetes (type 1)", "Diabetes (type 2)", "Eczema", "GERD / acid reflux", "Heart disease", "High blood pressure", "High cholesterol", "Migraine", "Sleep apnea", "Thyroid disease"];
+
+function SelectionListDemo() {
+  const [conditions, setConditions] = useState<string[]>(["Asthma", "High blood pressure"]);
+  return (
+    <div className="grid g2" style={{ gap: "var(--vsee-sp-6)", alignItems: "start" }}>
+      <div>
+        <SelectionList label="Default"
+          options={SL_CONDITIONS} value={conditions} onChange={setConditions}
+          searchPlaceholder="Search conditions, e.g. diabetes" emptyText="No match. Add it under Other conditions." />
+      </div>
+      <div>
+        <SelectionList label="Disabled" options={["Albuterol inhaler", "Lisinopril", "Metformin"]}
+          value={["Lisinopril"]} onChange={() => {}} isDisabled />
+      </div>
+    </div>
+  );
+}
+
 function ComponentsForms() {
   const [check1, setCheck1] = useState(true);
   const [check2, setCheck2] = useState(false);
@@ -1842,7 +3040,64 @@ function ComponentsForms() {
           code={`<SignaturePad />\n\n{/* The component renders a <canvas> inside .signature-pad */}\n{/* Users draw with mouse or touch. On completion: */}\n<div className="signature-pad signed">\n  <canvas /> {/* contains the drawn signature */}\n</div>\n<div className="signature-footer">\n  <span className="signature-timestamp">Signed Apr 8, 2026 at 2:34 PM</span>\n  <button className="signature-clear">Clear</button>\n</div>`}
         />
       </SubSection>
+
+      {/* The step-by-step flow lives on its own page now: Steppers (#steppers, under Pages in the side menu) */}
     </Section>
+  );
+}
+
+/* ═══════════════════════════════════════════
+   STEPPERS — standalone page (hash route #steppers)
+   The working "See a provider" flow on its own page. Desktop layout by default,
+   mobile layout on screens 640px wide or less.
+   ═══════════════════════════════════════════ */
+function SteppersPage({ onExit, brandTheme, setBrandTheme, darkMode, setDarkMode }: {
+  onExit: () => void;
+  brandTheme: string; setBrandTheme: (t: string) => void;
+  darkMode: boolean; setDarkMode: (d: boolean) => void;
+}) {
+  const narrow = useMediaQuery("(max-width: 640px)");
+  return (
+    <div style={{ minHeight: "100vh", background: "var(--vsee-white)" }}>
+      {/* Top bar — same layout as the login prototype's toolbar: page name left, Brand + Mode right */}
+      <header style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: "var(--vsee-sp-3)", padding: "var(--vsee-sp-3) var(--vsee-sp-6)", background: "var(--vsee-white)", borderBottom: "1px solid var(--vsee-border)", fontSize: "var(--vsee-text-caption-size)" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "var(--vsee-sp-4)" }}>
+          <Button className="btn btn-link" onPress={onExit} aria-label="Back to docs"><ChevronLeft size={16} aria-hidden="true" /></Button>
+          <strong style={{ fontSize: "var(--vsee-text-body-lg-size)", fontWeight: 700 }}>Steppers</strong>
+        </div>
+        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "var(--vsee-sp-2) var(--vsee-sp-4)" }}>
+          <Select selectedKey={brandTheme || "green"} onSelectionChange={k => setBrandTheme(k === "green" ? "" : String(k))}
+            style={{ display: "flex", alignItems: "center", gap: "var(--vsee-sp-2)" }}>
+            <Label className="sr-only">Brand</Label>
+            <Button className="input input-sm select-trigger" style={{ width: 160 }}>
+              <SelectValue />
+              <ChevronDown size={16} className="select-chevron" aria-hidden="true" />
+            </Button>
+            <Popover className="select-popover">
+              <ListBox className="select-listbox">
+                <ListBoxItem id="green" className="select-option">Green (default)</ListBoxItem>
+                <ListBoxItem id="blue" className="select-option">Blue</ListBoxItem>
+                <ListBoxItem id="purple" className="select-option">Purple</ListBoxItem>
+              </ListBox>
+            </Popover>
+          </Select>
+          <span style={{ display: "flex", alignItems: "center", gap: "var(--vsee-sp-2)", color: "var(--vsee-text-secondary)" }}>
+            <SwitchButton ariaLabel="Mode" labels={["Light", "Dark"]} icons={{ Light: <Sun size={16} aria-hidden="true" />, Dark: <Moon size={16} aria-hidden="true" /> }} value={darkMode ? "Dark" : "Light"} onChange={l => setDarkMode(l === "Dark")} />
+          </span>
+        </div>
+      </header>
+      <div style={{ maxWidth: 960, margin: "0 auto", padding: narrow ? "var(--vsee-sp-4)" : "var(--vsee-sp-8)" }}>
+        <p className="text-body" style={{ color: "var(--vsee-text-secondary)", margin: "0 0 var(--vsee-sp-6)" }}>
+          The Patient Portal “See a provider” flow: one step per page, with a page indicator so patients always know where they are. Desktop shows a labelled bar for each step; mobile (screens 640px or narrower) shows the flow name, “Step X of N”, and a row of pips, with full-width 48px buttons. Join Queue skips the provider step (5 steps instead of 6). When a step isn't answered yet, Continue is dimmed and pressing it explains what's missing.
+        </p>
+        <div className="card" style={{ marginBottom: "var(--vsee-sp-6)" }}>
+          <OneQuestionFlow layout={narrow ? "mobile" : "desktop"} />
+        </div>
+        <CodeBlock
+          code={`{/* Page indicator — desktop: one labelled bar per step */}\n<ol className="step-progress">\n  <li className="step-progress-item" aria-current="step">\n    <div className="progress-track"><div className="progress-bar progress-bar-brand" style={{width:"100%"}} /></div>\n    <span className="step-progress-label">Room</span>\n  </li>\n  {/* …one <li> per step; width 0% for steps not reached */}\n</ol>\n\n{/* Page indicator — mobile */}\n<div className="step-pips-wrap">\n  <div className="step-pips-head">\n    <span className="step-pips-title">See a provider</span>\n    <span className="step-pips-count">Step 1 of 6</span>\n  </div>\n  <div className="step-pips" role="progressbar" aria-valuenow={1} aria-valuemax={6}>\n    <span className="step-pip" data-done />\n    <span className="step-pip" />  {/* …one per step */}\n  </div>\n</div>\n\n{/* The one question */}\n<div className="panel">\n  <div className="panel-header">Pick a room</div>\n  <div className="panel-body">\n    <RadioGroup value={room} onChange={setRoom}>\n      <Label className="question-title">Which room?</Label>\n      <div className="question-hint">Choose the kind of care you need.</div>\n      <div className="choice-grid">  {/* mobile: .choice-list + .choice-card-compact */}\n        <Radio value="urgent" className="choice-card">\n          <span className="choice-card-icon"><Activity size={20} /></span>\n          <span className="choice-card-title">Urgent Care</span>\n          <span className="choice-card-hint">Something new that can't wait.</span>\n          <span className="choice-card-meta">4 min wait</span>\n        </Radio>\n      </div>\n    </RadioGroup>\n  </div>\n  <div className="panel-footer">Urgent Care selected</div>\n</div>\n\n{/* Actions — desktop */}\n<div className="flow-actions">\n  <Button className="btn btn-ghost">Cancel</Button>\n  <div className="flow-actions-group">\n    <Button className="btn btn-secondary">Back</Button>\n    <Button className="btn btn-primary">Continue</Button>\n  </div>\n</div>\n\n{/* Actions — mobile (icon Cancel, stretched buttons) */}\n<div className="flow-actions flow-actions-mobile">\n  <Button className="btn btn-ghost flow-cancel-icon" aria-label="Cancel"><X size={20} /></Button>\n  <div className="flow-actions-group">\n    <Button className="btn btn-secondary">Back</Button>\n    <Button className="btn btn-primary">Continue</Button>\n  </div>\n</div>`}
+        />
+      </div>
+    </div>
   );
 }
 
@@ -2379,6 +3634,13 @@ function ComponentsOthers() {
         />
       </SubSection>
 
+      <SubSection title="Step Progress" description="Shows where the user is in a multi-step flow, such as the Steppers page. Bars: one labelled bar per step, for desktop. Pips: the flow name, “Step X of N” and a row of pips, for mobile. Steps up to and including the current one are filled.">
+        <StepProgressDemo />
+        <CodeBlock
+          code={`<StepProgress\n  steps={["Room", "Visit type", "Provider and time", "Reason", "Health history", "Confirm"]}\n  current={1}                 {/* 0-based */}\n  variant="bars"              {/* "bars" (desktop) | "pips" (mobile) */}\n  title="See a provider"      {/* required: shown above the bars / pips; accessible name */}\n/>\n\n/* Renders — bars */\n<div className="step-pips-head" style={{ justifyContent: "flex-start" }}>   {/* count right after the title */}\n  <span className="step-pips-title">See a provider</span>\n  <span className="step-pips-count">Step 2 of 6</span>\n</div>\n<ol className="step-progress" aria-label="See a provider">\n  <li className="step-progress-item">\n    <div className="progress-track"><div className="progress-bar progress-bar-brand" style={{ width: "100%" }} /></div>\n    <span className="step-progress-label">Room</span>\n  </li>\n  <li className="step-progress-item" aria-current="step">…Visit type…</li>\n  {/* later steps: width 0% */}\n</ol>\n\n/* Renders — pips */\n<div className="step-pips-wrap">\n  <div className="step-pips-head">\n    <span className="step-pips-title">See a provider</span>\n    <span className="step-pips-count">Step 2 of 6</span>\n  </div>\n  <div className="step-pips" role="progressbar" aria-valuenow={2} aria-valuemax={6}>\n    <span className="step-pip" data-done />  {/* one per step */}\n  </div>\n</div>`}
+        />
+      </SubSection>
+
       <SubSection title="Avatars">
         <div className="preview">
           <div className="avatar avatar-sm">A</div>
@@ -2428,6 +3690,27 @@ function ComponentsOthers() {
           </div>
         </div>
       </SubSection> */}
+
+      <SubSection title="File Upload" description="Drop files on the box or press “Choose files”. Files with the wrong type, no content, too large a size, or over the file limit are turned away, each with its own dismissible red bar. Every added file shows its state: uploading, uploaded, failed (with Retry) or blocked. Uploads in this demo are simulated.">
+        <FileUploadDemo />
+        <CodeBlock
+          code={`const [files, setFiles] = useState<UploadedFile[]>([]);\n\n<FileUpload\n  label="Photos or documents"\n  title="Drag & drop files here"\n  hint="JPG, PNG, or PDF up to 20 MB each."\n  note="Only your care team at this clinic can see these."\n  acceptedFileTypes={["image/jpeg", "image/png", "application/pdf"]}\n  maxSizeMB={20}\n  maxFiles={5}\n  files={files}\n  onChange={setFiles}       {/* each item: { id, name, size, file, status?, progress?, error? } */}\n  onRetry={id => startUpload(id)}   {/* shows Retry on failed rows */}\n/>\n\n/* status: "uploading" (progress 0–100) | "uploaded" (default) | "failed" | "blocked"\n   Field errors (shown in the red bar):\n     "x.heic isn't a supported file type."   "x.pdf is empty."\n     "x.pdf is larger than 20 MB."           "You can add up to 5 files. 1 file wasn't added."\n   Row errors (default text, override with error):\n     failed  → "Upload failed. Check your connection and try again."\n     blocked → "This file didn't pass our security check and can't be uploaded." */\n\n/* Renders (React Aria DropZone + FileTrigger) */\n<div className="form-group">\n  <div className="upload-head">                       {/* label left, note top right */}\n    <div className="form-label">Photos or documents</div>\n    <div className="upload-note">Only your care team at this clinic can see these.</div>\n  </div>\n  <DropZone className="upload-zone">          {/* whole box accepts drops; [data-drop-target] while dragging */}\n    <div className="upload-zone-main">\n      <FilePlus size={32} className="upload-zone-icon" />\n      <span className="upload-zone-text">\n        <span className="upload-zone-title">Drag & drop files here</span>\n        <span className="upload-zone-hint">JPG, PNG, or PDF up to 20 MB each.</span>\n      </span>\n      <span className="upload-zone-action">\n        <FileTrigger allowsMultiple acceptedFileTypes={[…]}>\n          <Button className="btn btn-secondary">Choose files</Button>\n        </FileTrigger>\n      </span>\n    </div>\n    <div role="alert" className="upload-zone-alert-slot">   {/* one bar per turned-away file */}\n      <div className="alert alert-danger upload-zone-alert">\n        <AlertCircle size={16} className="alert-icon" />\n        <span className="upload-zone-alert-text">scan.heic isn't a supported file type.</span>\n        <Button className="notification-close" aria-label="Dismiss"><X size={14} /></Button>\n      </div>\n    </div>\n    <ul className="file-list">                   {/* inside the same box, under the prompt */}\n      <li className="file-row" data-status="failed">   {/* uploading | uploaded | failed | blocked */}\n        <span className="file-row-lead">\n          <AlertCircle size={16} className="file-row-icon" />   {/* AlertCircle for failed + blocked (centred on the row); Loader2 / FileText otherwise */}\n          {/* uploading: <span className="file-row-percent">60%</span>  ← 10px, in line with the progress bar */}\n        </span>\n        <span className="file-row-main">\n          <span className="file-row-top">\n            <span className="file-row-name">insurance-card-back.jpg</span>\n            <span className="file-row-size">3.2 MB</span>      {/* right after the name */}\n          </span>\n          {/* uploading: <span className="file-row-progress-line">\n                <span className="progress-track file-row-progress" role="progressbar">…</span>\n              </span> */}\n          <span className="file-row-error" role="alert">Upload failed. Check your connection and try again.</span>\n        </span>\n        <span className="file-row-actions">\n          <Button className="btn btn-secondary btn-sm">Retry</Button>\n          <Button className="btn btn-ghost btn-sm">Remove</Button>   {/* "Cancel" while uploading */}\n        </span>\n      </li>\n    </ul>\n  </DropZone>\n</div>`}
+        />
+      </SubSection>
+
+      <SubSection title="Selection List" description="Shows every option directly in one bordered box. Patients tap a row to check it and can check as many as apply. An optional search field at the top of the box filters long lists, and the picked items appear at the bottom of the box as removable tags, so selections hidden by the search or the scroll stay visible. Use it instead of a dropdown when patients should see the choices at a glance.">
+        <SelectionListDemo />
+        <CodeBlock
+          code={`const [value, setValue] = useState<string[]>(["Asthma"]);\n\n<SelectionList\n  label="Past and current medical conditions"\n  options={["Asthma", "Diabetes (type 2)", "High blood pressure", …]}\n  value={value}\n  onChange={setValue}\n  searchPlaceholder="Search conditions, e.g. diabetes"   {/* optional */}\n  showSelectedTags                                        {/* default true */}\n  emptyText="No match."\n/>\n\n/* Renders (React Aria CheckboxGroup) */\n<CheckboxGroup className="form-group">\n  <Label className="form-label">Past and current medical conditions</Label>\n  {/* optional hint="…" renders <Text slot="description" className="form-hint option-list-hint"> here */}\n  <div className="option-box">                          {/* one bordered box */}\n    <label className="option-box-search">               {/* top: search (optional) */}\n      <Search size={16} />\n      <input className="option-box-input" type="search" placeholder="Search conditions, e.g. diabetes" />\n    </label>\n    <div className="option-list">                       {/* middle: max-height 260px, scrolls */}\n      <Checkbox value="Asthma" className="option-list-item">   {/* [data-selected] = green row */}\n        <span className="check-box checked">✓</span> Asthma\n      </Checkbox>\n      …\n      <div className="option-list-empty">No match.</div>\n    </div>\n    <TagGroup className="option-box-selected" aria-label="…: selected">   {/* bottom: removable tags */}\n      <TagList className="tag-list">\n        <Tag className="chip">Asthma <Button slot="remove" className="tag-remove">×</Button></Tag>\n      </TagList>\n    </TagGroup>\n  </div>\n</CheckboxGroup>`}
+        />
+      </SubSection>
+
+      <SubSection title="Calendar + Time Slots" description="Pick a day, then one of its open times. Days with no open times (weekends and past days) are greyed out and can't be picked. The times sit beside the calendar, and stack below it when the screen is 640px wide or less.">
+        <SlotPickerDemo />
+        <CodeBlock
+          code={`const [date, setDate] = useState<Date | null>(null);\nconst [slot, setSlot] = useState<string | null>(null);\n\n<SlotPicker\n  date={date}\n  slot={slot}\n  onDateChange={d => { setDate(d); setSlot(null); }}\n  onSlotChange={setSlot}\n  timesFor={d => openTimesFromApi(d)}  {/* string[]; [] = day unavailable */}\n  stacked={false}                       {/* optional: leave out to stack automatically at ≤640px; true/false forces it */}\n  onCancel={() => closeDialog()}        {/* optional: shows Cancel; the page decides what it does */}\n  onConfirm={(d, t) => book(d, t)}      {/* optional: shows Confirm, enabled once a day + time are picked */}\n/>\n\n/* Renders */\n<div>\n  <div className="slot-picker">            {/* + slot-picker-stacked when stacked */}\n    <div className="slot-cal">\n      <div className="slot-cal-head">\n        ‹                                              {/* .calendar-nav-btn, keeps 32px */}\n        <div className="slot-cal-month">\n          <Select aria-label="Month">                {/* list: January–December */}\n            <Button className="btn btn-link">November ▾</Button>   {/* stacked: no ▾ */}\n            <Popover className="select-popover">…</Popover>\n          </Select>\n          <Select aria-label="Year">                 {/* list: this year + next 2 */}\n            <Button className="btn btn-link">2026 ▾</Button>\n            <Popover className="select-popover">…</Popover>\n          </Select>\n        </div>\n        ›\n      </div>\n      <div className="slot-cal-grid slot-cal-weekdays">…SUN–SAT…</div>\n      <div className="slot-cal-grid">\n        <button className="slot-cal-day" data-open data-selected>2</button>\n        <button className="slot-cal-day" disabled>7</button>   {/* no open times */}\n      </div>\n    </div>\n    <div className="slot-times">         {/* inside <RadioGroup aria-label="Open times"> */}\n      <Radio value="11:30 AM" className="btn btn-choice">11:30 AM</Radio>   {/* Choice Button */}\n    </div>\n  </div>\n  {/* built-in summary row: "Pick a day to see open time slots." → "Pick a time slot." → "Schedule at …"\n      stacked (mobile): summary on top, then X-icon Cancel (btn btn-ghost flow-cancel-icon) far left + Confirm (btn btn-primary btn-lg, 48px) right */}\n  <div>\n    <Button className="btn btn-secondary">Cancel</Button>    {/* bottom left, only with onCancel */}\n    <div>                                                     {/* bottom right */}\n      <div className="text-caption">Schedule at <span>11:30 AM Nov 2, 2026</span></div>\n      <Button className="btn btn-primary">Confirm</Button>   {/* only with onConfirm */}\n    </div>\n  </div>\n</div>`}
+        />
+      </SubSection>
 
       <SubSection title="Empty State" description="Placeholder content shown when a section has no data. Provides context and a call to action.">
         <div className="grid g2" style={{ gap: "var(--vsee-sp-6)" }}>
@@ -3160,6 +4443,7 @@ function EngineeringTokens() {
         {"  "}<span className="p">--vsee-border</span>{": "}<span className="v">#E5E7EB</span>{"; "}<span className="p">--vsee-border-strong</span>{": "}<span className="v">#D1D5DB</span>{";\n\n"}
         {"  "}<span className="c">{"/* Typography scale */"}</span>{"\n"}
         {"  "}<span className="p">--vsee-mono</span>{": "}<span className="v">'SF Mono', 'Fira Code', 'Consolas', monospace</span>{";\n"}
+        {"  "}<span className="p">--vsee-text-micro-size</span>{": "}<span className="v">10px</span>{";\n"}
         {"  "}<span className="p">--vsee-text-overline-size</span>{": "}<span className="v">12px</span>{"; "}<span className="p">--vsee-text-caption-size</span>{": "}<span className="v">13px</span>{"; "}<span className="p">--vsee-text-body-size</span>{": "}<span className="v">14px</span>{";\n"}
         {"  "}<span className="p">--vsee-text-h5-size</span>{": "}<span className="v">16px</span>{"; "}<span className="p">--vsee-text-body-lg-size</span>{": "}<span className="v">16px</span>{"; "}<span className="p">--vsee-text-subtitle-size</span>{": "}<span className="v">18px</span>{";\n"}
         {"  "}<span className="p">--vsee-text-h4-size</span>{": "}<span className="v">20px</span>{"; "}<span className="p">--vsee-text-h3-size</span>{": "}<span className="v">24px</span>{"; "}<span className="p">--vsee-text-h2-size</span>{": "}<span className="v">36px</span>{";\n"}

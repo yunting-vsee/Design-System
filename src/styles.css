@@ -18,6 +18,7 @@
 .text-body { font-size: var(--vsee-text-body-size); font-weight: 400; line-height: 1.5; }
 .text-caption { font-size: var(--vsee-text-caption-size); font-weight: 500; line-height: 1.4; }
 .text-overline { font-size: var(--vsee-text-overline-size); font-weight: 700; line-height: 1.4; letter-spacing: 1px; text-transform: uppercase; }
+.text-micro { font-size: var(--vsee-text-micro-size); font-weight: 500; line-height: 1.2; font-variant-numeric: tabular-nums; }
 
 /* ═══════════════════════════════════════════
    LAYOUT
@@ -190,6 +191,14 @@
 .btn-warning { background: var(--vsee-warning); color: var(--vsee-warning-on-solid); }
 .btn-warning[data-hovered] { background-image: var(--vsee-hover-overlay); }
 .btn-warning[data-pressed] { opacity: 1; }
+
+/* Choice button — a radio (React Aria <Radio>) that looks like a normal button (size/shape/type from .btn, .btn-sm, .btn-lg)
+   with Choice Card colours and states */
+.btn-choice { background: var(--vsee-white); color: var(--vsee-text-primary); border: 1px solid var(--vsee-border); }
+.btn-choice[data-hovered] { border-color: var(--vsee-border-strong); }
+.btn-choice[data-selected] { border-color: var(--vsee-brand); background: var(--vsee-brand-50); }
+.btn-choice[data-focus-visible] { box-shadow: none; }
+.btn-choice[data-disabled] { background: var(--vsee-white); color: var(--vsee-text-primary); border-color: var(--vsee-border); opacity: 0.5; }
 
 .btn-link { background: transparent; color: var(--vsee-brand); padding: 0; border: none; }
 .btn-link[data-hovered] { text-decoration: underline; }
@@ -536,6 +545,205 @@ input::-webkit-credentials-auto-fill-button { display: none; }
 .progress-bar-brand { background: var(--vsee-brand); }
 .progress-bar-info { background: var(--vsee-info); }
 .progress-bar-danger { background: var(--vsee-danger); }
+
+/* ═══════════════════════════════════════════
+   STEPPERS — step flows
+   (Patient Portal "See a provider" start flow)
+   ═══════════════════════════════════════════ */
+
+/* Step indicator — desktop: one labelled bar per step */
+.step-progress { display: flex; gap: var(--vsee-sp-3); margin-bottom: var(--vsee-sp-6); }
+.step-progress-item { flex: 1; min-width: 0; }
+.step-progress-item .progress-track { margin-bottom: var(--vsee-sp-2); }
+.step-progress-label { display: block; font-size: var(--vsee-text-caption-size); color: var(--vsee-text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* Step indicator — mobile: flow title + "Step X of N" + pips */
+.step-pips-wrap { margin-bottom: var(--vsee-sp-5); }
+.step-pips-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--vsee-sp-3); margin-bottom: var(--vsee-sp-3); }
+.step-pips-title { font-weight: 600; }
+.step-pips-count { font-size: var(--vsee-text-caption-size); color: var(--vsee-text-secondary); white-space: nowrap; flex-shrink: 0; }
+.step-pips { display: flex; gap: var(--vsee-sp-1); min-width: 0; }
+.step-pip { flex: 1; height: 4px; border-radius: 2px; background: var(--vsee-border-strong); transition: background var(--vsee-t-base); }
+.step-pip[data-done] { background: var(--vsee-brand); }
+
+/* Question heading inside the step panel */
+.question-title { display: block; font-weight: 600; margin-bottom: var(--vsee-sp-1); }
+.question-hint { font-size: var(--vsee-text-caption-size); color: var(--vsee-text-secondary); margin-bottom: var(--vsee-sp-4); }
+.question-title + .choice-grid, .question-title + .choice-list { margin-top: var(--vsee-sp-3); } /* no hint: keep 16px under the question */
+
+/* Choice cards — one tap answers the question. Wraps React Aria <Radio>. */
+.choice-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); grid-auto-rows: 1fr; gap: var(--vsee-sp-4); } /* 1fr rows: every card in the group matches the tallest, even once they stack */
+.choice-list { display: flex; flex-direction: column; gap: var(--vsee-sp-2); }
+.choice-card { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: var(--vsee-sp-3); text-align: left; cursor: pointer; padding: var(--vsee-sp-5); border-radius: var(--vsee-r-lg); border: 1px solid var(--vsee-border); background: var(--vsee-white); color: var(--vsee-text-primary); font-family: var(--vsee-font-sans); transition: border-color var(--vsee-t-fast), background var(--vsee-t-fast); }
+.choice-card[data-hovered] { border-color: var(--vsee-border-strong); }
+.choice-card[data-selected] { border-color: var(--vsee-brand); background: var(--vsee-brand-50); }
+.choice-card[data-focus-visible] { outline: 2px solid var(--vsee-brand); outline-offset: 2px; }
+.choice-card[data-disabled] { opacity: 0.5; cursor: not-allowed; }
+.choice-card-compact { flex-direction: row; align-items: center; gap: var(--vsee-sp-4); padding: var(--vsee-sp-3) var(--vsee-sp-4); min-height: 56px; }
+.choice-card-icon { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: var(--vsee-r-md); background: var(--vsee-grey-100); color: var(--vsee-text-secondary); flex-shrink: 0; }
+.choice-card-compact .choice-card-icon { width: 36px; height: 36px; }
+.choice-card-compact:not(:has(.choice-card-icon)) { padding-left: var(--vsee-sp-5); } /* text-only compact: 20px left, like the default card */
+/* Compact cards side by side (grid layouts) sit a little closer together */
+.choice-grid:has(.choice-card-compact), .choice-cols-2:has(.choice-card-compact), .choice-row:has(.choice-card-compact) { gap: var(--vsee-sp-3); }
+.choice-card[data-selected] .choice-card-icon { color: var(--vsee-brand-dark); }
+.choice-card-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--vsee-sp-1); } /* 4px between title and description in compact cards */
+.choice-card-title { display: block; font-weight: 600; }
+.choice-card-hint { display: block; font-size: var(--vsee-text-caption-size); color: var(--vsee-text-secondary); }
+.choice-card-meta { font-size: var(--vsee-text-caption-size); color: var(--vsee-text-secondary); }
+
+/* Flow actions — Cancel on the left, Back / Continue on the right */
+.flow-actions { display: flex; align-items: center; justify-content: space-between; gap: var(--vsee-sp-3); margin-top: var(--vsee-sp-5); flex-wrap: wrap; }
+.flow-actions-group { display: flex; gap: var(--vsee-sp-2); }
+/* Mobile: icon-only Cancel, Back / Continue stretch to fill, 48px touch targets */
+.flow-actions-mobile { gap: var(--vsee-sp-10); margin-top: var(--vsee-sp-4); flex-wrap: nowrap; }
+.flow-actions-mobile .flow-actions-group { flex: 1; }
+.flow-actions-mobile .flow-actions-group .btn { flex: 1; min-width: 0; min-height: 48px; padding: 0 var(--vsee-sp-5); }
+.flow-cancel-icon { min-width: 48px; min-height: 48px; padding: 0 var(--vsee-sp-3); flex-shrink: 0; }
+/* Continue that can't proceed yet: dimmed but still pressable, so it can explain why */
+.btn[data-blocked] { opacity: 0.45; cursor: not-allowed; }
+
+/* Choice layouts and sizes */
+.choice-cols-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 1fr; gap: var(--vsee-sp-4); }
+.choice-cols-1 { display: grid; grid-template-columns: minmax(0, 1fr); grid-auto-rows: 1fr; gap: var(--vsee-sp-4); }
+.choice-inline { display: flex; flex-wrap: wrap; gap: var(--vsee-sp-2); } /* cards size to their text */
+.choice-inline .choice-card { justify-content: center; min-height: 44px; white-space: nowrap; }
+.choice-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); grid-auto-rows: 1fr; gap: var(--vsee-sp-4); }
+.choice-card-sm { gap: var(--vsee-sp-1); padding: var(--vsee-sp-4) var(--vsee-sp-5); border-radius: var(--vsee-r-md); }
+.choice-cols-2:has(.choice-card-sm), .choice-cols-1:has(.choice-card-sm) { gap: var(--vsee-sp-3); }
+.question-section { margin-top: var(--vsee-sp-6); }
+.form-section-divided { margin-top: var(--vsee-sp-8); padding-top: var(--vsee-sp-8); border-top: 1px solid var(--vsee-border); }
+
+/* Slot picker — month calendar + open times */
+.slot-picker { display: grid; grid-template-columns: minmax(280px, 360px) 1fr; gap: var(--vsee-sp-6); align-items: start; }
+.slot-picker-stacked { grid-template-columns: minmax(0, 1fr); }
+.slot-picker-title { font-weight: 600; margin: var(--vsee-sp-6) 0 var(--vsee-sp-4); }
+.slot-cal { border: 1px solid var(--vsee-border); border-radius: var(--vsee-r-lg); padding: var(--vsee-sp-5); }
+.slot-cal-head { display: flex; align-items: center; justify-content: space-between; gap: var(--vsee-sp-3); margin-bottom: var(--vsee-sp-4); }
+.slot-cal-head .calendar-nav-btn { flex-shrink: 0; } /* ‹ › keep their 32px when the month/year dropdowns need the room */
+.slot-cal-month { font-weight: 600; }
+.slot-cal-month .btn { gap: var(--vsee-sp-1); } /* chevron sits right next to the month / year text */
+.slot-cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: var(--vsee-sp-1); }
+.slot-cal-weekdays { margin-bottom: var(--vsee-sp-2); }
+.slot-cal-weekday { text-align: center; font-size: var(--vsee-text-caption-size); font-weight: 600; letter-spacing: 0.04em; color: var(--vsee-text-secondary); }
+.slot-cal-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border: 0; border-radius: var(--vsee-r-md); background: transparent; font-family: var(--vsee-font-sans); font-size: var(--vsee-text-body-size); font-weight: 400; color: var(--vsee-grey-700); cursor: default; }
+.slot-cal-day[data-open] { font-weight: 600; cursor: pointer; }
+.slot-cal-day[data-open]:not([data-outside]) { color: var(--vsee-text-primary); }
+.slot-cal-day[data-open]:hover:not([data-selected]) { background: var(--vsee-grey-200); }
+.slot-cal-day[data-open][data-selected] { background: var(--vsee-brand-50); color: var(--vsee-text-primary); box-shadow: inset 0 0 0 1px var(--vsee-brand); } /* same as a selected Choice Button (time slot); inset line so the day doesn't change size */
+/* Time slots are Choice Buttons (.btn.btn-choice) in this grid.
+   Desktop: every slot is 104px wide (fits the longest label, "22:22 PM", at 600 14px with 20px side padding); slots don't stretch */
+.slot-times { display: grid; grid-template-columns: repeat(auto-fill, 104px); gap: var(--vsee-sp-3); }
+/* Stacked (mobile): slots fill the width, at most 4 per row, never narrower than 104px */
+.slot-picker-stacked .slot-times { grid-template-columns: repeat(auto-fill, minmax(max(104px, calc((100% - 3 * var(--vsee-sp-3)) / 4)), 1fr)); }
+
+/* Upload zone + attached files */
+/* One dashed box: drop prompt + Choose files on top, attached files listed inside below it. The whole box accepts drops. */
+.upload-zone { display: flex; flex-direction: column; border: 2px dashed var(--vsee-border); border-radius: var(--vsee-r-lg); /* same border as .empty-state */ background: var(--vsee-grey-100); overflow: hidden; container: upload-zone / inline-size; }
+.upload-zone-main { display: flex; align-items: center; gap: var(--vsee-sp-4); padding: var(--vsee-sp-5); flex-wrap: wrap; }
+.upload-zone-icon { color: var(--vsee-grey-500); flex-shrink: 0; } /* light grey; decorative (aria-hidden) */
+.upload-zone-text { flex: 1; min-width: 220px; } /* when text + button don't fit, Choose files wraps to the next line */
+.upload-zone-title { display: block; font-weight: 600; }
+.upload-zone-hint { display: block; font-size: var(--vsee-text-caption-size); color: var(--vsee-text-secondary); }
+.upload-zone { transition: border-color var(--vsee-t-fast), background var(--vsee-t-fast); }
+/* Label on the left, privacy/usage note on the top right; the note drops below the label when space runs out */
+.upload-head { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; column-gap: var(--vsee-sp-4); row-gap: var(--vsee-sp-1); margin-bottom: var(--vsee-sp-2); }
+.upload-head .form-label { margin-bottom: 0; }
+.upload-note { font-size: var(--vsee-text-overline-size); color: var(--vsee-text-secondary); }
+.upload-zone-action { display: flex; flex-shrink: 0; }
+/* Rejected-file bar: .alert.alert-danger inset inside the box, under the drop prompt */
+/* One bar per message, stacked */
+.upload-zone-alert-slot { display: flex; flex-direction: column; gap: var(--vsee-sp-2); margin: calc(var(--vsee-sp-2) * -1) var(--vsee-sp-5) var(--vsee-sp-5); }
+.upload-zone-alert-slot:empty { display: none; }
+.upload-zone-alert { align-items: flex-start; padding: var(--vsee-sp-3) var(--vsee-sp-4); border-radius: var(--vsee-r-md); font-size: var(--vsee-text-caption-size); line-height: 1.4; }
+.upload-zone-alert .alert-icon { margin-top: 1px; }
+.upload-zone-alert-text { flex: 1; min-width: 0; }
+.upload-zone-alert .notification-close { color: inherit; display: flex; }
+.upload-zone[data-drop-target] { border-color: var(--vsee-brand); border-style: solid; background: var(--vsee-brand-50); }
+.upload-zone[data-focus-visible] { outline: 2px solid var(--vsee-brand); outline-offset: 2px; }
+.upload-zone[data-disabled] { opacity: 0.5; cursor: not-allowed; }
+.file-list { display: flex; flex-direction: column; gap: var(--vsee-sp-2); margin: var(--vsee-sp-3) 0 0; padding: 0; list-style: none; }
+/* Inside the upload box: rows run edge to edge, split by hairlines */
+.upload-zone .file-list { gap: 0; margin: 0; padding: 0 var(--vsee-sp-5); border-top: 2px dashed var(--vsee-border); background: var(--vsee-white); } /* same as the box outline (and .empty-state) */
+/* Side padding lives on the list, so the dividers between items stop short of the box edges */
+.upload-zone .file-row { border: 0; border-radius: 0; border-bottom: 1px solid var(--vsee-border); padding: var(--vsee-sp-3) 0; }
+.upload-zone .file-row:last-child { border-bottom: 0; }
+.file-row-size { font-size: var(--vsee-text-caption-size); color: var(--vsee-text-secondary); flex-shrink: 0; }
+/* Row = 2-line grid: [icon | name + size] on line 1, [% | progress bar or error] on line 2, actions span both.
+   .file-row-lead / .file-row-main are display:contents so their children land in the grid cells. */
+.file-row { display: grid; grid-template-columns: var(--vsee-sp-8) minmax(0, 1fr) auto; column-gap: var(--vsee-sp-3); align-items: center;
+  /* Every row is at least two lines tall (name line + 12px line), so uploaded, uploading and error rows all match.
+     Both lines may grow (minmax … auto): wrapped errors and WCAG 2.1 SC 1.4.12 text-spacing overrides never overlap. */
+  grid-template-rows: minmax(calc(var(--vsee-text-body-size) * 1.4), auto) minmax(calc(var(--vsee-text-overline-size) * 1.4), auto); padding: var(--vsee-sp-3) var(--vsee-sp-4); border: 1px solid var(--vsee-border); border-radius: var(--vsee-r-md); background: var(--vsee-white); }
+.file-row-lead, .file-row-main { display: contents; }
+.file-row-icon { grid-column: 1; grid-row: 1; justify-self: center; color: var(--vsee-text-secondary); }
+.file-row-top { grid-column: 2; grid-row: 1; display: flex; align-items: baseline; gap: var(--vsee-sp-2); min-width: 0; }
+.file-row-name { flex: 0 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; line-height: 1.4; } /* size sits right after the name; long names truncate */
+.file-row-percent { grid-column: 1; grid-row: 2; justify-self: center; font-size: var(--vsee-text-micro-size); line-height: 1; color: var(--vsee-text-secondary); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.file-row-progress-line { grid-column: 2; grid-row: 2; display: flex; align-items: center; }
+.file-row-progress { display: block; flex: 1; min-width: 0; height: var(--vsee-sp-1); }
+.file-row-progress .progress-bar { display: block; }
+.file-row-error { grid-column: 2; grid-row: 2; font-size: var(--vsee-text-overline-size); line-height: 1.4; color: var(--vsee-danger); } /* 12px, sits tight under the name */
+.file-row-actions { grid-column: 3; grid-row: 1 / span 2; display: flex; gap: var(--vsee-sp-2); }
+.file-row-actions .btn { min-width: var(--vsee-sp-20); justify-content: center; } /* Retry / Remove / Cancel share one width so they line up row to row */
+/* Uploaded rows have no second line: centre icon + name against the buttons */
+.file-row[data-status="uploaded"] .file-row-icon, .file-row[data-status="uploaded"] .file-row-top { grid-row: 1 / span 2; }
+/* Error icon (failed + blocked, same round icon) sits vertically centred on the whole row */
+.file-row[data-status="failed"] .file-row-icon, .file-row[data-status="blocked"] .file-row-icon { grid-row: 1 / span 2; }
+/* Narrow box (phones, 200% zoom, narrow layouts): buttons drop to their own line under the text so file names
+   and messages keep the full width — WCAG 2.1 SC 1.4.10 Reflow (no lost or overlapping content at 320px). */
+@container upload-zone (max-width: 480px) {
+  .file-row-actions { grid-column: 2; grid-row: 3; justify-self: start; margin-top: var(--vsee-sp-2); }
+}
+/* Small screens (by screen width) */
+@media (max-width: 640px) {
+  /* Drop prompt wraps into a centred stack: icon, title + hint, Choose files */
+  .upload-zone-main { flex-direction: column; align-items: center; gap: var(--vsee-sp-1); padding: var(--vsee-sp-6) var(--vsee-sp-4); text-align: center; } /* 4px icon → text */
+  .upload-zone-title { margin-bottom: var(--vsee-sp-2); } /* 8px between "Drag & drop files here" and the hint */
+  .upload-zone-action { margin-top: var(--vsee-sp-2); } /* keeps 12px (4 + 8) above Choose files */
+  .upload-zone-text { min-width: 0; flex: none; width: 100%; }
+  .upload-zone-action { justify-content: center; }
+  /* Tighter side spacing for the error bars and the file list */
+  .upload-zone-alert-slot { margin: calc(var(--vsee-sp-1) * -1) var(--vsee-sp-4) var(--vsee-sp-4); }
+  .upload-zone .file-list { padding: 0 var(--vsee-sp-4); }
+  /* File rows: buttons under the text, rows sized to their content */
+  .file-row { grid-template-rows: auto; }
+  .file-row[data-status="uploaded"] .file-row-icon, .file-row[data-status="uploaded"] .file-row-top { grid-row: 1; }
+  .file-row-actions { grid-column: 2; grid-row: 3; justify-self: start; margin-top: var(--vsee-sp-2); }
+}
+/* Upload states */
+.file-row[data-status="uploading"] .file-row-icon { color: var(--vsee-brand); animation: spin 1s linear infinite; }
+.file-row[data-status="failed"], .file-row[data-status="blocked"] { border-color: var(--vsee-danger-border); }
+.upload-zone .file-row[data-status="failed"], .upload-zone .file-row[data-status="blocked"] { border-color: var(--vsee-border); }
+.file-row[data-status="failed"] .file-row-icon, .file-row[data-status="blocked"] .file-row-icon { color: var(--vsee-danger); }
+
+/* Health history — summary + picker */
+.history-summary-group { padding: var(--vsee-sp-5); border-top: 1px solid var(--vsee-border); }
+.history-summary-group:first-child { border-top: none; }
+.history-group { padding: var(--vsee-sp-6) 0; border-top: 1px solid var(--vsee-border); }
+.history-toggle { margin-bottom: var(--vsee-sp-4); }
+.chip-row { display: flex; flex-wrap: wrap; gap: var(--vsee-sp-2); }
+
+/* Selection list — every option shown directly, check as many as apply (React Aria CheckboxGroup) */
+.option-list-hint { margin-top: 0; margin-bottom: var(--vsee-sp-3); }
+/* One box: [search] / options (scrolls) / [selected tags], split by hairlines */
+.option-box { border: 1px solid var(--vsee-border); border-radius: var(--vsee-r-md); background: var(--vsee-white); overflow: hidden; transition: border-color var(--vsee-t-fast), box-shadow var(--vsee-t-fast); }
+.option-box:has(.option-box-input:focus-visible) { border-color: var(--vsee-brand); box-shadow: var(--vsee-shadow-focus); }
+.option-box-search { display: flex; align-items: center; gap: var(--vsee-sp-2); padding: 0 var(--vsee-sp-4); border-bottom: 1px solid var(--vsee-border); color: var(--vsee-text-secondary); cursor: text; }
+.option-box-input { flex: 1; min-width: 0; min-height: 44px; border: 0; outline: 0; background: transparent; font: inherit; font-size: var(--vsee-text-body-size); color: var(--vsee-text-primary); }
+.option-box-input::placeholder { color: var(--vsee-text-secondary); }
+.option-box-input:disabled { cursor: not-allowed; }
+.option-list { max-height: 260px; overflow-y: auto; }
+.option-box-selected { display: flex; flex-direction: column; gap: var(--vsee-sp-2); padding: var(--vsee-sp-3) var(--vsee-sp-4); border-top: 1px solid var(--vsee-border); background: var(--vsee-grey-100); }
+.option-box-selected .tag-list { margin: 0; padding: 0; min-height: 0; border: 0; background: transparent; }
+.option-box-selected .tag-list:focus-within { box-shadow: none; }
+.option-list-item { display: flex; align-items: center; gap: var(--vsee-sp-3); width: 100%; cursor: pointer; padding: var(--vsee-sp-3) var(--vsee-sp-4); min-height: 44px; border-bottom: 1px solid var(--vsee-border); background: var(--vsee-white); font-size: var(--vsee-text-body-size); color: var(--vsee-text-primary); transition: background var(--vsee-t-fast); }
+.option-list-item:last-child { border-bottom: none; }
+.option-list-item[data-hovered] { background-image: var(--vsee-hover-overlay); }
+.option-list-item[data-selected] { background: var(--vsee-brand-50); }
+.option-list-item[data-focus-visible] { outline: 2px solid var(--vsee-brand); outline-offset: -2px; }
+.option-list-item[data-disabled] { cursor: not-allowed; }
+.form-group[data-disabled] .option-list, .form-group[data-disabled] .option-box-search { opacity: .55; } /* selected tags use their own disabled style */
+.option-list-empty { padding: var(--vsee-sp-4); font-size: var(--vsee-text-caption-size); color: var(--vsee-text-secondary); }
 
 /* ═══════════════════════════════════════════
    NAVIGATION COMPONENTS

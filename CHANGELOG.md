@@ -13,7 +13,49 @@ Nov 3
   - Foundations → Spacing Scale: .space-label has a fixed width (12ch, fits "--vsee-sp-32") instead of min-width 80px, so every bar starts at the same point.
   - Buttons section: Choice Buttons, then Choice Cards, then Switch Button and Toggles at the end.
   - Sub-headings inside demo cards (Icon on Right, Icon Only, Sizes with Icons, Phone Number, Date Picker, Input with Action Icon, Payment Input, Input with Unit, Login Form, Inline Inputs) use .text-h5 with 12px below instead of .sub-title.
+  - Others section now also holds File Upload, Selection List, Calendar + Time Slots (moved from Form Elements) and Empty State (moved from Feedback & Notifications), in that order after Slider.
   - .ds-main gets min-width: 0 so the main column shrinks with the screen instead of staying as wide as its widest content (it stayed 915px on a 375px screen, so nothing inside could respond to small screens).
+
+  Typography
+  - New --vsee-text-micro-size (10px) + .text-micro (500, line-height 1.2, tabular numbers). For tiny status readouts only (e.g. upload %), never body copy. Shown in Foundations → Typography and the Design Tokens reference.
+
+  Steppers (new page — was "One Question per Page")
+  - Pages → Steppers (its own page, #steppers, opened from the side menu): Patient Portal v2 "See a provider" flow; desktop layout, mobile layout on screens ≤640px. Join Queue skips the provider step (5 steps, not 6).
+  - Page indicator: desktop labelled step bars (.step-progress*); mobile "Step X of N" + pips (.step-pips*, .step-pip[data-done]).
+  - Flow actions: .flow-actions, .flow-actions-mobile (48px buttons), .flow-cancel-icon. Unanswered Continue is dimmed via .btn[data-blocked] and explains what's missing.
+  - Your health history: each group's None / Add choice uses small Choice Buttons (.btn.btn-choice.btn-sm) instead of small text-only choice cards.
+  - Added .question-title, .question-hint, .question-section, .form-section-divided, .history-*, .chip-row.
+
+  Choice Cards (new primitive)
+  - Buttons → Choice Cards: RadioGroup cards with optional icon, title, hint and meta line. Variants shown: default (icon, title, hint, meta), compact with icon (side by side in .choice-grid, stacking when narrow; also works in .choice-list / .choice-cols-2), text only (compact, no icon, 20px left padding like the default card), 4px between title and description in compact cards, states (default / selected / disabled, in the default card design). Compact cards in grid layouts use a 12px gap. Grid layouts (.choice-grid, .choice-cols-1/2, .choice-row) give every card in a group the same width and height (grid-auto-rows: 1fr); card content is vertically centred (full and compact cards). (.choice-card-sm, a tighter card, stays for the one-question flow.)
+  - Added .choice-card (+ -compact, -sm, -icon, -body, -title, -hint, -meta) and layouts .choice-grid, .choice-list, .choice-cols-1/2, .choice-row, .choice-inline.
+
+  Step Progress (new docs component)
+  - Others → Step Progress (after Progress Bars): StepProgress component — "bars" (one labelled bar per step, desktop) or "pips" (flow name, "Step X of N", a row of pips; mobile). Props: steps, current (0-based), variant, title (required). Demo with Back / Next.
+  - title is required: the flow name is always shown above the bars / pips, with "Step X of N" (bars: right after the title, using the pips .step-pips-head / -title / -count row packed to the left; pips: count on the right). The Steppers page now shows "See a provider" on desktop too.
+  - No new CSS: uses the existing .step-progress* and .step-pips* classes. The Steppers page now renders its page indicator with StepProgress.
+
+  Choice Buttons (new docs component)
+  - Buttons → Choice Buttons: radio buttons (React Aria Radio) that look like normal buttons — size, shape and text from .btn, .btn-sm (30px), default (38px), .btn-lg (48px) — with Choice Card colours and states. Label only, no description. Demos: default (with a disabled option), with icon (16px Lucide icon before the label, no extra CSS; with a disabled option), icon only (.btn-icon, named with aria-label); the code sample shows the size classes.
+  - New variant class .btn-choice: white background, 1px --vsee-border; hover --vsee-border-strong; [data-selected] --vsee-brand border + --vsee-brand-50 tint; [data-disabled] 50% opacity (overrides the grey .btn disabled fill). Laid out with the existing .choice-inline.
+
+  Calendar + Time Slots (new primitive)
+  - Others → Calendar + Time Slots: SlotPicker — month calendar, then open times for the picked day. Days without open times can't be picked. Stacks by itself on screens ≤640px (the stacked prop can still force it on/off); the docs show one example instead of separate desktop and mobile ones. Time slots are Choice Buttons (RadioGroup of .btn.btn-choice: arrow keys, read as radios), and the selected calendar day uses the same selected look (brand-50 tint, 1px brand line, dark text); the old .slot-time styles are removed. On desktop every slot is 104px wide (fits "22:22 PM") and slots don't stretch; when stacked (mobile) they fill the width, at most 4 per row and never narrower than 104px. Month arrows reuse .calendar-nav-btn (borderless, same as the Date Picker) and keep their 32px (.slot-cal-head .calendar-nav-btn { flex-shrink: 0 }). The month and year are dropdowns: React Aria Select with link-style triggers (.btn.btn-link: brand text, no border, underline on hover); and the existing .select-popover list; the year list is this year + next 2 (plus the shown year if the arrows go further); the month always shows its full name; when stacked neither button shows the ▾ chevron, to save room. The ▾ sits 4px from the text (.slot-cal-month .btn { gap: --sp-1 }; .btn alone gives 8px). Month and year are 16px apart (--sp-4, was 8px). The summary ("Pick a day to see open time slots." → "Pick a time slot." → "Schedule at …") is built into SlotPicker (bottom right, .text-caption) instead of each page's panel footer. Optional onCancel / onConfirm props add Cancel (.btn-secondary, bottom left) and Confirm (.btn-primary, bottom right after the summary, enabled once a day and time are picked); when stacked (mobile) the summary sits on top, with Cancel as an X icon far left (reuses .flow-cancel-icon) and Confirm on the right below it, both 48px tall (Confirm uses .btn-lg); the page decides what they do.  - Added .slot-picker (+ -stacked, -title), .slot-cal*, .slot-cal-day[data-open|data-outside|data-selected], .slot-times (grid for the Choice Button time slots).
+
+  File Upload (new primitive)
+  - Others → File Upload: FileUpload on DropZone + FileTrigger. Plain 32px FilePlus icon on the left (no box), light grey (--vsee-grey-500). Box border and the dashed line above the file list match Empty State: 2px dashed --vsee-border. Drop prompt padding 20px; on screens ≤640px 24px top/bottom, 16px sides, 4px between the icon and the title, 8px between the title and the hint, 12px above Choose files. Attached files list inside the same dashed box, under the prompt; the whole box accepts drops.
+  - Field errors as red alert bars (.alert.alert-danger), one bar per message, inside the box under the drop prompt, each dismissible: wrong type (drag & drop skips the picker filter), empty file, over size (20 MB), over maxFiles.
+  - Per-row upload states via file status: uploading (spinner in line with the name, 10px % in line with the progress bar, Cancel), uploaded, failed (message + Retry via onRetry), blocked (security check, Remove only). Failed and blocked share one round error icon (AlertCircle), centred on the row. Row error text overridable.
+  - Optional note (e.g. who can see the files) sits top right, opposite the label; wraps below it on narrow widths.
+  - Responsive by screen width (≤640px): the drop prompt wraps into a centred stack (icon, title + hint, Choose files); Choose files also wraps at any width once the text would drop below 220px; side spacing tightens, and row buttons move below the text with rows sized to their content. The row-button drop also applies when the box itself is under 480px wide (container query), e.g. in narrow columns — WCAG 2.1 1.4.10 Reflow. Row lines grow instead of being fixed height (1.4.12 Text Spacing). Long names truncate with the full name in a tooltip.
+  - Added .upload-head, .upload-note, .upload-zone-action, .upload-zone-alert (+ -slot, -text), .upload-zone (+ [data-drop-target] brand tint), .upload-zone-main, .upload-zone-*, .file-list, .file-row (+ [data-status]), .file-row-lead/-icon/-main/-top/-progress-line/-progress/-percent/-error/-actions.
+  - One-question flow's Reason step uses it.
+
+  Selection List (new primitive)
+  - Others → Selection List: SelectionList on CheckboxGroup — all options visible, multi-select. One bordered box: optional search on top, scrollable options in the middle, picks at the bottom as removable tags.
+  - Added .option-box (+ -search, -input, -selected), .option-list, .option-list-item, .option-list-hint, .option-list-empty.
+  - The selected strip shows the removable tags only (no "N selected" heading; the tag group is named "<label>: selected" for screen readers).
+  - Health history editor uses it.
 
   Removable Tags
   - Disabled state: .chip[data-disabled] (via TagGroup disabledKeys) — --grey-300 fill, --text-secondary text, no × remove button. Dark-mode override included.
