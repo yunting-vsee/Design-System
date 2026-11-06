@@ -776,6 +776,47 @@ function Toggle() {
   );
 }
 
+/* Color Swatches: pick one color from a row of circles (e.g. the brand theme).
+   Each circle is a button named for its color, aria-pressed on the chosen one; the row is a named group.
+   Reuses the docs sidebar's circle styles (.ds-theme-options / .ds-theme-dot), with the color passed in. */
+type ColorSwatch = { id: string; label: string; color: string };
+function ColorSwatches({ options, value, onChange, ariaLabel }: {
+  options: ColorSwatch[];
+  /** id of the chosen color */
+  value: string;
+  onChange: (id: string) => void;
+  /** Accessible name of the group (e.g. "Brand") */
+  ariaLabel: string;
+}) {
+  return (
+    <div className="ds-theme-options" role="group" aria-label={ariaLabel}>
+      {options.map(o => (
+        <button key={o.id} type="button" className={`ds-theme-dot${value === o.id ? " active" : ""}`} style={{ background: o.color }}
+          aria-pressed={value === o.id} aria-label={o.label} title={o.label} onClick={() => onChange(o.id)} />
+      ))}
+    </div>
+  );
+}
+
+/* Brand colors — same values as the sidebar's .ds-theme-green / -blue / -purple circles */
+const BRAND_SWATCHES: ColorSwatch[] = [
+  { id: "green", label: "Green (default)", color: "#0D875C" },
+  { id: "blue", label: "Blue", color: "#0891B2" },
+  { id: "purple", label: "Purple", color: "#7C3AED" },
+];
+
+function ColorSwatchesDemo() {
+  const [color, setColor] = useState("green");
+  return (
+    <div className="preview" style={{ alignItems: "center", gap: "var(--vsee-sp-4)" }}>
+      <ColorSwatches ariaLabel="Brand" options={BRAND_SWATCHES} value={color} onChange={setColor} />
+      <span className="text-caption" style={{ color: "var(--vsee-text-secondary)" }}>
+        Selected: {BRAND_SWATCHES.find(o => o.id === color)?.label}
+      </span>
+    </div>
+  );
+}
+
 /* Switch Button (.btn-group): pick one of a few options; a brand pill slides under the chosen one.
    Uncontrolled with defaultActive, or controlled with value + onChange. */
 function SwitchButton({ labels, defaultActive, value, onChange, ariaLabel, icons, className = "" }: {
@@ -1078,6 +1119,33 @@ function ComponentsButtons() {
         <Toggle />
         <CodeBlock
           code={`/* Default toggle */\n<Switch isSelected={on} onChange={setOn} className="toggle-wrap">\n  <div className={\`toggle-track \${on ? "on" : ""}\`}>\n    <div className="toggle-thumb" />\n  </div>\n  <span className="toggle-label">Notifications</span>\n</Switch>\n\n/* Labeled toggle (On/Off) */\n<Switch isSelected={on} onChange={setOn} className="toggle-wrap">\n  <div className={\`toggle-track-labeled \${on ? "on" : ""}\`}>\n    <span className="toggle-text toggle-text-on">On</span>\n    <span className="toggle-text toggle-text-off">Off</span>\n    <div className="toggle-thumb-labeled" />\n  </div>\n  <span className="toggle-label">Auto-save</span>\n</Switch>\n\n/* Disabled toggle */\n<Switch isSelected={false} isDisabled className="toggle-wrap">\n  <div className="toggle-track">\n    <div className="toggle-thumb" />\n  </div>\n  <span className="toggle-label">Unavailable</span>\n</Switch>`}
+        />
+      </SubSection>
+
+      <SubSection title="Color Swatches" description="Pick one color from a row of circles — e.g. the brand theme on the Pages' top bars. Each circle is a button named for its color; the chosen one gets a ring.">
+        <ColorSwatchesDemo />
+        <CodeBlock
+          code={`const [color, setColor] = useState("green");
+
+<ColorSwatches
+  ariaLabel="Brand"                 {/* names the group for screen readers */}
+  options={[
+    { id: "green",  label: "Green (default)", color: "#0D875C" },
+    { id: "blue",   label: "Blue",            color: "#0891B2" },
+    { id: "purple", label: "Purple",          color: "#7C3AED" },
+  ]}
+  value={color}
+  onChange={setColor}
+/>
+
+/* Renders */
+<div className="ds-theme-options" role="group" aria-label="Brand">
+  <button className="ds-theme-dot active" style={{ background: "#0D875C" }}
+    aria-pressed="true" aria-label="Green (default)" title="Green (default)" />
+  <button className="ds-theme-dot" style={{ background: "#0891B2" }}
+    aria-pressed="false" aria-label="Blue" title="Blue" />
+  …
+</div>`}
         />
       </SubSection>
 

@@ -1,5 +1,9 @@
 ﻿# Changelog
 
+## Nov 6
+### Docs site
+- New docs component: Color Swatches (ColorSwatches) — a row of color circles to pick one color; props options ({ id, label, color }), value, onChange, ariaLabel. Each circle is a button named for its color with aria-pressed; the row is a named group. Reuses the sidebar's .ds-theme-options / .ds-theme-dot styles (color passed in), so no new CSS. Shown at the bottom of the Buttons section (after Toggles) with a code sample; the Steppers top bar's Brand circles now use it.
+
 ## Nov 5
 ### Changelog
 - CHANGELOG.md is now real Markdown, so it renders properly: dates are `##` headings, topics `###` headings, changes `-` bullets (no leading indent). Older entries in other styles (`- Apr 8`, `- **285c971**`) use the same headings. HTML tags and names with `*` (e.g. `<select>`, `.step-progress*`) are in code formatting so they show as written. Fixed a few entries that were mis-formatted (a commit written as "- **676f00d** - …", two bullets on one line, a wrapped line read as a heading).
