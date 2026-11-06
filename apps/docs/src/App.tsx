@@ -101,6 +101,8 @@ import {
   Clock,
   Sun,
   Moon,
+  Monitor,
+  Smartphone,
   CreditCard,
   Lock,
   Stethoscope,
@@ -110,8 +112,7 @@ import {
 
 // Component visual styles come from `@vsee/ui/styles.css`, loaded via `src/index.css`.
 
-// Pages section — kitchen-sink showcase. Lives under apps/docs/src/patterns/.
-import { KitchenSink } from "./patterns/KitchenSink";
+// Kitchen sink — its own page (hash route), not embedded in the docs. Lives under apps/docs/src/patterns/.
 import { STANDALONE_HASH, isStandaloneHash } from "./patterns/registry";
 import { StandaloneKitchenSink } from "./patterns/StandaloneKitchenSink";
 
@@ -161,17 +162,13 @@ const NAV = [
       { label: "Form.io Integration", id: "formio" },
     ],
   },
-  {
-    group: "Pages",
-    icon: <MessageSquare size={14} />,
-    items: [
-      { label: "Kitchen Sink", id: "pages" },
-    ],
-  },
 ];
 
 // Hash route for the Steppers page (rendered by SteppersPage).
 const STEPPERS_HASH = "#steppers";
+/* ?frame = this page is shown inside a Pages "Mobile" view (see DeviceFrame): no top bar,
+   brand + light/dark come from the outer page. public/page-toolbar.js does the same for the HTML pages. */
+const IS_FRAME = new URLSearchParams(window.location.search).has("frame");
 
 /** Current location.hash; re-renders on hashchange. */
 function useLocationHash() {
@@ -182,13 +179,17 @@ function useLocationHash() {
   );
 }
 
-// Patterns is rendered on the right of the anchor-bar, not the left sidebar.
-// Layouts is commented out for now — PatternsLayouts has no visible content
-// after its subsections moved to Components → Others.
-const PATTERNS_GROUP = {
-  group: "Patterns",
+// Pages — separate pages listed at the bottom of the side menu. Each opens in the same tab and has a way back to the docs
+// (kitchen sink + one-question are hash routes of this app; login / preferences are HTML mocks in apps/docs/public/).
+const PAGES_GROUP = {
+  group: "Pages",
   icon: <Layers size={14} />,
-  items: [] as { label: string; id: string }[],
+  items: [
+    { label: "Kitchen Sink", href: STANDALONE_HASH, title: "Open the kitchen sink page" },
+    { label: "Steppers", href: STEPPERS_HASH, title: "Open the Steppers page" },
+    { label: "Login", href: `${import.meta.env.BASE_URL}login.html`, title: "Open the login prototype" },
+    { label: "Preferences", href: `${import.meta.env.BASE_URL}preference.html`, title: "Open the preferences prototype" },
+  ],
 };
 
 function App() {
@@ -238,6 +239,18 @@ function App() {
   const exitStandalone = useCallback(() => {
     history.replaceState(null, "", window.location.pathname + window.location.search);
     setStandalone(false);
+  }, []);
+
+  /* Inside a Pages "Mobile" view: follow the outer page's brand + light/dark */
+  useEffect(() => {
+    if (!IS_FRAME) return;
+    const onMessage = (e: MessageEvent) => {
+      if (e.origin !== window.location.origin || e.data?.type !== "vsee-preview") return;
+      setBrandTheme(e.data.theme === "green" ? "" : e.data.theme);
+      setDarkMode(e.data.mode === "dark");
+    };
+    window.addEventListener("message", onMessage);
+    return () => window.removeEventListener("message", onMessage);
   }, []);
 
   /* apply brand theme to root element */
@@ -361,6 +374,17 @@ function App() {
               ))}
             </div>
           ))}
+          <div className="ds-nav-group">
+            <div className="ds-nav-group-title">
+              {PAGES_GROUP.icon}
+              {PAGES_GROUP.group}
+            </div>
+            {PAGES_GROUP.items.map(item => (
+              <a key={item.label} href={item.href} title={item.title} className="ds-nav-link">
+                {item.label}
+              </a>
+            ))}
+          </div>
         </nav>
       </aside>
 
@@ -395,43 +419,7 @@ function App() {
               </a>
             );
           })}
-          {/* Patterns — right-aligned group with its title + per-item links.
-              Trailing prototype-page links open the self-contained HTML mocks
-              in a new tab (they live in apps/docs/public/). */}
-          <div className="anchor-bar-right">
-            <span className="anchor-bar-group-title">
-              {PATTERNS_GROUP.icon}
-              {PATTERNS_GROUP.group}
-            </span>
-            {PATTERNS_GROUP.items.map(item => (
-              <a
-                key={item.id}
-                href={`#${item.id}`}
-                className={`anchor-link ${activeSection === item.id ? "active" : ""}`}
-                onClick={(e) => { e.preventDefault(); scrollTo(item.id); }}
-              >
-                {item.label}
-              </a>
-            ))}
-            <a
-              href={`${import.meta.env.BASE_URL}login.html`}
-              target="_blank"
-              rel="noopener"
-              className="anchor-link anchor-link-external"
-              title="Open the login prototype in a new tab"
-            >
-              Login <ExternalLink size={12} />
-            </a>
-            <a
-              href={`${import.meta.env.BASE_URL}preference.html`}
-              target="_blank"
-              rel="noopener"
-              className="anchor-link anchor-link-external"
-              title="Open the preferences prototype in a new tab"
-            >
-              Preferences <ExternalLink size={12} />
-            </a>
-          </div>
+          {/* Pages (Kitchen Sink, Login, Preferences) moved to the side menu */}
         </div>
 
         <FoundationsColors copy={toast.copy} />
@@ -450,7 +438,7 @@ function App() {
         <EngineeringTokens />
         <PatternsTheming brandTheme={brandTheme} setBrandTheme={setBrandTheme} />
         <PatternsFormio />
-        <KitchenSink />
+        {/* Kitchen sink is its own page (#kitchen-sink-fullscreen), opened from the top bar */}
 
         {/* Footer */}
         <div className="ds-footer">
@@ -3057,6 +3045,15 @@ function SteppersPage({ onExit, brandTheme, setBrandTheme, darkMode, setDarkMode
   darkMode: boolean; setDarkMode: (d: boolean) => void;
 }) {
   const narrow = useMediaQuery("(max-width: 640px)");
+  const [view, setView] = useState<"desktop" | "mobile">("desktop");
+  /* Inside the Mobile view frame: just the flow, as a phone shows it */
+  if (IS_FRAME) {
+    return (
+      <div style={{ minHeight: "100vh", background: "var(--vsee-white)", padding: "var(--vsee-sp-4)" }}>
+        <OneQuestionFlow layout={narrow ? "mobile" : "desktop"} />
+      </div>
+    );
+  }
   return (
     <div style={{ minHeight: "100vh", background: "var(--vsee-white)" }}>
       {/* Top bar — same layout as the login prototype's toolbar: page name left, Brand + Mode right */}
@@ -3066,6 +3063,20 @@ function SteppersPage({ onExit, brandTheme, setBrandTheme, darkMode, setDarkMode
           <strong style={{ fontSize: "var(--vsee-text-body-lg-size)", fontWeight: 700 }}>Steppers</strong>
         </div>
         <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "var(--vsee-sp-2) var(--vsee-sp-4)" }}>
+          {/* Page — jump to another of the Pages (side-menu list, minus Kitchen Sink) */}
+          <Select selectedKey="Steppers" onSelectionChange={k => { const p = PAGES_GROUP.items.find(i => i.label === k); if (p && k !== "Steppers") window.location.href = p.href; }}
+            style={{ display: "flex", alignItems: "center", gap: "var(--vsee-sp-2)" }}>
+            <Label className="sr-only">Page</Label>
+            <Button className="input input-sm select-trigger" style={{ width: 160 }}>
+              <SelectValue />
+              <ChevronDown size={16} className="select-chevron" aria-hidden="true" />
+            </Button>
+            <Popover className="select-popover">
+              <ListBox className="select-listbox">
+                {PAGES_GROUP.items.filter(p => p.label !== "Kitchen Sink").map(p => <ListBoxItem key={p.label} id={p.label} className="select-option">{p.label}</ListBoxItem>)}
+              </ListBox>
+            </Popover>
+          </Select>
           <Select selectedKey={brandTheme || "green"} onSelectionChange={k => setBrandTheme(k === "green" ? "" : String(k))}
             style={{ display: "flex", alignItems: "center", gap: "var(--vsee-sp-2)" }}>
             <Label className="sr-only">Brand</Label>
@@ -3084,8 +3095,14 @@ function SteppersPage({ onExit, brandTheme, setBrandTheme, darkMode, setDarkMode
           <span style={{ display: "flex", alignItems: "center", gap: "var(--vsee-sp-2)", color: "var(--vsee-text-secondary)" }}>
             <SwitchButton ariaLabel="Mode" labels={["Light", "Dark"]} icons={{ Light: <Sun size={16} aria-hidden="true" />, Dark: <Moon size={16} aria-hidden="true" /> }} value={darkMode ? "Dark" : "Light"} onChange={l => setDarkMode(l === "Dark")} />
           </span>
+          <span style={{ display: "flex", alignItems: "center", gap: "var(--vsee-sp-2)", color: "var(--vsee-text-secondary)" }}>
+            <SwitchButton ariaLabel="View" labels={["Desktop", "Mobile"]} icons={{ Desktop: <Monitor size={16} aria-hidden="true" />, Mobile: <Smartphone size={16} aria-hidden="true" /> }} value={view === "mobile" ? "Mobile" : "Desktop"} onChange={l => setView(l === "Mobile" ? "mobile" : "desktop")} />
+          </span>
         </div>
       </header>
+      {view === "mobile" ? (
+        <DeviceFrame src={`${window.location.pathname}?frame${STEPPERS_HASH}`} theme={brandTheme} dark={darkMode} />
+      ) : (
       <div style={{ maxWidth: 960, margin: "0 auto", padding: narrow ? "var(--vsee-sp-4)" : "var(--vsee-sp-8)" }}>
         <p className="text-body" style={{ color: "var(--vsee-text-secondary)", margin: "0 0 var(--vsee-sp-6)" }}>
           The Patient Portal “See a provider” flow: one step per page, with a page indicator so patients always know where they are. Desktop shows a labelled bar for each step; mobile (screens 640px or narrower) shows the flow name, “Step X of N”, and a row of pips, with full-width 48px buttons. Join Queue skips the provider step (5 steps instead of 6). When a step isn't answered yet, Continue is dimmed and pressing it explains what's missing.
@@ -3097,6 +3114,23 @@ function SteppersPage({ onExit, brandTheme, setBrandTheme, darkMode, setDarkMode
           code={`{/* Page indicator — desktop: one labelled bar per step */}\n<ol className="step-progress">\n  <li className="step-progress-item" aria-current="step">\n    <div className="progress-track"><div className="progress-bar progress-bar-brand" style={{width:"100%"}} /></div>\n    <span className="step-progress-label">Room</span>\n  </li>\n  {/* …one <li> per step; width 0% for steps not reached */}\n</ol>\n\n{/* Page indicator — mobile */}\n<div className="step-pips-wrap">\n  <div className="step-pips-head">\n    <span className="step-pips-title">See a provider</span>\n    <span className="step-pips-count">Step 1 of 6</span>\n  </div>\n  <div className="step-pips" role="progressbar" aria-valuenow={1} aria-valuemax={6}>\n    <span className="step-pip" data-done />\n    <span className="step-pip" />  {/* …one per step */}\n  </div>\n</div>\n\n{/* The one question */}\n<div className="panel">\n  <div className="panel-header">Pick a room</div>\n  <div className="panel-body">\n    <RadioGroup value={room} onChange={setRoom}>\n      <Label className="question-title">Which room?</Label>\n      <div className="question-hint">Choose the kind of care you need.</div>\n      <div className="choice-grid">  {/* mobile: .choice-list + .choice-card-compact */}\n        <Radio value="urgent" className="choice-card">\n          <span className="choice-card-icon"><Activity size={20} /></span>\n          <span className="choice-card-title">Urgent Care</span>\n          <span className="choice-card-hint">Something new that can't wait.</span>\n          <span className="choice-card-meta">4 min wait</span>\n        </Radio>\n      </div>\n    </RadioGroup>\n  </div>\n  <div className="panel-footer">Urgent Care selected</div>\n</div>\n\n{/* Actions — desktop */}\n<div className="flow-actions">\n  <Button className="btn btn-ghost">Cancel</Button>\n  <div className="flow-actions-group">\n    <Button className="btn btn-secondary">Back</Button>\n    <Button className="btn btn-primary">Continue</Button>\n  </div>\n</div>\n\n{/* Actions — mobile (icon Cancel, stretched buttons) */}\n<div className="flow-actions flow-actions-mobile">\n  <Button className="btn btn-ghost flow-cancel-icon" aria-label="Cancel"><X size={20} /></Button>\n  <div className="flow-actions-group">\n    <Button className="btn btn-secondary">Back</Button>\n    <Button className="btn btn-primary">Continue</Button>\n  </div>\n</div>`}
         />
       </div>
+      )}
+    </div>
+  );
+}
+
+/* Pages "Mobile" view: the page itself at phone width (375px) in a frame, so its
+   real phone layout (media queries) shows. Brand + light/dark are passed in. */
+function DeviceFrame({ src, theme, dark }: { src: string; theme: string; dark: boolean }) {
+  const ref = useRef<HTMLIFrameElement>(null);
+  const send = useCallback(() => {
+    ref.current?.contentWindow?.postMessage({ type: "vsee-preview", theme: theme || "green", mode: dark ? "dark" : "light" }, window.location.origin);
+  }, [theme, dark]);
+  useEffect(() => { send(); }, [send]);
+  return (
+    <div style={{ display: "flex", justifyContent: "center", padding: "var(--vsee-sp-6)" }}>
+      <iframe ref={ref} src={src} title="Mobile view (375px)" onLoad={send}
+        style={{ boxSizing: "content-box", width: 375, maxWidth: "100%", height: "min(812px, calc(100vh - 116px))", border: "1px solid var(--vsee-border)", borderRadius: "var(--vsee-r-lg)", background: "var(--vsee-white)", boxShadow: "var(--vsee-shadow-md)" }} />
     </div>
   );
 }
