@@ -12,6 +12,7 @@
 - Login page: "Continue with Google" renamed "Log in with Google", matching "Log in with QR code" / "Log in with email".
 - Login page top bar: "QR code login" checkbox at the far right (checked by default) shows / hides the QR code login — the desktop QR column, the mobile "Log in with QR code" button and QR screen; unchecked, the email form is always shown. Also applies in the Mobile view frame (page-toolbar.js passes it along with brand + mode). Checkbox look copied from preference.html (.check-item / .check-box), with a real visually-hidden input so it works with keyboard and screen readers.
 - New docs component: Color Swatches (ColorSwatches) — a row of color circles to pick one color; props options ({ id, label, color }), value, onChange, ariaLabel. Each circle is a button named for its color with aria-pressed; the row is a named group. Reuses the sidebar's .ds-theme-options / .ds-theme-dot styles (color passed in), so no new CSS. Shown at the bottom of the Buttons section (after Toggles) with a code sample; the Steppers top bar's Brand circles now use it.
+- Steppers, Mobile view: the Cancel / Back / Continue row sits at the bottom of the phone screen when the step is shorter than the screen  (taller steps keep it right after the content).
 
 ## Nov 5
 ### Changelog

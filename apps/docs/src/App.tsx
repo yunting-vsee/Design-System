@@ -2146,7 +2146,9 @@ function ChoiceQuestion({ label, hint, options, value, onChange, layout, compact
 }
 
 /* ── The flow ───────────────────────────────── */
-function OneQuestionFlow({ layout }: { layout: "desktop" | "mobile" }) {
+/* fill: stretch to the parent's height and keep the Cancel / Back / Continue row at the bottom
+   when the step is shorter than the screen (used by the phone frame in the Mobile view). */
+function OneQuestionFlow({ layout, fill }: { layout: "desktop" | "mobile"; fill?: boolean }) {
   const mobile = layout === "mobile";
 
   const [stepId, setStepId] = useState<StepId>("room");
@@ -2475,7 +2477,7 @@ function OneQuestionFlow({ layout }: { layout: "desktop" | "mobile" }) {
   }
 
   return (
-    <div>
+    <div style={fill ? { flex: 1, display: "flex", flexDirection: "column" } : undefined}>
       {pageIndicator}
       {{ room: roomStep, type: typeStep, provider: providerStep, reason: reasonStep, history: historyStep, confirm: confirmStep }[stepId]}
       {notice && (
@@ -2483,7 +2485,7 @@ function OneQuestionFlow({ layout }: { layout: "desktop" | "mobile" }) {
           {notice.text}
         </div>
       )}
-      {actions}
+      {fill ? <div style={{ marginTop: "auto" }}>{actions}</div> : actions}
     </div>
   );
 }
@@ -3117,8 +3119,8 @@ function SteppersPage({ onExit, brandTheme, setBrandTheme, darkMode, setDarkMode
   /* Inside the Mobile view frame: just the flow, as a phone shows it */
   if (IS_FRAME) {
     return (
-      <div style={{ minHeight: "100vh", background: "var(--vsee-white)", padding: "var(--vsee-sp-4)" }}>
-        <OneQuestionFlow layout={narrow ? "mobile" : "desktop"} />
+      <div style={{ minHeight: "100vh", background: "var(--vsee-white)", padding: "var(--vsee-sp-4)", boxSizing: "border-box", display: "flex", flexDirection: "column" }}>
+        <OneQuestionFlow layout={narrow ? "mobile" : "desktop"} fill />
       </div>
     );
   }
