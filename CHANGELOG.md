@@ -1,5 +1,24 @@
 ﻿# Changelog
 
+Nov 3
+  CLAUDE.md
+  - New rule under Styling: don't add new styles (classes, selectors, tokens, utility classes) or change existing ones beyond what was asked, unless the team says so explicitly; reuse existing classes and tokens, and ask first if a new style seems needed. The Tailwind note no longer says to promote repeated patterns to classes on your own.
+  - Naming rules: for repeated styling in existing work, ask the team to name a CSS class; for a new component the team asked for, new classes may be created and named only when the styling repeats and no existing class or token covers it (check styles.css / tokens.css first, and list the new classes).
+
+  Docs site
+  - Buttons → "Button Group" renamed "Switch Button" (component ButtonGroup → SwitchButton; CSS class stays .btn-group). It can now also be controlled (value + onChange), names its group (ariaLabel → role="group"), and marks the chosen button with aria-pressed.
+  - Navigation → Pagination: selected page uses a light brand background (--vsee-brand-50) with brand text (--vsee-brand-dark, 6.1:1 — plain --vsee-brand would be 4.25:1, below AA for 13px text) instead of a solid brand fill. Previous / next are 16px ChevronLeft / ChevronRight icons (named "Previous page" / "Next page" for screen readers), together on the right after the page numbers. New "With Labels" example ("‹ Prev" / "Next ›") using a new modifier .page-btn-label (4px icon gap, 8px side padding). Prev + Next are grouped in .pagination-nav (8px from the numbers) with a .pagination-divider between them (1px × 16px, --vsee-border-strong).
+  - Foundations → Shadows: .shadow-card 120px → 160px wide, so the token names fit inside; .shadow-stack fits as many 160px blocks per row as there's room for.
+  - Foundations → Spacing Scale + Shadows now use .g2 (even two columns) instead of an inline 1fr 2fr, so Shadows wraps under Spacing Scale at ≤1024px.
+  - Foundations → Spacing Scale: .space-label has a fixed width (12ch, fits "--vsee-sp-32") instead of min-width 80px, so every bar starts at the same point.
+  - Buttons section: Choice Buttons, then Choice Cards, then Switch Button and Toggles at the end.
+  - Sub-headings inside demo cards (Icon on Right, Icon Only, Sizes with Icons, Phone Number, Date Picker, Input with Action Icon, Payment Input, Input with Unit, Login Form, Inline Inputs) use .text-h5 with 12px below instead of .sub-title.
+  - .ds-main gets min-width: 0 so the main column shrinks with the screen instead of staying as wide as its widest content (it stayed 915px on a 375px screen, so nothing inside could respond to small screens).
+
+  Removable Tags
+  - Disabled state: .chip[data-disabled] (via TagGroup disabledKeys) — --grey-300 fill, --text-secondary text, no × remove button. Dark-mode override included.
+  - Badges → Removable Tags gains a disabled example.
+
 Apr 24
   Color tokens
   - --vsee-success-light #F9FEF6 → #F1F9E1 (warmer, more saturated light-green).

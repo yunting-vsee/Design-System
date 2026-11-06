@@ -69,7 +69,22 @@ The library itself is CSS-only in v0.1.0; there is no build step at the repo roo
 - `src/tokens.css` — single source of truth for the `@theme` block (~86 tokens: brand, semantic colors, grey scale, typography size scale, spacing scale, radius scale) plus brand-theme and dark-mode selector overrides. Add tokens here first; reference them via `var(--vsee-token-name)`.
 - `src/styles.css` — typography utility classes (`.text-h1`…`.text-display`) + component visual treatment (`.btn`, `.input`, `.badge`, etc.). Some selectors wrap React Aria renders with our visual layer.
 - `apps/docs/src/index.css` — docs-site shell only: Tailwind import, `@vsee/ui` imports, base resets (`html`/`body`/focus/scrollbar). Consumers bring their own resets.
-- **Tailwind v4** — arbitrary-value classes (e.g. `bg-[var(--vsee-brand)]`, `text-[var(--vsee-text-primary)]`) are common. Use them for one-off styling; promote to a named CSS class when a pattern repeats.
+- **Tailwind v4** — arbitrary-value classes (e.g. `bg-[var(--vsee-brand)]`, `text-[var(--vsee-text-primary)]`) are common. Use them for one-off styling; when a pattern repeats, follow the naming rules below.
+
+**Rule: don't add new styles unless told to, exactly**
+
+Change only the styles the request names, and only in the way it describes. Unless the team explicitly asks for it:
+
+- Don't add new CSS classes, selectors, tokens, or Tailwind utility classes.
+- Don't change existing styles beyond what was asked — no extra spacing, colour, size, alignment, border, radius, or layout tweaks, even if they look like improvements.
+- Reuse the existing design-system classes and tokens instead.
+
+If a request seems to need a new style to work, or you spot a style problem nearby, say so and ask first — don't add it on your own.
+
+**Naming CSS classes for repeated patterns**
+
+- **Existing work:** when you notice the same styling repeated (e.g. the same inline styles or Tailwind classes in several places), point it out and ask us to name a CSS class for it. Don't create or name the class yourself.
+- **New components we ask for:** you may create and name new CSS classes yourself, but only when the styling repeats within that component *and* no existing design-system class or token already covers it. Check `src/styles.css` and `src/tokens.css` first, and tell us which new classes you added.
 
 **Token naming — `--vsee-*` prefix at source**
 

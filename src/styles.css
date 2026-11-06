@@ -54,7 +54,7 @@
 .ds-mode-switch:hover .ds-mode-track { opacity: 0.85; }
 .ds-mode-track.on ~ .ds-mode-icon-dark { color: var(--vsee-text-primary); }
 
-.ds-main { margin-left: var(--vsee-nav-width); flex: 1; }
+.ds-main { margin-left: var(--vsee-nav-width); flex: 1; min-width: 0; } /* min-width:0 lets the column shrink to the screen instead of its widest content */
 
 .ds-section { padding: var(--vsee-sp-16); border-bottom: 1px solid var(--vsee-grey-200); max-width: 1200px; }
 .ds-section:last-of-type { border-bottom: none; }
@@ -120,13 +120,13 @@
    ═══════════════════════════════════════════ */
 .space-row { display: flex; align-items: center; gap: var(--vsee-sp-4); margin-bottom: var(--vsee-sp-2); }
 .space-bar { height: 24px; background: var(--vsee-brand); border-radius: var(--vsee-r-sm); opacity: 0.8; }
-.space-label { font-size: var(--vsee-text-body-size); font-weight: 600; font-family: var(--vsee-mono); color: var(--vsee-text-secondary); min-width: 80px; }
+.space-label { font-size: var(--vsee-text-body-size); font-weight: 600; font-family: var(--vsee-mono); color: var(--vsee-text-secondary); width: 12ch; flex-shrink: 0; } /* fixed width = longest token ("--vsee-sp-32"), so every bar starts at the same x */
 .space-val { font-size: var(--vsee-text-body-size); font-family: monospace; color: var(--vsee-text-secondary); min-width: 40px; }
 .radius-row { display: flex; gap: var(--vsee-sp-6); flex-wrap: wrap; margin-bottom: var(--vsee-sp-10); }
 .radius-preview { width: 80px; height: 80px; background: var(--vsee-brand-light); border: 2px solid var(--vsee-brand); display: flex; align-items: center; justify-content: center; font-size: var(--vsee-text-body-size); font-weight: 600; color: var(--vsee-brand); }
 .radius-label { font-size: var(--vsee-text-body-size); margin-top: 6px; color: var(--vsee-text-secondary); text-align: center; }
-.shadow-stack { display: grid; grid-template-columns: repeat(3, 120px); gap: var(--vsee-sp-6); }
-.shadow-card { width: 120px; height: 80px; background: var(--vsee-white); border-radius: var(--vsee-r-lg); display: flex; align-items: center; justify-content: center; font-size: var(--vsee-text-body-size); font-weight: 500; font-family: monospace; color: var(--vsee-text-secondary); white-space: nowrap; }
+.shadow-stack { display: grid; grid-template-columns: repeat(auto-fill, 160px); gap: var(--vsee-sp-6); } /* as many 160px blocks per row as fit */
+.shadow-card { width: 160px; height: 80px; background: var(--vsee-white); border-radius: var(--vsee-r-lg); display: flex; align-items: center; justify-content: center; font-size: var(--vsee-text-body-size); font-weight: 500; font-family: monospace; color: var(--vsee-text-secondary); white-space: nowrap; }
 
 /* ═══════════════════════════════════════════
    PREVIEW BOX & CARD
@@ -567,8 +567,12 @@ input::-webkit-credentials-auto-fill-button { display: none; }
 .pagination { display: flex; align-items: center; gap: var(--vsee-sp-1); }
 .page-btn { display: flex; align-items: center; justify-content: center; min-width: 28px; height: 28px; padding: 0 var(--vsee-sp-1); font-size: var(--vsee-text-caption-size); font-weight: 500; color: var(--vsee-text-secondary); background: transparent; border: none; border-radius: var(--vsee-r-md); cursor: pointer; transition: all var(--vsee-t-fast); font-family: var(--vsee-font-sans); }
 .page-btn:hover { background-image: var(--vsee-hover-overlay); color: var(--vsee-text-primary); }
-.page-btn.active { background: var(--vsee-brand); color: white; font-weight: 600; }
+.page-btn.active { background: var(--vsee-brand-50); color: var(--vsee-brand-dark); font-weight: 600; } /* light brand bg + brand text; brand-dark keeps 13px text at WCAG AA (6.1:1; plain --vsee-brand is 4.25:1) */
 .page-btn.disabled { color: var(--vsee-grey-400); cursor: not-allowed; pointer-events: none; }
+.page-btn-label { gap: var(--vsee-sp-1); padding: 0 var(--vsee-sp-2); } /* "‹ Prev" / "Next ›": chevron + word */
+/* Prev + Next grouped together after the page numbers, split by a thin line */
+.pagination-nav { display: flex; align-items: center; margin-left: var(--vsee-sp-2); }
+.pagination-divider { width: 1px; height: 16px; background: var(--vsee-border-strong); margin: 0 var(--vsee-sp-1); flex-shrink: 0; }
 
 /* ═══════════════════════════════════════════
    DATA DISPLAY
@@ -780,6 +784,9 @@ input::-webkit-credentials-auto-fill-button { display: none; }
 .chip[data-selected] { background: var(--vsee-brand); color: white; }
 .tag-remove { background: none; border: none; cursor: pointer; color: var(--vsee-grey-800); padding: 0; display: flex; align-items: center; transition: color var(--vsee-t-fast); }
 .tag-remove:hover { color: var(--vsee-text-primary); }
+/* Disabled tag — light grey fill, muted text, no remove button (React Aria sets [data-disabled] via disabledKeys) */
+.chip[data-disabled], .chip.chip-disabled { background: var(--vsee-grey-300); color: var(--vsee-text-secondary); cursor: not-allowed; }
+.chip[data-disabled] .tag-remove, .chip.chip-disabled .tag-remove { display: none; } /* disabled tags can't be removed, so no × */
 
 
 /* ═══════════════════════════════════════════
@@ -1005,6 +1012,7 @@ input::-webkit-credentials-auto-fill-button { display: none; }
 [data-mode="dark"] .btn-loading.btn-danger[data-disabled],
 [data-mode="dark"] .badge-solid-danger { background: var(--vsee-danger-border); }
 [data-mode="dark"] .chip { background: var(--vsee-brand-light); }
+[data-mode="dark"] .chip[data-disabled], [data-mode="dark"] .chip.chip-disabled { background: var(--vsee-grey-300); }
 [data-mode="dark"] .tooltip-bubble,
 [data-mode="dark"] .copy-toast { background: var(--vsee-grey-900); color: var(--vsee-white); }
 [data-mode="dark"] .toggle-track:not(.on),

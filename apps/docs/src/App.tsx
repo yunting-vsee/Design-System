@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { useState, useEffect, useRef, useCallback, useLayoutEffect } from "react";
 import {
   Button,
@@ -641,7 +642,7 @@ function FoundationsSpacing() {
   return (
     <Section id="spacing" label="Foundation" title="Spacing & Layout"
       description="A 4px-based spacing scale ensures consistent rhythm across every component and layout.">
-      <div className="grid" style={{gap:"var(--vsee-sp-10)",gridTemplateColumns:"1fr 2fr"}}>
+      <div className="grid g2" style={{gap:"var(--vsee-sp-10)"}}>{/* .g2: two columns; one column (Shadows under Spacing Scale) at ≤1024px */}
         <div>
           <div className="sub-title">Spacing Scale</div>
           {spaces.map((s) => (
@@ -748,29 +749,49 @@ function Toggle() {
   );
 }
 
-function ButtonGroup({ labels, defaultActive, className = "" }: { labels: string[]; defaultActive: string; className?: string }) {
-  const [active, setActive] = useState(defaultActive);
+/* Switch Button (.btn-group): pick one of a few options; a brand pill slides under the chosen one.
+   Uncontrolled with defaultActive, or controlled with value + onChange. */
+function SwitchButton({ labels, defaultActive, value, onChange, ariaLabel, icons, className = "" }: {
+  labels: string[];
+  /** Optional icon shown before each label, keyed by label */
+  icons?: Record<string, ReactNode>;
+  defaultActive?: string;
+  value?: string;
+  onChange?: (label: string) => void;
+  /** Accessible name of the group (e.g. "Mode") */
+  ariaLabel?: string;
+  className?: string;
+}) {
+  const [inner, setInner] = useState(defaultActive ?? labels[0]);
+  const active = value ?? inner;
+  const setActive = (label: string) => { setInner(label); onChange?.(label); };
   const groupRef = useRef<HTMLDivElement>(null);
   const btnRefs = useRef<Record<string, HTMLButtonElement | null>>({});
 
   useLayoutEffect(() => {
-    const group = groupRef.current;
-    const btn = btnRefs.current[active];
-    const first = btnRefs.current[labels[0]];
-    if (!group || !btn || !first) return;
-    group.style.setProperty("--slider-x", `${btn.offsetLeft - first.offsetLeft}px`);
-    group.style.setProperty("--slider-w", `${btn.offsetWidth}px`);
+    const place = () => {
+      const group = groupRef.current;
+      const btn = btnRefs.current[active];
+      const first = btnRefs.current[labels[0]];
+      if (!group || !btn || !first) return;
+      group.style.setProperty("--slider-x", `${btn.offsetLeft - first.offsetLeft}px`);
+      group.style.setProperty("--slider-w", `${btn.offsetWidth}px`);
+    };
+    place();
+    document.fonts?.ready.then(place);   /* button widths change once the web font loads */
   }, [active, labels]);
 
   return (
-    <div className={`btn-group ${className}`} ref={groupRef}>
+    <div className={`btn-group ${className}`} ref={groupRef} role="group" aria-label={ariaLabel}>
       {labels.map(label => (
         <Button
           key={label}
           ref={(el: HTMLButtonElement | null) => { btnRefs.current[label] = el; }}
           className={`btn ${active === label ? "active-group" : ""}`}
+          aria-pressed={active === label}
           onPress={() => setActive(label)}
         >
+          {icons?.[label]}
           {label}
         </Button>
       ))}
@@ -837,16 +858,6 @@ function ComponentsButtons() {
         />
       </SubSection>
 
-      <SubSection title="Button Group">
-        <div className="preview">
-          <ButtonGroup labels={["Today", "Week", "Month"]} defaultActive="Week" />
-          <ButtonGroup labels={["Day", "Week", "Month", "Year"]} defaultActive="Month" className="btn-group-square" />
-        </div>
-        <CodeBlock
-          code={`const [active, setActive] = useState("Week");\n\n<div className="btn-group">\n  {["Today", "Week", "Month"].map(label => (\n    <Button\n      key={label}\n      className={\`btn \${active === label ? "active-group" : ""}\`}\n      onPress={() => setActive(label)}\n    >{label}</Button>\n  ))}\n</div>\n\n{/* Square variant */}\n<div className="btn-group btn-group-square">...</div>`}
-        />
-      </SubSection>
-
       <SubSection title="Loading">
         <div className="preview">
           <Button className="btn btn-primary btn-loading" isDisabled><Loader2 size={16} className="btn-spinner" /> Saving...</Button>
@@ -859,13 +870,6 @@ function ComponentsButtons() {
         />
       </SubSection>
 
-      <SubSection title="Toggles">
-        <Toggle />
-        <CodeBlock
-          code={`/* Default toggle */\n<Switch isSelected={on} onChange={setOn} className="toggle-wrap">\n  <div className={\`toggle-track \${on ? "on" : ""}\`}>\n    <div className="toggle-thumb" />\n  </div>\n  <span className="toggle-label">Notifications</span>\n</Switch>\n\n/* Labeled toggle (On/Off) */\n<Switch isSelected={on} onChange={setOn} className="toggle-wrap">\n  <div className={\`toggle-track-labeled \${on ? "on" : ""}\`}>\n    <span className="toggle-text toggle-text-on">On</span>\n    <span className="toggle-text toggle-text-off">Off</span>\n    <div className="toggle-thumb-labeled" />\n  </div>\n  <span className="toggle-label">Auto-save</span>\n</Switch>\n\n/* Disabled toggle */\n<Switch isSelected={false} isDisabled className="toggle-wrap">\n  <div className="toggle-track">\n    <div className="toggle-thumb" />\n  </div>\n  <span className="toggle-label">Unavailable</span>\n</Switch>`}
-        />
-      </SubSection>
-
       <SubSection title="With Icons" description="React Aria buttons support any child content — place icons before or after text, or use icon-only buttons.">
         <div className="preview">
           <Button className="btn btn-primary"><Plus size={16} /> New Patient</Button>
@@ -873,13 +877,13 @@ function ComponentsButtons() {
           <Button className="btn btn-ghost"><Share2 size={16} /> Share</Button>
           <Button className="btn btn-danger"><Trash2 size={16} /> Delete</Button>
         </div>
-        <div className="sub-title" style={{ marginTop: "var(--vsee-sp-6)" }}>Icon on Right</div>
+        <div className="text-h5 mb-[var(--vsee-sp-3)]" style={{ marginTop: "var(--vsee-sp-6)" }}>Icon on Right</div>
         <div className="preview">
           <Button className="btn btn-primary">Send <Send size={16} /></Button>
           <Button className="btn btn-secondary">Upload <Upload size={16} /></Button>
           <Button className="btn btn-ghost">Schedule <Calendar size={16} /></Button>
         </div>
-        <div className="sub-title" style={{ marginTop: "var(--vsee-sp-6)" }}>Icon Only</div>
+        <div className="text-h5 mb-[var(--vsee-sp-3)]" style={{ marginTop: "var(--vsee-sp-6)" }}>Icon Only</div>
         <div className="preview">
           <Button className="btn btn-primary btn-icon"><Plus size={18} /></Button>
           <Button className="btn btn-secondary btn-icon"><Pencil size={18} /></Button>
@@ -887,7 +891,7 @@ function ComponentsButtons() {
           <Button className="btn btn-danger btn-icon"><Trash2 size={18} /></Button>
           <Button className="btn btn-info btn-icon"><Info size={18} /></Button>
         </div>
-        <div className="sub-title" style={{ marginTop: "var(--vsee-sp-6)" }}>Sizes with Icons</div>
+        <div className="text-h5 mb-[var(--vsee-sp-3)]" style={{ marginTop: "var(--vsee-sp-6)" }}>Sizes with Icons</div>
         <div className="preview">
           <Button className="btn btn-primary btn-lg"><Plus size={16} /> Large</Button>
           <Button className="btn btn-primary"><Plus size={16} /> Default</Button>
@@ -895,6 +899,23 @@ function ComponentsButtons() {
         </div>
         <CodeBlock
           code={`/* Icon left */\n<Button className="btn btn-primary"><Plus size={16} /> New Patient</Button>\n\n/* Icon right */\n<Button className="btn btn-primary">Send <Send size={16} /></Button>\n\n/* Icon only */\n<Button className="btn btn-primary btn-icon"><Plus size={18} /></Button>`}
+        />
+      </SubSection>
+
+      <SubSection title="Switch Button">
+        <div className="preview">
+          <SwitchButton labels={["Today", "Week", "Month"]} defaultActive="Week" />
+          <SwitchButton labels={["Day", "Week", "Month", "Year"]} defaultActive="Month" className="btn-group-square" />
+        </div>
+        <CodeBlock
+          code={`const [active, setActive] = useState("Week");\n\n<div className="btn-group" role="group" aria-label="Range">\n  {["Today", "Week", "Month"].map(label => (\n    <Button\n      key={label}\n      className={\`btn \${active === label ? "active-group" : ""}\`}\n      aria-pressed={active === label}\n      onPress={() => setActive(label)}\n    >{label}</Button>\n  ))}\n</div>\n\n{/* Square variant */}\n<div className="btn-group btn-group-square">...</div>`}
+        />
+      </SubSection>
+
+      <SubSection title="Toggles">
+        <Toggle />
+        <CodeBlock
+          code={`/* Default toggle */\n<Switch isSelected={on} onChange={setOn} className="toggle-wrap">\n  <div className={\`toggle-track \${on ? "on" : ""}\`}>\n    <div className="toggle-thumb" />\n  </div>\n  <span className="toggle-label">Notifications</span>\n</Switch>\n\n/* Labeled toggle (On/Off) */\n<Switch isSelected={on} onChange={setOn} className="toggle-wrap">\n  <div className={\`toggle-track-labeled \${on ? "on" : ""}\`}>\n    <span className="toggle-text toggle-text-on">On</span>\n    <span className="toggle-text toggle-text-off">Off</span>\n    <div className="toggle-thumb-labeled" />\n  </div>\n  <span className="toggle-label">Auto-save</span>\n</Switch>\n\n/* Disabled toggle */\n<Switch isSelected={false} isDisabled className="toggle-wrap">\n  <div className="toggle-track">\n    <div className="toggle-thumb" />\n  </div>\n  <span className="toggle-label">Unavailable</span>\n</Switch>`}
         />
       </SubSection>
 
@@ -1581,13 +1602,13 @@ function ComponentsForms() {
         <div className="grid g2" style={{gap:"var(--vsee-sp-6)"}}>
           {/* Phone Input */}
           <div className="card">
-            <div className="sub-title">Phone Number</div>
+            <div className="text-h5 mb-[var(--vsee-sp-3)]">Phone Number</div>
             <PhoneInput />
           </div>
 
           {/* Date Picker */}
           <div className="card">
-            <div className="sub-title">Date Picker</div>
+            <div className="text-h5 mb-[var(--vsee-sp-3)]">Date Picker</div>
             <div className="form-group">
               <DatePicker defaultValue={today(getLocalTimeZone())} className="field">
                 <Label className="form-label">Appointment Date</Label>
@@ -1670,9 +1691,9 @@ function ComponentsForms() {
         <div className="grid g2" style={{gap:"var(--vsee-sp-6)",marginTop:"var(--vsee-sp-6)"}}>
           {/* Input with Action Icon */}
           <div className="card">
-            <div className="sub-title">Input with Action Icon</div>
+            <div className="text-h5 mb-[var(--vsee-sp-3)]">Input with Action Icon</div>
             <InputWithIcon />
-            <div className="sub-title" style={{marginTop:"var(--vsee-sp-6)"}}>Payment Input</div>
+            <div className="text-h5 mb-[var(--vsee-sp-3)]" style={{marginTop:"var(--vsee-sp-6)"}}>Payment Input</div>
             <div className="form-group">
               <div className="form-label">Payment</div>
               <PaymentInput />
@@ -1681,7 +1702,7 @@ function ComponentsForms() {
 
           {/* Unit & Number Inputs */}
           <div className="card">
-            <div className="sub-title">Input with Unit</div>
+            <div className="text-h5 mb-[var(--vsee-sp-3)]">Input with Unit</div>
             <UnitInputs />
           </div>
         </div>
@@ -1692,13 +1713,13 @@ function ComponentsForms() {
         <div className="grid g2" style={{gap:"var(--vsee-sp-6)",marginTop:"var(--vsee-sp-6)"}}>
           {/* Login */}
           <div className="card">
-            <div className="sub-title">Login Form</div>
+            <div className="text-h5 mb-[var(--vsee-sp-3)]">Login Form</div>
             <Login />
           </div>
 
           {/* Inline Inputs */}
           <div className="card">
-            <div className="sub-title">Inline Inputs</div>
+            <div className="text-h5 mb-[var(--vsee-sp-3)]">Inline Inputs</div>
             <p className="inline-input-text">
               Dispense
               <TextField className="field-inline" defaultValue="30">
@@ -1882,8 +1903,21 @@ function ComponentsBadges() {
             ))}
           </TagList>
         </TagGroup>
+        <TagGroup selectionMode="none" disabledKeys={["d1", "d2"]} onRemove={() => {}} style={{ marginTop: "var(--vsee-sp-6)" }}>
+          <Label className="form-label">Past Diagnoses</Label>
+          <TagList className="tag-list">
+            <Tag id="d1" className="chip" textValue="Seasonal allergies">
+              Seasonal allergies
+              <Button slot="remove" className="tag-remove"><X size={12} /></Button>
+            </Tag>
+            <Tag id="d2" className="chip" textValue="Iron deficiency">
+              Iron deficiency
+              <Button slot="remove" className="tag-remove"><X size={12} /></Button>
+            </Tag>
+          </TagList>
+        </TagGroup>
         <CodeBlock
-          code={`<TagGroup selectionMode="none" onRemove={handleRemove}>\n  <Label className="form-label">Active Diagnoses</Label>\n  <TagList className="tag-list">\n    <Tag id="1" className="chip" textValue="Hypertension">\n      Hypertension\n      <Button slot="remove" className="tag-remove"><X size={12} /></Button>\n    </Tag>\n  </TagList>\n</TagGroup>`}
+          code={`<TagGroup selectionMode="none" onRemove={handleRemove}>\n  <Label className="form-label">Active Diagnoses</Label>\n  <TagList className="tag-list">\n    <Tag id="1" className="chip" textValue="Hypertension">\n      Hypertension\n      <Button slot="remove" className="tag-remove"><X size={12} /></Button>\n    </Tag>\n  </TagList>\n</TagGroup>\n\n/* Disabled: list the tag ids in disabledKeys → [data-disabled] = light grey, no × (can't be removed) */\n<TagGroup selectionMode="none" disabledKeys={["d1"]} onRemove={handleRemove}>\n  …\n</TagGroup>`}
         />
       </SubSection>
 
@@ -1984,26 +2018,6 @@ function ComponentsFeedback() {
         </div>
         <CodeBlock
           code={`<div className="notification notification-success">\n  <div className="notification-icon"><CheckCircle size={18} /></div>\n  <div className="notification-content">\n    <div className="notification-title">Order Submitted</div>\n    <div className="notification-message">CBC lab order sent.</div>\n  </div>\n  <button className="notification-close"><X size={14} /></button>\n</div>\n\n/* Variants: notification-success | notification-error | notification-warning | notification-info */`}
-        />
-      </SubSection>
-
-      <SubSection title="Empty State" description="Placeholder content shown when a section has no data. Provides context and a call to action.">
-        <div className="grid g2" style={{ gap: "var(--vsee-sp-6)" }}>
-          <div className="empty-state">
-            <div className="empty-state-icon"><Inbox size={40} /></div>
-            <div className="empty-state-title">No Results Found</div>
-            <div className="empty-state-desc">There are no lab results for this patient yet. Results will appear here once ordered labs have been processed.</div>
-            <Button className="btn btn-primary" style={{ marginTop: "var(--vsee-sp-4)" }}>Order Lab Test</Button>
-          </div>
-          <div className="empty-state">
-            <div className="empty-state-icon"><FileText size={40} /></div>
-            <div className="empty-state-title">No Documents</div>
-            <div className="empty-state-desc">This patient has no uploaded documents. Upload clinical documents, consent forms, or imaging reports.</div>
-            <Button className="btn btn-secondary" style={{ marginTop: "var(--vsee-sp-4)" }}>Upload Document</Button>
-          </div>
-        </div>
-        <CodeBlock
-          code={`<div className="empty-state">\n  <div className="empty-state-icon"><Inbox size={40} /></div>\n  <div className="empty-state-title">No Results Found</div>\n  <div className="empty-state-desc">Description text here.</div>\n  <Button className="btn btn-primary">Action</Button>\n</div>`}
         />
       </SubSection>
 
@@ -2115,18 +2129,36 @@ function ComponentsNavigation() {
       </SubSection>
 
       <SubSection title="Pagination">
+        <div className="text-h5 mb-[var(--vsee-sp-3)]">Default</div>
         <div className="card">
           <div className="pagination">
-            <button className="page-btn disabled">&larr;</button>
             <button className="page-btn active">1</button>
             <button className="page-btn">2</button>
             <button className="page-btn">3</button>
             <button className="page-btn">4</button>
-            <button className="page-btn">&rarr;</button>
+            <div className="pagination-nav">
+              <button className="page-btn disabled" aria-label="Previous page"><ChevronLeft size={16} /></button>
+              <span className="pagination-divider" aria-hidden="true" />
+              <button className="page-btn" aria-label="Next page"><ChevronRight size={16} /></button>
+            </div>
+          </div>
+        </div>
+        <div className="text-h5 mb-[var(--vsee-sp-3)]" style={{ marginTop: "var(--vsee-sp-6)" }}>With Labels</div>
+        <div className="card">
+          <div className="pagination">
+            <button className="page-btn active">1</button>
+            <button className="page-btn">2</button>
+            <button className="page-btn">3</button>
+            <button className="page-btn">4</button>
+            <div className="pagination-nav">
+              <button className="page-btn page-btn-label disabled"><ChevronLeft size={16} aria-hidden="true" />Prev</button>
+              <span className="pagination-divider" aria-hidden="true" />
+              <button className="page-btn page-btn-label">Next<ChevronRight size={16} aria-hidden="true" /></button>
+            </div>
           </div>
         </div>
         <CodeBlock
-          code={`<div className="pagination">\n  <button className="page-btn disabled">&larr;</button>\n  <button className="page-btn active">1</button>\n  <button className="page-btn">2</button>\n  <button className="page-btn">3</button>\n  <button className="page-btn">4</button>\n  <button className="page-btn">&rarr;</button>\n</div>`}
+          code={`<div className="pagination">\n  <button className="page-btn active">1</button>\n  <button className="page-btn">2</button>\n  <button className="page-btn">3</button>\n  <button className="page-btn">4</button>\n  <div className="pagination-nav">                  {/* prev + next grouped on the right */}\n    <button className="page-btn disabled" aria-label="Previous page"><ChevronLeft size={16} /></button>\n    <span className="pagination-divider" aria-hidden="true" />   {/* thin line between them */}\n    <button className="page-btn" aria-label="Next page"><ChevronRight size={16} /></button>\n  </div>\n</div>\n\n{/* With labels: add .page-btn-label (4px icon gap, 8px side padding) */}\n<div className="pagination-nav">\n  <button className="page-btn page-btn-label disabled"><ChevronLeft size={16} />Prev</button>\n  <span className="pagination-divider" aria-hidden="true" />\n  <button className="page-btn page-btn-label">Next<ChevronRight size={16} /></button>\n</div>`}
         />
       </SubSection>
 
@@ -2396,6 +2428,20 @@ function ComponentsOthers() {
           </div>
         </div>
       </SubSection> */}
+
+      <SubSection title="Empty State" description="Placeholder content shown when a section has no data. Provides context and a call to action.">
+        <div className="grid g2" style={{ gap: "var(--vsee-sp-6)" }}>
+          <div className="empty-state">
+            <div className="empty-state-icon"><Inbox size={40} /></div>
+            <div className="empty-state-title">No Results Found</div>
+            <div className="empty-state-desc">There are no lab results for this patient yet. Results will appear here once ordered labs have been processed.</div>
+            <Button className="btn btn-primary" style={{ marginTop: "var(--vsee-sp-4)" }}>Order Lab Test</Button>
+          </div>
+        </div>
+        <CodeBlock
+          code={`<div className="empty-state">\n  <div className="empty-state-icon"><Inbox size={40} /></div>\n  <div className="empty-state-title">No Results Found</div>\n  <div className="empty-state-desc">Description text here.</div>\n  <Button className="btn btn-primary">Action</Button>\n</div>`}
+        />
+      </SubSection>
     </Section>
   );
 }
