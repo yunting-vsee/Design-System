@@ -476,6 +476,14 @@
       .volume-row { flex-direction: column; align-items: flex-start; gap: var(--vsee-sp-2); }
       .volume-row .slider-wrap { width: 100%; }
     }
+    /* Brand color circles — copied from @vsee/ui docs (src/styles.css, sidebar "Brand Color" dots) */
+    .ds-theme-options { display: flex; gap: var(--vsee-sp-2); }
+    .ds-theme-dot { width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--vsee-border); cursor: pointer; transition: all var(--vsee-t-fast); padding: 0; }
+    .ds-theme-dot:hover { transform: scale(1.15); }
+    .ds-theme-dot.active { border-color: var(--vsee-grey-800); box-shadow: 0 0 0 2px var(--vsee-white), 0 0 0 4px var(--vsee-grey-800); }
+    .ds-theme-green { background: #0D875C; }
+    .ds-theme-blue { background: #0891B2; }
+    .ds-theme-purple { background: #7C3AED; }
   </style>
 </head>
 
@@ -483,9 +491,7 @@
   <header class="toolbar">
     <div class="toolbar-left">
       <a class="back-link" href="./" aria-label="Back to docs" title="Back to docs"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></a>
-      <strong>Preferences</strong>
-    </div>
-    <div class="controls">
+      <!-- Page dropdown in place of the page title -->
       <span style="display: flex; align-items: center; gap: var(--vsee-sp-2);">
         <span id="pageSelectLabel" class="sr-only">Page</span>
         <div class="field" data-select id="pageSelect" style="width: 160px;">
@@ -502,27 +508,18 @@
           </div>
         </div>
       </span>
-      <span style="display: flex; align-items: center; gap: var(--vsee-sp-2);">
-        <span id="themeSelectLabel" class="sr-only">Brand</span>
-        <div class="field" data-select id="themeSelect" style="width: 160px;">
-          <button type="button" class="input input-sm select-trigger" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="themeSelectLabel themeSelectValue">
-            <span id="themeSelectValue" data-select-value>Green (default)</span>
-            <svg class="select-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
-          </button>
-          <div class="select-popover" role="listbox" aria-labelledby="themeSelectLabel" hidden>
-            <div class="select-listbox">
-              <div class="select-option" role="option" data-value="green" data-selected>Green (default)</div>
-              <div class="select-option" role="option" data-value="blue">Blue</div>
-              <div class="select-option" role="option" data-value="purple">Purple</div>
-            </div>
-          </div>
-        </div>
-      </span>
+    </div>
+    <div class="controls">
+      <div class="ds-theme-options" id="themeDots" role="group" aria-label="Brand">
+        <button type="button" class="ds-theme-dot ds-theme-green active" data-value="green" aria-pressed="true" aria-label="Green (default)" title="Green (default)"></button>
+        <button type="button" class="ds-theme-dot ds-theme-blue" data-value="blue" aria-pressed="false" aria-label="Blue" title="Blue"></button>
+        <button type="button" class="ds-theme-dot ds-theme-purple" data-value="purple" aria-pressed="false" aria-label="Purple" title="Purple"></button>
+      </div>
       <span style="display: flex; align-items: center; gap: var(--vsee-sp-2); color: var(--vsee-text-secondary);">
         <span id="modeLabel" class="sr-only">Mode</span>
         <div class="btn-group" id="modeGroup" role="group" aria-labelledby="modeLabel">
-          <button type="button" class="btn active-group" data-value="light" aria-pressed="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>Light</button>
-          <button type="button" class="btn" data-value="dark" aria-pressed="false"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>Dark</button>
+          <button type="button" class="btn active-group" data-value="light" aria-pressed="true" aria-label="Light" title="Light"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg></button>
+          <button type="button" class="btn" data-value="dark" aria-pressed="false" aria-label="Dark" title="Dark"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></button>
         </div>
       </span>
       <span style="display: flex; align-items: center; gap: var(--vsee-sp-2); color: var(--vsee-text-secondary);">
@@ -900,9 +897,16 @@
   <script>
     /* Toolbar — brand-theme + light/dark mode */
     const root = document.documentElement;
-    /* Brand = design-system Select (change event carries detail.value) */
-    document.getElementById('themeSelect').addEventListener('change', (e) => {
-      root.setAttribute('data-theme', e.detail.value);
+    /* Brand = color circles; the chosen one is marked .active + aria-pressed */
+    const themeDots = document.getElementById('themeDots');
+    themeDots.addEventListener('click', (e) => {
+      const b = e.target.closest('.ds-theme-dot');
+      if (!b) return;
+      root.setAttribute('data-theme', b.dataset.value);
+      themeDots.querySelectorAll('.ds-theme-dot').forEach(d => {
+        d.classList.toggle('active', d === b);
+        d.setAttribute('aria-pressed', String(d === b));
+      });
     });
     /* Mode = Switch Button (Light / Dark); setBtnGroup comes from page-toolbar.js */
     const modeGroup = document.getElementById('modeGroup');

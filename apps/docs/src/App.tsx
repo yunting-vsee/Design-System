@@ -819,10 +819,12 @@ function ColorSwatchesDemo() {
 
 /* Switch Button (.btn-group): pick one of a few options; a brand pill slides under the chosen one.
    Uncontrolled with defaultActive, or controlled with value + onChange. */
-function SwitchButton({ labels, defaultActive, value, onChange, ariaLabel, icons, className = "" }: {
+function SwitchButton({ labels, defaultActive, value, onChange, ariaLabel, icons, iconOnly, className = "" }: {
   labels: string[];
   /** Optional icon shown before each label, keyed by label */
   icons?: Record<string, ReactNode>;
+  /** Show only the icons; each label becomes the button's accessible name and tooltip */
+  iconOnly?: boolean;
   defaultActive?: string;
   value?: string;
   onChange?: (label: string) => void;
@@ -857,10 +859,10 @@ function SwitchButton({ labels, defaultActive, value, onChange, ariaLabel, icons
           ref={(el: HTMLButtonElement | null) => { btnRefs.current[label] = el; }}
           className={`btn ${active === label ? "active-group" : ""}`}
           aria-pressed={active === label}
+          aria-label={iconOnly ? label : undefined}
           onPress={() => setActive(label)}
         >
-          {icons?.[label]}
-          {label}
+          {iconOnly ? <span title={label} style={{ display: "contents" }}>{icons?.[label]}</span> : <>{icons?.[label]}{label}</>}
         </Button>
       ))}
     </div>
@@ -3130,10 +3132,7 @@ function SteppersPage({ onExit, brandTheme, setBrandTheme, darkMode, setDarkMode
       <header style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: "var(--vsee-sp-3)", padding: "var(--vsee-sp-3) var(--vsee-sp-6)", background: "var(--vsee-white)", borderBottom: "1px solid var(--vsee-border)", fontSize: "var(--vsee-text-caption-size)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "var(--vsee-sp-4)" }}>
           <Button className="btn btn-link" onPress={onExit} aria-label="Back to docs"><ChevronLeft size={16} aria-hidden="true" /></Button>
-          <strong style={{ fontSize: "var(--vsee-text-body-lg-size)", fontWeight: 700 }}>Steppers</strong>
-        </div>
-        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "var(--vsee-sp-2) var(--vsee-sp-4)" }}>
-          {/* Page — jump to another of the Pages (side-menu list, minus Kitchen Sink) */}
+          {/* Page dropdown in place of the page title — jump to another of the Pages (side-menu list, minus Kitchen Sink) */}
           <Select selectedKey="Steppers" onSelectionChange={k => { const p = PAGES_GROUP.items.find(i => i.label === k); if (p && k !== "Steppers") window.location.href = p.href; }}
             style={{ display: "flex", alignItems: "center", gap: "var(--vsee-sp-2)" }}>
             <Label className="sr-only">Page</Label>
@@ -3147,23 +3146,13 @@ function SteppersPage({ onExit, brandTheme, setBrandTheme, darkMode, setDarkMode
               </ListBox>
             </Popover>
           </Select>
-          <Select selectedKey={brandTheme || "green"} onSelectionChange={k => setBrandTheme(k === "green" ? "" : String(k))}
-            style={{ display: "flex", alignItems: "center", gap: "var(--vsee-sp-2)" }}>
-            <Label className="sr-only">Brand</Label>
-            <Button className="input input-sm select-trigger" style={{ width: 160 }}>
-              <SelectValue />
-              <ChevronDown size={16} className="select-chevron" aria-hidden="true" />
-            </Button>
-            <Popover className="select-popover">
-              <ListBox className="select-listbox">
-                <ListBoxItem id="green" className="select-option">Green (default)</ListBoxItem>
-                <ListBoxItem id="blue" className="select-option">Blue</ListBoxItem>
-                <ListBoxItem id="purple" className="select-option">Purple</ListBoxItem>
-              </ListBox>
-            </Popover>
-          </Select>
+        </div>
+        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "var(--vsee-sp-2) var(--vsee-sp-4)" }}>
+          {/* Brand — Color Swatches component */}
+          <ColorSwatches ariaLabel="Brand" options={BRAND_SWATCHES} value={brandTheme || "green"}
+            onChange={id => setBrandTheme(id === "green" ? "" : id)} />
           <span style={{ display: "flex", alignItems: "center", gap: "var(--vsee-sp-2)", color: "var(--vsee-text-secondary)" }}>
-            <SwitchButton ariaLabel="Mode" labels={["Light", "Dark"]} icons={{ Light: <Sun size={16} aria-hidden="true" />, Dark: <Moon size={16} aria-hidden="true" /> }} value={darkMode ? "Dark" : "Light"} onChange={l => setDarkMode(l === "Dark")} />
+            <SwitchButton ariaLabel="Mode" iconOnly labels={["Light", "Dark"]} icons={{ Light: <Sun size={16} aria-hidden="true" />, Dark: <Moon size={16} aria-hidden="true" /> }} value={darkMode ? "Dark" : "Light"} onChange={l => setDarkMode(l === "Dark")} />
           </span>
           <span style={{ display: "flex", alignItems: "center", gap: "var(--vsee-sp-2)", color: "var(--vsee-text-secondary)" }}>
             <SwitchButton ariaLabel="View" labels={["Desktop", "Mobile"]} icons={{ Desktop: <Monitor size={16} aria-hidden="true" />, Mobile: <Smartphone size={16} aria-hidden="true" /> }} value={view === "mobile" ? "Mobile" : "Desktop"} onChange={l => setView(l === "Mobile" ? "mobile" : "desktop")} />
@@ -3189,18 +3178,55 @@ function SteppersPage({ onExit, brandTheme, setBrandTheme, darkMode, setDarkMode
   );
 }
 
-/* Pages "Mobile" view: the page itself at phone width (375px) in a frame, so its
-   real phone layout (media queries) shows. Brand + light/dark are passed in. */
+/* Pages "Mobile" view: the page itself on a 390 × 844 phone screen (zoomed out to fit), so its
+   real phone layout (media queries) shows. Brand + light/dark are passed in.
+   public/page-toolbar.js builds the same frame for the HTML pages. */
 function DeviceFrame({ src, theme, dark }: { src: string; theme: string; dark: boolean }) {
   const ref = useRef<HTMLIFrameElement>(null);
   const send = useCallback(() => {
     ref.current?.contentWindow?.postMessage({ type: "vsee-preview", theme: theme || "green", mode: dark ? "dark" : "light" }, window.location.origin);
   }, [theme, dark]);
   useEffect(() => { send(); }, [send]);
+  /* Phone screen = 390 × 844 (iPhone 14/15). The page inside always renders at that real size;
+     the whole phone is zoomed out (scaled) to fit the window, never zoomed in. */
+  const PHONE_W = 390, PHONE_H = 844, BEZEL_PAD = 12;
+  const OUTER_W = PHONE_W + BEZEL_PAD * 2, OUTER_H = PHONE_H + BEZEL_PAD * 2;
+  const boxRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(1);
+  useLayoutEffect(() => {
+    const fit = () => {
+      const box = boxRef.current;
+      if (!box?.parentElement) return;
+      const availH = window.innerHeight - box.getBoundingClientRect().top - 24;   /* 24 = bottom padding */
+      const availW = box.parentElement.clientWidth - 48;                          /* 48 = side padding */
+      setScale(Math.max(0.3, Math.min(1, availH / OUTER_H, availW / OUTER_W)));
+    };
+    fit();
+    window.addEventListener("resize", fit);
+    return () => window.removeEventListener("resize", fit);
+  }, [OUTER_H, OUTER_W]);
+  /* Phone look: dark bezel (fixed near-black — device hardware, stays dark in dark mode too),
+     rounded screen, status bar with the camera pill; the page starts below the status bar. */
+  const BEZEL = "#0B0B0F";
   return (
     <div style={{ display: "flex", justifyContent: "center", padding: "var(--vsee-sp-6)" }}>
-      <iframe ref={ref} src={src} title="Mobile view (375px)" onLoad={send}
-        style={{ boxSizing: "content-box", width: 375, maxWidth: "100%", height: "min(812px, calc(100vh - 116px))", border: "1px solid var(--vsee-border)", borderRadius: "var(--vsee-r-lg)", background: "var(--vsee-white)", boxShadow: "var(--vsee-shadow-md)" }} />
+      <div ref={boxRef} style={{ width: OUTER_W * scale, height: OUTER_H * scale }}>{/* reserves the zoomed-out size */}
+      <div style={{ width: OUTER_W, height: OUTER_H, padding: BEZEL_PAD, boxSizing: "border-box", borderRadius: 48, background: BEZEL, boxShadow: "var(--vsee-shadow-lg)", transform: `scale(${scale})`, transformOrigin: "top left" }}>
+        <div style={{ width: PHONE_W, height: PHONE_H, borderRadius: 36, overflow: "hidden", background: "var(--vsee-white)", display: "flex", flexDirection: "column" }}>
+          <div aria-hidden="true" style={{ position: "relative", flexShrink: 0, height: 44, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 28px", fontSize: 15, fontWeight: 600, color: "var(--vsee-text-primary)" }}>
+            <span>9:41</span>
+            <span style={{ position: "absolute", left: "50%", top: 10, transform: "translateX(-50%)", width: 96, height: 26, borderRadius: 13, background: BEZEL }} />
+            <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <svg width="17" height="11" viewBox="0 0 17 11" fill="currentColor"><rect x="0" y="7" width="3" height="4" rx="1" /><rect x="4.5" y="5" width="3" height="6" rx="1" /><rect x="9" y="2.5" width="3" height="8.5" rx="1" /><rect x="13.5" y="0" width="3" height="11" rx="1" /></svg>
+              <svg width="16" height="12" viewBox="0 0 24 18" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><path d="M2 6.5a15 15 0 0 1 20 0" /><path d="M6 10.5a9 9 0 0 1 12 0" /><path d="M10 14.5a3 3 0 0 1 4 0" /></svg>
+              <svg width="25" height="12" viewBox="0 0 25 12" fill="none"><rect x="0.5" y="0.5" width="21" height="11" rx="3" stroke="currentColor" opacity="0.4" /><rect x="2" y="2" width="18" height="8" rx="1.5" fill="currentColor" /><rect x="22.5" y="4" width="1.5" height="4" rx="0.75" fill="currentColor" opacity="0.4" /></svg>
+            </span>
+          </div>
+          <iframe ref={ref} src={src} title="Mobile view (390 × 844)" onLoad={send}
+            style={{ flex: 1, width: "100%", border: 0, display: "block", background: "var(--vsee-white)" }} />
+        </div>
+      </div>
+      </div>
     </div>
   );
 }

@@ -732,7 +732,7 @@ input::-webkit-credentials-auto-fill-button { display: none; }
 .option-box-input { flex: 1; min-width: 0; min-height: 44px; border: 0; outline: 0; background: transparent; font: inherit; font-size: var(--vsee-text-body-size); color: var(--vsee-text-primary); }
 .option-box-input::placeholder { color: var(--vsee-text-secondary); }
 .option-box-input:disabled { cursor: not-allowed; }
-.option-list { max-height: 260px; overflow-y: auto; }
+.option-list { max-height: 260px; overflow-y: auto; position: relative; } /* position: relative keeps React Aria's hidden checkbox inputs inside the scroll box — otherwise options scrolled out of view stretch the page */
 .option-box-selected { display: flex; flex-direction: column; gap: var(--vsee-sp-2); padding: var(--vsee-sp-3) var(--vsee-sp-4); border-top: 1px solid var(--vsee-border); background: var(--vsee-grey-100); }
 .option-box-selected .tag-list { margin: 0; padding: 0; min-height: 0; border: 0; background: transparent; }
 .option-box-selected .tag-list:focus-within { box-shadow: none; }
