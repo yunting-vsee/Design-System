@@ -39,6 +39,7 @@
       if (e.origin !== location.origin || e.data?.type !== 'vsee-preview') return;
       root.setAttribute('data-theme', e.data.theme);
       root.setAttribute('data-mode', e.data.mode);
+      if (e.data.qr === 'off') root.setAttribute('data-qr', 'off'); else root.removeAttribute('data-qr');
     });
     return;
   }
@@ -61,6 +62,7 @@
       type: 'vsee-preview',
       theme: root.getAttribute('data-theme') || 'green',
       mode: root.getAttribute('data-mode') === 'dark' ? 'dark' : 'light',
+      qr: root.getAttribute('data-qr'),   /* Login: "QR code login" checkbox */
     }, location.origin);
   };
   const fit = () => {
@@ -95,6 +97,6 @@
   });
 
   /* Brand / mode changes on the outer page reach the frame. */
-  new MutationObserver(send).observe(root, { attributes: true, attributeFilter: ['data-theme', 'data-mode'] });
+  new MutationObserver(send).observe(root, { attributes: true, attributeFilter: ['data-theme', 'data-mode', 'data-qr'] });
   window.addEventListener('resize', fit);
 })();
