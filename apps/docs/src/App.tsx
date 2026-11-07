@@ -3469,6 +3469,7 @@ function ComponentsNavigation() {
     Details: "Demographics, contact information, insurance details, and emergency contacts on file.",
     Activity: "Chronological log of visits, messages, lab orders, and prescription changes.",
   };
+  const sidebarCounts: Record<string, number> = { Activity: 5 };   /* optional count per sidebar tab */
   const [activeSidebarItem, setActiveSidebarItem] = useState("Overview");
 
   return (
@@ -3498,10 +3499,10 @@ function ComponentsNavigation() {
         <div className="card">
           <Tabs>
             <TabList className="tabs" aria-label="Clinic tabs">
-              <Tab id="patients" className="tab-item">Patients</Tab>
+              <Tab id="patients" className="tab-item">Patients<span className="tab-count">12</span></Tab>
               <Tab id="visits" className="tab-item">All Visits</Tab>
-              <Tab id="docs" className="tab-item">Documents</Tab>
-              <Tab id="labs" className="tab-item">Lab Results</Tab>
+              <Tab id="docs" className="tab-item">Documents<span className="tab-count">3</span></Tab>
+              <Tab id="labs" className="tab-item">Lab Results<span className="tab-count">99+</span></Tab>
             </TabList>
             <TabPanel id="patients" className="tab-content">Tab content area</TabPanel>
             <TabPanel id="visits" className="tab-content">All visits content</TabPanel>
@@ -3510,7 +3511,7 @@ function ComponentsNavigation() {
           </Tabs>
         </div>
         <CodeBlock
-          code={`<Tabs>\n  <TabList className="tabs" aria-label="Clinic tabs">\n    <Tab id="patients" className="tab-item">Patients</Tab>\n    <Tab id="visits" className="tab-item">All Visits</Tab>\n    <Tab id="docs" className="tab-item">Documents</Tab>\n    <Tab id="labs" className="tab-item">Lab Results</Tab>\n  </TabList>\n  <TabPanel id="patients" className="tab-content">Content</TabPanel>\n  <TabPanel id="visits" className="tab-content">Content</TabPanel>\n  <TabPanel id="docs" className="tab-content">Content</TabPanel>\n  <TabPanel id="labs" className="tab-content">Content</TabPanel>\n</Tabs>`}
+          code={`<Tabs>\n  <TabList className="tabs" aria-label="Clinic tabs">\n    <Tab id="patients" className="tab-item">Patients<span className="tab-count">12</span></Tab>  {/* optional count */}\n    <Tab id="visits" className="tab-item">All Visits</Tab>\n    <Tab id="docs" className="tab-item">Documents<span className="tab-count">3</span></Tab>\n    <Tab id="labs" className="tab-item">Lab Results<span className="tab-count">99+</span></Tab>\n  </TabList>\n  <TabPanel id="patients" className="tab-content">Content</TabPanel>\n  <TabPanel id="visits" className="tab-content">Content</TabPanel>\n  <TabPanel id="docs" className="tab-content">Content</TabPanel>\n  <TabPanel id="labs" className="tab-content">Content</TabPanel>\n</Tabs>`}
         />
       </SubSection>
 
@@ -3519,7 +3520,10 @@ function ComponentsNavigation() {
           <div className="sidebar-panel">
             <div className="sidebar-heading">Menu</div>
             {Object.keys(sidebarItems).map((item) => (
-              <div key={item} className={`sidebar-menu-item ${activeSidebarItem === item ? "active" : ""}`} onClick={() => setActiveSidebarItem(item)}>{item}</div>
+              <div key={item} className={`sidebar-menu-item ${activeSidebarItem === item ? "active" : ""}`} onClick={() => setActiveSidebarItem(item)}>
+                {item}
+                {sidebarCounts[item] > 0 && <span className="tab-count">{sidebarCounts[item]}</span>}
+              </div>
             ))}
           </div>
           <div className="sidebar-content">
@@ -3528,7 +3532,7 @@ function ComponentsNavigation() {
           </div>
         </div>
         <CodeBlock
-          code={`const items = {\n  Overview: "High-level summary…",\n  Details: "Demographics, contact info…",\n  Activity: "Chronological log of visits…",\n};\nconst [active, setActive] = useState("Overview");\n\n<div className="sidebar-layout">\n  <div className="sidebar-panel">\n    <div className="sidebar-heading">Menu</div>\n    {Object.keys(items).map((item) => (\n      <div\n        key={item}\n        className={\`sidebar-menu-item \${active === item ? "active" : ""}\`}\n        onClick={() => setActive(item)}\n      >\n        {item}\n      </div>\n    ))}\n  </div>\n  <div className="sidebar-content">\n    <div style={{fontSize:20,fontWeight:700}}>{active}</div>\n    <p>{items[active]}</p>\n  </div>\n</div>`}
+          code={`const items = {\n  Overview: "High-level summary…",\n  Details: "Demographics, contact info…",\n  Activity: "Chronological log of visits…",\n};\nconst counts = { Activity: 5 };\nconst [active, setActive] = useState("Overview");\n\n<div className="sidebar-layout">\n  <div className="sidebar-panel">\n    <div className="sidebar-heading">Menu</div>\n    {Object.keys(items).map((item) => (\n      <div\n        key={item}\n        className={\`sidebar-menu-item \${active === item ? "active" : ""}\`}\n        onClick={() => setActive(item)}\n      >\n        {item}\n        {counts[item] > 0 && <span className="tab-count">{counts[item]}</span>}  {/* optional count, right end */}\n      </div>\n    ))}\n  </div>\n  <div className="sidebar-content">\n    <div style={{fontSize:20,fontWeight:700}}>{active}</div>\n    <p>{items[active]}</p>\n  </div>\n</div>`}
         />
       </SubSection>
 

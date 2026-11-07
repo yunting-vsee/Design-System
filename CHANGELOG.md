@@ -1,6 +1,10 @@
 ﻿# Changelog
 
 ## Nov 6
+### Tabs + Sidebar
+- Tabs: smaller tabs — .tab-item padding 12px 20px → 8px 16px (--vsee-sp-2 / --vsee-sp-4).
+- Optional count on Tabs and Sidebar tabs: add `<span className="tab-count">3</span>` after the label. Round solid pill (20px, stays a circle for one digit, widens for "12" / "99+"), white bold 12px number. Background --vsee-brand (white text 4.6:1 green, 5.7:1 purple); the blue theme uses --vsee-brand-semidark (7.3:1, stays dark in dark mode) since white on blue --vsee-brand is ~3.7:1. The pill is centred on the tab label (tabs with a count use inline-flex, align-items: center). On tabs it sits 8px after the label; in the sidebar it sits at the right end. Demos: Patients 12, Documents 3, Lab Results 99+; sidebar Activity 5. New classes: .tab-count (+ .tab-item / .sidebar-menu-item placement rules).
+
 ### Outline Tags (new)
 - Badges, Tags & Status → Outline Tags (between Solid Badges and Removable Tags), from the Figma "~Tag" component: 20px tall, 1px border, square corners, 12px bold text, border and text in the same colour. Colours use the project tokens — success (green), danger (red), text-secondary with a grey-700 border (grey), info (blue), warning-dark (orange). In dark mode green and blue use --vsee-success-dark / --vsee-info-dark so the 12px text keeps AA contrast. New classes: .tag-outline + .tag-outline-success / -danger / -neutral / -info / -warning.
 

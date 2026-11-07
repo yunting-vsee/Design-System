@@ -758,10 +758,17 @@ input::-webkit-credentials-auto-fill-button { display: none; }
 
 /* Tabs — React Aria Tabs */
 .tabs { display: flex; border-bottom: 1px solid var(--vsee-border); gap: 0; }
-.tab-item { padding: var(--vsee-sp-3) var(--vsee-sp-5); font-size: var(--vsee-text-body-size); font-weight: 500; color: var(--vsee-text-secondary); cursor: pointer; border: none; background: none; border-bottom: 2px solid transparent; transition: all var(--vsee-t-fast); margin-bottom: -1px; outline: none; font-family: var(--vsee-font-sans); }
+.tab-item { padding: var(--vsee-sp-2) var(--vsee-sp-4); font-size: var(--vsee-text-body-size); font-weight: 500; color: var(--vsee-text-secondary); cursor: pointer; border: none; background: none; border-bottom: 2px solid transparent; transition: all var(--vsee-t-fast); margin-bottom: -1px; outline: none; font-family: var(--vsee-font-sans); }
 .tab-item[data-hovered] { color: var(--vsee-text-primary); }
 .tab-item[data-selected] { color: var(--vsee-brand); border-bottom-color: var(--vsee-brand); font-weight: 600; }
 .tab-item[data-focus-visible] { box-shadow: var(--vsee-shadow-focus); border-radius: var(--vsee-r-sm); }
+/* Count on a tab / sidebar tab: round solid pill, white bold number. Stays a circle for one digit, widens for "12" / "99+".
+   Brand colour (white text 4.5:1 green, 5.7:1 purple); the blue theme uses --vsee-brand-semidark instead (7.3:1, and it stays dark in dark mode),
+   since white on blue --vsee-brand is only ~3.7:1. */
+.tab-count { display: inline-flex; align-items: center; justify-content: center; min-width: 20px; height: 20px; padding: 0 6px; box-sizing: border-box; border-radius: var(--vsee-r-full); background: var(--vsee-brand); color: white; font-size: var(--vsee-text-overline-size); font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }
+[data-theme="blue"] .tab-count { background: var(--vsee-brand-semidark); }
+.tab-item:has(.tab-count) { display: inline-flex; align-items: center; }   /* pill centred on the label, not sitting on its baseline */
+.tab-item .tab-count { margin-left: var(--vsee-sp-2); }
 .tab-content { padding: var(--vsee-sp-4); color: var(--vsee-text-secondary); font-size: var(--vsee-text-caption-size); outline: none; }
 
 /* Breadcrumb — React Aria Breadcrumbs */
@@ -865,6 +872,7 @@ input::-webkit-credentials-auto-fill-button { display: none; }
 .sidebar-menu-item:hover { background-image: var(--vsee-hover-overlay); color: var(--vsee-text-primary); }
 .sidebar-menu-item.active { background: var(--vsee-brand-light); color: var(--vsee-brand-dark); font-weight: 600; border-right: 3px solid var(--vsee-brand-dark); }
 .sidebar-content { flex: 1; padding: var(--vsee-sp-6); }
+.sidebar-menu-item .tab-count { margin-left: auto; }   /* count sits at the right end of the sidebar tab */
 
 /* ═══════════════════════════════════════════
    PATTERNS — THEMING
