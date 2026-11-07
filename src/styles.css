@@ -1013,6 +1013,25 @@ input::-webkit-credentials-auto-fill-button { display: none; }
 .tag-outline-info { color: var(--vsee-info); }
 .tag-outline-warning { color: var(--vsee-warning-dark); }
 
+/* Selection Buttons — pick several (React Aria multi-select group, selectionMode="multiple"), from the Figma
+   selection components (Rectangle 67:1181 / Round 252:243) and the ASPR "SelectionButton". 28px tall; [check] label · [count] [×].
+   Default (solid): grey → solid info blue. .sel-btn-soft: grey → light blue + blue border. */
+.sel-btn-group { display: flex; flex-wrap: wrap; gap: var(--vsee-sp-2); outline: none; }
+.sel-btn { display: inline-flex; align-items: center; gap: var(--vsee-sp-3); height: 28px; box-sizing: border-box; padding: var(--vsee-sp-1) var(--vsee-sp-2); border: 1px solid var(--vsee-grey-500); border-radius: var(--vsee-r-xs); background: var(--vsee-grey-200); color: var(--vsee-text-secondary); font-size: var(--vsee-text-caption-size); font-weight: 600; white-space: nowrap; cursor: pointer; outline: none; transition: background var(--vsee-t-fast), border-color var(--vsee-t-fast), color var(--vsee-t-fast); }
+.sel-btn-round { padding: var(--vsee-sp-1) var(--vsee-sp-3); border-radius: var(--vsee-r-full); }
+.sel-btn-label { display: inline-flex; align-items: center; gap: var(--vsee-sp-2); }
+.sel-btn[data-hovered] { border-color: var(--vsee-border-strong); }
+.sel-btn[data-focus-visible] { box-shadow: var(--vsee-shadow-focus); }
+.sel-btn[data-selected] { background: var(--vsee-info); border-color: var(--vsee-info); color: white; font-weight: 500; }
+.sel-btn[data-selected][data-hovered] { background-image: var(--vsee-hover-overlay); }
+.sel-btn-soft[data-selected] { background: var(--vsee-info-light); border-color: var(--vsee-info-border); color: var(--vsee-info); font-weight: 600; }
+.sel-btn-soft[data-selected][data-hovered] { background-image: none; border-color: var(--vsee-info); }
+.sel-btn[data-disabled] { opacity: 0.5; cursor: not-allowed; }
+/* Count: 16px circle, 10px number. Unselected: --vsee-text-secondary (Figma's grey-700 gives white text only 2.5:1) */
+.sel-btn-count { display: inline-flex; align-items: center; justify-content: center; min-width: 16px; height: 16px; padding: 0 var(--vsee-sp-1); box-sizing: border-box; border-radius: var(--vsee-r-full); background: var(--vsee-text-secondary); color: var(--vsee-white); font-size: var(--vsee-text-micro-size); font-weight: 500; line-height: 1; }
+.sel-btn-soft[data-selected] .sel-btn-count { background: var(--vsee-info); color: white; }
+.sel-btn[data-selected]:not(.sel-btn-soft) .sel-btn-count { background: white; color: var(--vsee-info); }
+
 
 /* ═══════════════════════════════════════════
    EMR PAGE — MULTISELECT
@@ -1241,6 +1260,8 @@ input::-webkit-credentials-auto-fill-button { display: none; }
 /* Outline tags: the base success / info colours are too dark on the dark background for 12px text (AA) — use the light "-dark" tokens */
 [data-mode="dark"] .tag-outline-success { color: var(--vsee-success-dark); }
 [data-mode="dark"] .tag-outline-info { color: var(--vsee-info-dark); }
+/* Selection Buttons, soft selected: blue text on the dark light-blue fill needs the light "-dark" token for AA */
+[data-mode="dark"] .sel-btn-soft[data-selected] { color: var(--vsee-info-dark); }
 [data-mode="dark"] .tooltip-bubble,
 [data-mode="dark"] .copy-toast { background: var(--vsee-grey-900); color: var(--vsee-white); }
 [data-mode="dark"] .toggle-track:not(.on),

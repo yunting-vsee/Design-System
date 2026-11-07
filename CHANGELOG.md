@@ -1,6 +1,12 @@
 ﻿# Changelog
 
 ## Nov 6
+### Selection Buttons (new)
+- Buttons → Selection Buttons (after Choice Cards), from the Figma selection components (Rectangle / Round) and the ASPR "SelectionButton" category picker. SelectionButtons component on React Aria's multi-select group (selectionMode="multiple"): pick several; selected ones show a check; arrow keys move, Space toggles, each one is read as selected or not. Props: items ({ id, label, count? }), selectedKeys, onSelectionChange, ariaLabel, shape ("rect" 4px corners | "round" pill), variant ("solid": grey → info blue | "soft": grey → light blue + border), showCheck (default true; false = no check icon, the colour alone shows selection). No remove (×) — removing is what Removable Tags are for. 28px tall, 13px text, 16px count circle with 10px number, 14px Lucide Check.
+- Colours from the project tokens (grey-200 / grey-500 / text-secondary, info / info-light / info-border, white). Two changes from Figma for WCAG AA: the unselected count uses --vsee-text-secondary instead of grey-700 (white 10px text was 2.5:1); soft-selected text uses --vsee-info-dark in dark mode. Added hover (stronger border / overlay), focus ring and disabled styles.
+- Demos: Rectangle (ASPR categories; "Cardiac" shows a count, 3), Round with the soft look ("GI" shows a count, 4), Selected without check icon (one row, two groups: light + rectangle, and default colour + round).
+- New classes: .sel-btn-group, .sel-btn (+ -round, -soft), .sel-btn-label, .sel-btn-count.
+
 ### Tabs + Sidebar
 - Tabs: smaller tabs — .tab-item padding 12px 20px → 8px 16px (--vsee-sp-2 / --vsee-sp-4).
 - Optional count on Tabs and Sidebar tabs: add `<span className="tab-count">3</span>` after the label. Round solid pill (20px, stays a circle for one digit, widens for "12" / "99+"), white bold 12px number. Background --vsee-brand (white text 4.6:1 green, 5.7:1 purple); the blue theme uses --vsee-brand-semidark (7.3:1, stays dark in dark mode) since white on blue --vsee-brand is ~3.7:1. The pill is centred on the tab label (tabs with a count use inline-flex, align-items: center). On tabs it sits 8px after the label; in the sidebar it sits at the right end. Demos: Patients 12, Documents 3, Lab Results 99+; sidebar Activity 5. New classes: .tab-count (+ .tab-item / .sidebar-menu-item placement rules).

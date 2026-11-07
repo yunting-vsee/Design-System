@@ -65,6 +65,7 @@ import {
   ChevronDown,
   ChevronRight,
   X,
+  Check,
   Search,
   FileText,
   Palette,
@@ -1106,6 +1107,13 @@ function ComponentsButtons() {
       <ChoiceButtonsDemo />
 
       <ChoiceCardsDemo />
+
+      <SubSection title="Selection Buttons" description="Pick several options from a set, e.g. categories or filters (Choice Buttons pick just one). Selected ones show a check and turn blue. Optional count, and an icon before the label, after it, or both. Keyboard: arrow keys move, Space toggles.">
+        <SelectionButtonsDemo />
+        <CodeBlock
+          code={`const [selected, setSelected] = useState(new Set(["Cardiac", "GI"]));\n\n<SelectionButtons\n  ariaLabel="Categories"\n  items={[{ id: "Cardiac", label: "Cardiac" }, { id: "GI", label: "GI" }, { id: "Other", label: "Other" }]}\n  selectedKeys={selected}\n  onSelectionChange={setSelected}\n  shape="rect"        {/* "rect" (4px corners) | "round" (pill) */}\n  variant="solid"     {/* "solid" | "soft" (light blue + border) */}\n  showCheck           {/* default; showCheck={false}: no check, the colour alone shows selection */}\n/>\n\n/* Item with a count (optional) */\n{ id: "rx", label: "Prescriptions", count: 5 }\n\n/* Renders a multi-select group (React Aria, selectionMode="multiple") — each option: */\n<div className="sel-btn-group">\n  <div className="sel-btn">     {/* + sel-btn-round, sel-btn-soft; aria-selected */}\n    <span className="sel-btn-label"><Check size={14} /> Cardiac</span>  {/* check only when selected */}\n    <span className="sel-btn-count">5</span>\n  </div>\n</div>`}
+        />
+      </SubSection>
 
       <SubSection title="Switch Button">
         {/* 24px between the round and square switches */}
@@ -3243,6 +3251,79 @@ function DeviceFrame({ src, theme, dark }: { src: string; theme: string; dark: b
       </div>
       </div>
     </div>
+  );
+}
+
+/* Selection Buttons — pick several from a set (e.g. categories), from the Figma selection components (67:1181 / 252:243) and ASPR "SelectionButton".
+   Built on React Aria's multi-select group (selectionMode="multiple"): click / Space toggles, arrow keys move, each one is read as selected or not.
+   Selected ones show a check. Optional count. */
+type SelectionButtonItem = { id: string; label: string; count?: number };
+function SelectionButtons({ items, selectedKeys, onSelectionChange, ariaLabel, shape = "rect", variant = "solid", showCheck = true }: {
+  items: SelectionButtonItem[];
+  selectedKeys: Set<string>;
+  onSelectionChange: (keys: Set<string>) => void;
+  /** Accessible name of the group, e.g. "Specialties" */
+  ariaLabel: string;
+  /** "rect": 4px corners (default) · "round": pill */
+  shape?: "rect" | "round";
+  /** "solid": grey → filled blue (default) · "soft": grey → light blue with a blue border */
+  variant?: "solid" | "soft";
+  /** Show the check icon on selected ones (default true). false: the colour alone shows what is selected */
+  showCheck?: boolean;
+}) {
+  const cls = `sel-btn${shape === "round" ? " sel-btn-round" : ""}${variant === "soft" ? " sel-btn-soft" : ""}`;
+  return (
+    <TagGroup aria-label={ariaLabel} selectionMode="multiple" selectedKeys={selectedKeys}
+      onSelectionChange={keys => onSelectionChange(new Set(keys === "all" ? items.map(i => i.id) : [...keys].map(String)))}>
+      <TagList className="sel-btn-group">
+        {items.map(item => (
+          <Tag key={item.id} id={item.id} className={cls} textValue={item.label}>
+            {({ isSelected }) => (
+              <>
+                <span className="sel-btn-label">
+                  {isSelected && showCheck && <Check size={14} aria-hidden="true" />}
+                  {item.label}
+                </span>
+                {item.count !== undefined && <span className="sel-btn-count">{item.count}</span>}
+              </>
+            )}
+          </Tag>
+        ))}
+      </TagList>
+    </TagGroup>
+  );
+}
+
+const SEL_BTN_CATEGORIES: SelectionButtonItem[] = ["Cardiac", "GI", "Vascular Access", "Orthopedic", "Wound care", "HEENT", "GU / OB", "Environmental", "Other"].map(l => ({ id: l, label: l }));
+/* Rectangle demo: same categories, one with a count */
+const SEL_BTN_CATEGORIES_COUNT: SelectionButtonItem[] = SEL_BTN_CATEGORIES.map(i => i.id === "Cardiac" ? { ...i, count: 3 } : i);
+/* Round demo: same categories, one with a count */
+const SEL_BTN_CATEGORIES_ROUND: SelectionButtonItem[] = SEL_BTN_CATEGORIES.map(i => i.id === "GI" ? { ...i, count: 4 } : i);
+/* No-check demo */
+const SEL_BTN_TIMES: SelectionButtonItem[] = ["Morning", "Afternoon", "Evening"].map(l => ({ id: l, label: l }));
+const SEL_BTN_DAYS: SelectionButtonItem[] = ["Mon", "Tue", "Wed", "Thu", "Fri"].map(l => ({ id: l, label: l }));
+function SelectionButtonsDemo() {
+  const [rect, setRect] = useState(new Set(["Cardiac", "GI", "Vascular Access", "Orthopedic", "HEENT"]));
+  const [round, setRound] = useState(new Set(["Cardiac", "GI"]));
+  const [times, setTimes] = useState(new Set(["Morning"]));
+  const [days, setDays] = useState(new Set(["Tue", "Thu"]));
+  return (
+    <>
+      <div className="text-h5 mb-[var(--vsee-sp-3)]">Rectangle</div>
+      <div className="preview">
+        <SelectionButtons ariaLabel="Categories" items={SEL_BTN_CATEGORIES_COUNT} selectedKeys={rect} onSelectionChange={setRect} />
+      </div>
+      <div className="text-h5 mb-[var(--vsee-sp-3)]" style={{ marginTop: "var(--vsee-sp-6)" }}>Round, soft selected</div>
+      <div className="preview">
+        <SelectionButtons ariaLabel="Categories" shape="round" variant="soft" items={SEL_BTN_CATEGORIES_ROUND} selectedKeys={round} onSelectionChange={setRound} />
+      </div>
+      <div className="text-h5 mb-[var(--vsee-sp-3)]" style={{ marginTop: "var(--vsee-sp-6)" }}>Selected without check icon</div>
+      {/* Two separate groups in one row: light + rectangle, and default colour + round */}
+      <div className="preview" style={{ gap: "var(--vsee-sp-8)" }}>
+        <SelectionButtons ariaLabel="Preferred time" variant="soft" showCheck={false} items={SEL_BTN_TIMES} selectedKeys={times} onSelectionChange={setTimes} />
+        <SelectionButtons ariaLabel="Days" shape="round" showCheck={false} items={SEL_BTN_DAYS} selectedKeys={days} onSelectionChange={setDays} />
+      </div>
+    </>
   );
 }
 
