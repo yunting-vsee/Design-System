@@ -2394,7 +2394,7 @@ function OneQuestionFlow({ layout, fill }: { layout: "desktop" | "mobile"; fill?
             <div style={{ fontWeight: 600, marginBottom: "var(--vsee-sp-3)" }}>{g.label}</div>
             {empty
               ? <div style={{ color: "var(--vsee-text-secondary)" }}>{g.noneLabel}</div>
-              : <div className="chip-row">{parts.map(p => <span key={p} className="chip">{p}</span>)}</div>}
+              : <div className="tag-list">{parts.map(p => <span key={p} className="chip">{p}</span>)}</div>}
           </div>
         );
       })}
@@ -2692,6 +2692,8 @@ function ComponentsForms() {
     "Psychiatry", "Pulmonology", "Radiology", "Urology",
   ];
   const [selectedSpecialties, setSelectedSpecialties] = useState<string[]>(["Cardiology", "Neurology"]);
+  /* Tag Input: type text, Enter adds a tag */
+  const [allergyTags, setAllergyTags] = useState<RemovableTagItem[]>([{ id: "a1", name: "Penicillin" }, { id: "a2", name: "Peanuts" }]);
   const [comboValue, setComboValue] = useState("");
   const filteredSpecialties = allSpecialties.filter(
     s => !selectedSpecialties.includes(s) && s.toLowerCase().includes(comboValue.toLowerCase())
@@ -2808,10 +2810,35 @@ function ComponentsForms() {
               </Button>
             </div>
           </div>
+          {/* MultiSelect — disabled: greyed field, no typing, tags can't be removed, + disabled */}
+          <div className="multiselect-wrapper" style={{ marginTop: "var(--vsee-sp-4)" }}>
+            <Label className="form-label" id="ms-disabled-label">Filter by Specialty (disabled)</Label>
+            <div className="multiselect-container" data-disabled>
+              <TagGroup aria-labelledby="ms-disabled-label" disabledKeys={["Cardiology", "Neurology"]} onRemove={() => {}}>
+                <TagList className="multiselect-tags">
+                  {["Cardiology", "Neurology"].map(s => (
+                    <Tag key={s} id={s} className="chip" textValue={s}>
+                      {s}
+                      <Button slot="remove" className="tag-remove"><X size={12} /></Button>
+                    </Tag>
+                  ))}
+                </TagList>
+              </TagGroup>
+              {/* Disabled: no input at all (nothing to type, and no empty space when the field wraps) */}
+              <Button className="input-icon-btn" isDisabled aria-label="Show options" style={{ marginLeft: "auto" }}><Plus size={16} /></Button>
+            </div>
+          </div>
+          <div className="sub-title" style={{marginTop:"var(--vsee-sp-6)"}}>Tag Input</div>
+          <div className="multiselect-wrapper">
+            <TagInputField label="Allergies" tags={allergyTags} onChange={setAllergyTags} />
+          </div>
+          <div className="multiselect-wrapper" style={{ marginTop: "var(--vsee-sp-4)" }}>
+            <TagInputField label="Allergies (disabled)" isDisabled tags={[{ id: "p", name: "Penicillin" }, { id: "n", name: "Peanuts" }]} onChange={() => {}} />
+          </div>
         </div>
       </div>
       <CodeBlock
-        code={`/* Text Input */\n<TextField className="field">\n  <Label className="form-label">Email address</Label>\n  <Input className="input" placeholder="you@example.com" />\n</TextField>\n\n/* Input with error */\n<TextField isInvalid className="field">\n  <Label className="form-label">Full Name <span className="req">*</span></Label>\n  <Input className="input error" />\n  <div className="form-error-text">Full name is required</div>\n</TextField>\n\n/* Select */\n<Select className="field">\n  <Label className="form-label">Specialty</Label>\n  <Button className="input select-trigger">\n    <SelectValue />\n    <ChevronDown size={16} />\n  </Button>\n  <Popover className="select-popover">\n    <ListBox className="select-listbox">\n      <ListBoxItem className="select-option">Option</ListBoxItem>\n    </ListBox>\n  </Popover>\n</Select>\n\n/* MultiSelect */\n<div className="multiselect-wrapper">\n  <Label className="form-label">Filter by Specialty</Label>\n  <div className="multiselect-container">\n    <TagGroup onRemove={handleRemove}>\n      <TagList className="multiselect-tags">\n        <Tag className="chip" textValue="Cardiology">\n          Cardiology\n          <Button slot="remove" className="tag-remove"><X size={12} /></Button>\n        </Tag>\n      </TagList>\n    </TagGroup>\n    <ComboBox menuTrigger="focus" allowsCustomValue>\n      <Input className="multiselect-input" placeholder="Add more..." />\n      <Popover className="dropdown-popover">\n        <ListBox className="dropdown-menu">\n          <ListBoxItem className="dropdown-item">Option</ListBoxItem>\n        </ListBox>\n      </Popover>\n    </ComboBox>\n  </div>\n</div>`}
+        code={`/* Text Input */\n<TextField className="field">\n  <Label className="form-label">Email address</Label>\n  <Input className="input" placeholder="you@example.com" />\n</TextField>\n\n/* Input with error */\n<TextField isInvalid className="field">\n  <Label className="form-label">Full Name <span className="req">*</span></Label>\n  <Input className="input error" />\n  <div className="form-error-text">Full name is required</div>\n</TextField>\n\n/* Select */\n<Select className="field">\n  <Label className="form-label">Specialty</Label>\n  <Button className="input select-trigger">\n    <SelectValue />\n    <ChevronDown size={16} />\n  </Button>\n  <Popover className="select-popover">\n    <ListBox className="select-listbox">\n      <ListBoxItem className="select-option">Option</ListBoxItem>\n    </ListBox>\n  </Popover>\n</Select>\n\n/* MultiSelect */\n<div className="multiselect-wrapper">\n  <Label className="form-label">Filter by Specialty</Label>\n  <div className="multiselect-container">\n    <TagGroup onRemove={handleRemove}>\n      <TagList className="multiselect-tags">\n        <Tag className="chip" textValue="Cardiology">\n          Cardiology\n          <Button slot="remove" className="tag-remove"><X size={12} /></Button>\n        </Tag>\n      </TagList>\n    </TagGroup>\n    <ComboBox menuTrigger="focus" allowsCustomValue>\n      <Input className="multiselect-input" placeholder="Add more..." />\n      <Popover className="dropdown-popover">\n        <ListBox className="dropdown-menu">\n          <ListBoxItem className="dropdown-item">Option</ListBoxItem>\n        </ListBox>\n      </Popover>\n    </ComboBox>\n  </div>\n</div>\n\n/* MultiSelect — disabled: add data-disabled to the container, leave out the ComboBox (no input), disable +, list every tag in disabledKeys */\n<div className="multiselect-container" data-disabled>\n  <TagGroup disabledKeys={["Cardiology"]}>…</TagGroup>\n  <Button className="input-icon-btn" isDisabled style={{ marginLeft: "auto" }}><Plus size={16} /></Button>\n</div>\n\n/* Tag Input — type text, press Enter to add a tag; × removes */\nconst [tags, setTags] = useState([{ id: "a1", name: "Penicillin" }]);\n<TagInputField label="Allergies" tags={tags} onChange={setTags} />\n<TagInputField label="Allergies (disabled)" isDisabled tags={tags} onChange={setTags} />  {/* greyed, no input, no × */}\n\n/* Renders */\n<span id="lbl" className="form-label">Allergies</span>\n<div className="multiselect-container">\n  <TagGroup aria-labelledby="lbl" selectionMode="none" onRemove={handleRemove}>\n    <TagList className="tag-list">\n      <Tag id="a1" className="chip" textValue="Penicillin">Penicillin <Button slot="remove" className="tag-remove" aria-label="Remove Penicillin"><X size={12} /></Button></Tag>\n    </TagList>\n  </TagGroup>\n  <TextField aria-label="Add to Allergies">\n    <Input className="multiselect-input" placeholder="Type and press Enter to add" />   {/* Enter adds the text as a tag */}\n  </TextField>\n</div>`}
       />
 
       <div className="grid g2" style={{gap:"var(--vsee-sp-6)",marginTop:"var(--vsee-sp-6)"}}>
@@ -3254,6 +3281,54 @@ function DeviceFrame({ src, theme, dark }: { src: string; theme: string; dark: b
   );
 }
 
+/* Tag Input — removable tags in a field you can type into (same field look as MultiSelect: .multiselect-container + .multiselect-input).
+   React Aria TagGroup for the tags (× removes; arrow keys move between them) + a TextField: type a name, press Enter to add.
+   isDisabled: the whole field is greyed, with no input — tags can't be removed or added. */
+type RemovableTagItem = { id: string; name: string };
+function TagInputField({ label, tags, onChange, disabledKeys, isDisabled = false, placeholder = "Type and press Enter to add" }: {
+  label: string;
+  tags: RemovableTagItem[];
+  onChange: (tags: RemovableTagItem[]) => void;
+  /** Tags that can't be removed (shown greyed, no ×) */
+  disabledKeys?: string[];
+  /** Disable the whole field: greyed, no typing, no × on the tags */
+  isDisabled?: boolean;
+  placeholder?: string;
+}) {
+  const labelId = useId();
+  const [text, setText] = useState("");
+  const add = () => {
+    const name = text.trim();
+    if (name && !tags.some(t => t.name.toLowerCase() === name.toLowerCase())) onChange([...tags, { id: `${name}-${Date.now()}`, name }]);
+    setText("");
+  };
+  return (
+    <div>
+      <span id={labelId} className="form-label">{label}</span>
+      <div className="multiselect-container" data-disabled={isDisabled || undefined}>
+        <TagGroup aria-labelledby={labelId} selectionMode="none" disabledKeys={isDisabled ? tags.map(t => t.id) : disabledKeys}
+          onRemove={keys => onChange(tags.filter(t => !keys.has(t.id)))}>
+          <TagList className="tag-list">
+            {tags.map(t => (
+              <Tag key={t.id} id={t.id} className="chip" textValue={t.name}>
+                {t.name}
+                <Button slot="remove" className="tag-remove" aria-label={`Remove ${t.name}`}><X size={12} aria-hidden="true" /></Button>
+              </Tag>
+            ))}
+          </TagList>
+        </TagGroup>
+        {/* Disabled: no input at all (nothing to type, and no empty space when the field wraps) */}
+        {!isDisabled && (
+          <TextField aria-label={`Add to ${label}`} value={text} onChange={setText} style={{ flex: 1, minWidth: 160, display: "flex" }}>
+            <Input className="multiselect-input" placeholder={placeholder}
+              onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); add(); } }} />
+          </TextField>
+        )}
+      </div>
+    </div>
+  );
+}
+
 /* Selection Buttons — pick several from a set (e.g. categories), from the Figma selection components (67:1181 / 252:243) and ASPR "SelectionButton".
    Built on React Aria's multi-select group (selectionMode="multiple"): click / Space toggles, arrow keys move, each one is read as selected or not.
    Selected ones show a check. Optional count. */
@@ -3331,7 +3406,36 @@ function SelectionButtonsDemo() {
    COMPONENTS — BADGES, TAGS & STATUS
    ═══════════════════════════════════════════ */
 function ComponentsBadges() {
-  const [tags, setTags] = useState([
+  /* Removable Tags — White example */
+  const WHITE_TAGS_START = [
+    { id: "w1", name: "Lab results" },
+    { id: "w2", name: "Cardiology" },
+    { id: "w3", name: "Follow-up" },
+    { id: "w4", name: "Prescriptions" },
+  ];
+  const [whiteTags, setWhiteTags] = useState<RemovableTagItem[]>(WHITE_TAGS_START);
+  /* White field works like MultiSelect: type to filter, pick from the list to add */
+  const WHITE_OPTIONS = ["Lab results", "Cardiology", "Follow-up", "Prescriptions", "Imaging", "Referrals", "Vaccinations", "Visit notes"];
+  const [whiteQuery, setWhiteQuery] = useState("");
+  const whiteInputRef = useRef<HTMLInputElement>(null);
+  const whiteLabelId = useId();
+  const whiteOptions = WHITE_OPTIONS.filter(o => !whiteTags.some(t => t.name === o) && o.toLowerCase().includes(whiteQuery.toLowerCase()));
+  /* Removable Tags — standalone: the same tags in a plain row (.tag-list), not in an input field */
+  const OUTSIDE_TAGS_START = [
+    { id: "o1", name: "Hypertension", white: false, iconLeft: <Heart size={14} aria-hidden="true" /> },
+    { id: "o2", name: "Asthma", white: false, removable: false },   /* no × */
+    { id: "o3", name: "Lab results", white: true, iconRight: <FileText size={14} aria-hidden="true" />, removable: false },   /* no × */
+    { id: "o4", name: "Cardiology", white: true },
+    { id: "o5", name: "Seasonal allergies", white: false },
+    { id: "o6", name: "Iron deficiency", white: false, iconRight: <AlertTriangle size={14} aria-hidden="true" /> },
+    { id: "o7", name: "Childhood asthma", white: false, iconLeft: <Calendar size={14} aria-hidden="true" />, iconRight: <AlertTriangle size={14} aria-hidden="true" /> },
+  ];
+  const [outsideTags, setOutsideTags] = useState<{ id: string; name: string; white: boolean; iconLeft?: ReactNode; iconRight?: ReactNode; removable?: boolean }[]>(OUTSIDE_TAGS_START);
+  const [pastTags, setPastTags] = useState<RemovableTagItem[]>([
+    { id: "d1", name: "Seasonal allergies" },
+    { id: "d2", name: "Iron deficiency" },
+  ]);
+  const [tags, setTags] = useState<RemovableTagItem[]>([
     { id: "1", name: "Hypertension" },
     { id: "2", name: "Diabetes Type 2" },
     { id: "3", name: "Asthma" },
@@ -3386,36 +3490,61 @@ function ComponentsBadges() {
         />
       </SubSection>
 
-      <SubSection title="Removable Tags">
-        <TagGroup
-          selectionMode="none"
-          onRemove={(keys) => setTags(prev => prev.filter(t => !keys.has(t.id)))}
-        >
-          <Label className="form-label">Active Diagnoses</Label>
+      <SubSection title="Removable Tags" description="Tags with × to remove. In a field (type a name and press Enter to add) or standalone in a plain row.">
+        <TagInputField label="Active Diagnoses" tags={tags} onChange={setTags} />
+        {/* Disabled tags: greyed, no × (can't be removed); you can still add new ones */}
+        <div style={{ marginTop: "var(--vsee-sp-6)" }}>
+          <TagInputField label="Past Diagnoses" tags={pastTags} onChange={setPastTags} disabledKeys={["d1", "d2"]} />
+        </div>
+        {/* White: white tags in a MultiSelect field — type to filter, pick from the list to add; × removes */}
+        <div style={{ marginTop: "var(--vsee-sp-6)" }}>
+          <span id={whiteLabelId} className="form-label">White</span>
+          <div className="multiselect-container">
+            <TagGroup aria-labelledby={whiteLabelId} selectionMode="none" onRemove={keys => setWhiteTags(prev => prev.filter(t => !keys.has(t.id)))}>
+              <TagList className="tag-list">
+                {whiteTags.map(t => (
+                  <Tag key={t.id} id={t.id} className="chip chip-white" textValue={t.name}>
+                    {t.name}
+                    <Button slot="remove" className="tag-remove" aria-label={`Remove ${t.name}`}><X size={14} aria-hidden="true" /></Button>
+                  </Tag>
+                ))}
+              </TagList>
+            </TagGroup>
+            <ComboBox aria-label="Add to White" inputValue={whiteQuery} onInputChange={setWhiteQuery} selectedKey={null}
+              onSelectionChange={key => {
+                if (key && key !== "__empty" && !whiteTags.some(t => t.name === String(key))) setWhiteTags(prev => [...prev, { id: String(key), name: String(key) }]);
+                setWhiteQuery("");
+              }}
+              menuTrigger="focus" allowsCustomValue>
+              <Input ref={whiteInputRef} className="multiselect-input" placeholder={whiteTags.length ? "Add more..." : "Search..."} />
+              <Popover className="dropdown-popover">
+                <ListBox className="dropdown-menu">
+                  {whiteOptions.map(o => <ListBoxItem key={o} id={o} className="dropdown-item">{o}</ListBoxItem>)}
+                  {whiteOptions.length === 0 && (
+                    <ListBoxItem id="__empty" className="dropdown-item" style={{ color: "var(--vsee-text-secondary)", fontStyle: "italic" }}>No matches found</ListBoxItem>
+                  )}
+                </ListBox>
+              </Popover>
+            </ComboBox>
+            <Button className="input-icon-btn" aria-label="Show options" onPress={() => whiteInputRef.current?.focus()}><Plus size={16} /></Button>
+          </div>
+        </div>
+        {whiteTags.length < WHITE_TAGS_START.length && <Button className="btn btn-link" style={{ marginTop: "var(--vsee-sp-2)" }} onPress={() => setWhiteTags(WHITE_TAGS_START)}>Reset white tags</Button>}
+        {/* Standalone: same tags in a plain row (.tag-list), not in a field */}
+        <TagGroup selectionMode="none" disabledKeys={["o5", "o6", "o7"]} onRemove={keys => setOutsideTags(prev => prev.filter(t => t.removable === false || !keys.has(t.id)))} style={{ marginTop: "var(--vsee-sp-6)" }}>
+          <Label className="form-label">Standalone</Label>
           <TagList className="tag-list">
-            {tags.map(tag => (
-              <Tag key={tag.id} id={tag.id} className="chip" textValue={tag.name}>
-                {tag.name}
-                <Button slot="remove" className="tag-remove"><X size={12} /></Button>
+            {outsideTags.map(t => (
+              <Tag key={t.id} id={t.id} className={t.white ? "chip chip-white" : "chip"} textValue={t.name}>
+                {t.iconLeft}{t.name}{t.iconRight}
+                {t.removable !== false && <Button slot="remove" className="tag-remove" aria-label={`Remove ${t.name}`}><X size={t.white ? 14 : 12} aria-hidden="true" /></Button>}
               </Tag>
             ))}
           </TagList>
         </TagGroup>
-        <TagGroup selectionMode="none" disabledKeys={["d1", "d2"]} onRemove={() => {}} style={{ marginTop: "var(--vsee-sp-6)" }}>
-          <Label className="form-label">Past Diagnoses</Label>
-          <TagList className="tag-list">
-            <Tag id="d1" className="chip" textValue="Seasonal allergies">
-              Seasonal allergies
-              <Button slot="remove" className="tag-remove"><X size={12} /></Button>
-            </Tag>
-            <Tag id="d2" className="chip" textValue="Iron deficiency">
-              Iron deficiency
-              <Button slot="remove" className="tag-remove"><X size={12} /></Button>
-            </Tag>
-          </TagList>
-        </TagGroup>
+        {outsideTags.length < OUTSIDE_TAGS_START.length && <Button className="btn btn-link" style={{ marginTop: "var(--vsee-sp-2)" }} onPress={() => setOutsideTags(OUTSIDE_TAGS_START)}>Reset</Button>}
         <CodeBlock
-          code={`<TagGroup selectionMode="none" onRemove={handleRemove}>\n  <Label className="form-label">Active Diagnoses</Label>\n  <TagList className="tag-list">\n    <Tag id="1" className="chip" textValue="Hypertension">\n      Hypertension\n      <Button slot="remove" className="tag-remove"><X size={12} /></Button>\n    </Tag>\n  </TagList>\n</TagGroup>\n\n/* Disabled: list the tag ids in disabledKeys → [data-disabled] = light grey, no × (can't be removed) */\n<TagGroup selectionMode="none" disabledKeys={["d1"]} onRemove={handleRemove}>\n  …\n</TagGroup>`}
+          code={`/* In a field you can type into — same field look as MultiSelect */\nconst [tags, setTags] = useState([{ id: "1", name: "Hypertension" }]);\n\n<TagInputField label="Active Diagnoses" tags={tags} onChange={setTags} />\n<TagInputField label="Past Diagnoses" tags={past} onChange={setPast} disabledKeys={["d1"]} />  {/* disabled: greyed, no × */}\n\n/* White: white tags (.chip-white) in a MultiSelect field — type to filter, pick from the list to add */\n<span id="white" className="form-label">White</span>\n<div className="multiselect-container">\n  <TagGroup aria-labelledby="white" selectionMode="none" onRemove={handleRemove}>\n    <TagList className="tag-list">\n      <Tag id="w1" className="chip chip-white" textValue="Lab results">\n        Lab results\n        <Button slot="remove" className="tag-remove" aria-label="Remove Lab results"><X size={14} /></Button>\n      </Tag>\n    </TagList>\n  </TagGroup>\n  <ComboBox aria-label="Add to White" menuTrigger="focus" allowsCustomValue onSelectionChange={addTag}>\n    <Input className="multiselect-input" placeholder="Add more..." />\n    <Popover className="dropdown-popover">\n      <ListBox className="dropdown-menu">\n        <ListBoxItem id="Imaging" className="dropdown-item">Imaging</ListBoxItem>\n      </ListBox>\n    </Popover>\n  </ComboBox>\n  <Button className="input-icon-btn" aria-label="Show options"><Plus size={16} /></Button>\n</div>\n\n/* Renders */\n<span id="lbl" className="form-label">Active Diagnoses</span>\n<div className="multiselect-container">                 {/* bordered field, focus ring */}\n  <TagGroup aria-labelledby="lbl" selectionMode="none" onRemove={handleRemove}>\n    <TagList className="tag-list">\n      <Tag id="1" className="chip" textValue="Hypertension">     {/* + chip-white */}\n        Hypertension\n        <Button slot="remove" className="tag-remove" aria-label="Remove Hypertension"><X size={12} /></Button>\n      </Tag>\n    </TagList>\n  </TagGroup>\n  <TextField aria-label="Add to Active Diagnoses">               {/* type, Enter adds a tag */}\n    <Input className="multiselect-input" placeholder="Type and press Enter to add" />\n  </TextField>\n</div>\n\n/* Standalone: same tags in a plain row (.tag-list), not in a field */\n<TagGroup selectionMode="none" onRemove={handleRemove}>\n  <Label className="form-label">Standalone</Label>\n  <TagList className="tag-list">\n    <Tag id="1" className="chip" textValue="Hypertension">Hypertension <Button slot="remove" className="tag-remove"><X size={12} /></Button></Tag>\n    <Tag id="2" className="chip chip-white" textValue="Lab results">Lab results <Button slot="remove" className="tag-remove"><X size={14} /></Button></Tag>\n  </TagList>\n</TagGroup>`}
         />
       </SubSection>
 

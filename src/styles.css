@@ -721,7 +721,6 @@ input::-webkit-credentials-auto-fill-button { display: none; }
 .history-summary-group:first-child { border-top: none; }
 .history-group { padding: var(--vsee-sp-6) 0; border-top: 1px solid var(--vsee-border); }
 .history-toggle { margin-bottom: var(--vsee-sp-4); }
-.chip-row { display: flex; flex-wrap: wrap; gap: var(--vsee-sp-2); }
 
 /* Selection list — every option shown directly, check as many as apply (React Aria CheckboxGroup) */
 .option-list-hint { margin-top: 0; margin-bottom: var(--vsee-sp-3); }
@@ -993,9 +992,9 @@ input::-webkit-credentials-auto-fill-button { display: none; }
 /* ═══════════════════════════════════════════
    EMR PAGE — TAGS
    ═══════════════════════════════════════════ */
-.tag-list { display: flex; flex-wrap: wrap; gap: var(--vsee-sp-2); padding: var(--vsee-sp-1) 6px; border: 1px solid var(--vsee-border-strong); border-radius: var(--vsee-r-md); background: var(--vsee-white); margin-top: var(--vsee-sp-2); min-height: var(--vsee-sp-10); align-items: center; box-sizing: border-box; transition: all var(--vsee-t-fast); }
-.tag-list:focus-within { border-color: var(--vsee-brand); box-shadow: var(--vsee-shadow-focus); }
-.chip { display: inline-flex; align-items: center; gap: 6px; padding: 5px 14px; background: var(--vsee-brand-50); color: var(--vsee-text-primary); border: none; border-radius: var(--vsee-r-md); font-size: var(--vsee-text-body-size); font-weight: 500; cursor: default; outline: none; transition: all var(--vsee-t-fast); }
+/* Tag list: a plain wrapping row of removable tags (no border, no background). */
+.tag-list { display: flex; flex-wrap: wrap; gap: var(--vsee-sp-2); align-items: center; }
+.chip { display: inline-flex; align-items: center; gap: var(--vsee-sp-2); height: 28px; box-sizing: border-box; padding: var(--vsee-sp-1) var(--vsee-sp-2); background: var(--vsee-brand-50); color: var(--vsee-text-primary); border: none; border-radius: var(--vsee-r-xs); font-size: var(--vsee-text-caption-size); font-weight: 500; cursor: default; outline: none; transition: all var(--vsee-t-fast); }
 .chip[data-focused] { box-shadow: var(--vsee-shadow-focus); }
 .chip[data-selected] { background: var(--vsee-brand); color: white; }
 .tag-remove { background: none; border: none; cursor: pointer; color: var(--vsee-grey-800); padding: 0; display: flex; align-items: center; transition: color var(--vsee-t-fast); }
@@ -1003,6 +1002,11 @@ input::-webkit-credentials-auto-fill-button { display: none; }
 /* Disabled tag — light grey fill, muted text, no remove button (React Aria sets [data-disabled] via disabledKeys) */
 .chip[data-disabled], .chip.chip-disabled { background: var(--vsee-grey-300); color: var(--vsee-text-secondary); cursor: not-allowed; }
 .chip[data-disabled] .tag-remove, .chip.chip-disabled .tag-remove { display: none; } /* disabled tags can't be removed, so no × */
+/* White removable tag (from the Figma "White" selection component): white fill, grey border, grey semibold text
+   (size and 4px corners come from .chip). */
+.chip.chip-white { background: var(--vsee-white); border: 1px solid var(--vsee-grey-500); color: var(--vsee-text-secondary); font-weight: 600; }
+.chip.chip-white .tag-remove { color: var(--vsee-text-secondary); margin-left: var(--vsee-sp-1); }
+.chip.chip-white .tag-remove:hover { color: var(--vsee-text-primary); }
 
 /* Outline tag — small status label: 1px coloured border + bold text in the same colour, square corners.
    From Figma "~Tag" (VSee Design System, node 67:1101). Not interactive. */
@@ -1039,6 +1043,9 @@ input::-webkit-credentials-auto-fill-button { display: none; }
 .multiselect-wrapper { max-width: 480px; }
 .multiselect-container { border: 1px solid var(--vsee-border-strong); border-radius: var(--vsee-r-md); padding: var(--vsee-sp-1) 6px; display: flex; flex-wrap: wrap; gap: var(--vsee-sp-1); align-items: center; background: var(--vsee-white); transition: border-color var(--vsee-t-fast); min-height: var(--vsee-sp-10); box-sizing: border-box; position: relative; padding-right: var(--vsee-sp-10); }
 .multiselect-container:focus-within { border-color: var(--vsee-brand); box-shadow: var(--vsee-shadow-focus); }
+/* Disabled field (MultiSelect / Tag Input): same look as .input:disabled */
+.multiselect-container[data-disabled] { background: var(--vsee-grey-200); opacity: 0.7; cursor: not-allowed; }
+.multiselect-container[data-disabled] .multiselect-input { cursor: not-allowed; }
 .multiselect-tags { display: flex; flex-wrap: wrap; gap: var(--vsee-sp-1); }
 .multiselect-input { border: none; outline: none; font-family: var(--vsee-font-sans); font-size: var(--vsee-text-body-size); flex: 1; min-width: 80px; padding: 2px var(--vsee-sp-2); height: 30px; background: transparent; }
 
@@ -1256,6 +1263,7 @@ input::-webkit-credentials-auto-fill-button { display: none; }
 [data-mode="dark"] .btn-loading.btn-danger[data-disabled],
 [data-mode="dark"] .badge-solid-danger { background: var(--vsee-danger-border); }
 [data-mode="dark"] .chip { background: var(--vsee-brand-light); }
+[data-mode="dark"] .chip.chip-white { background: var(--vsee-white); }
 [data-mode="dark"] .chip[data-disabled], [data-mode="dark"] .chip.chip-disabled { background: var(--vsee-grey-300); }
 /* Outline tags: the base success / info colours are too dark on the dark background for 12px text (AA) — use the light "-dark" tokens */
 [data-mode="dark"] .tag-outline-success { color: var(--vsee-success-dark); }

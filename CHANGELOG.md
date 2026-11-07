@@ -1,11 +1,26 @@
 ﻿# Changelog
 
+## Nov 7
+### MultiSelect + Tag Input
+- Disabled examples under each (Form Elements): the field is greyed and has no input at all (no placeholder, and no empty space when it wraps on narrow screens), tags can't be removed (no ×), MultiSelect's + is disabled. New .multiselect-container[data-disabled] — same look as .input:disabled (--vsee-grey-200 background, 0.7 opacity, not-allowed cursor). TagInputField gets isDisabled; its unused addable option is removed. The existing MultiSelect example is unchanged.
+
+### Removable Tags
+- .tag-list is now a plain wrapping row of tags (flex, wrap, 8px gap; no border, no background); the old input-box look is gone from it. .chip-row removed — the Steppers health history summary and the Standalone example use .tag-list; the Selection List picks were already a plain row.
+- New TagInputField (Form Elements → Tag Input, under MultiSelect): removable tags in a field you can type into — the tags (.tag-list in a TagGroup, × removes) plus a React Aria TextField; type text and press Enter to add a tag. Same field look as MultiSelect (.multiselect-container + .multiselect-input), no new CSS. MultiSelect itself is unchanged. Props: label, tags ({ id, name }), onChange, disabledKeys (greyed, no ×), isDisabled (whole field disabled), placeholder.
+- Removable Tags: Active Diagnoses and Past Diagnoses use TagInputField too — a field you can type into (type a name, Enter adds a tag). White works like MultiSelect: its white tags plus a ComboBox — type to filter the suggestions, pick one to add it, + opens the list (same classes as MultiSelect: .multiselect-container, .multiselect-input, .dropdown-menu; MultiSelect itself unchanged). Tags in a field have no icons.
+- All removable tags (.chip) use the white tag's size: 13px text (--vsee-text-caption-size, was 14px), 28px tall, 4px 8px padding (was 5px 14px), 8px gap, 4px corners (--vsee-r-xs, was 8px). Colour and weight unchanged. Also applies to the Selection List picks, the Multi-select field and the Steppers health history summary, which use .chip. .chip-white now only sets its colours, border and semibold weight.
+
 ## Nov 6
 ### Selection Buttons (new)
 - Buttons → Selection Buttons (after Choice Cards), from the Figma selection components (Rectangle / Round) and the ASPR "SelectionButton" category picker. SelectionButtons component on React Aria's multi-select group (selectionMode="multiple"): pick several; selected ones show a check; arrow keys move, Space toggles, each one is read as selected or not. Props: items ({ id, label, count? }), selectedKeys, onSelectionChange, ariaLabel, shape ("rect" 4px corners | "round" pill), variant ("solid": grey → info blue | "soft": grey → light blue + border), showCheck (default true; false = no check icon, the colour alone shows selection). No remove (×) — removing is what Removable Tags are for. 28px tall, 13px text, 16px count circle with 10px number, 14px Lucide Check.
 - Colours from the project tokens (grey-200 / grey-500 / text-secondary, info / info-light / info-border, white). Two changes from Figma for WCAG AA: the unselected count uses --vsee-text-secondary instead of grey-700 (white 10px text was 2.5:1); soft-selected text uses --vsee-info-dark in dark mode. Added hover (stronger border / overlay), focus ring and disabled styles.
 - Demos: Rectangle (ASPR categories; "Cardiac" shows a count, 3), Round with the soft look ("GI" shows a count, 4), Selected without check icon (one row, two groups: light + rectangle, and default colour + round).
 - New classes: .sel-btn-group, .sel-btn (+ -round, -soft), .sel-btn-label, .sel-btn-count.
+
+### Removable Tags
+- New "White" example, a field like Active / Past Diagnoses: .chip.chip-white — white fill, 1px --vsee-grey-500 border, --vsee-text-secondary semibold 13px text, 28px tall, 4px corners (the Figma "White" look); the × stays at the far right. Removable, with a Reset link. The green Removable Tags examples are unchanged.
+- New class: .chip-white.
+- New "Standalone" example: tags in a plain row (.tag-list), not in a field — green, white, and three disabled (grey) ones; tags here can have an icon before the label, after it, or both (Hypertension: left · white Lab results: right · grey Iron deficiency: right · grey Childhood asthma: both). A tag can also leave out the × (Asthma, Lab results) — it then can't be removed, by click or the Delete key.
 
 ### Tabs + Sidebar
 - Tabs: smaller tabs — .tab-item padding 12px 20px → 8px 16px (--vsee-sp-2 / --vsee-sp-4).
