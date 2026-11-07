@@ -1,6 +1,9 @@
 ﻿# Changelog
 
 ## Nov 7
+### Form Elements
+- The Notes textarea moved from the right card to the end of Text Inputs (after Search); the right card is renamed "Select & Textarea" → "Select".
+
 ### MultiSelect + Tag Input
 - Disabled examples under each (Form Elements): the field is greyed and has no input at all (no placeholder, and no empty space when it wraps on narrow screens), tags can't be removed (no ×), MultiSelect's + is disabled. New .multiselect-container[data-disabled] — same look as .input:disabled (--vsee-grey-200 background, 0.7 opacity, not-allowed cursor). TagInputField gets isDisabled; its unused addable option is removed. The existing MultiSelect example is unchanged.
 

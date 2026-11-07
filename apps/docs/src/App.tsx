@@ -2737,11 +2737,17 @@ function ComponentsForms() {
               </div>
             </SearchField>
           </div>
+          <div className="form-group">
+            <TextField className="field">
+              <Label className="form-label">Notes</Label>
+              <TextArea className="input textarea" rows={3} placeholder="Add clinical notes..." />
+            </TextField>
+          </div>
         </div>
 
-        {/* Select & Textarea */}
+        {/* Select */}
         <div className="card">
-          <div className="sub-title">Select & Textarea</div>
+          <div className="sub-title">Select</div>
           <div className="form-group">
             <Select className="field">
               <Label className="form-label">Specialty</Label>
@@ -2757,12 +2763,6 @@ function ComponentsForms() {
                 </ListBox>
               </Popover>
             </Select>
-          </div>
-          <div className="form-group">
-            <TextField className="field">
-              <Label className="form-label">Notes</Label>
-              <TextArea className="input textarea" rows={3} placeholder="Add clinical notes..." />
-            </TextField>
           </div>
           <div className="sub-title" style={{marginTop:"var(--vsee-sp-6)"}}>MultiSelect</div>
           <div className="multiselect-wrapper">
