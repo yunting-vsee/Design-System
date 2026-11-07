@@ -3288,6 +3288,23 @@ function ComponentsBadges() {
         />
       </SubSection>
 
+      <SubSection title="Outline Tags" description="Small status labels: a 1px border and bold text in the same colour. For showing a state, not for clicking.">
+        <div className="preview">
+          <span className="tag-outline tag-outline-success">Active</span>
+          <span className="tag-outline tag-outline-danger">Overdue</span>
+          <span className="tag-outline tag-outline-neutral">Inactive</span>
+          <span className="tag-outline tag-outline-info">Scheduled</span>
+          <span className="tag-outline tag-outline-warning">Pending</span>
+        </div>
+        <CodeBlock
+          code={`<span className="tag-outline tag-outline-success">Active</span>   {/* --vsee-success */}
+<span className="tag-outline tag-outline-danger">Overdue</span>   {/* --vsee-danger */}
+<span className="tag-outline tag-outline-neutral">Inactive</span> {/* text --vsee-text-secondary, border --vsee-grey-700 */}
+<span className="tag-outline tag-outline-info">Scheduled</span>   {/* --vsee-info */}
+<span className="tag-outline tag-outline-warning">Pending</span>  {/* --vsee-warning-dark */}`}
+        />
+      </SubSection>
+
       <SubSection title="Removable Tags">
         <TagGroup
           selectionMode="none"

@@ -1,6 +1,9 @@
 ﻿# Changelog
 
 ## Nov 6
+### Outline Tags (new)
+- Badges, Tags & Status → Outline Tags (between Solid Badges and Removable Tags), from the Figma "~Tag" component: 20px tall, 1px border, square corners, 12px bold text, border and text in the same colour. Colours use the project tokens — success (green), danger (red), text-secondary with a grey-700 border (grey), info (blue), warning-dark (orange). In dark mode green and blue use --vsee-success-dark / --vsee-info-dark so the 12px text keeps AA contrast. New classes: .tag-outline + .tag-outline-success / -danger / -neutral / -info / -warning.
+
 ### Buttons
 - Switch Button: 24px between the round and square examples (was 12px). New "With Icons" (Desktop / Mobile) and "Icon Only" (Light / Dark) examples, round and square; the code sample now shows the SwitchButton component with icons, iconOnly and controlled use. Each example group is named for screen readers (ariaLabel).
 

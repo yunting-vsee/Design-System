@@ -996,6 +996,15 @@ input::-webkit-credentials-auto-fill-button { display: none; }
 .chip[data-disabled], .chip.chip-disabled { background: var(--vsee-grey-300); color: var(--vsee-text-secondary); cursor: not-allowed; }
 .chip[data-disabled] .tag-remove, .chip.chip-disabled .tag-remove { display: none; } /* disabled tags can't be removed, so no × */
 
+/* Outline tag — small status label: 1px coloured border + bold text in the same colour, square corners.
+   From Figma "~Tag" (VSee Design System, node 67:1101). Not interactive. */
+.tag-outline { display: inline-flex; align-items: center; height: 20px; box-sizing: border-box; padding: 0 calc(var(--vsee-sp-2) - 1px); border: 1px solid currentColor; font-size: var(--vsee-text-overline-size); font-weight: 700; line-height: 1; white-space: nowrap; }
+.tag-outline-success { color: var(--vsee-success); }
+.tag-outline-danger { color: var(--vsee-danger); }
+.tag-outline-neutral { color: var(--vsee-text-secondary); border-color: var(--vsee-grey-700); }
+.tag-outline-info { color: var(--vsee-info); }
+.tag-outline-warning { color: var(--vsee-warning-dark); }
+
 
 /* ═══════════════════════════════════════════
    EMR PAGE — MULTISELECT
@@ -1221,6 +1230,9 @@ input::-webkit-credentials-auto-fill-button { display: none; }
 [data-mode="dark"] .badge-solid-danger { background: var(--vsee-danger-border); }
 [data-mode="dark"] .chip { background: var(--vsee-brand-light); }
 [data-mode="dark"] .chip[data-disabled], [data-mode="dark"] .chip.chip-disabled { background: var(--vsee-grey-300); }
+/* Outline tags: the base success / info colours are too dark on the dark background for 12px text (AA) — use the light "-dark" tokens */
+[data-mode="dark"] .tag-outline-success { color: var(--vsee-success-dark); }
+[data-mode="dark"] .tag-outline-info { color: var(--vsee-info-dark); }
 [data-mode="dark"] .tooltip-bubble,
 [data-mode="dark"] .copy-toast { background: var(--vsee-grey-900); color: var(--vsee-white); }
 [data-mode="dark"] .toggle-track:not(.on),
