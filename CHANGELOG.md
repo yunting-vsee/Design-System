@@ -1,6 +1,12 @@
 ﻿# Changelog
 
 ## Nov 7
+### Choice Cards, Choice Buttons, Selection Buttons + Switch Button: disabled
+- Choice Cards: the "States" example (Default / Selected / Disabled cards) is removed; Compact with Icon gets a 4th card, eConsult, disabled and not selected (isDisabled on its Radio). New "Disabled" example (after Text Only) — the whole RadioGroup disabled (isDisabled), compact cards with icons; every card fades and can't be picked, the chosen one stays shown in light grey. New .choice-card[data-selected][data-disabled]: --vsee-grey-300 fill, --vsee-border-strong border, grey icon (same as a disabled .btn) instead of the brand border + tint.
+- Choice Buttons: new "Disabled" example (after Icon Only) — the whole RadioGroup disabled; every button fades, the chosen one stays shown in light grey. New .btn-choice[data-selected][data-disabled]: --vsee-grey-300 fill + --vsee-border-strong border (same as a disabled .btn) instead of the brand border + tint (before, .btn-choice[data-disabled] reset it to plain white).
+- Selection Buttons: new isDisabled (whole group) and disabledKeys (single items) props; Rectangle shows GU / OB disabled and Round, soft selected shows Wound care disabled (disabledKeys); and a "Disabled" example (after Selected without check icon): a whole disabled Preferred time group (soft, no check icon) with Morning selected (Afternoon shows a count, 3), and a whole disabled Days group with Tue / Thu selected (Thu shows a count, 2). Disabled ones fade to 0.5 opacity (.sel-btn[data-disabled], already there); selected + disabled ones are light grey instead of blue — new .sel-btn[data-selected][data-disabled] (--vsee-grey-300 fill, --vsee-border-strong border, --vsee-text-secondary text; the count keeps its unselected grey circle).
+- Switch Button: new isDisabled prop and a "Disabled" example (round and square). The whole switch fades to 0.5 opacity (same as disabled Choice Cards / Choice Buttons) with a not-allowed cursor; the chosen option stays shown. New .btn-group[data-disabled], and .btn-group .btn[data-disabled] keeps the buttons transparent instead of .btn's grey disabled fill.
+
 ### Form Elements
 - The Notes textarea moved from the right card to the end of Text Inputs (after Search); the right card is renamed "Select & Textarea" → "Select".
 

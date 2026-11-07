@@ -820,7 +820,7 @@ function ColorSwatchesDemo() {
 
 /* Switch Button (.btn-group): pick one of a few options; a brand pill slides under the chosen one.
    Uncontrolled with defaultActive, or controlled with value + onChange. */
-function SwitchButton({ labels, defaultActive, value, onChange, ariaLabel, icons, iconOnly, className = "" }: {
+function SwitchButton({ labels, defaultActive, value, onChange, ariaLabel, icons, iconOnly, isDisabled = false, className = "" }: {
   labels: string[];
   /** Optional icon shown before each label, keyed by label */
   icons?: Record<string, ReactNode>;
@@ -831,6 +831,8 @@ function SwitchButton({ labels, defaultActive, value, onChange, ariaLabel, icons
   onChange?: (label: string) => void;
   /** Accessible name of the group (e.g. "Mode") */
   ariaLabel?: string;
+  /** Disable the whole switch: faded, no hover, can't be changed (the chosen option stays shown) */
+  isDisabled?: boolean;
   className?: string;
 }) {
   const [inner, setInner] = useState(defaultActive ?? labels[0]);
@@ -853,7 +855,7 @@ function SwitchButton({ labels, defaultActive, value, onChange, ariaLabel, icons
   }, [active, labels]);
 
   return (
-    <div className={`btn-group ${className}`} ref={groupRef} role="group" aria-label={ariaLabel}>
+    <div className={`btn-group ${className}`} ref={groupRef} role="group" aria-label={ariaLabel} data-disabled={isDisabled || undefined}>
       {labels.map(label => (
         <Button
           key={label}
@@ -861,6 +863,7 @@ function SwitchButton({ labels, defaultActive, value, onChange, ariaLabel, icons
           className={`btn ${active === label ? "active-group" : ""}`}
           aria-pressed={active === label}
           aria-label={iconOnly ? label : undefined}
+          isDisabled={isDisabled}
           onPress={() => setActive(label)}
         >
           {iconOnly ? <span title={label} style={{ display: "contents" }}>{icons?.[label]}</span> : <>{icons?.[label]}{label}</>}
@@ -879,7 +882,6 @@ function ChoiceCardsDemo() {
   const [room, setRoom] = useState("urgent");
   const [roomMobile, setRoomMobile] = useState("urgent");
   const [mode, setMode] = useState("video");
-  const [type, setType] = useState("schedule");
   const rooms = [
     { id: "primary", name: "Primary Care", hint: "Check-ups, follow-ups, and ongoing conditions.", meta: "Next open today", icon: Stethoscope },
     { id: "urgent", name: "Urgent Care", hint: "Something new that can't wait.", meta: "4 min wait", icon: Zap },
@@ -913,6 +915,14 @@ function ChoiceCardsDemo() {
               </span>
             </Radio>
           ))}
+          {/* Disabled (not selected) */}
+          <Radio value="econsult" isDisabled className="choice-card choice-card-compact">
+            <span className="choice-card-icon"><MessageSquare size={18} /></span>
+            <span className="choice-card-body">
+              <span className="choice-card-title">eConsult</span>
+              <span className="choice-card-hint">Unavailable</span>
+            </span>
+          </Radio>
         </div>
       </RadioGroup>
 
@@ -934,32 +944,24 @@ function ChoiceCardsDemo() {
         </div>
       </RadioGroup>
 
-      <div className="text-h5 mb-[var(--vsee-sp-3)]" style={{ marginTop: "var(--vsee-sp-6)" }}>States</div>
-      <RadioGroup aria-label="What kind of visit?" value={type} onChange={setType}>
+      <div className="text-h5 mb-[var(--vsee-sp-3)]" style={{ marginTop: "var(--vsee-sp-6)" }}>Disabled</div>
+      {/* Whole group disabled: every card is faded and can't be picked; the chosen one stays shown */}
+      <RadioGroup aria-label="Room (disabled)" isDisabled defaultValue="urgent">
         <div className="choice-grid">
-          <Radio value="walkIn" className="choice-card">
-            <span className="choice-card-icon"><Clock size={20} /></span>
-            <span className="choice-card-title">Default</span>
-            <span className="choice-card-hint">Join the queue and be seen next.</span>
-            <span className="choice-card-meta">4 min wait</span>
-          </Radio>
-          <Radio value="schedule" className="choice-card">
-            <span className="choice-card-icon"><Calendar size={20} /></span>
-            <span className="choice-card-title">Selected</span>
-            <span className="choice-card-hint">Pick a time that works for you.</span>
-            <span className="choice-card-meta">Next open today</span>
-          </Radio>
-          <Radio value="econsult" isDisabled className="choice-card">
-            <span className="choice-card-icon"><MessageSquare size={20} /></span>
-            <span className="choice-card-title">Disabled</span>
-            <span className="choice-card-hint">Not offered in this room.</span>
-            <span className="choice-card-meta">Unavailable</span>
-          </Radio>
+          {rooms.map(r => (
+            <Radio key={r.id} value={r.id} className="choice-card choice-card-compact">
+              <span className="choice-card-icon"><r.icon size={18} /></span>
+              <span className="choice-card-body">
+                <span className="choice-card-title">{r.name}</span>
+                <span className="choice-card-hint">{r.meta}</span>
+              </span>
+            </Radio>
+          ))}
         </div>
       </RadioGroup>
 
       <CodeBlock
-        code={`<RadioGroup value={room} onChange={setRoom}>\n  <Label className="question-title">Which room?</Label>\n  <div className="choice-grid">        {/* or .choice-list · .choice-cols-2 · .choice-cols-1 · .choice-row */}\n    <Radio value="urgent" className="choice-card">\n      <span className="choice-card-icon"><Zap size={20} /></span>   {/* optional */}\n      <span className="choice-card-title">Urgent Care</span>\n      <span className="choice-card-hint">Something new that can't wait.</span>\n      <span className="choice-card-meta">4 min wait</span>            {/* optional */}\n    </Radio>\n  </div>\n</RadioGroup>\n\n{/* Compact: icon (optional) left, text right. Works in any layout:\n   .choice-grid / .choice-cols-2 = side by side, .choice-list = stacked rows */}\n<div className="choice-grid">\n  <Radio value="urgent" className="choice-card choice-card-compact">\n    <span className="choice-card-icon"><Zap size={18} /></span>   {/* omit for text only */}\n    <span className="choice-card-body">\n      <span className="choice-card-title">Urgent Care</span>\n      <span className="choice-card-hint">4 min wait</span>\n    </span>\n  </Radio>\n</div>\n\n{/* Disabled */}\n<Radio value="econsult" isDisabled className="choice-card">...</Radio>`}
+        code={`<RadioGroup value={room} onChange={setRoom}>\n  <Label className="question-title">Which room?</Label>\n  <div className="choice-grid">        {/* or .choice-list · .choice-cols-2 · .choice-cols-1 · .choice-row */}\n    <Radio value="urgent" className="choice-card">\n      <span className="choice-card-icon"><Zap size={20} /></span>   {/* optional */}\n      <span className="choice-card-title">Urgent Care</span>\n      <span className="choice-card-hint">Something new that can't wait.</span>\n      <span className="choice-card-meta">4 min wait</span>            {/* optional */}\n    </Radio>\n  </div>\n</RadioGroup>\n\n{/* Compact: icon (optional) left, text right. Works in any layout:\n   .choice-grid / .choice-cols-2 = side by side, .choice-list = stacked rows */}\n<div className="choice-grid">\n  <Radio value="urgent" className="choice-card choice-card-compact">\n    <span className="choice-card-icon"><Zap size={18} /></span>   {/* omit for text only */}\n    <span className="choice-card-body">\n      <span className="choice-card-title">Urgent Care</span>\n      <span className="choice-card-hint">4 min wait</span>\n    </span>\n  </Radio>\n</div>\n\n{/* Disabled — one card */}\n<Radio value="econsult" isDisabled className="choice-card">...</Radio>\n\n{/* Disabled — the whole group (the chosen card stays shown) */}\n<RadioGroup aria-label="Room" isDisabled value={room}>...</RadioGroup>`}
       />
     </SubSection>
   );
@@ -997,8 +999,16 @@ function ChoiceButtonsDemo() {
         </div>
       </RadioGroup>
 
+      <div className="text-h5 mb-[var(--vsee-sp-3)]" style={{ marginTop: "var(--vsee-sp-6)" }}>Disabled</div>
+      {/* Whole group disabled: every button fades and can't be picked; the chosen one keeps its selected look */}
+      <RadioGroup aria-label="How should we contact you? (disabled)" isDisabled defaultValue="text">
+        <div className="choice-inline">
+          {CONTACT_OPTIONS.map(([v, l]) => <Radio key={v} value={v} className="btn btn-choice">{l}</Radio>)}
+        </div>
+      </RadioGroup>
+
       <CodeBlock
-        code={`<RadioGroup value={contact} onChange={setContact}>\n  <Label className="question-title">How should we contact you?</Label>\n  <div className="choice-inline">          {/* wraps when needed */}\n    <Radio value="phone" className="btn btn-choice">Phone call</Radio>\n    <Radio value="text" className="btn btn-choice">Text message</Radio>\n    <Radio value="video" isDisabled className="btn btn-choice">Video visit</Radio>\n  </div>\n</RadioGroup>\n\n{/* With icon: put a 16px Lucide icon before the label (14px with btn-sm, 18px with btn-lg) */}\n<Radio value="phone" className="btn btn-choice"><Phone size={16} /> Phone call</Radio>\n\n{/* Icon only: add .btn-icon (38px square) and name it with aria-label */}\n<Radio value="phone" aria-label="Phone call" className="btn btn-choice btn-icon"><Phone size={16} /></Radio>\n\n{/* Sizes: same as normal buttons */}\n<Radio value="phone" className="btn btn-choice btn-sm">Phone call</Radio>   {/* 30px */}\n<Radio value="phone" className="btn btn-choice">Phone call</Radio>          {/* 38px */}\n<Radio value="phone" className="btn btn-choice btn-lg">Phone call</Radio>   {/* 48px */}\n\n/* .btn-choice: white, 1px grey border · hover: darker border\n   [data-selected]: brand border + brand-50 tint · [data-disabled]: 50% opacity */`}
+        code={`<RadioGroup value={contact} onChange={setContact}>\n  <Label className="question-title">How should we contact you?</Label>\n  <div className="choice-inline">          {/* wraps when needed */}\n    <Radio value="phone" className="btn btn-choice">Phone call</Radio>\n    <Radio value="text" className="btn btn-choice">Text message</Radio>\n    <Radio value="video" isDisabled className="btn btn-choice">Video visit</Radio>\n  </div>\n</RadioGroup>\n\n{/* With icon: put a 16px Lucide icon before the label (14px with btn-sm, 18px with btn-lg) */}\n<Radio value="phone" className="btn btn-choice"><Phone size={16} /> Phone call</Radio>\n\n{/* Icon only: add .btn-icon (38px square) and name it with aria-label */}\n<Radio value="phone" aria-label="Phone call" className="btn btn-choice btn-icon"><Phone size={16} /></Radio>\n\n{/* Sizes: same as normal buttons */}\n<Radio value="phone" className="btn btn-choice btn-sm">Phone call</Radio>   {/* 30px */}\n<Radio value="phone" className="btn btn-choice">Phone call</Radio>          {/* 38px */}\n<Radio value="phone" className="btn btn-choice btn-lg">Phone call</Radio>   {/* 48px */}\n\n/* .btn-choice: white, 1px grey border · hover: darker border\n   [data-selected]: brand border + brand-50 tint · [data-disabled]: 50% opacity (a selected one keeps its brand border + tint) */\n\n{/* Disabled — the whole group (the chosen one stays shown) */}\n<RadioGroup aria-label="Contact" isDisabled value={contact}>...</RadioGroup>`}
       />
     </SubSection>
   );
@@ -1111,7 +1121,7 @@ function ComponentsButtons() {
       <SubSection title="Selection Buttons" description="Pick several options from a set, e.g. categories or filters (Choice Buttons pick just one). Selected ones show a check and turn blue. Optional count, and an icon before the label, after it, or both. Keyboard: arrow keys move, Space toggles.">
         <SelectionButtonsDemo />
         <CodeBlock
-          code={`const [selected, setSelected] = useState(new Set(["Cardiac", "GI"]));\n\n<SelectionButtons\n  ariaLabel="Categories"\n  items={[{ id: "Cardiac", label: "Cardiac" }, { id: "GI", label: "GI" }, { id: "Other", label: "Other" }]}\n  selectedKeys={selected}\n  onSelectionChange={setSelected}\n  shape="rect"        {/* "rect" (4px corners) | "round" (pill) */}\n  variant="solid"     {/* "solid" | "soft" (light blue + border) */}\n  showCheck           {/* default; showCheck={false}: no check, the colour alone shows selection */}\n/>\n\n/* Item with a count (optional) */\n{ id: "rx", label: "Prescriptions", count: 5 }\n\n/* Renders a multi-select group (React Aria, selectionMode="multiple") — each option: */\n<div className="sel-btn-group">\n  <div className="sel-btn">     {/* + sel-btn-round, sel-btn-soft; aria-selected */}\n    <span className="sel-btn-label"><Check size={14} /> Cardiac</span>  {/* check only when selected */}\n    <span className="sel-btn-count">5</span>\n  </div>\n</div>`}
+          code={`const [selected, setSelected] = useState(new Set(["Cardiac", "GI"]));\n\n<SelectionButtons\n  ariaLabel="Categories"\n  items={[{ id: "Cardiac", label: "Cardiac" }, { id: "GI", label: "GI" }, { id: "Other", label: "Other" }]}\n  selectedKeys={selected}\n  onSelectionChange={setSelected}\n  shape="rect"        {/* "rect" (4px corners) | "round" (pill) */}\n  variant="solid"     {/* "solid" | "soft" (light blue + border) */}\n  showCheck           {/* default; showCheck={false}: no check, the colour alone shows selection */}\n  disabledKeys={["Other"]}   {/* optional: disable single items */}\n  isDisabled          {/* optional: disable the whole group (selected ones turn light grey) */}\n/>\n\n/* Item with a count (optional) */\n{ id: "rx", label: "Prescriptions", count: 5 }\n\n/* Renders a multi-select group (React Aria, selectionMode="multiple") — each option: */\n<div className="sel-btn-group">\n  <div className="sel-btn">     {/* + sel-btn-round, sel-btn-soft; aria-selected */}\n    <span className="sel-btn-label"><Check size={14} /> Cardiac</span>  {/* check only when selected */}\n    <span className="sel-btn-count">5</span>\n  </div>\n</div>`}
         />
       </SubSection>
 
@@ -1135,8 +1145,13 @@ function ComponentsButtons() {
           <SwitchButton ariaLabel="Mode" iconOnly labels={["Light", "Dark"]} className="btn-group-square"
             icons={{ Light: <Sun size={16} aria-hidden="true" />, Dark: <Moon size={16} aria-hidden="true" /> }} />
         </div>
+        <div className="text-h5 mb-[var(--vsee-sp-3)]" style={{ marginTop: "var(--vsee-sp-6)" }}>Disabled</div>
+        <div className="preview" style={{ gap: "var(--vsee-sp-6)" }}>
+          <SwitchButton ariaLabel="Range (disabled)" isDisabled labels={["Today", "Week", "Month"]} defaultActive="Week" />
+          <SwitchButton ariaLabel="Range (disabled)" isDisabled labels={["Day", "Week", "Month", "Year"]} defaultActive="Month" className="btn-group-square" />
+        </div>
         <CodeBlock
-          code={`const [active, setActive] = useState("Week");\n\n<div className="btn-group" role="group" aria-label="Range">\n  {["Today", "Week", "Month"].map(label => (\n    <Button\n      key={label}\n      className={\`btn \${active === label ? "active-group" : ""}\`}\n      aria-pressed={active === label}\n      onPress={() => setActive(label)}\n    >{label}</Button>\n  ))}\n</div>\n\n{/* Square variant */}\n<div className="btn-group btn-group-square">...</div>\n\n/* Component: SwitchButton (renders the markup above) */\n<SwitchButton ariaLabel="Range" labels={["Today", "Week", "Month"]} defaultActive="Week" />\n\n/* With icons — an icon before each label */\n<SwitchButton ariaLabel="View" labels={["Desktop", "Mobile"]}\n  icons={{ Desktop: <Monitor size={16} aria-hidden="true" />, Mobile: <Smartphone size={16} aria-hidden="true" /> }} />\n\n/* Icon only — no text; each label becomes the button's accessible name + tooltip */\n<SwitchButton ariaLabel="Mode" iconOnly labels={["Light", "Dark"]}\n  icons={{ Light: <Sun size={16} aria-hidden="true" />, Dark: <Moon size={16} aria-hidden="true" /> }} />\n\n/* Controlled: value + onChange */\n<SwitchButton ariaLabel="Mode" iconOnly labels={["Light", "Dark"]} value={dark ? "Dark" : "Light"} onChange={l => setDark(l === "Dark")} icons={…} />`}
+          code={`const [active, setActive] = useState("Week");\n\n<div className="btn-group" role="group" aria-label="Range">\n  {["Today", "Week", "Month"].map(label => (\n    <Button\n      key={label}\n      className={\`btn \${active === label ? "active-group" : ""}\`}\n      aria-pressed={active === label}\n      onPress={() => setActive(label)}\n    >{label}</Button>\n  ))}\n</div>\n\n{/* Square variant */}\n<div className="btn-group btn-group-square">...</div>\n\n/* Component: SwitchButton (renders the markup above) */\n<SwitchButton ariaLabel="Range" labels={["Today", "Week", "Month"]} defaultActive="Week" />\n\n/* With icons — an icon before each label */\n<SwitchButton ariaLabel="View" labels={["Desktop", "Mobile"]}\n  icons={{ Desktop: <Monitor size={16} aria-hidden="true" />, Mobile: <Smartphone size={16} aria-hidden="true" /> }} />\n\n/* Icon only — no text; each label becomes the button's accessible name + tooltip */\n<SwitchButton ariaLabel="Mode" iconOnly labels={["Light", "Dark"]}\n  icons={{ Light: <Sun size={16} aria-hidden="true" />, Dark: <Moon size={16} aria-hidden="true" /> }} />\n\n/* Controlled: value + onChange */\n<SwitchButton ariaLabel="Mode" iconOnly labels={["Light", "Dark"]} value={dark ? "Dark" : "Light"} onChange={l => setDark(l === "Dark")} icons={…} />\n\n/* Disabled — the whole switch is faded and can't be changed; the chosen option stays shown */\n<SwitchButton ariaLabel="Range" isDisabled labels={["Today", "Week", "Month"]} defaultActive="Week" />`}
         />
       </SubSection>
 
@@ -3333,7 +3348,7 @@ function TagInputField({ label, tags, onChange, disabledKeys, isDisabled = false
    Built on React Aria's multi-select group (selectionMode="multiple"): click / Space toggles, arrow keys move, each one is read as selected or not.
    Selected ones show a check. Optional count. */
 type SelectionButtonItem = { id: string; label: string; count?: number };
-function SelectionButtons({ items, selectedKeys, onSelectionChange, ariaLabel, shape = "rect", variant = "solid", showCheck = true }: {
+function SelectionButtons({ items, selectedKeys, onSelectionChange, ariaLabel, shape = "rect", variant = "solid", showCheck = true, isDisabled = false, disabledKeys }: {
   items: SelectionButtonItem[];
   selectedKeys: Set<string>;
   onSelectionChange: (keys: Set<string>) => void;
@@ -3345,10 +3360,15 @@ function SelectionButtons({ items, selectedKeys, onSelectionChange, ariaLabel, s
   variant?: "solid" | "soft";
   /** Show the check icon on selected ones (default true). false: the colour alone shows what is selected */
   showCheck?: boolean;
+  /** Disable the whole group: faded, can't be changed; selected ones turn light grey */
+  isDisabled?: boolean;
+  /** Disable single items by id */
+  disabledKeys?: string[];
 }) {
   const cls = `sel-btn${shape === "round" ? " sel-btn-round" : ""}${variant === "soft" ? " sel-btn-soft" : ""}`;
   return (
     <TagGroup aria-label={ariaLabel} selectionMode="multiple" selectedKeys={selectedKeys}
+      disabledKeys={isDisabled ? items.map(i => i.id) : disabledKeys}
       onSelectionChange={keys => onSelectionChange(new Set(keys === "all" ? items.map(i => i.id) : [...keys].map(String)))}>
       <TagList className="sel-btn-group">
         {items.map(item => (
@@ -3377,6 +3397,10 @@ const SEL_BTN_CATEGORIES_ROUND: SelectionButtonItem[] = SEL_BTN_CATEGORIES.map(i
 /* No-check demo */
 const SEL_BTN_TIMES: SelectionButtonItem[] = ["Morning", "Afternoon", "Evening"].map(l => ({ id: l, label: l }));
 const SEL_BTN_DAYS: SelectionButtonItem[] = ["Mon", "Tue", "Wed", "Thu", "Fri"].map(l => ({ id: l, label: l }));
+/* Disabled demo: same times, Afternoon with a count */
+const SEL_BTN_TIMES_COUNT: SelectionButtonItem[] = SEL_BTN_TIMES.map(i => i.id === "Afternoon" ? { ...i, count: 3 } : i);
+/* Disabled demo: same days, Thu with a count */
+const SEL_BTN_DAYS_COUNT: SelectionButtonItem[] = SEL_BTN_DAYS.map(i => i.id === "Thu" ? { ...i, count: 2 } : i);
 function SelectionButtonsDemo() {
   const [rect, setRect] = useState(new Set(["Cardiac", "GI", "Vascular Access", "Orthopedic", "HEENT"]));
   const [round, setRound] = useState(new Set(["Cardiac", "GI"]));
@@ -3386,17 +3410,23 @@ function SelectionButtonsDemo() {
     <>
       <div className="text-h5 mb-[var(--vsee-sp-3)]">Rectangle</div>
       <div className="preview">
-        <SelectionButtons ariaLabel="Categories" items={SEL_BTN_CATEGORIES_COUNT} selectedKeys={rect} onSelectionChange={setRect} />
+        <SelectionButtons ariaLabel="Categories" items={SEL_BTN_CATEGORIES_COUNT} disabledKeys={["GU / OB"]} selectedKeys={rect} onSelectionChange={setRect} />
       </div>
       <div className="text-h5 mb-[var(--vsee-sp-3)]" style={{ marginTop: "var(--vsee-sp-6)" }}>Round, soft selected</div>
       <div className="preview">
-        <SelectionButtons ariaLabel="Categories" shape="round" variant="soft" items={SEL_BTN_CATEGORIES_ROUND} selectedKeys={round} onSelectionChange={setRound} />
+        <SelectionButtons ariaLabel="Categories" shape="round" variant="soft" items={SEL_BTN_CATEGORIES_ROUND} disabledKeys={["Wound care"]} selectedKeys={round} onSelectionChange={setRound} />
       </div>
       <div className="text-h5 mb-[var(--vsee-sp-3)]" style={{ marginTop: "var(--vsee-sp-6)" }}>Selected without check icon</div>
       {/* Two separate groups in one row: light + rectangle, and default colour + round */}
       <div className="preview" style={{ gap: "var(--vsee-sp-8)" }}>
         <SelectionButtons ariaLabel="Preferred time" variant="soft" showCheck={false} items={SEL_BTN_TIMES} selectedKeys={times} onSelectionChange={setTimes} />
         <SelectionButtons ariaLabel="Days" shape="round" showCheck={false} items={SEL_BTN_DAYS} selectedKeys={days} onSelectionChange={setDays} />
+      </div>
+      <div className="text-h5 mb-[var(--vsee-sp-3)]" style={{ marginTop: "var(--vsee-sp-6)" }}>Disabled</div>
+      {/* Two whole disabled groups — selected ones turn light grey (Preferred time: no check icon) */}
+      <div className="preview" style={{ gap: "var(--vsee-sp-8)" }}>
+        <SelectionButtons ariaLabel="Preferred time (disabled)" variant="soft" showCheck={false} isDisabled items={SEL_BTN_TIMES_COUNT} selectedKeys={new Set(["Morning"])} onSelectionChange={() => {}} />
+        <SelectionButtons ariaLabel="Days (disabled)" shape="round" isDisabled items={SEL_BTN_DAYS_COUNT} selectedKeys={new Set(["Tue", "Thu"])} onSelectionChange={() => {}} />
       </div>
     </>
   );

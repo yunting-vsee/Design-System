@@ -199,6 +199,7 @@
 .btn-choice[data-selected] { border-color: var(--vsee-brand); background: var(--vsee-brand-50); }
 .btn-choice[data-focus-visible] { box-shadow: none; }
 .btn-choice[data-disabled] { background: var(--vsee-white); color: var(--vsee-text-primary); border-color: var(--vsee-border); opacity: 0.5; }
+.btn-choice[data-selected][data-disabled] { border-color: var(--vsee-border-strong); background: var(--vsee-grey-300); } /* disabled group: the chosen one stays shown in light grey (same as .btn disabled), not brand */
 
 .btn-link { background: transparent; color: var(--vsee-brand); padding: 0; border: none; }
 .btn-link[data-hovered] { text-decoration: underline; }
@@ -224,6 +225,9 @@
 .btn-group .btn[data-pressed] { color: var(--vsee-text-primary); }
 .btn-group .btn.active-group { color: white; }
 .btn-group .btn.active-group[data-hovered] { color: white; }
+/* Disabled: the whole switch fades (like .choice-card / .btn-choice); the buttons keep the switch look, not .btn's grey disabled fill */
+.btn-group[data-disabled] { opacity: 0.5; cursor: not-allowed; }
+.btn-group .btn[data-disabled] { background: transparent; border: none; cursor: not-allowed; }
 .btn-group.btn-group-square,
 .btn-group.btn-group-square::before,
 .btn-group.btn-group-square .btn { border-radius: var(--vsee-r-sm); }
@@ -586,6 +590,9 @@ input::-webkit-credentials-auto-fill-button { display: none; }
 /* Compact cards side by side (grid layouts) sit a little closer together */
 .choice-grid:has(.choice-card-compact), .choice-cols-2:has(.choice-card-compact), .choice-row:has(.choice-card-compact) { gap: var(--vsee-sp-3); }
 .choice-card[data-selected] .choice-card-icon { color: var(--vsee-brand-dark); }
+/* Selected + disabled (disabled group): light grey instead of brand, like .btn disabled */
+.choice-card[data-selected][data-disabled] { border-color: var(--vsee-border-strong); background: var(--vsee-grey-300); }
+.choice-card[data-selected][data-disabled] .choice-card-icon { color: var(--vsee-text-secondary); }
 .choice-card-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: var(--vsee-sp-1); } /* 4px between title and description in compact cards */
 .choice-card-title { display: block; font-weight: 600; }
 .choice-card-hint { display: block; font-size: var(--vsee-text-caption-size); color: var(--vsee-text-secondary); }
@@ -1031,10 +1038,13 @@ input::-webkit-credentials-auto-fill-button { display: none; }
 .sel-btn-soft[data-selected] { background: var(--vsee-info-light); border-color: var(--vsee-info-border); color: var(--vsee-info); font-weight: 600; }
 .sel-btn-soft[data-selected][data-hovered] { background-image: none; border-color: var(--vsee-info); }
 .sel-btn[data-disabled] { opacity: 0.5; cursor: not-allowed; }
+/* Selected + disabled: light grey (same as a disabled .btn), not blue; the count goes back to the unselected grey circle */
+.sel-btn[data-selected][data-disabled] { background: var(--vsee-grey-300); border-color: var(--vsee-border-strong); color: var(--vsee-text-secondary); }
 /* Count: 16px circle, 10px number. Unselected: --vsee-text-secondary (Figma's grey-700 gives white text only 2.5:1) */
 .sel-btn-count { display: inline-flex; align-items: center; justify-content: center; min-width: 16px; height: 16px; padding: 0 var(--vsee-sp-1); box-sizing: border-box; border-radius: var(--vsee-r-full); background: var(--vsee-text-secondary); color: var(--vsee-white); font-size: var(--vsee-text-micro-size); font-weight: 500; line-height: 1; }
 .sel-btn-soft[data-selected] .sel-btn-count { background: var(--vsee-info); color: white; }
 .sel-btn[data-selected]:not(.sel-btn-soft) .sel-btn-count { background: white; color: var(--vsee-info); }
+.sel-btn[data-selected][data-disabled] .sel-btn-count { background: var(--vsee-text-secondary); color: white; } /* selected + disabled: back to the unselected grey circle (after the rules above so it wins) */
 
 
 /* ═══════════════════════════════════════════
@@ -1270,6 +1280,7 @@ input::-webkit-credentials-auto-fill-button { display: none; }
 [data-mode="dark"] .tag-outline-info { color: var(--vsee-info-dark); }
 /* Selection Buttons, soft selected: blue text on the dark light-blue fill needs the light "-dark" token for AA */
 [data-mode="dark"] .sel-btn-soft[data-selected] { color: var(--vsee-info-dark); }
+[data-mode="dark"] .sel-btn[data-selected][data-disabled] { color: var(--vsee-text-secondary); }
 [data-mode="dark"] .tooltip-bubble,
 [data-mode="dark"] .copy-toast { background: var(--vsee-grey-900); color: var(--vsee-white); }
 [data-mode="dark"] .toggle-track:not(.on),
